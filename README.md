@@ -1,199 +1,36 @@
-* **Next.js (Admin frontend)** running on **PM2**, and
-* **Laravel (API backend)** running inside **Docker**,
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Getting Started
 
-```markdown
-# African Market Hub — Monorepo
-
-This repository contains both the **Laravel API** and the **Next.js Admin Dashboard** for the African Market Hub platform.
-
----
-
-## 📦 Project Structure
-
-```
-
-hubs/
-├── api/            # Laravel API (Dockerized)
-├── admin/          # Next.js Admin (runs with PM2)
-└── README.md
-
-````
-
----
-
-## 🚀 Deployment Guide
-
-### 1. Laravel API — Docker Setup
-
-#### Build and Run Containers
-```bash
-cd api
-
-# Copy environment file and update credentials
-cp .env.example .env
-
-# Build and start Docker containers
-docker compose up -d --build
-
-# Run initial setup inside the container
-docker exec -it api-app bash
-composer install
-php artisan key:generate
-php artisan migrate --seed
-exit
-````
-
-#### Common Docker Commands
+First, run the development server:
 
 ```bash
-# Stop containers
-docker compose down
-
-# Restart containers
-docker compose restart
-
-# View logs
-docker compose logs -f
-```
-
----
-
-### 2. Next.js Admin — PM2 Setup
-
-#### Install dependencies
-
-```bash
-cd admin
-npm install
-```
-
-#### Build and Start the App
-
-```bash
-# Build the Next.js project
-npm run build
-
-# Start with PM2
-pm2 start npm --name "admin-app" -- run start
-```
-
-#### PM2 Management Commands
-
-```bash
-# View running apps
-pm2 list
-
-# View logs
-pm2 logs admin-app
-
-# Restart the app
-pm2 restart admin-app
-
-# Stop the app
-pm2 stop admin-app
-
-# Save PM2 process list for auto restart on reboot
-pm2 save
-```
-
-#### (Optional) Auto-start on Server Boot
-
-```bash
-pm2 startup
-# Follow the instructions printed to enable auto-start
-```
-
----
-
-## 💻 Local Development (after cloning)
-
-After cloning the repo:
-
-```bash
-git clone https://github.com/the-africanmarkethub/africanmarkethub.ca.git
-cd africanmarkethub.ca
-```
-
-### 🧩 Setup Laravel API
-
-```bash
-cd api
-cp .env.example .env
-composer install
-php artisan key:generate
-
-# If using local PHP/MySQL:
-php artisan migrate --seed
-php artisan serve
-```
-
-The Laravel API will be available at:
-
-> [http://127.0.0.1:8000](http://127.0.0.1:8000)
-
----
-
-### 🧩 Setup Next.js Admin
-
-```bash
-cd admin
-npm install
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-The Next.js Admin app will be available at:
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-> [http://localhost:3000](http://localhost:3000)
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
----
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## ⚙️ Environment Configuration
+## Learn More
 
-| App           | File               | Example                                         |
-| ------------- | ------------------ | ----------------------------------------------- |
-| Laravel API   | `api/.env`         | `APP_URL=http://localhost:8000`                 |
-| Next.js Admin | `admin/.env.local` | `NEXT_PUBLIC_API_URL=http://localhost:8000/api` |
+To learn more about Next.js, take a look at the following resources:
 
----
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## 🧰 Useful Tips
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-* **Rebuild Docker** when you change PHP dependencies:
+## Deploy on Vercel
 
-  ```bash
-  docker compose build --no-cache
-  ```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-* **Clear Laravel caches**:
-
-  ```bash
-  docker exec -it api-app bash
-  php artisan optimize:clear
-  exit
-  ```
-
-* **Update frontend environment variables** and rebuild:
-
-  ```bash
-  cd admin
-  npm run build
-  pm2 restart admin-app
-  ```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-(c) 2025 African Market Hub.
-
----
-
-## 💬 Maintainers
-
-* **Backend (Laravel):** [@afolabi.marcus](https://github.com/afolabi.marcus)
-* **Frontend (Next.js):** [@arfolabi](https://github.com/arfolabi)
-* **Organization:** [African Market Hub](https://github.com/the-africanmarkethub)
-
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
