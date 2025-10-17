@@ -74,15 +74,36 @@ else
 fi
 
 # 6️⃣ Health check
-echo "🔍 Checking health..."
-sleep 15
-if ! docker ps | grep -q "api-app.*Up"; then
-    echo "❌ Deployment failed — rolling back..."
+echo "🔍 Checking container health..."
+sleep 20
+
+FAILED_CONTAINERS=$(docker ps -a --filter "status=exited" --format "{{.Names}} ({{.Status}})")
+HEALTHY_CONTAINERS=$(docker ps --filter "status=running" --format "{{.Names}}")
+
+if [ -n "$FAILED_CONTAINERS" ]; then
+    echo "❌ One or more containers failed:"
+    echo "$FAILED_CONTAINERS"
+    echo "🪵 Gathering logs..."
+
+    # Collect logs for failed containers
+    LOGS_OUTPUT=""
+    for container in $(echo "$FAILED_CONTAINERS" | awk '{print $1}'); do
+        LOGS=$(docker logs --tail 20 "$container" 2>&1 | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/<br>/g')
+        LOGS_OUTPUT+="<p><b>${container}</b> logs:<br><pre>${LOGS}</pre></p>"
+    done
+
+    # Rollback
+    echo "⚙️ Rolling back to previous working version..."
     docker compose down
     docker run -d --name api-app-rollback $BACKUP_IMAGE
-    send_email "$MAIL_SUBJECT_FAIL" "<p>Deployment failed for <b>${APP_NAME}</b> on $(hostname).<br>Rolled back to previous working version.</p>"
+
+    send_email "$MAIL_SUBJECT_FAIL" "<p>Deployment failed for <b>${APP_NAME}</b> on <b>$(hostname)</b>.<br><br>Failed containers:<br><pre>${FAILED_CONTAINERS}</pre><br>${LOGS_OUTPUT}</p>"
     exit 1
+else
+    echo "✅ All containers healthy:"
+    echo "$HEALTHY_CONTAINERS"
 fi
+
 
 # 7️⃣ Cleanup unused images
 echo "🧽 Cleaning up unused Docker images..."
