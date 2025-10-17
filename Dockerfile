@@ -20,5 +20,8 @@ RUN composer install --no-dev --no-interaction --optimize-autoloader && \
     php artisan view:clear && \
     chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
+# Make PHP-FPM listen on all interfaces
+RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
+
 EXPOSE 9000
 CMD ["php-fpm"]
