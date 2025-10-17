@@ -2,7 +2,7 @@
 set -e
 
 # === CONFIG ===
-APP_DIR="/var/www/hubs/api"
+APP_DIR="/var/www/api.africanmarkethub.ca"
 BRANCH="laravel_api"
 APP_NAME="African Market Hub API"
 BACKUP_IMAGE="africanmarkethub-api-backup:latest"
