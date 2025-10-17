@@ -5,39 +5,42 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: africanmarkethub-api:latest
     container_name: api-app
     restart: unless-stopped
     working_dir: /var/www
+    env_file:
+      - .env.docker
     volumes:
       - ./:/var/www
     networks:
       - laravel
+    depends_on:
+      - db
 
   webserver:
-    image: nginx:alpine
+    image: nginx:stable-alpine
     container_name: api-nginx
     restart: unless-stopped
     depends_on:
       - app
-    expose:
-      - "80"
+    ports:
+      - "8080:80"   # use 8080 internally; reverse-proxy from host nginx with SSL
     volumes:
       - ./:/var/www
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
       - laravel
 
   db:
-    image: mysql:8
+    image: mysql:8.0
     container_name: api-db
     restart: unless-stopped
-    ports:
-      - "3306:3306"
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: laravel
-      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - dbdata:/var/lib/mysql
     networks:
