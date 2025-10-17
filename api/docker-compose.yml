@@ -11,6 +11,8 @@ services:
             - .env.docker
         volumes:
             - ./:/var/www
+        ports:
+            - "9000:9000"
         networks:
             - laravel
         depends_on:
