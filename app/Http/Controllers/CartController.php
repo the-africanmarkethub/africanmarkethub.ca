@@ -49,8 +49,7 @@ class CartController extends Controller
 
 
             $vendorIds = array_unique($vendorIds);
-
-            // Find or create the "cart" order
+ 
             $order = Order::firstOrCreate(
                 ['customer_id' => $userId, 'payment_status' => 'pending'],
                 ['total' => 0, 'vendor_id' => $vendorIds, 'payment_method' => 'card']
