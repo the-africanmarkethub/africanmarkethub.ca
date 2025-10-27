@@ -18,33 +18,33 @@ function Footer() {
             <FooterSectionList
               title="About"
               items={[
-                { text: "About Us", href: "/about" },
-                { text: "Our Branches", href: "/branches" },
-                { text: "Changelog", href: "/changelog" },
+                { text: "About Us", href: "/customer/about" },
+                { text: "Our Branches", href: "/customer/branches" },
+                { text: "Changelog", href: "/customer/changelog" },
               ]}
             />
-            <FooterSectionList
+            {/* <FooterSectionList
               title="Contact us"
               items={[
                 { text: "Contact Us", href: "/contact" },
                 { text: "Deals", href: "/deals" },
               ]}
-            />
+            /> */}
             <FooterSectionList
               title="Legal"
               items={[
-                { text: "Terms and Conditions", href: "/terms" },
-                { text: "Privacy Policy", href: "/privacy" },
-                { text: "Complaints Policy", href: "/complaints" },
+                { text: "Terms and Conditions", href: "/customer/terms" },
+                { text: "Privacy Policy", href: "/customer/privacy" },
+                { text: "Complaints Policy", href: "/customer/complaints" },
               ]}
             />
-            <FooterSectionList
+            {/* <FooterSectionList
               title="FAQ"
               items={[
                 { text: "FAQs", href: "/faq" },
                 { text: "Blog", href: "/blog" },
               ]}
-            />
+            /> */}
             <FooterSectionList
               title="Download"
               items={[
