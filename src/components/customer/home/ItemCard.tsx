@@ -44,7 +44,9 @@ const ItemCard = ({
           variant="floating"
           position="top-right"
         />
-        <Link href={`/products/${item.slug}?categoryName=${categoryName}`}>
+        <Link
+          href={`/customer/products/${item.slug}${categoryName ? `?categoryName=${categoryName}` : ''}`}
+        >
           <Image
             src={item.images[0]}
             fill
@@ -90,7 +92,7 @@ const ItemCard = ({
 
           {isHovered && hasButton && (
             <Link
-              href={`/products/${item.slug}?categoryName=${categoryName}`}
+              href={`/customer/products/${item.slug}${categoryName ? `?categoryName=${categoryName}` : ''}`}
               className="w-full"
             >
               <SubmitButton className="h-[28px] md:h-12 w-full rounded-[39px] animate-fadeIn text-[8px] md:text-base">

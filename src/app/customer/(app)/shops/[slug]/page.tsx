@@ -3,18 +3,14 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import MaxWidthWrapper from "@/components/customer/MaxWidthWrapper";
 import { useShops } from "@/hooks/customer/useShops";
 import { Shop } from "@/types/customer/shop.types";
 
-interface ShopDetailPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
-
-export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
-  const { slug } = await params;
+export default function ShopDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
   const { data, isLoading, error } = useShops();
 
   const shop = data?.shops?.data?.find((s: Shop) => s.slug === slug);
@@ -43,7 +39,7 @@ export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
               The shop you're looking for doesn't exist or has been removed.
             </p>
             <Link
-              href="/shops"
+              href="/customer/shops"
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Back to Shops
@@ -60,7 +56,7 @@ export default async function ShopDetailPage({ params }: ShopDetailPageProps) {
         {/* Back Button */}
         <div className="mb-6">
           <Link
-            href="/shops"
+            href="/customer/shops"
             className="inline-flex items-center text-primary hover:text-primary transition-colors"
           >
             <svg

@@ -71,7 +71,7 @@ export default function ShopByCategory({
     <section className="my-12">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl font-semibold">{sectionTitle}</h2>
-        <Link href="/categories/product" passHref>
+        <Link href="/customer/categories/product" passHref>
           <button className="w-10 h-10 flex items-center justify-center rounded-full border border-[#F3EDE7] bg-white text-primary">
             <ArrowUpRight />
           </button>
@@ -98,7 +98,7 @@ export default function ShopByCategory({
               <p className="text-[16px] md:text-[28px] font-semibold mb-4 drop-shadow">
                 {feature.subtitle}
               </p>
-              <Link href="/categories/product" passHref>
+              <Link href="/customer/categories/product" passHref>
                 <button className="border border-white rounded-full p-3 md:p-4 text-white text-sm md:text-base font-medium bg-transparent hover:bg-white hover:text-primary transition">
                   Shop Now!
                 </button>
@@ -114,7 +114,7 @@ export default function ShopByCategory({
               <p className="text-[16px] md:text-[28px] font-semibold mb-4 drop-shadow">
                 {feature.subtitle}
               </p>
-              <Link href="/categories/product" passHref>
+              <Link href="/customer/categories/product" passHref>
                 <button className="border border-white rounded-full p-3 md:p-4 text-white text-sm md:text-base font-medium bg-transparent hover:bg-white hover:text-primary transition">
                   Hire Now!
                 </button>
@@ -148,7 +148,7 @@ export default function ShopByCategory({
                     return (
                       <Link
                         key={product.id}
-                        href={`/products/${product.slug}`}
+                        href={`/customer/products/${product.slug}`}
                         className={`bg-white rounded-xl md:rounded-2xl shadow p-3 md:p-4 flex flex-col items-start w-full md:w-[379px] border hover:shadow-lg transition-shadow ${
                           index === 0
                             ? "border-[#1E90FF]"
@@ -225,7 +225,7 @@ export default function ShopByCategory({
                 image={cat.image || "/assets/default.png"}
                 label={cat.name}
                 color="#F8F8F8"
-                href={`/products/category/${cat.id}?name=${encodeURIComponent(
+                href={`/customer/products/category/${cat.id}?name=${encodeURIComponent(
                   cat.name
                 )}`}
               />

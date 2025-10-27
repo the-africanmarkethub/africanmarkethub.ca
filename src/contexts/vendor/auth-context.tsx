@@ -141,8 +141,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // If user is a vendor and authenticated
       if (isValid && user?.user?.role === "vendor") {
-        // If vendor is trying to access non-vendor routes, redirect to vendor dashboard
-        if (!isVendorRoute && !isPublicRoute) {
+        // If vendor is trying to access non-vendor routes (but not customer routes), redirect to vendor dashboard
+        if (!isVendorRoute && !isPublicRoute && !isCustomerRoute) {
           console.log("Vendor trying to access non-vendor route, redirecting to vendor overview");
           router.push("/vendor/overview");
           return;
@@ -157,9 +157,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push("/vendor/sign-in");
       }
       
-      // Don't interfere with customer routes
+      // Don't interfere with customer routes - let customer auth context handle them
       if (isCustomerRoute) {
-        // Let customer routes handle their own auth
+        setIsLoading(false);
+        return;
       }
       
       setIsLoading(false);

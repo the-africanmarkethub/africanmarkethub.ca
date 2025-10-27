@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useProduct } from "@/hooks/customer/useProduct";
 import { ChevronRight, Minus, Plus } from "lucide-react";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import WishlistButton from "@/components/customer/WishlistButton";
 import ColorSelector from "@/components/ui/color-selector";
@@ -24,11 +24,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY } from "@/constants/customer/queryKeys";
 
 export default function Page() {
-  const pathname = usePathname();
-  const slug = decodeURIComponent(pathname.split("/")[2]);
+  const params = useParams();
+  const slug = params.slug as string;
 
   const searchParams = useSearchParams();
   const categoryName = searchParams.get("categoryName");
+  const validCategoryName = categoryName === "undefined" ? undefined : categoryName;
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
@@ -270,7 +271,7 @@ export default function Page() {
             <p className="text-gray-500">Home</p>
             <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-gray-400" />
             <p className="text-gray-500">
-              {product.category?.name || categoryName}
+              {product.category?.name || validCategoryName}
             </p>
             <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-gray-400" />
             <p className="font-medium">{product.title}</p>
@@ -533,7 +534,7 @@ export default function Page() {
                   <p className="mt-2">
                     Category:{" "}
                     <span className="text-gray-600">
-                      {product.category?.name || categoryName}
+                      {product.category?.name || validCategoryName}
                     </span>
                   </p>
                 </div>

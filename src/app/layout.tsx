@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/contexts/vendor/auth-context";
 import { ErrorBoundary } from "@/components/vendor/error-boundary";
 import { CartProvider } from "@/contexts/customer/CartContext";
+import NextAuthProvider from "@/components/providers/NextAuthProvider";
 
 const lufga = localFont({
   src: [
@@ -54,18 +55,20 @@ export default function RootLayout({
       >
         <ErrorBoundary>
           <Common>
-            <AuthProvider>
-              <CartProvider>
-                <ThemeProvider
-                  attribute="class"
-                  defaultTheme="light"
-                  enableSystem
-                  disableTransitionOnChange
-                >
-                  {children}
-                </ThemeProvider>
-              </CartProvider>
-            </AuthProvider>
+            <NextAuthProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <ThemeProvider
+                    attribute="class"
+                    defaultTheme="light"
+                    enableSystem
+                    disableTransitionOnChange
+                  >
+                    {children}
+                  </ThemeProvider>
+                </CartProvider>
+              </AuthProvider>
+            </NextAuthProvider>
           </Common>
         </ErrorBoundary>
       </body>
