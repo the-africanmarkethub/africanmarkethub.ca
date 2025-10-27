@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -13,16 +14,17 @@ export default function AuthErrorPage() {
       case "AccessDenied":
         return {
           title: "Access Denied",
-          message: "This application is for customers only. If you're a vendor, please use the vendor portal to access your account.",
-          action: "Go to Vendor Portal", 
-          link: "/vendor/sign-in"
+          message:
+            "This application is for customers only. If you're a vendor, please use the vendor portal to access your account.",
+          action: "Go to Vendor Portal",
+          link: "/vendor/sign-in",
         };
       default:
         return {
           title: "Authentication Error",
           message: "There was a problem signing you in. Please try again.",
           action: "Try Again",
-          link: "/customer/sign-in"
+          link: "/customer/sign-in",
         };
     }
   };
@@ -69,5 +71,21 @@ export default function AuthErrorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          </div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   );
 }
