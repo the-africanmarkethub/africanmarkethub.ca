@@ -24,10 +24,10 @@ const SubmitButton = ({
       type={type}
       disabled={isLoading}
       onClick={onClick}
-      className={
+      className={`text-white ${
         className ??
-        "bg-primary w-full text-[#FFFFFF]  rounded-[39px] py-4 font-semibold"
-      }
+        "bg-primary w-full rounded-[39px] py-4 font-semibold"
+      }`}
       {...props}
     >
       {isLoading ? (

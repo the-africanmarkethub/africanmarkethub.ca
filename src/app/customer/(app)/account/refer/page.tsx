@@ -166,7 +166,7 @@ export default function ReferPage() {
             </div>
             <Button 
               onClick={handleCopyCode}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 text-white"
             >
               {copied ? (
                 <>

@@ -87,7 +87,7 @@ export default function SizeSelector({
               className={`transition-all text-base font-medium
               ${
                 selectedSize === size.id
-                  ? "bg-primary w-6 h-6 text-xs text-[#000000] rounded-full"
+                  ? "bg-primary w-6 h-6 text-xs text-white rounded-full"
                   : "text-gray-700 hover:text-primary"
               } ${
                 isSizeDisabled(size.id) ? "opacity-30 cursor-not-allowed" : ""

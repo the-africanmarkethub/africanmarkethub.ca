@@ -388,7 +388,7 @@ export default function AddressForm({
         <Button
           type="submit"
           disabled={isLoading}
-          className="bg-[#F28C0D] hover:bg-[#E67C00]"
+          className="bg-[#F28C0D] hover:bg-[#E67C00] text-white"
         >
           {isLoading
             ? "Saving..."

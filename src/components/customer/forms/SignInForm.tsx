@@ -81,7 +81,7 @@ function SignInForm() {
           </div>
 
           <SubmitButton
-            className="h-11 md:h-14 w-full text-sm md:text-lg rounded-[39px]"
+            className="h-11 md:h-14 w-full text-white text-sm md:text-lg rounded-[39px]"
             isLoading={loginMutation.isPending}
           >
             Log in

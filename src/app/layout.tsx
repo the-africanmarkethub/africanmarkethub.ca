@@ -40,11 +40,10 @@ export const metadata: Metadata = {
   description: "African Market Hub - Connect customers and vendors across Africa",
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", type: "image/x-icon" }
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/img/African Market Hub.svg", type: "image/svg+xml" }
     ],
-    apple: "/icon.png",
+    apple: "/img/African Market Hub Banner.png",
   },
 };
 

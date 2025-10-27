@@ -22,9 +22,9 @@ const SubmitButton = ({
       type="submit"
       onClick={onClick}
       disabled={isLoading || disabled}
-      className={
+      className={`text-white ${
         className ?? "bg-primary w-full py-4 font-semibold rounded-[39px]"
-      }
+      }`}
     >
       {isLoading ? (
         <div className="flex items-center gap-4">

@@ -7,8 +7,16 @@ const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
     }),
   ],
+  pages: {
+    error: "/auth/error",
+  },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
@@ -29,23 +37,20 @@ const authOptions: NextAuthOptions = {
 
           if (response.ok) {
             const data = await response.json();
+            console.log("Google auth response data:", data);
 
-            // Check if user role is customer (same as normal login)
+            // Store user data for later use in redirect
             const userRole = data.user?.role;
-            if (userRole !== "customer") {
-              console.error(
-                "Access denied. This application is for customers only."
-              );
-              return false;
-            }
+            console.log("User role from backend:", userRole);
 
-            // Store the token and user data like normal login does
-            localStorage.setItem("accessToken", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            // Note: localStorage is not available in server-side callbacks
+            // We'll store this data in the session instead
 
             // Store in NextAuth session for client-side access
             (user as any).accessToken = data.token;
             (user as any).userData = data.user;
+            (user as any).userRole = userRole;
+            
             return true;
           }
 
@@ -76,6 +81,7 @@ const authOptions: NextAuthOptions = {
       if (user) {
         token.accessToken = (user as any).accessToken;
         token.userData = (user as any).userData;
+        token.userRole = (user as any).userRole;
       }
       return token;
     },
@@ -83,7 +89,13 @@ const authOptions: NextAuthOptions = {
       // Send properties to the client
       (session as any).accessToken = token.accessToken;
       (session as any).userData = token.userData;
+      (session as any).userRole = token.userRole;
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // We'll handle role-based redirects in the client components
+      // since we don't have access to user role in this callback
+      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

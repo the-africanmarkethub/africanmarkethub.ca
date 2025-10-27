@@ -164,7 +164,7 @@ const RenderField = ({
           }`}
         >
           <PhoneInput
-            defaultCountry="NG"
+            defaultCountry="CA"
             placeholder={props.placeholder}
             international
             withCountryCallingCode

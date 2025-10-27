@@ -29,8 +29,8 @@ export default function CategoriesPopover() {
           <AlignJustify size={22} /> All Category
         </NavigationMenuTrigger>
 
-        <NavigationMenuContent>
-          <div className="flex w-[600px] p-4">
+        <NavigationMenuContent className="bg-white border border-gray-200 shadow-lg">
+          <div className="flex w-[600px] p-4 bg-white rounded-md">
             {!selectedType ? (
               // Show Products and Services options first
               <div className="w-full">

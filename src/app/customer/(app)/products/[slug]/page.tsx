@@ -185,7 +185,7 @@ export default function Page() {
   const displaySku = hasVariations
     ? selectedVariation?.sku || product?.slug
     : product?.slug;
-  const isInStock = displayQuantity > 0;
+  const isInStock = product?.type === "services" ? true : displayQuantity > 0;
 
   const increaseQuantity = () => {
     setQuantity((prev) => {
@@ -412,50 +412,55 @@ export default function Page() {
                   </div>
                 </div>
 
-                <ColorSelector
-                  colors={availableColors}
-                  disabledColors={disabledColors}
-                  selectedColor={selectedColor?.id}
-                  onColorSelect={(color) => {
-                    setSelectedColor(color);
-                    // Reset size if the new color doesn't support it
-                    if (selectedSize) {
-                      const isSizeAvailable = variations.some(
-                        (v: Variation) =>
-                          v.color_id === color.id &&
-                          v.size_id === selectedSize.id
-                      );
-                      if (!isSizeAvailable) {
-                        setSelectedSize(null);
-                        setSelectedVariation(null);
-                      }
-                    }
-                  }}
-                  variant="swatches"
-                  showLabel={true}
-                />
-                <SizeSelector
-                  sizes={availableSizes}
-                  disabledSizes={disabledSizes}
-                  selectedSize={selectedSize?.id}
-                  onSizeSelect={(size) => {
-                    setSelectedSize(size);
-                    // Reset color if the new size doesn't support it
-                    if (selectedColor) {
-                      const isColorAvailable = variations.some(
-                        (v: Variation) =>
-                          v.size_id === size.id &&
-                          v.color_id === selectedColor.id
-                      );
-                      if (!isColorAvailable) {
-                        setSelectedColor(null);
-                        setSelectedVariation(null);
-                      }
-                    }
-                  }}
-                  variant="text-pills"
-                  showLabel={true}
-                />
+                {/* Hide color and size selectors for services */}
+                {product.type !== "services" && (
+                  <>
+                    <ColorSelector
+                      colors={availableColors}
+                      disabledColors={disabledColors}
+                      selectedColor={selectedColor?.id}
+                      onColorSelect={(color) => {
+                        setSelectedColor(color);
+                        // Reset size if the new color doesn't support it
+                        if (selectedSize) {
+                          const isSizeAvailable = variations.some(
+                            (v: Variation) =>
+                              v.color_id === color.id &&
+                              v.size_id === selectedSize.id
+                          );
+                          if (!isSizeAvailable) {
+                            setSelectedSize(null);
+                            setSelectedVariation(null);
+                          }
+                        }
+                      }}
+                      variant="swatches"
+                      showLabel={true}
+                    />
+                    <SizeSelector
+                      sizes={availableSizes}
+                      disabledSizes={disabledSizes}
+                      selectedSize={selectedSize?.id}
+                      onSizeSelect={(size) => {
+                        setSelectedSize(size);
+                        // Reset color if the new size doesn't support it
+                        if (selectedColor) {
+                          const isColorAvailable = variations.some(
+                            (v: Variation) =>
+                              v.size_id === size.id &&
+                              v.color_id === selectedColor.id
+                          );
+                          if (!isColorAvailable) {
+                            setSelectedColor(null);
+                            setSelectedVariation(null);
+                          }
+                        }
+                      }}
+                      variant="text-pills"
+                      showLabel={true}
+                    />
+                  </>
+                )}
 
                 {/* add quantity to cart - hide for services */}
                 <div className="flex flex-row items-center gap-4">
