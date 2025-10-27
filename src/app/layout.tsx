@@ -38,6 +38,13 @@ const lufga = localFont({
 export const metadata: Metadata = {
   title: "African Market Hub",
   description: "African Market Hub - Connect customers and vendors across Africa",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", type: "image/x-icon" }
+    ],
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
