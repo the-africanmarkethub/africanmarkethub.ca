@@ -102,7 +102,10 @@ function SignInForm() {
       <div className="text-center text-xs md:text-sm">
         <p className="leading-[22px]">
           Don&apos;t have an account?{" "}
-          <a href="/sign-up" className="text-[#7E442E] hover:underline">
+          <a
+            href="/customer/sign-up"
+            className="text-[#7E442E] hover:underline"
+          >
             Create Account
           </a>
         </p>

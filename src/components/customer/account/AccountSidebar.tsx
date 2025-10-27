@@ -20,31 +20,31 @@ import { useEffect, useState } from "react";
 const menu = [
   {
     name: "Account Overview",
-    href: "/account/overview",
+    href: "/customer/account/overview",
     icon: <Clock size={18} />,
     requiresAuth: true,
   },
   {
     name: "Orders",
-    href: "/account/orders",
+    href: "/customer/account/orders",
     icon: <ShoppingBag size={18} />,
     requiresAuth: true,
   },
   {
     name: "Chats",
-    href: "/account/chats",
+    href: "/customer/account/chats",
     icon: <MessageCircle size={18} />,
     requiresAuth: true,
   },
   {
     name: "Wishlist",
-    href: "/wishlist",
+    href: "/customer/wishlist",
     icon: <Heart size={18} />,
     requiresAuth: false, // Wishlist can work for both logged in and guest users
   },
   {
     name: "Address",
-    href: "/account/address",
+    href: "/customer/account/address",
     icon: <MapPin size={18} />,
     requiresAuth: true,
   },
@@ -56,31 +56,31 @@ const menu = [
   // },
   {
     name: "Account Setting",
-    href: "/account/settings",
+    href: "/customer/account/settings",
     icon: <Settings size={18} />,
     requiresAuth: true,
   },
   {
     name: "Refer & Earn",
-    href: "/account/refer",
+    href: "/customer/account/refer",
     icon: <Gift size={18} />,
     requiresAuth: true,
   },
   {
     name: "Recommendation",
-    href: "/account/recommendation",
+    href: "/customer/account/recommendation",
     icon: <Users size={18} />,
     requiresAuth: true,
   },
   {
     name: "Notification",
-    href: "/account/notifications",
+    href: "/customer/account/notifications",
     icon: <Bell size={18} />,
     requiresAuth: true,
   },
   {
     name: "Customer Support",
-    href: "/account/support",
+    href: "/customer/account/support",
     icon: <HelpCircle size={18} />,
     requiresAuth: false, // Support should be available to everyone
   },

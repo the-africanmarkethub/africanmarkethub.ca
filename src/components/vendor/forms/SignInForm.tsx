@@ -48,16 +48,18 @@ function SignInForm() {
         onError: (error: ValidationError) => {
           // Set field-specific errors if available
           if (error.validationErrors) {
-            Object.entries(error.validationErrors).forEach(([field, messages]) => {
-              if (field === 'email' || field === 'password') {
-                form.setError(field as 'email' | 'password', {
-                  type: 'manual',
-                  message: messages[0]
-                });
+            Object.entries(error.validationErrors).forEach(
+              ([field, messages]) => {
+                if (field === "email" || field === "password") {
+                  form.setError(field as "email" | "password", {
+                    type: "manual",
+                    message: messages[0],
+                  });
+                }
               }
-            });
+            );
           }
-        }
+        },
       });
     } catch (error) {
       console.error("Login failed", error);
@@ -119,14 +121,14 @@ function SignInForm() {
 
       <GoogleAuthButton />
 
-      <div className="mt-4 text-center">
+      {/* <div className="mt-4 text-center">
         <p className="flex justify-center gap-2 leading-[22px]">
           Don’t have an account?
           <a href="/create-shop" className="text-[#7E442E] hover:underline">
             Create Account
           </a>
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }
