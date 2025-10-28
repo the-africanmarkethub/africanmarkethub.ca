@@ -154,7 +154,7 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
     <div className="w-full max-w-md mx-auto space-y-6 pb-9">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="text-center">
+          <div className="">
             <h1 className="font-semibold text-xl md:text-[28px] text-gray-900">
               Create Account
             </h1>
