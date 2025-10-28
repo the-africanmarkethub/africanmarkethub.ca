@@ -1,7 +1,6 @@
 "use client";
 
-import MaxWidthWrapper from "@/components/customer/MaxWidthWrapper";
-import React, { useEffect } from "react";
+import React from "react";
 import SignInForm from "@/components/customer/forms/SignInForm";
 
 const Page = () => {
@@ -26,11 +25,7 @@ const Page = () => {
   //   }
   // }, []);
 
-  return (
-    <MaxWidthWrapper className="flex items-center justify-center min-h-screen py-8 px-4">
-      <SignInForm />
-    </MaxWidthWrapper>
-  );
+  return <SignInForm />;
 };
 
 export default Page;

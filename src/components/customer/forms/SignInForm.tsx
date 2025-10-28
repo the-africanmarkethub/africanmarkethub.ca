@@ -41,13 +41,11 @@ function SignInForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-md space-y-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Title */}
-          <h1 className="font-semibold text-2xl text-gray-900">
-            Log in
-          </h1>
+          <h1 className="font-semibold text-2xl text-gray-900">Log in</h1>
 
           {/* Form Fields */}
           <div className="space-y-4">
@@ -58,24 +56,23 @@ function SignInForm() {
               name="email"
               label="Email Address"
               placeholder="Your Email Address"
-              widthClass=""
+              widthClass="w-full"
             />
 
-            <div>
-              <CustomFormField
-                isEditable
-                fieldType={FormFieldType.PASSWORD}
-                control={form.control}
-                name="password"
-                label="Password"
-                placeholder="Your Password"
-                widthClass=""
-              />
-              <div className="text-[#7E442E] mt-2 text-sm flex justify-end">
-                <a href="/customer/forgot-password" className="hover:underline">
-                  Forgot password?
-                </a>
-              </div>
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.PASSWORD}
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Your Password"
+              widthClass="w-full"
+            />
+
+            <div className="text-[#7E442E] mt-2 text-sm flex justify-end">
+              <a href="/customer/forgot-password" className="hover:underline">
+                Forgot password?
+              </a>
             </div>
           </div>
 
@@ -92,9 +89,7 @@ function SignInForm() {
       {/* Divider */}
       <div className="flex items-center justify-center">
         <div className="flex-1 border-t border-gray-300"></div>
-        <span className="px-4 text-gray-500 text-sm">
-          Or continue with
-        </span>
+        <span className="px-4 text-gray-500 text-sm">Or continue with</span>
         <div className="flex-1 border-t border-gray-300"></div>
       </div>
 
