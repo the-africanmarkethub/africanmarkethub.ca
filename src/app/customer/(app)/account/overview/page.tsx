@@ -107,7 +107,7 @@ export default function AccountOverviewPage() {
               </div>
               <Link
                 className="text-[#F28C0D] text-base leading-[22px] font-medium"
-                href={"/account/settings"}
+                href={"/customer/account/settings"}
               >
                 Edit Profile
               </Link>
@@ -135,7 +135,7 @@ export default function AccountOverviewPage() {
 
               <Link
                 className="text-[#F28C0D] text-base leading-[22px] font-medium"
-                href={"/account/address"}
+                href={"/customer/account/address"}
               >
                 Edit Address
               </Link>
@@ -152,17 +152,21 @@ export default function AccountOverviewPage() {
                   data={recentOrders}
                   showAllOrdersLink={true}
                   onSeeAllOrders={() => {
-                    router.push("/account/orders");
+                    router.push("/customer/account/orders");
                   }}
-                  onViewDetails={(orderId) => router.push(`/account/orders/${orderId}`)}
+                  onViewDetails={(orderId) =>
+                    router.push(`/customer/account/orders/${orderId}`)
+                  }
                 />
               </div>
             ) : (
               <div className="bg-white p-8 rounded-3xl shadow text-center">
-                <h2 className="text-lg font-semibold mb-4">Recent Order History</h2>
+                <h2 className="text-lg font-semibold mb-4">
+                  Recent Order History
+                </h2>
                 <p className="text-gray-500 mb-4">You have no orders yet.</p>
-                <Link 
-                  href="/products"
+                <Link
+                  href="/customer/products"
                   className="inline-flex items-center justify-center px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Start Shopping

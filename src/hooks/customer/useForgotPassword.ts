@@ -40,7 +40,7 @@ export function useForgotPassword() {
     mutationFn: forgotPassword,
     onSuccess: (data) => {
       toast.success(data.message || "Password reset code sent successfully!");
-      router.push("/reset-password");
+      router.push("/customer/reset-password");
     },
     onError: (error: ErrorResponse) => {
       console.error("Forgot password failed:", error);

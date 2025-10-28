@@ -19,8 +19,7 @@ interface ErrorResponse {
     data: {
       message?: string;
       errors?: {
-        email?: string[];
-        phone?: string[];
+        [key: string]: string[];
       };
     };
   };
@@ -61,9 +60,9 @@ const formSchema = z.object({
     .regex(/[@$!%*?&]/, {
       message: "Password must contain at least one special character",
     }),
-  location: z.string().min(2, {
-    message: "Location must be at least 2 characters.",
-  }),
+  // location: z.string().min(2, {
+  //   message: "Location must be at least 2 characters.",
+  // }),
   referral_code: z.string().optional(),
   termsAndConditions: z.boolean(),
 });
@@ -85,7 +84,7 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
       email: "",
       phone: "",
       password: "",
-      location: "",
+      // location: "",
       referral_code: referralCode || "",
       termsAndConditions: false,
     },
@@ -113,12 +112,14 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
     try {
       setLoading(true);
       const res = await signUp(payload);
-      if (res) {
-        toast.success(`Welcome to African Market Hub, ${name}!`);
+      // Check if we got a successful response (with message field)
+      if (res && res.message) {
+        toast.success(res.message || `Welcome to African Market Hub, ${name}!`);
         sessionStorage.setItem("email", values.email);
         sessionStorage.setItem("phoneNumber", values.phone);
-        router.replace("/verify-otp");
+        router.replace("/customer/verify-otp");
       }
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       let errorMessage = "Failed to register. Please try again.";
@@ -126,16 +127,17 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
       const err = error as ErrorResponse;
       if (err.response) {
         const { status, data } = err.response;
+
         if (status === 422) {
-          if (data.errors?.email) {
-            errorMessage =
-              "This email is already registered. Please use a different email or try signing in.";
-          } else if (data.errors?.phone) {
-            errorMessage =
-              "This phone number is already registered. Please use a different phone number.";
-          } else {
-            errorMessage =
-              data.message || "Please check your input and try again.";
+          if (data.errors) {
+            // Extract first validation error
+            const firstErrorKey = Object.keys(data.errors)[0];
+            const firstError = data.errors[firstErrorKey];
+            if (Array.isArray(firstError) && firstError.length > 0) {
+              errorMessage = firstError[0];
+            }
+          } else if (data.message) {
+            errorMessage = data.message;
           }
         } else {
           errorMessage = data.message || "An unexpected error occurred.";
@@ -145,79 +147,70 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
       }
 
       toast.error(errorMessage);
-      console.error("Registration error:", error);
     }
   }
 
   return (
-    <div className="space-y-4 pb-9">
+    <div className="w-full max-w-md mx-auto space-y-6 pb-9">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="">
-            <section className="font-semibold mb-3 md:mb-6 text-xl md:text-[28px]">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="text-center">
+            <h1 className="font-semibold text-xl md:text-[28px] text-gray-900">
               Create Account
-            </section>
+            </h1>
+          </div>
 
-            <div className="lg:w-[462px] w-[327px]">
-              <section className="space-y-4">
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control as unknown as Control<FieldValues>}
-                  name="name"
-                  label="Name"
-                  placeholder="First name & Last name"
-                  widthClass=""
-                />
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control as unknown as Control<FieldValues>}
-                  name="email"
-                  label="Email Address"
-                  placeholder="Your Email Address"
-                  widthClass=""
-                />
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.PHONE_INPUT}
-                  control={form.control as unknown as Control<FieldValues>}
-                  name="phone"
-                  label="Phone Number"
-                  placeholder="Your Phone Number"
-                  widthClass=""
-                />
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.PASSWORD}
-                  control={form.control as unknown as Control<FieldValues>}
-                  name="password"
-                  label="Password"
-                  placeholder="Your password"
-                  widthClass=""
-                />
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control as unknown as Control<FieldValues>}
-                  name="location"
-                  label="Location"
-                  placeholder="Your Location"
-                  widthClass=""
-                />
-              </section>
-              <CustomFormField
-                fieldType={FormFieldType.CHECKBOX}
-                control={form.control as unknown as Control<FieldValues>}
-                name="termsAndConditions"
-                label="By creating an account you agree with our Terms of Service, and Privacy Policy."
-                className="font-bold"
-              />
-            </div>
+          <div className="space-y-4">
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.INPUT}
+              control={form.control as unknown as Control<FieldValues>}
+              name="name"
+              label="Name"
+              placeholder="First name & Last name"
+              widthClass="w-full"
+            />
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.INPUT}
+              control={form.control as unknown as Control<FieldValues>}
+              name="email"
+              label="Email Address"
+              placeholder="Your Email Address"
+              widthClass="w-full"
+            />
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.PHONE_INPUT}
+              control={form.control as unknown as Control<FieldValues>}
+              name="phone"
+              label="Phone Number"
+              placeholder="Your Phone Number"
+              widthClass="w-full"
+            />
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.PASSWORD}
+              control={form.control as unknown as Control<FieldValues>}
+              name="password"
+              label="Password"
+              placeholder="Your password"
+              widthClass="w-full"
+            />
+          </div>
+
+          <div className="mt-4">
+            <CustomFormField
+              fieldType={FormFieldType.CHECKBOX}
+              control={form.control as unknown as Control<FieldValues>}
+              name="termsAndConditions"
+              label="By creating an account you agree with our Terms of Service, and Privacy Policy."
+              className="text-sm"
+            />
           </div>
 
           <SubmitButton
-            className="h-11 md:h-14 w-full text-sm md:text-lg rounded-[39px]"
+            className="h-11 md:h-14 w-full text-white text-sm md:text-lg rounded-[39px] mt-6"
             isLoading={loading}
           >
             Create account
@@ -225,20 +218,24 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
         </form>
       </Form>
 
-      <div className="flex items-center justify-center mt-6 mb-4">
-        <div className="flex-1 border-t border-gray-300"></div>
-        <span className="px-4 text-gray-500 text-xs md:text-sm">
-          Or continue with
-        </span>
-        <div className="flex-1 border-t border-gray-300"></div>
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-white text-gray-500">Or continue with</span>
+        </div>
       </div>
 
       <GoogleAuthButton />
 
-      <div className="text-center text-xs md:text-sm">
-        <p className="leading-[22px]">
-          Already have an account?
-          <a href="/sign-in" className="text-[#7E442E] hover:underline">
+      <div className="text-center mt-6">
+        <p className="text-xs md:text-sm text-gray-600">
+          Already have an account?{" "}
+          <a
+            href="/customer/sign-in"
+            className="text-[#7E442E] hover:underline font-medium"
+          >
             Login
           </a>
         </p>

@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -91,104 +90,106 @@ const VerifyOtpForm = () => {
   }
 
   return (
-    <div>
+    <div className="w-full max-w-md mx-auto space-y-6 py-8">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+          Enter Verification Code
+        </h1>
+        <p className="text-gray-600 text-sm md:text-base">
+          We have sent a 6-digit to {userEmail}
+        </p>
+      </div>
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="pin"
             render={({ field }) => (
-              <div className="space-y-4 sm:space-y-6">
-                <section className="">
-                  <h1 className="font-semibold text-xl sm:text-2xl md:text-[28px] text-center md:text-left">
-                    Enter Verification Code
-                  </h1>
-                  <p className="text-xs sm:text-sm leading-4 text-[#5C5F6A] text-center md:text-left">
-                    We have sent a 6-digit code to {userEmail}
-                  </p>
-                </section>
-
-                <FormItem className="flex flex-col justify-center items-center">
-                  <FormControl>
-                    <InputOTP maxLength={6} {...field}>
-                      <div className="flex gap-2 sm:gap-3 justify-center">
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none focus:ring focus:ring-[#E7E6E8] text-sm sm:text-base"
-                            index={0}
-                          />
-                        </InputOTPGroup>
-
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none text-sm sm:text-base"
-                            index={1}
-                          />
-                        </InputOTPGroup>
-
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none text-sm sm:text-base"
-                            index={2}
-                          />
-                        </InputOTPGroup>
-
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none text-sm sm:text-base"
-                            index={3}
-                          />
-                        </InputOTPGroup>
-
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none text-sm sm:text-base"
-                            index={4}
-                          />
-                        </InputOTPGroup>
-
-                        <InputOTPGroup>
-                          <InputOTPSlot
-                            className="border-[0.78px] border-[#9C5432] w-10 h-10 sm:w-12 sm:h-12 md:w-[62px] md:h-[62px] focus-visible:outline-none text-sm sm:text-base"
-                            index={5}
-                          />
-                        </InputOTPGroup>
-                      </div>
-                    </InputOTP>
-                  </FormControl>
-
-                  <FormMessage />
-                </FormItem>
-
-                <SubmitButton
-                  className="h-11 md:h-14 w-full text-sm md:text-lg rounded-[39px]"
-                  isLoading={verifyEmailMutation.isPending}
-                >
-                  Verify
-                </SubmitButton>
-
-                <FormDescription className="text-center leading-6 text-[#000000] font-normal text-base">
-                  {canResend ? (
-                    <span>
-                      Didn&apos;t receive the code?{" "}
-                      <button
-                        type="button"
-                        onClick={handleResendCode}
-                        className="text-[#7E442E] hover:underline cursor-pointer"
-                      >
-                        Resend code
-                      </button>
-                    </span>
-                  ) : (
-                    <span>
-                      Request a new code in{" "}
-                      <span className="text-[#7E442E]">{timeLeft} seconds</span>
-                    </span>
-                  )}
-                </FormDescription>
-              </div>
+              <FormItem className="space-y-6">
+                <FormControl>
+                  <InputOTP maxLength={6} {...field}>
+                    <div className="flex gap-2 justify-center">
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={0}
+                        />
+                      </InputOTPGroup>
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={1}
+                        />
+                      </InputOTPGroup>
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={2}
+                        />
+                      </InputOTPGroup>
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={3}
+                        />
+                      </InputOTPGroup>
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={4}
+                        />
+                      </InputOTPGroup>
+                      <InputOTPGroup>
+                        <InputOTPSlot
+                          className="w-[63.67px] h-[52px] border border-gray-300 px-4 py-2.5 text-lg font-semibold focus:border-[#E7931A] focus:ring-2 focus:ring-[#E7931A]/20 focus-visible:outline-none !rounded-[4px]"
+                          index={5}
+                        />
+                      </InputOTPGroup>
+                    </div>
+                  </InputOTP>
+                </FormControl>
+                <FormMessage className="text-center text-red-500" />
+              </FormItem>
             )}
           />
+
+          <SubmitButton
+            className="h-12 md:h-14 w-full text-white text-sm md:text-lg rounded-[39px] bg-[#E7931A] hover:bg-[#E7931A]/90"
+            isLoading={verifyEmailMutation.isPending}
+          >
+            Verify
+          </SubmitButton>
+
+          <div className="text-center space-y-2">
+            <p className="text-gray-600 text-sm md:text-base">
+              {canResend ? (
+                <span>
+                  Haven&apos;t received code?{" "}
+                  <button
+                    type="button"
+                    onClick={handleResendCode}
+                    className="text-[#E7931A] hover:underline font-medium"
+                  >
+                    Resend Code
+                  </button>
+                </span>
+              ) : (
+                <span>
+                  Haven&apos;t received code?{" "}
+                  <span className="text-[#E7931A] font-medium">
+                    Resend Code
+                  </span>
+                </span>
+              )}
+            </p>
+            {!canResend && (
+              <p className="text-[#E7931A] font-medium text-lg">
+                {String(Math.floor(timeLeft / 60)).padStart(2, "0")}:
+                {String(timeLeft % 60).padStart(2, "0")}s
+              </p>
+            )}
+          </div>
         </form>
       </Form>
     </div>

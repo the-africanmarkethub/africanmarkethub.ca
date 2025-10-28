@@ -35,35 +35,35 @@ function SignInForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("Form submitted", values);
 
-    try {
-      const deviceInfo = getDeviceInfo();
-      const ipAddress = await getIpAddress();
-      const payload = {
-        email: values.email,
-        password: values.password,
-        device_name: deviceInfo,
-        ip_address: ipAddress,
-      };
-      login(payload, {
-        onError: (error: ValidationError) => {
-          // Set field-specific errors if available
-          if (error.validationErrors) {
-            Object.entries(error.validationErrors).forEach(
-              ([field, messages]) => {
-                if (field === "email" || field === "password") {
-                  form.setError(field as "email" | "password", {
-                    type: "manual",
-                    message: messages[0],
-                  });
-                }
+    // try {
+    const deviceInfo = getDeviceInfo();
+    const ipAddress = await getIpAddress();
+    const payload = {
+      email: values.email,
+      password: values.password,
+      device_name: deviceInfo,
+      ip_address: ipAddress,
+    };
+    login(payload, {
+      onError: (error: ValidationError) => {
+        // Set field-specific errors if available
+        if (error.validationErrors) {
+          Object.entries(error.validationErrors).forEach(
+            ([field, messages]) => {
+              if (field === "email" || field === "password") {
+                form.setError(field as "email" | "password", {
+                  type: "manual",
+                  message: messages[0],
+                });
               }
-            );
-          }
-        },
-      });
-    } catch (error) {
-      console.error("Login failed", error);
-    }
+            }
+          );
+        }
+      },
+    });
+    // } catch (error) {
+    //   console.error("Login failed", error);
+    // }
   }
   return (
     <div>
@@ -97,7 +97,7 @@ function SignInForm() {
                 />
               </div>
               <div className="mt-2 flex justify-end text-sm text-[#7E442E]">
-                <a href="/forgot-password" className="hover:underline">
+                <a href="/vendor/forgot-password" className="hover:underline">
                   Forgot Password?
                 </a>
               </div>

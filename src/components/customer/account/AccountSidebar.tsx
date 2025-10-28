@@ -30,12 +30,12 @@ const menu = [
     icon: <ShoppingBag size={18} />,
     requiresAuth: true,
   },
-  {
-    name: "Chats",
-    href: "/customer/account/chats",
-    icon: <MessageCircle size={18} />,
-    requiresAuth: true,
-  },
+  // {
+  //   name: "Chats",
+  //   href: "/customer/account/chats",
+  //   icon: <MessageCircle size={18} />,
+  //   requiresAuth: true,
+  // },
   {
     name: "Wishlist",
     href: "/customer/wishlist",

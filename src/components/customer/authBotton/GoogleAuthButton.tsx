@@ -4,45 +4,49 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 const GoogleAuthButton = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
-  useEffect(() => {
-    if (session && (session as any).userRole && (session as any).accessToken) {
-      const userRole = (session as any).userRole;
-      const accessToken = (session as any).accessToken;
-      const userData = (session as any).userData;
-      
-      console.log("Customer portal - User authenticated with role:", userRole);
-      
-      // Store data in localStorage
-      try {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("user", JSON.stringify(userData));
-      } catch (error) {
-        console.warn("Could not store in localStorage:", error);
-      }
-      
-      if (userRole === "vendor") {
-        // Redirect vendors to vendor portal
-        console.log("Redirecting vendor to vendor portal");
-        window.location.href = "/vendor/overview";
-      } else if (userRole === "customer") {
-        // Redirect customers to customer home
-        console.log("Redirecting customer to customer portal");
-        window.location.href = "/customer";
-      }
-    }
-  }, [session, router]);
+  // useEffect(() => {
+  //   // Don't auto-redirect if we're on a sign-in page - let user choose to sign in
+  //   const isSignInPage = pathname.includes('/sign-in');
+
+  //   if (session && (session as any).userRole && (session as any).accessToken && !isSignInPage) {
+  //     const userRole = (session as any).userRole;
+  //     const accessToken = (session as any).accessToken;
+  //     const userData = (session as any).userData;
+
+  //     console.log("Customer portal - User authenticated with role:", userRole);
+
+  //     // Store data in localStorage
+  //     try {
+  //       localStorage.setItem("accessToken", accessToken);
+  //       localStorage.setItem("user", JSON.stringify(userData));
+  //     } catch (error) {
+  //       console.warn("Could not store in localStorage:", error);
+  //     }
+
+  //     if (userRole === "vendor") {
+  //       // Redirect vendors to vendor portal
+  //       console.log("Redirecting vendor to vendor portal");
+  //       window.location.href = "/vendor/overview";
+  //     } else if (userRole === "customer") {
+  //       // Redirect customers to customer home
+  //       console.log("Redirecting customer to customer portal");
+  //       window.location.href = "/customer";
+  //     }
+  //   }
+  // }, [session, router, pathname]);
 
   const handleGoogleSignIn = () => {
-    signIn("google", { 
+    signIn("google", {
       callbackUrl: "/customer", // Default callback for customers
-      prompt: "select_account" // Force Google to show account selection
+      prompt: "select_account", // Force Google to show account selection
     });
   };
 

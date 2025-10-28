@@ -36,13 +36,13 @@ export default function AccountLayout({
           </div>
         </div>
       </div>
-      <MaxWidthWrapper className="flex flex-col md:flex-row gap-4 md:gap-8 mt-8 md:mt-20 mb-8 w-full items-start">
+      <MaxWidthWrapper className="flex flex-col md:flex-row gap-4 md:gap-8 mt-8 md:mt-20 mb-8 w-full items-start px-4 md:px-0">
         {!isOrderDetailsPage && (
           <div className="hidden md:block">
             <AccountSidebar />
           </div>
         )}
-        <div className="flex-1 w-full">{children}</div>
+        <div className="flex-1 w-full px-4 md:px-0">{children}</div>
       </MaxWidthWrapper>
     </div>
   );

@@ -119,6 +119,7 @@ const PasswordInput = ({
       <FormControl>
         <Input
           {...field}
+          value={field.value || ""}
           placeholder={placeholder}
           type={showPassword ? "text" : "password"}
           readOnly={!isEditable}
@@ -242,6 +243,7 @@ const RenderField = ({
             )}
             <textarea
               {...field}
+              value={field.value || ""}
               placeholder={props.placeholder}
               className="border p-5 md:rounded-lg focus:outline-none w-full"
               rows={props.rows || 3}

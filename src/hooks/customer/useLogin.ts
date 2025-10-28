@@ -12,7 +12,7 @@ interface ErrorResponse {
     data: {
       message?: string;
       errors?: {
-        email?: string[];
+        [key: string]: string[];
       };
     };
   };
@@ -50,37 +50,20 @@ export function useLogin() {
       router.push("/"); // Redirect to home page or dashboard
     },
     onError: (error: ErrorResponse) => {
-      console.error("Login failed:", error);
-
-      // Handle specific error responses
       const status = error?.response?.status;
       const responseData = error?.response?.data;
 
       let errorMessage = "Login failed. Please try again.";
 
-      if (status === 401) {
-        // Invalid password
-        errorMessage =
-          responseData?.message ||
-          "Invalid password. Please check your password and try again.";
-      } else if (status === 422) {
-        // Invalid email (user doesn't exist)
-        if (responseData?.errors?.email) {
-          errorMessage =
-            "Email not found. Please check your email or sign up for a new account.";
-        } else {
-          errorMessage = responseData?.message || "Invalid email address.";
+      if (status === 422 && responseData?.errors) {
+        // Extract first validation error
+        const firstErrorKey = Object.keys(responseData.errors)[0];
+        const firstError = responseData.errors[firstErrorKey];
+        if (Array.isArray(firstError) && firstError.length > 0) {
+          errorMessage = firstError[0];
         }
-      } else if (status === 400) {
-        // Bad request
-        errorMessage =
-          responseData?.message || "Please check your input and try again.";
-      } else if (status && status >= 500) {
-        // Server error
-        errorMessage = "Server error. Please try again later.";
-      } else {
-        // Fallback to response message or default
-        errorMessage = responseData?.message || errorMessage;
+      } else if (responseData?.message) {
+        errorMessage = responseData.message;
       }
 
       toast.error(errorMessage);

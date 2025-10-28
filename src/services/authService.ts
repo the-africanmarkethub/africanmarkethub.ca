@@ -31,7 +31,10 @@ export async function signUp(payload: {
   role: string;
 }) {
   const res = await APICall("/register", "POST", payload);
-  return res?.data;
+  console.log("SignUp Response:", res);
+  // API now returns just { message: "Registration is active" }
+  // Return the whole response object for success checking
+  return res;
 }
 
 export const getProfile = async () => {
@@ -119,18 +122,18 @@ export const continueWithGoogle = async (googleData: {
   try {
     // Create FormData for the API
     const formData = new FormData();
-    formData.append('access_token', googleData.access_token);
-    formData.append('device_name', googleData.device_name);
-    formData.append('ip_address', googleData.ip_address);
+    formData.append("access_token", googleData.access_token);
+    formData.append("device_name", googleData.device_name);
+    formData.append("ip_address", googleData.ip_address);
 
     const { data } = await axios.post(
       `${API_URL}/continue-with-google`,
       formData,
-      { 
+      {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
-        withCredentials: true 
+        withCredentials: true,
       }
     );
 

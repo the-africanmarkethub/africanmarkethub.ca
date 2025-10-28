@@ -41,47 +41,47 @@ function SignInForm() {
   }
 
   return (
-    <div className="space-y-4 pb-9">
+    <div className="w-full max-w-md mx-auto space-y-6">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="">
-            <section className="font-semibold mb-3 md:mb-6 text-xl md:text-[28px]">
-              Log in
-            </section>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Title */}
+          <h1 className="font-semibold text-2xl text-gray-900">
+            Log in
+          </h1>
 
-            <div className="lg:w-[462px] w-[327px]">
-              <section className="space-y-4">
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.INPUT}
-                  control={form.control}
-                  name="email"
-                  label="Email Address"
-                  placeholder="Your Email Address"
-                  widthClass=""
-                />
+          {/* Form Fields */}
+          <div className="space-y-4">
+            <CustomFormField
+              isEditable
+              fieldType={FormFieldType.INPUT}
+              control={form.control}
+              name="email"
+              label="Email Address"
+              placeholder="Your Email Address"
+              widthClass=""
+            />
 
-                <CustomFormField
-                  isEditable
-                  fieldType={FormFieldType.PASSWORD}
-                  control={form.control}
-                  name="password"
-                  label="Password"
-                  placeholder="Your password"
-                  widthClass=""
-                />
-              </section>
-
-              <div className="text-[#7E442E] mt-2 text-xs md:text-sm flex justify-end">
-                <a href="/forgot-password" className="hover:underline">
-                  Forgot Password?
+            <div>
+              <CustomFormField
+                isEditable
+                fieldType={FormFieldType.PASSWORD}
+                control={form.control}
+                name="password"
+                label="Password"
+                placeholder="Your Password"
+                widthClass=""
+              />
+              <div className="text-[#7E442E] mt-2 text-sm flex justify-end">
+                <a href="/customer/forgot-password" className="hover:underline">
+                  Forgot password?
                 </a>
               </div>
             </div>
           </div>
 
+          {/* Submit Button */}
           <SubmitButton
-            className="h-11 md:h-14 w-full text-white text-sm md:text-lg rounded-[39px]"
+            className="h-12 w-full text-white text-base font-medium rounded-full"
             isLoading={loginMutation.isPending}
           >
             Log in
@@ -89,22 +89,25 @@ function SignInForm() {
         </form>
       </Form>
 
-      <div className="flex items-center justify-center mt-6 mb-4">
+      {/* Divider */}
+      <div className="flex items-center justify-center">
         <div className="flex-1 border-t border-gray-300"></div>
-        <span className="px-4 text-gray-500 text-xs md:text-sm">
+        <span className="px-4 text-gray-500 text-sm">
           Or continue with
         </span>
         <div className="flex-1 border-t border-gray-300"></div>
       </div>
 
+      {/* Google Button */}
       <GoogleAuthButton />
 
-      <div className="text-center text-xs md:text-sm">
-        <p className="leading-[22px]">
+      {/* Sign up link */}
+      <div className="text-center text-sm">
+        <p>
           Don&apos;t have an account?{" "}
           <a
             href="/customer/sign-up"
-            className="text-[#7E442E] hover:underline"
+            className="text-[#7E442E] hover:underline font-medium"
           >
             Create Account
           </a>

@@ -10,7 +10,7 @@ const SignUpContent = () => {
   const referralCode = searchParams.get("ref");
 
   return (
-    <MaxWidthWrapper className="mt-36">
+    <MaxWidthWrapper className="flex items-center justify-center min-h-screen py-8 px-4">
       <CreateAccountForm referralCode={referralCode} />
     </MaxWidthWrapper>
   );
@@ -19,7 +19,7 @@ const SignUpContent = () => {
 const Page = () => {
   return (
     <Suspense fallback={
-      <MaxWidthWrapper className="mt-36">
+      <MaxWidthWrapper className="flex items-center justify-center min-h-screen py-8 px-4">
         <div>Loading...</div>
       </MaxWidthWrapper>
     }>
