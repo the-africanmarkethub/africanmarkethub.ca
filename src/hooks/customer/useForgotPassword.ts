@@ -38,9 +38,12 @@ export function useForgotPassword() {
 
   return useMutation({
     mutationFn: forgotPassword,
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
+      // Save email to localStorage for the next steps
+      localStorage.setItem("resetPasswordEmail", variables.email);
+      
       toast.success(data.message || "Password reset code sent successfully!");
-      router.push("/customer/reset-password");
+      router.push("/customer/verify-reset-token");
     },
     onError: (error: ErrorResponse) => {
       console.error("Forgot password failed:", error);

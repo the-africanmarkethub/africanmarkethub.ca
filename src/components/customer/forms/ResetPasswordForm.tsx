@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Control, FieldValues } from "react-hook-form";
@@ -6,25 +6,60 @@ import { Form } from "@/components/ui/form";
 import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "@/constants/customer/formFieldType";
 import SubmitButton from "../SubmitButton";
+import { useResetPassword } from "@/hooks/customer/useResetPassword";
+import { getDeviceInfo } from "@/utils/helper";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  email: z.string().email(),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 const ResetPasswordForm = () => {
-  // 1. Define your form.
+  const resetPasswordMutation = useResetPassword();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
+
+  useEffect(() => {
+    // Get email and token from localStorage
+    const storedEmail = localStorage.getItem("resetPasswordEmail");
+    const storedToken = localStorage.getItem("resetPasswordToken");
+    
+    if (!storedEmail || !storedToken) {
+      // Redirect back to forgot password if no data found
+      router.push("/customer/forgot-password");
+      return;
+    }
+    
+    setEmail(storedEmail);
+    setToken(storedToken);
+  }, [router]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    const resetData = {
+      email: email,
+      new_password: values.password,
+      confirmation_code: token,
+      device_name: getDeviceInfo(),
+    };
+    
+    resetPasswordMutation.mutate(resetData);
+    
+    // Clear stored data after successful submission
+    localStorage.removeItem("resetPasswordEmail");
+    localStorage.removeItem("resetPasswordToken");
   }
 
   return (
@@ -45,17 +80,17 @@ const ResetPasswordForm = () => {
                   fieldType={FormFieldType.PASSWORD}
                   control={form.control as unknown as Control<FieldValues>}
                   name="password"
-                  label="Password"
-                  placeholder="Password"
+                  label="New Password"
+                  placeholder="Enter new password"
                   widthClass=""
                 />
                 <CustomFormField
                   isEditable
                   fieldType={FormFieldType.PASSWORD}
                   control={form.control as unknown as Control<FieldValues>}
-                  name="confrimPassword"
+                  name="confirmPassword"
                   label="Confirm Password"
-                  placeholder="Confirm Password"
+                  placeholder="Confirm new password"
                   widthClass=""
                 />
               </div>
@@ -63,7 +98,7 @@ const ResetPasswordForm = () => {
 
             <SubmitButton
               className="h-11 md:h-14 w-full font-semibold text-sm md:text-lg rounded-[39px]"
-              isLoading={false}
+              isLoading={resetPasswordMutation.isPending}
             >
               Reset Password
             </SubmitButton>

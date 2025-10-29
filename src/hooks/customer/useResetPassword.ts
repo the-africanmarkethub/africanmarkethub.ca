@@ -49,10 +49,19 @@ export function useResetPassword() {
       if (status === 422) {
         // Validation errors
         if (responseData?.errors) {
-          // Extract first error message from validation errors
-          const firstError = Object.values(responseData.errors)[0];
-          if (firstError && firstError.length > 0) {
-            errorMessage = firstError[0];
+          // Handle specific confirmation_code error
+          if (responseData.errors.confirmation_code) {
+            errorMessage = responseData.errors.confirmation_code[0];
+          } else if (responseData.errors.email) {
+            errorMessage = responseData.errors.email[0];
+          } else if (responseData.errors.new_password) {
+            errorMessage = responseData.errors.new_password[0];
+          } else {
+            // Extract first error message from validation errors
+            const firstError = Object.values(responseData.errors)[0];
+            if (firstError && firstError.length > 0) {
+              errorMessage = firstError[0];
+            }
           }
         } else {
           errorMessage = responseData?.message || "Invalid reset token or expired link.";
