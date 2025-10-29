@@ -8,41 +8,37 @@ import { Product } from "@/types/customer/product.types";
 import { ChevronRight, Filter, ChevronDown, Grid3X3 } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState, useCallback } from "react";
+
+interface FilterState {
+  min_price?: number;
+  max_price?: number;
+  category_id?: number;
+  size_id?: number;
+  rating?: number;
+  availability?: string;
+  location?: string;
+}
 
 function Page() {
   const pathname = usePathname();
   const categoryId = decodeURIComponent(pathname.split("/")[3]);
+  const searchParams = useSearchParams();
+  const categoryName = searchParams.get("name");
+  
+  // State for active filters from sidebar
+  const [activeFilters, setActiveFilters] = useState<FilterState>({});
+  
+  // Handle filter changes from sidebar
+  const handleFiltersChange = useCallback((filters: FilterState) => {
+    setActiveFilters(filters);
+  }, []);
 
   const {
     data: productData,
     isLoading: isProductLoading,
     error: productError,
-  } = useCategoryProducts(categoryId);
-
-  const searchParams = useSearchParams();
-  const categoryName = searchParams.get("name");
-
-  if (isProductLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-lg">Loading category products...</div>
-      </div>
-    );
-  }
-
-  if (productError) {
-    return (
-      <MaxWidthWrapper className="my-8">
-        <NoResults
-          title="Could Not Load Products"
-          message="There was an error loading products for this category. Please try again later."
-          icon="🚨"
-          showGoBack={true}
-        />
-      </MaxWidthWrapper>
-    );
-  }
+  } = useCategoryProducts(categoryId, Object.keys(activeFilters).length > 0 ? activeFilters : undefined);
 
   const products = productData?.products?.data || [];
 
@@ -108,11 +104,40 @@ function Page() {
         <div className="flex gap-8 w-full items-start">
           {/* Desktop Sidebar */}
           <div className="hidden md:block">
-            <ProductFilterSidebar />
+            <ProductFilterSidebar onFiltersChange={handleFiltersChange} />
           </div>
 
           <div className="flex-1">
-            {products.length > 0 ? (
+            {isProductLoading ? (
+              <>
+                {/* Desktop Results Count Skeleton */}
+                <div className="hidden md:flex justify-between items-center mb-6">
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-48"></div>
+                </div>
+                {/* Product Grid Loading Skeleton */}
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="bg-gray-100 rounded-lg animate-pulse">
+                      <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
+                      <div className="p-3 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                        <div className="h-8 bg-gray-200 rounded"></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : productError ? (
+              <div className="col-span-full">
+                <NoResults
+                  title="Could Not Load Products"
+                  message="There was an error loading products for this category. Please try again later."
+                  icon="🚨"
+                  showGoBack={true}
+                />
+              </div>
+            ) : products.length > 0 ? (
               <>
                 {/* Desktop Results Count */}
                 <div className="hidden md:flex justify-between items-center mb-6">

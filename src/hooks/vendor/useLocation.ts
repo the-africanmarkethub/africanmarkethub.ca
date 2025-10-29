@@ -4,7 +4,7 @@ import { QUERY_KEY } from "@/constants/vendor/queryKeys";
 
 async function fetchLocation() {
   try {
-    const response = await APICall(`/location`, "GET");
+    const response = await APICall(`/locations`, "GET");
     return response.data;
   } catch (error) {
     throw error;

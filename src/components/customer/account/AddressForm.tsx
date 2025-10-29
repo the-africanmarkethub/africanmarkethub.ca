@@ -210,7 +210,7 @@ export default function AddressForm({
             setValue("address_label", value, { shouldValidate: true })
           }
         >
-          <SelectTrigger className="w-full h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500">
+          <SelectTrigger className="w-full h-[54px]">
             <SelectValue placeholder="Select label" />
           </SelectTrigger>
           <SelectContent>
@@ -238,7 +238,7 @@ export default function AddressForm({
               required: "Street address is required",
             })}
             placeholder="Your Street Address"
-            className="h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500"
+            className="h-[54px]"
           />
           {errors.street_address && (
             <p className="text-sm text-red-500 mt-1">
@@ -259,7 +259,7 @@ export default function AddressForm({
               setValue("country", value, { shouldValidate: true })
             }
           >
-            <SelectTrigger className="w-[274.67px] h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500">
+            <SelectTrigger className="w-[274.67px] h-[54px] ">
               <SelectValue placeholder="Select country" />
             </SelectTrigger>
             <SelectContent>
@@ -291,7 +291,7 @@ export default function AddressForm({
             }
             disabled={!selectedCountry || states.length === 0}
           >
-            <SelectTrigger className="w-[274.67px] h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500">
+            <SelectTrigger className="w-[274.67px] h-[54px] ">
               <SelectValue placeholder="State" />
             </SelectTrigger>
             <SelectContent>
@@ -319,7 +319,7 @@ export default function AddressForm({
               }
               disabled={!selectedState}
             >
-              <SelectTrigger className="w-full h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500">
+              <SelectTrigger className="w-full h-[54px] ">
                 <SelectValue placeholder="Town/City" />
               </SelectTrigger>
               <SelectContent>
@@ -335,7 +335,7 @@ export default function AddressForm({
               {...register("city", { required: "City is required" })}
               placeholder="Town/City"
               disabled={!selectedState}
-              className="w-full h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500"
+              className="w-full h-[54px] "
             />
           )}
           {errors.city && (
@@ -354,7 +354,7 @@ export default function AddressForm({
               required: "Postal/ZIP code is required",
             })}
             placeholder="Zip Code"
-            className="w-[274.67px] h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500"
+            className="w-[274.67px] h-[54px] "
           />
           {errors.zip_code && (
             <p className="text-sm text-red-500 mt-1">
@@ -376,7 +376,7 @@ export default function AddressForm({
               },
             })}
             placeholder="Your Phone Number"
-            className="w-full h-[54px] px-4 py-3 gap-2 rounded-lg border text-gray-500"
+            className="w-full h-[54px] "
           />
           {errors.phone && (
             <p className="text-sm text-red-500 mt-1">{errors.phone.message}</p>

@@ -24,10 +24,10 @@ export default function Home() {
   return (
     <main className="relative font-exo flex flex-col min-h-screen bg-[#FFFFFD] overflow-x-hidden">
       <NavBar />
-      <div className="mt-0 sm:mt-[148px] flex-grow">
+      <div className="mt-0 md:mt-[148px] flex-grow">
         <div>
           {/* Hero Section */}
-          <div className="py-11 mx-8 pl-20  bg-[#FFFBED] mb-[43px]">
+          <div className="py-11 md:mx-8 lg:pl-20 mt-6 md:mt-0  bg-[#FFFBED] mb-[43px]">
             <MaxWidthWrapper className="flex gap-8 flex-col md:flex-row">
               <AdvertCarousel />
               <div className="md:space-y-6 w-full md:w-[624px]">
@@ -36,8 +36,8 @@ export default function Home() {
                     Welcome to Africa&apos;s leading online marketplace.
                   </h1>
                   <p className="text-xs md:text-lg py-2 leading-[27px] font-normal">
-                    Discover a variety of authentic African products, from fashion
-                    and crafts to fresh produce and electronics.
+                    Discover a variety of authentic African products, from
+                    fashion and crafts to fresh produce and electronics.
                   </p>
                 </div>
                 <div className="flex gap-4 items-center">
@@ -116,7 +116,9 @@ export default function Home() {
               />
             ) : (
               <div className="text-center py-8">
-                <div className="text-gray-500">No recommended products found</div>
+                <div className="text-gray-500">
+                  No recommended products found
+                </div>
               </div>
             )}
           </MaxWidthWrapper>

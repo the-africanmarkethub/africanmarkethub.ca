@@ -122,8 +122,10 @@ export default function AccountOverviewPage() {
                   {user.name} {user.last_name}
                 </p>
                 <p className="text-[#656565] text-sm font-normal">
-                  {addresses?.data[0].street_address}, {addresses?.data[0].city}
-                  , {addresses?.data[0].country}
+                  {addresses?.data?.[0]?.street_address ? 
+                    `${addresses.data[0].street_address}, ${addresses.data[0].city}, ${addresses.data[0].country}` :
+                    "No address available"
+                  }
                 </p>
                 <p className="text-base font-normal text-[#292929]">
                   {user.email}

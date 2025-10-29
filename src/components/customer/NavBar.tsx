@@ -79,6 +79,7 @@ const NavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   const { data: profile, isLoading: profileLoading } = useGetProfile();
   const { data: categories } = useCategories();
@@ -108,47 +109,58 @@ const NavBar = () => {
   };
 
   return (
-    <div className="w-full fixed  w-screen-xl top-0 left-0 z-50" ref={menuRef}>
-      <div className="flex w-full md:px-[60px] lg:px-[100px] items-center justify-between py-2 md:py-3.5 bg-white h-12 md:h-auto">
-        {/* Mobile Layout */}
+    <div className="w-full fixed top-0 left-0 z-50" ref={menuRef}>
+      <div className="flex w-full px-4 sm:px-6 md:px-[60px] lg:px-[100px] items-center justify-between py-2 md:py-3.5 bg-white h-14 md:h-auto shadow-sm">
+        {/* Mobile & Tablet Layout */}
         <div className="flex lg:hidden items-center justify-between w-full">
           {/* Hamburger Menu */}
           <Button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="bg-transparent text-black hover:bg-gray-100 p-1"
+            className="bg-transparent text-black hover:bg-gray-100 p-2"
           >
             <Menu width={20} height={20} />
           </Button>
 
           {/* Logo */}
-          <Link href="/customer">
+          <Link href="/customer" className="flex-shrink-0">
             <Image
               src="/img/African Market Hub.svg"
               width={100}
               height={28}
               alt="logo"
+              className="h-6 w-auto sm:h-7"
             />
           </Link>
 
           {/* Right Icons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Search Icon - Mobile only */}
+            <Button
+              onClick={() => setShowMobileSearch(!showMobileSearch)}
+              className="bg-transparent text-black hover:bg-gray-100 p-2 sm:hidden"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Button>
+
             {profile?.data ? (
               <Button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="bg-transparent text-black hover:bg-gray-100 p-1"
+                className="bg-transparent text-black hover:bg-gray-100 p-2"
               >
                 <User width={18} height={18} />
               </Button>
             ) : (
               <Link href="/sign-in">
-                <Button className="bg-transparent text-black hover:bg-gray-100 p-1">
+                <Button className="bg-transparent text-black hover:bg-gray-100 p-2">
                   <User width={18} height={18} />
                 </Button>
               </Link>
             )}
 
             <Link href="/customer/cart">
-              <Button className="bg-transparent text-black hover:bg-gray-100 p-1 relative">
+              <Button className="bg-transparent text-black hover:bg-gray-100 p-2 relative">
                 <ShoppingCart width={18} height={18} />
                 {cartItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
@@ -162,8 +174,8 @@ const NavBar = () => {
 
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center justify-between w-full">
-          <div className="flex items-center gap-[120px] w-full">
-            <Link href="/">
+          <div className="flex items-center gap-8 xl:gap-[120px] w-full">
+            <Link href="/" className="flex-shrink-0">
               <Image
                 src="/img/African Market Hub.svg"
                 width={142}
@@ -172,16 +184,18 @@ const NavBar = () => {
               />
             </Link>
 
-            <SearchBar />
+            <div className="flex-1 max-w-2xl mr-8">
+              <SearchBar />
+            </div>
           </div>
 
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex justify-between items-center gap-4 flex-shrink-0">
             {profile?.data ? (
               // User is logged in - show profile menu
               <div className="relative">
                 <Button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="w-[186px] h-14 rounded-[39px] font-semibold cursor-pointer bg-primary text-white hover:bg-primary/90"
+                  className="w-[185px] h-14 rounded-[39px] font-semibold cursor-pointer bg-primary text-white hover:bg-primary/90"
                 >
                   <User width={24} height={24} className="mr-2" />
                   {profileLoading
@@ -223,7 +237,7 @@ const NavBar = () => {
                         Account Overview
                       </Link>
                       <Link
-                        href="account/orders"
+                        href="/customer/account/orders"
                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         onClick={() => setShowUserMenu(false)}
                       >
@@ -288,7 +302,7 @@ const NavBar = () => {
             ) : (
               // User is not logged in - show sign up button
               <Link href="/sign-in">
-                <SubmitButton className="w-[186px] h-14 rounded-[39px] font-semibold cursor-pointer">
+                <SubmitButton className="w-[185px] h-14 rounded-[39px] font-semibold cursor-pointer">
                   <User width={24} height={24} />
                   Sign In
                 </SubmitButton>
@@ -321,12 +335,12 @@ const NavBar = () => {
         <>
           {/* Backdrop */}
           <div
-            className="lg:hidden fixed inset-0 top-[48px] bg-black bg-opacity-50 z-40"
+            className="lg:hidden fixed inset-0 top-[56px] bg-black bg-opacity-50 z-40"
             onClick={() => setMobileMenuOpen(false)}
           ></div>
 
           {/* Sidebar Menu */}
-          <div className="lg:hidden fixed left-0 top-[48px] w-[288px] h-[calc(100vh-48px)] bg-white z-50 overflow-y-auto shadow-lg">
+          <div className="lg:hidden fixed left-0 top-[56px] w-[288px] h-[calc(100vh-56px)] bg-white z-50 overflow-y-auto shadow-lg">
             <div className="px-4 py-4">
               {/* Header with Close */}
               <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
@@ -443,7 +457,7 @@ const NavBar = () => {
                               )}
 
                               <Link
-                                href={`/products/category/${category.id}?name=${encodeURIComponent(category.name)}`}
+                                href={`/customer/products/category/${category.id}?name=${encodeURIComponent(category.name)}`}
                                 className="flex-1"
                                 onClick={() => setMobileMenuOpen(false)}
                               >
@@ -482,7 +496,7 @@ const NavBar = () => {
                                 {category.children.map((subCategory) => (
                                   <Link
                                     key={subCategory.id}
-                                    href={`/products/category/${subCategory.id}?name=${encodeURIComponent(subCategory.name)}`}
+                                    href={`/customer/products/category/${subCategory.id}?name=${encodeURIComponent(subCategory.name)}`}
                                     className="block py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 rounded-lg"
                                     onClick={() => setMobileMenuOpen(false)}
                                   >
@@ -749,6 +763,23 @@ const NavBar = () => {
           </Button>
         </div>
       </div>
+
+      {/* Mobile Search Overlay - Shows when search icon is clicked */}
+      {showMobileSearch && (
+        <div className="sm:hidden bg-white border-t border-gray-100 px-4 py-3 shadow-lg">
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <SearchBar />
+            </div>
+            <Button
+              onClick={() => setShowMobileSearch(false)}
+              className="bg-transparent text-gray-500 hover:bg-gray-100 p-2"
+            >
+              <X width={18} height={18} />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

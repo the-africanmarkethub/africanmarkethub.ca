@@ -94,7 +94,7 @@ export default function SearchBar() {
     <div className="relative w-full" ref={searchRef}>
       <form onSubmit={handleSearchSubmit}>
         <div
-          className={`flex items-center border rounded-[16px] px-4 w-[620px] shadow-sm bg-white transition-all duration-200 ${
+          className={`flex items-center border rounded-[16px] px-4 w-full max-w-[620px] shadow-sm bg-white transition-all duration-200 ${
             showDropdown || query ? "border-[#F28C0D]" : "border-gray-300"
           }`}
         >
@@ -103,8 +103,8 @@ export default function SearchBar() {
           </div>
           <input
             type="text"
-            placeholder="Search for products..."
-            className="ml-2 rounded-2xl w-full h-16 outline-none bg-transparent"
+            placeholder="Search by"
+            className="ml-2 rounded-2xl w-full h-10 sm:h-16 outline-none bg-transparent"
             value={query}
             onFocus={handleInputFocus}
             onChange={(e) => setQuery(e.target.value)}

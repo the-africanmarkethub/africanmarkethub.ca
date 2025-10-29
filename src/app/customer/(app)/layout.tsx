@@ -12,7 +12,7 @@ export default function AppLayout({
   return (
     <main className="relative font-exo flex flex-col min-h-screen bg-[#FFFFFD] overflow-x-hidden">
       <NavBar />
-      <div className="mt-0 sm:mt-[148px] flex-grow ">{children}</div>
+      <div className="mt-0 lg:mt-[148px] flex-grow ">{children}</div>
       <Footer />
     </main>
   );

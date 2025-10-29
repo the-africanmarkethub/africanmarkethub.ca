@@ -3,9 +3,29 @@ import { QUERY_KEY } from "@/constants/customer/queryKeys";
 import APICall from "@/utils/ApiCall";
 import { AxiosError } from "axios";
 
-async function fetchCategoryProducts(categoryId: string | number) {
+interface FilterParams {
+  min_price?: number;
+  max_price?: number;
+  category_id?: number;
+  size_id?: number;
+  rating?: number;
+  availability?: string;
+  location?: string;
+}
+
+async function fetchCategoryProducts(categoryId: string | number, queryParams?: FilterParams) {
   try {
-    const response = await APICall(`/category/products/${categoryId}`, "GET");
+    const params = new URLSearchParams();
+    if (queryParams) {
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          params.append(key, value.toString());
+        }
+      });
+    }
+    const queryString = params.toString();
+    const url = `/category/products/${categoryId}${queryString ? `?${queryString}` : ''}`;
+    const response = await APICall(url, "GET");
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError<{ message: string }>;
@@ -23,13 +43,14 @@ async function fetchCategoryProducts(categoryId: string | number) {
 }
 
 export function useCategoryProducts(
-  categoryId: string | number | undefined | null
+  categoryId: string | number | undefined | null,
+  queryParams?: FilterParams
 ) {
   const queryClient = useQueryClient();
 
   const query = useQuery({
-    queryKey: [QUERY_KEY.categoryProducts, categoryId],
-    queryFn: () => fetchCategoryProducts(categoryId as string | number),
+    queryKey: [QUERY_KEY.categoryProducts, categoryId, queryParams],
+    queryFn: () => fetchCategoryProducts(categoryId as string | number, queryParams),
     enabled: !!categoryId, // Only fetch when categoryId is truthy
     initialData: () => {
       return queryClient.getQueryData([QUERY_KEY.categoryProducts, categoryId]);

@@ -11,13 +11,19 @@ export default function ReferPage() {
   const { data: referralData, error, isLoading } = useReferralCode();
   const [showModal, setShowModal] = useState(false);
 
-  const referralCode = referralData?.referral_code || "AMARKET240";
+  console.log("Referral Data:", referralData);
+
+  const referralCode = referralData?.referral_code;
 
   const handleCopyCode = async () => {
+    if (!referralCode) {
+      toast.error("No referral code available");
+      return;
+    }
     try {
       await navigator.clipboard.writeText(referralCode);
       toast.success("Referral code copied!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to copy code");
     }
   };

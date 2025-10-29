@@ -109,7 +109,7 @@ export default function CategoriesPopover() {
                         activeParent.children.map((child) => (
                           <Link
                             key={child.id}
-                            href={`/products/category/${
+                            href={`/customer/products/category/${
                               child.id
                             }?name=${encodeURIComponent(child.name)}`}
                             className="block p-2 rounded-lg hover:bg-gray-100"

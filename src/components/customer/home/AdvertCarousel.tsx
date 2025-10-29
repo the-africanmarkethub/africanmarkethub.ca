@@ -52,7 +52,7 @@ function AdvertCarousel() {
   }, []);
 
   return (
-    <div className="relative w-full md:w-[624px] mt-9 sm:mt-0 rounded-xl md:rounded-[32px] overflow-hidden">
+    <div className="relative w-full md:w-[624px] mt-2 md:mt-0 rounded-xl md:rounded-[32px] overflow-hidden">
       <Carousel
         showDots={true}
         autoPlay
@@ -72,14 +72,15 @@ function AdvertCarousel() {
               //   push("/draws");
             }}
             key={index}
-            className="rounded-xl md:rounded-[32px] relative h-[327px] sm:h-[327px] md:h-[849px]"
+            className="rounded-xl md:rounded-[32px] relative md:h-[350px] lg:h-[500px] xl:h-[849px]"
+            style={{ height: typeof window !== 'undefined' && window.innerWidth < 768 ? "240px" : undefined }}
           >
             <Image
               src={isMobile ? item.mobile : item.web}
               alt={`slider-image-${index}`}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover rounded-xl md:rounded-[32px]"
+              className="object-cover object-center rounded-xl md:rounded-[32px]"
               priority={index === 0}
             />
           </div>
