@@ -37,7 +37,7 @@ export function useSignIn() {
         localStorage.removeItem("redirectUrl");
         router.push(redirectUrl);
       } else {
-        router.push("/vendor/overview");
+        router.push("/vendor");
       }
     },
     onError: (error: ValidationError) => {

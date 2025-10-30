@@ -15,7 +15,8 @@ export const VendorFormValidation = z.object({
       message: "Logo file must be 1MB or smaller",
     })
     .refine(
-      (file) => !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       {
         message: "Logo must be a JPEG, PNG, or GIF image",
       }
@@ -27,13 +28,15 @@ export const VendorFormValidation = z.object({
       message: "Banner file must be 1MB or smaller",
     })
     .refine(
-      (file) => !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
+      (file) =>
+        !file || ["image/jpeg", "image/png", "image/gif"].includes(file.type),
       {
         message: "Banner must be a JPEG, PNG, or GIF image",
       }
     )
     .optional(),
   subscription_id: z.string(),
+  billing_cycle: z.string(), // .optional(),
   state_id: z.string(),
   city_id: z.string(),
   country_id: z.string(),

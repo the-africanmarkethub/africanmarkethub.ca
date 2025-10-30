@@ -1,9 +1,8 @@
 "use client";
 import AdvertCarousel from "@/components/customer/home/AdvertCarousel";
 import MaxWidthWrapper from "@/components/customer/MaxWidthWrapper";
-import ProductsDisplay from "@/components/customer/product/ProductsDisplay";
 import SubmitButton from "@/components/customer/SubmitButton";
-import { useRecommendedProducts } from "@/hooks/customer/useRecommendedProducts";
+import RecommendedProducts from "@/components/customer/home/RecommendedProducts";
 import Link from "next/link";
 import PopularProductCategory from "@/components/customer/home/PopularProductCategory";
 import ShopByCategory from "@/components/customer/home/ShopByCategory";
@@ -15,12 +14,6 @@ import Footer from "@/components/customer/Footer";
 import NavBar from "@/components/customer/NavBar";
 
 export default function Home() {
-  const {
-    data: recommendedProducts,
-    isLoading: isProductLoading,
-    error: productError,
-  } = useRecommendedProducts({ page: 1 });
-
   return (
     <main className="relative font-exo flex flex-col min-h-screen bg-[#FFFFFD] overflow-x-hidden">
       <NavBar />
@@ -92,35 +85,7 @@ export default function Home() {
 
           {/* Recommended for You (API-powered) */}
           <MaxWidthWrapper>
-            {isProductLoading ? (
-              <div className="text-center py-8">
-                <div className="text-lg">Loading recommended products...</div>
-              </div>
-            ) : productError ? (
-              <div className="text-center py-8">
-                <div className="text-red-500">
-                  Error loading recommended products: {productError.message}
-                </div>
-              </div>
-            ) : recommendedProducts &&
-              recommendedProducts.data &&
-              recommendedProducts.data.data &&
-              recommendedProducts.data.data.length > 0 ? (
-              <ProductsDisplay
-                title="Recommended for You"
-                fontSize="text-[42px]"
-                data={recommendedProducts.data.data}
-                hasButton={false}
-                showViewMore={true}
-                viewMoreLink="/customer/recommended"
-              />
-            ) : (
-              <div className="text-center py-8">
-                <div className="text-gray-500">
-                  No recommended products found
-                </div>
-              </div>
-            )}
+            <RecommendedProducts />
           </MaxWidthWrapper>
 
           {/* Today's Deal */}

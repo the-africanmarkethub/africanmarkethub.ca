@@ -29,27 +29,19 @@ const RegisterForm = () => {
   const [cityOptions, setCityOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  
 
   const { mutate: createShop, isPending } = useCreateShop();
   const { data: location } = useLocation();
   const { data: subcription } = useSubcription();
-  const { data: category } = useCategories();
 
   const subscriptionOptions =
     subcription?.map(
       (item: { id: number; name: string; monthly_price: number }) => ({
-        label: `${item.name} - ₦${item.monthly_price}/month`, // or include yearly_price if needed
+        label: `${item.name} `, // or include yearly_price if needed  - C$${item.monthly_price}/month
         value: item.id.toString(),
       })
     ) || [];
-
-  const categoryOptions =
-    category?.map((item: { id: number; name: string }) => ({
-      label: `${item.name} `, // or include yearly_price if needed
-      value: item.id.toString(),
-    })) || [];
-
-  console.log("categoryOptions data:", categoryOptions);
 
   // Initialize form with all fields for both steps
   const form = useForm<z.infer<typeof VendorFormValidation>>({
@@ -62,6 +54,7 @@ const RegisterForm = () => {
       logo: undefined,
       banner: undefined,
       subscription_id: "",
+      billing_cycle: "",
       state_id: "",
       city_id: "",
       country_id: "",
@@ -71,12 +64,58 @@ const RegisterForm = () => {
     mode: "onChange",
   });
 
-  // Watch country_id and state_id for changes
+  // Watch country_id, state_id, business type, and subscription for changes
   const country_id = form.watch("country_id");
   const state_id = form.watch("state_id");
   const termsChecked = form.watch("terms");
+  const businessType = form.watch("type");
+  const subscriptionId = form.watch("subscription_id");
 
+  // Fetch categories based on business type
+  const { data: category } = useCategories({
+    type: businessType as "products" | "services",
+  });
+
+  const categoryOptions =
+    category?.map((item: { id: number; name: string }) => ({
+      label: `${item.name} `, // or include yearly_price if needed
+      value: item.id.toString(),
+    })) || [];
+
+  // Find selected subscription for billing cycle options
+  const selectedSubscription = subcription?.find(
+    (item: { id: number; name: string; monthly_price: number; yearly_price: number }) => 
+      item.id.toString() === subscriptionId
+  );
+
+  // Create billing cycle options based on selected subscription
+  const billingCycleOptions = selectedSubscription ? [
+    {
+      label: `Monthly - C$${selectedSubscription.monthly_price}/month`,
+      value: "monthly",
+    },
+    {
+      label: `Yearly - C$${selectedSubscription.yearly_price}/year`,
+      value: "yearly",
+    },
+  ] : [];
+
+  console.log("categoryOptions data:", categoryOptions);
+  console.log("businessType:", businessType);
+  console.log("selectedSubscription:", selectedSubscription);
+  console.log("billingCycleOptions:", billingCycleOptions);
   console.log("termsChecked--", termsChecked);
+
+  // Reset category selection when business type changes
+  useEffect(() => {
+    form.setValue("category_id", "");
+  }, [businessType, form]);
+
+  // Reset billing cycle when subscription changes
+  useEffect(() => {
+    form.setValue("billing_cycle", "");
+  }, [subscriptionId, form]);
+
 
   useEffect(() => {
     console.log("country_id--", location?.length);
@@ -160,14 +199,14 @@ const RegisterForm = () => {
     const step1Fields = ["name", "address", "type", "description"];
 
     console.log("Before Next - current form values:", form.getValues());
-    
+
     // Validate only step 1 fields
     const result = await form.trigger(
       step1Fields as (keyof z.infer<typeof VendorFormValidation>)[]
     );
 
     console.log("Step 1 validation result:", result);
-    
+
     if (result) {
       console.log("Moving to step 2 - form values:", form.getValues());
       setCurrentStep(2);
@@ -189,6 +228,7 @@ const RegisterForm = () => {
       logo: values.logo,
       banner: values.banner,
       subscription_id: values.subscription_id,
+      billing_cycle: values.billing_cycle,
       category_id: values.category_id,
     };
     console.log("Calling createShop with payload:", payload);
@@ -239,129 +279,140 @@ const RegisterForm = () => {
           </section>
 
           {/* Step 1 Fields - Always render but hide when not active */}
-          <div className={`space-y-4 ${currentStep !== 1 ? 'hidden' : ''}`}>
-              <CustomFormField
-                fieldType={FormFieldType.INPUT}
-                isEditable
-                control={form.control}
-                name="name"
-                label="Business Name"
-                placeholder="Business Name"
-              />
+          <div className={`space-y-4 ${currentStep !== 1 ? "hidden" : ""}`}>
+            <CustomFormField
+              fieldType={FormFieldType.INPUT}
+              isEditable
+              control={form.control}
+              name="name"
+              label="Business Name"
+              placeholder="Business Name"
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.INPUT}
-                isEditable
-                control={form.control}
-                name="address"
-                label="Business Address"
-                placeholder="Business Address"
-              />
+            <CustomFormField
+              fieldType={FormFieldType.INPUT}
+              isEditable
+              control={form.control}
+              name="address"
+              label="Business Address"
+              placeholder="Business Address"
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="type"
-                label="Business Type"
-                options={[
-                  { label: "Products", value: BusinessTypes.PRODUCT },
-                  { label: "Services", value: BusinessTypes.SERVICE },
-                ]}
-                placeholder="Select Business Type"
-              />
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="type"
+              label="Business Type"
+              options={[
+                { label: "Products", value: BusinessTypes.PRODUCT },
+                { label: "Services", value: BusinessTypes.SERVICE },
+              ]}
+              placeholder="Select Business Type"
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.TEXTAREA}
-                isEditable
-                control={form.control}
-                name="description"
-                label="Business Description"
-                placeholder="Business Address"
-              />
+            <CustomFormField
+              fieldType={FormFieldType.TEXTAREA}
+              isEditable
+              control={form.control}
+              name="description"
+              label="Business Description"
+              placeholder="Business Address"
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="category_id"
-                label="Category"
-                options={categoryOptions}
-                placeholder="Select Category"
-                // disabled={}
-              />
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="category_id"
+              label="Category"
+              options={categoryOptions}
+              placeholder="Select Category"
+              // disabled={}
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="subscription_id"
-                label="Subscription"
-                options={subscriptionOptions}
-                placeholder="Select Subscription"
-                // disabled={}
-              />
-            </div>
-          
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="subscription_id"
+              label="Subscription"
+              options={subscriptionOptions}
+              placeholder="Select Subscription"
+              // disabled={}
+            />
+
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="billing_cycle"
+              label="Billing Cycle"
+              options={billingCycleOptions}
+              placeholder="Select Billing Cycle"
+              disable={!subscriptionId || billingCycleOptions.length === 0}
+            />
+          </div>
+
           {/* Step 2 Fields - Always render but hide when not active */}
-          <div className={`space-y-4 ${currentStep !== 2 ? 'hidden' : ''}`}>
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="country_id"
-                label="Country"
-                options={countryOptions}
-                placeholder="Select Country"
-              />
+          <div className={`space-y-4 ${currentStep !== 2 ? "hidden" : ""}`}>
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="country_id"
+              label="Country"
+              options={countryOptions}
+              placeholder="Select Country"
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="state_id"
-                label="State"
-                options={stateOptions}
-                placeholder="Select State"
-                disable={!country_id || stateOptions.length === 0}
-              />
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="state_id"
+              label="State"
+              options={stateOptions}
+              placeholder="Select State"
+              disable={!country_id || stateOptions.length === 0}
+            />
 
-              <CustomFormField
-                fieldType={FormFieldType.SELECT}
-                isEditable
-                control={form.control}
-                name="city_id"
-                label="City"
-                options={cityOptions}
-                placeholder="Select City"
-                disable={!state_id || cityOptions.length === 0}
-              />
+            <CustomFormField
+              fieldType={FormFieldType.SELECT}
+              isEditable
+              control={form.control}
+              name="city_id"
+              label="City"
+              options={cityOptions}
+              placeholder="Select City"
+              disable={!state_id || cityOptions.length === 0}
+            />
 
-              <CustomFormField
-                control={form.control}
-                name="logo"
-                label="Business Logo"
-                fieldType={FormFieldType.FILE_UPLOAD}
-                placeholder="Choose files or drag and drop"
-                acceptedFileTypes="image/*"
-              />
+            <CustomFormField
+              control={form.control}
+              name="logo"
+              label="Business Logo"
+              fieldType={FormFieldType.FILE_UPLOAD}
+              placeholder="Choose files or drag and drop"
+              acceptedFileTypes="image/*"
+            />
 
-              <CustomFormField
-                control={form.control}
-                name="banner"
-                label="Business Banner"
-                fieldType={FormFieldType.FILE_UPLOAD}
-                placeholder="Choose files or drag and drop"
-                acceptedFileTypes="image/*"
-              />
-              <CustomFormField
-                fieldType={FormFieldType.CHECKBOX}
-                name="terms"
-                control={form.control}
-                label="By creating an account you agree to our Terms of Service and Privacy Policy"
-                isEditable
-              />
-            </div>
+            <CustomFormField
+              control={form.control}
+              name="banner"
+              label="Business Banner"
+              fieldType={FormFieldType.FILE_UPLOAD}
+              placeholder="Choose files or drag and drop"
+              acceptedFileTypes="image/*"
+            />
+            <CustomFormField
+              fieldType={FormFieldType.CHECKBOX}
+              name="terms"
+              control={form.control}
+              label="By creating an account you agree to our Terms of Service and Privacy Policy"
+              isEditable
+            />
+          </div>
 
           {renderActionButton()}
         </form>

@@ -50,6 +50,7 @@ export interface CreateShopPayload {
   logo?: File; // Assuming logo and banner are File objects from file input
   banner?: File;
   subscription_id: string;
+  billing_cycle?: string;
   state_id: string;
   city_id: string;
   country_id: string;

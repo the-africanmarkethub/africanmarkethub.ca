@@ -143,11 +143,16 @@ function TrendingProductContent() {
 
   if (!trending || trending.length === 0) {
     return (
-      <NoResults
-        title="No Trending Products"
-        message="There are currently no products trending. Please check back later."
-        icon="✨"
-      />
+      <section className="my-12">
+        {/* <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+          No Trending Products
+        </h2> */}
+        <div className="text-center py-8">
+          <p className="text-gray-500">
+            No Trending products available at the moment.
+          </p>
+        </div>
+      </section>
     );
   }
 
@@ -186,7 +191,7 @@ export default function WhatsTrendingNow() {
   return (
     <section className="my-16">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+        <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
           What&apos;s Trending Now
         </h2>
         <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors">

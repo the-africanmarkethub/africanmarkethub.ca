@@ -55,6 +55,7 @@ interface CustomProps<TFieldValues extends FieldValues> {
   rows?: number;
   className?: string;
   acceptedFileTypes?: string;
+  onFileChange?: (file: File | null) => void;
 }
 
 interface FieldProps {
@@ -178,31 +179,79 @@ const FileUploadInput = ({
   isEditable = true,
   acceptedFileTypes = "image/*",
   placeholder = "Choose files or drag and drop",
-}: FieldProps & { acceptedFileTypes?: string }) => {
+  onFileChange,
+}: FieldProps & { acceptedFileTypes?: string; onFileChange?: (file: File | null) => void }) => {
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] || null;
+    field.onChange(file);
+    
+    // Clean up previous preview URL
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    
+    // Create new preview URL
     if (file) {
-      field.onChange(file);
+      const newPreviewUrl = URL.createObjectURL(file);
+      setPreviewUrl(newPreviewUrl);
+    } else {
+      setPreviewUrl(null);
+    }
+    
+    // Call the external onFileChange callback if provided
+    if (onFileChange) {
+      onFileChange(file);
     }
   };
+
+  // Cleanup on unmount
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   return (
     <FormControl>
       <div className="flex flex-col w-full">
-        <div className="flex flex-col items-center justify-center w-full border border-[#EEEEEE] rounded-md bg-[#F8F8F8] p-4">
-          <Image
-            src="/assets/icons/Image.svg"
-            width={24}
-            height={24}
-            alt="Upload"
-            className="mb-[5px]"
-          />
-          <div className="flex  items-center text-[#BDBDBD] mb-2 gap-3 justify-center">
-            <CloudUpload width={24} height={24} />
-            <p className="text-base leading-[22px] font-medium text-center">
-              {placeholder}
-            </p>
-          </div>
-          <p className="text-[#BDBDBD] font-normal text-sm">Image (1MB)</p>
+        <div className="flex flex-col items-center justify-center w-full border border-[#EEEEEE] rounded-md bg-[#F8F8F8] p-4 min-h-[120px]">
+          {previewUrl ? (
+            // Show preview image
+            <div className="flex flex-col items-center w-full">
+              <Image
+                src={previewUrl}
+                width={80}
+                height={80}
+                alt="Preview"
+                className="max-w-20 max-h-20 object-contain rounded-lg mb-2"
+              />
+              <p className="text-sm text-gray-600 text-center">
+                {(field.value as File)?.name || "Selected file"}
+              </p>
+            </div>
+          ) : (
+            // Show upload placeholder
+            <>
+              <Image
+                src="/assets/icons/Image.svg"
+                width={24}
+                height={24}
+                alt="Upload"
+                className="mb-[5px]"
+              />
+              <div className="flex items-center text-[#BDBDBD] mb-2 gap-3 justify-center">
+                <CloudUpload width={24} height={24} />
+                <p className="text-base leading-[22px] font-medium text-center">
+                  {placeholder}
+                </p>
+              </div>
+              <p className="text-[#BDBDBD] font-normal text-sm">Image (1MB)</p>
+            </>
+          )}
           <Input
             type="file"
             accept={acceptedFileTypes}
@@ -367,7 +416,7 @@ const RenderField = <TFieldValues extends FieldValues>({
       );
     case FormFieldType.FILE_UPLOAD:
     case FormFieldType.FILE:
-      return <FileUploadInput field={field} {...props} />;
+      return <FileUploadInput field={field} {...props} onFileChange={props.onFileChange} />;
     case FormFieldType.NUMBER:
       return (
         <FormControl>
