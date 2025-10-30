@@ -194,9 +194,9 @@ export function TicketingTable() {
           enableSearch
           filters={filterConfig}
           onSearch={(query) => console.log("Search query:", query)}
-          currentPage={ticketsResponse?.data.current_page || 1}
-          rowsPerPage={ticketsResponse?.data.per_page || 10}
-          totalItems={ticketsResponse?.data.total || 0}
+          currentPage={ticketsResponse?.data?.current_page || 1}
+          rowsPerPage={ticketsResponse?.data?.per_page || 10}
+          totalItems={ticketsResponse?.data?.total || 0}
           onPageChange={(page) => setCurrentPage(page)}
           rowActions={rowActions}
         />

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionContent,
@@ -5,6 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/vendor/ui/accordion";
 import { tv } from "tailwind-variants";
+import { useFAQs } from "@/hooks/vendor/useFAQs";
 
 const faqTabContent = tv({
   slots: {
@@ -18,100 +21,57 @@ const faqTabContent = tv({
 const { accordionTrigger, accordionText } = faqTabContent();
 
 export default function FaqTabContent() {
+  const { data: faqData, isLoading, error } = useFAQs();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-white mt-4 rounded-[16px] xl:p-8">
+        <p className="text-red-500 text-center">
+          Failed to load FAQs. Please try again later.
+        </p>
+      </div>
+    );
+  }
+
+  if (!faqData?.data?.length) {
+    return (
+      <div className="p-4 bg-white mt-4 rounded-[16px] xl:p-8">
+        <p className="text-gray-500 text-center">No FAQs available at the moment.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Accordion
         type="single"
         collapsible
         className="w-full p-4 bg-white mt-4 space-y-4 rounded-[16px] xl:p-8"
-        defaultValue="item-1"
       >
-        <AccordionItem value="item-1">
-          <AccordionTrigger className={accordionTrigger()}>
-            Starting your traveling blog with Vasco
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className={accordionText()}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-              bibendum placerat faucibus. Nullam quis vulputate purus. Aenean
-              sed purus orci.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger className={accordionTrigger()}>
-            Exploring hidden gems in your city with Vasco
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className={accordionText()}>
-              We offer worldwide shipping through trusted courier partners.
-              Standard delivery takes 3-5 business days, while express shipping
-              ensures delivery within 1-2 business days.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger className={accordionTrigger()}>
-            Tips for creating engaging travel content with Vasco
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className={accordionText()}>
-              We stand behind our products with a comprehensive 30-day return
-              policy. If you&apos;re not completely satisfied, simply return the
-              item in its original condition.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-4">
-          <AccordionTrigger className={accordionTrigger()}>
-            Building a community around your travel experiences with Vasco
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className={accordionText()}>
-              We stand behind our products with a comprehensive 30-day return
-              policy. If you&apos;re not completely satisfied, simply return the
-              item in its original condition. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Error ab quod ducimus praesentium
-              cupiditate voluptatum odit eius saepe. Magni vero accusantium
-              consectetur neque laboriosam ullam eveniet nam ea? Minus,
-              mollitia?
-            </p>
-            <br />
-            <p className={accordionText()}>
-              Our hassle-free return process includes free return shipping and
-              full refunds processed within 48 hours of receiving the returned
-              item. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-              perspiciatis reiciendis, beatae libero exercitationem ad. Mollitia
-              rem, vel veniam modi natus ad numquam facilis ratione quo atque?
-              Voluptatem, assumenda iste.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-5">
-          <AccordionTrigger className={accordionTrigger()}>
-            Monetizing your travel blog: Strategies with Vasco
-          </AccordionTrigger>
-          <AccordionContent>
-            <p className={accordionText()}>
-              We stand behind our products with a comprehensive 30-day return
-              policy. If you&apos;re not completely satisfied, simply return the
-              item in its original condition. Lorem ipsum dolor sit amet
-              consectetur adipisicing elit. Error ab quod ducimus praesentium
-              cupiditate voluptatum odit eius saepe. Magni vero accusantium
-              consectetur neque laboriosam ullam eveniet nam ea? Minus,
-              mollitia?
-            </p>
-            <br />
-            <p className={accordionText()}>
-              Our hassle-free return process includes free return shipping and
-              full refunds processed within 48 hours of receiving the returned
-              item. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed
-              perspiciatis reiciendis, beatae libero exercitationem ad. Mollitia
-              rem, vel veniam modi natus ad numquam facilis ratione quo atque?
-              Voluptatem, assumenda iste.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
+        {faqData.data.map((faq, index) => (
+          <AccordionItem key={faq.id} value={`item-${index + 1}`}>
+            <AccordionTrigger className={accordionTrigger()}>
+              {faq.question}
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className={accordionText()}>
+                {faq.answer.split('\r\n').map((line, lineIndex) => (
+                  <p key={lineIndex} className="mb-2 last:mb-0">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
       </Accordion>
     </div>
   );

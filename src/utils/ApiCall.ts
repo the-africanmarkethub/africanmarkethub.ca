@@ -70,16 +70,9 @@ export default async function APICall(
 
     if (response.status >= 400 && response.status < 500) {
       if (response.status === 401) {
-        localStorage.clear();
-        // const refreshToken = localStorage.getItem("refreshToken");
-        // if (refreshToken) {
-        //   const res = await refreshAccessToken();
-        //   if (res) {
-        //     window.location.reload();
-        //   }
-        // }
-        //IMPLEMENT REFRESH TOKEN LOGIC HERE
-        // window.location.href = "/";
+        // Don't clear localStorage on 401 errors to prevent unwanted redirects
+        // 401 errors should only show error messages, not clear auth state
+        // If we need to handle token expiration, it should be done explicitly elsewhere
       }
       toast.error(
         response?.data?.message ||

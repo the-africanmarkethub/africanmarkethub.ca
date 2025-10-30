@@ -6,338 +6,16 @@ import { Button } from "@/components/vendor/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/vendor/ui/card";
 import { ChevronDown, ChevronUp, MoreVertical } from "lucide-react";
 import { DataTable } from "../ui/data-table/DataTable";
+import { useGetCoupons } from "@/hooks/vendor/useGetCoupons";
 
-interface Coupon {
+interface TableCoupon {
   id: string;
   code: string;
   discountType: string;
-  usageLimit: number | string;
+  product: string;
   expiryDate: string;
   status: "Active" | "Inactive";
 }
-
-const coupons: Coupon[] = [
-  {
-    id: "1",
-    code: "C1D2023",
-    discountType: "20% Off",
-    usageLimit: 100,
-    expiryDate: "2024-12-31",
-    status: "Active",
-  },
-  {
-    id: "2",
-    code: "B2G50OFF",
-    discountType: "Fixed Amount",
-    usageLimit: 50,
-    expiryDate: "2025-01-15",
-    status: "Inactive",
-  },
-  {
-    id: "3",
-    code: "FREESHIP",
-    discountType: "Free Shipping",
-    usageLimit: "Unlimited",
-    expiryDate: "2024-06-30",
-    status: "Active",
-  },
-  {
-    id: "4",
-    code: "SUMMER20",
-    discountType: "Percentage",
-    usageLimit: 200,
-    expiryDate: "2024-08-31",
-    status: "Active",
-  },
-  {
-    id: "5",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "6",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "7",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "8",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "9",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "10",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "11",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "12",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "13",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "14",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "15",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "16",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "17",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "18",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "19",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "20",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "21",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "22",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "23",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "24",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "25",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "26",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "27",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "28",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "29",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "30",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "31",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "32",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "33",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "34",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "35",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "36",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "37",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "38",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "39",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-  {
-    id: "40",
-    code: "WELCOME10",
-    discountType: "Fixed Amount",
-    usageLimit: 1,
-    expiryDate: "2024-11-01",
-    status: "Active",
-  },
-];
 
 const columns = [
   {
@@ -349,8 +27,8 @@ const columns = [
     accessorKey: "discountType",
   },
   {
-    header: "Usage Limit",
-    accessorKey: "usageLimit",
+    header: "Product",
+    accessorKey: "product",
   },
   {
     header: "Expiry",
@@ -359,7 +37,7 @@ const columns = [
   {
     header: "Status",
     accessorKey: "status",
-    cell: (item: Coupon) => (
+    cell: (item: TableCoupon) => (
       <Badge variant={item.status === "Active" ? "success" : "destructive"}>
         {item.status}
       </Badge>
@@ -378,6 +56,33 @@ const columns = [
 
 export default function CouponsVouchersTable() {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage] = useState(10);
+
+  const { data: couponsResponse, isLoading, error } = useGetCoupons({
+    page: currentPage,
+    per_page: perPage,
+  });
+
+  // Transform API data to table format
+  const coupons: TableCoupon[] = couponsResponse?.data?.map((coupon) => ({
+    id: String(coupon.id),
+    code: coupon.discount_code,
+    discountType: coupon.discount_type === "percentage" 
+      ? `${coupon.discount_rate}% Off` 
+      : `$${coupon.discount_rate} Off`,
+    product: coupon.product?.title || "N/A",
+    expiryDate: new Date(coupon.end_time).toLocaleDateString(),
+    status: coupon.status === "active" ? "Active" : "Inactive",
+  })) || [];
+
+  if (error) {
+    return (
+      <div className="w-full bg-white mt-8 rounded-[8px] p-6">
+        <p className="text-red-500 text-center">Failed to load coupons. Please try again.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white mt-8 rounded-[8px]">
@@ -410,14 +115,26 @@ export default function CouponsVouchersTable() {
                   Active Coupons
                 </h1>
               </div>
-              <DataTable
-                data={coupons}
-                columns={columns}
-                enableSelection
-                currentPage={1}
-                rowsPerPage={5}
-                totalItems={40}
-              />
+              
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : coupons.length === 0 ? (
+                <div className="flex items-center justify-center py-12">
+                  <p className="text-gray-500">No coupons found. Create your first coupon!</p>
+                </div>
+              ) : (
+                <DataTable
+                  data={coupons}
+                  columns={columns}
+                  enableSelection
+                  currentPage={currentPage}
+                  rowsPerPage={perPage}
+                  totalItems={couponsResponse?.data?.length || 0}
+                  onPageChange={(page) => setCurrentPage(page)}
+                />
+              )}
             </div>
           </CardContent>
         )}

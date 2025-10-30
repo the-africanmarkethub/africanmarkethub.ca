@@ -8,21 +8,34 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  message?: string;
   token: string;
   refreshToken?: string;
   user: User;
-  expiresIn: number;
+  expiresIn?: number;
 }
 
 export interface User {
-  id: string;
-  email: string;
+  id: number;
   name: string;
-  role: UserRole;
-  shopId?: string;
-  emailVerified: boolean;
-  createdAt: string;
-  updatedAt: string;
+  last_name: string;
+  phone: string;
+  email: string;
+  email_verified_at: string;
+  phone_verified_at: string;
+  role: string;
+  is_active: number;
+  city: string;
+  state: string;
+  country: string;
+  profile_photo: string;
+  google_id: string | null;
+  referral_code: string;
+  referred_by: string | null;
+  fcm_token: string | null;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export type UserRole = "vendor" | "admin" | "customer";

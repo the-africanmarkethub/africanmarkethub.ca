@@ -20,7 +20,7 @@ interface Props {
 export default function TutorialCard(props: Props) {
   const router = useRouter();
   const handleViewTutorial = (id: string) => {
-    router.push(`/vendor-support/help-centre/${id}`);
+    router.push(`/vendor/vendor-support/help-centre/tutorials/${id}`);
   };
 
   return (

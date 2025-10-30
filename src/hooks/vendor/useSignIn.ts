@@ -2,21 +2,46 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { api } from "@/utils/api-call";
 import { useAuth } from "@/contexts/vendor/auth-context";
 import { toast } from "sonner";
 import { LoginRequest, LoginResponse } from "@/types/vendor/api";
+import axios from "axios";
 
-export async function signIn(values: LoginRequest): Promise<LoginResponse> {
-  const response = await api.post<LoginResponse>("/login", values);
-  if (!response) {
-    throw new Error("Login failed");
+const API_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+export const signInVendor = async (
+  values: LoginRequest
+): Promise<LoginResponse> => {
+  try {
+    const { data } = await axios.post(`${API_URL}/login`, values, {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      withCredentials: true,
+    });
+    return data;
+  } catch (error) {
+    // Create a ValidationError object for React Query and forms
+    if (axios.isAxiosError(error)) {
+      const validationError = new Error(error.response?.data?.message || error.message) as ValidationError;
+      validationError.response = error.response;
+      validationError.validationErrors = error.response?.data?.errors;
+      throw validationError;
+    }
+    throw error;
   }
-  return response;
-}
+};
 
+// ValidationError for compatibility with forms and proper error handling
 export interface ValidationError extends Error {
   validationErrors?: Record<string, string[]>;
+  response?: {
+    data?: {
+      message?: string;
+      error?: string;
+    };
+  };
 }
 
 export function useSignIn() {
@@ -24,12 +49,13 @@ export function useSignIn() {
   const { login } = useAuth();
 
   const mutate = useMutation<LoginResponse, ValidationError, LoginRequest>({
-    mutationFn: signIn,
+    mutationFn: signInVendor,
     onSuccess: (data) => {
-      // Use auth context to handle login - wrap user data in expected structure
-      login(data.token, { token: data.token, user: data.user as any });
+      // Use auth context to handle login - the API response already matches the expected structure
+      login(data.token, data);
 
-      toast.success("Log In Successful!");
+      // Use the message from API response
+      toast.success(data.message || "Log In Successful!");
 
       // Check for redirect URL
       const redirectUrl = localStorage.getItem("redirectUrl");
@@ -41,9 +67,24 @@ export function useSignIn() {
       }
     },
     onError: (error: ValidationError) => {
-      // The toast is already shown in api-call.ts
-      // This is just for any additional error handling if needed
-      console.error("Login error:", error);
+      console.log("Vendor login error:", error);
+
+      let errorMessage = "Login failed. Please try again.";
+
+      // Check if it's a validation error (422)
+      if (error.validationErrors) {
+        const firstErrorKey = Object.keys(error.validationErrors)[0];
+        const firstError = error.validationErrors[firstErrorKey];
+        if (Array.isArray(firstError) && firstError.length > 0) {
+          errorMessage = firstError[0];
+        }
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     },
   });
   return mutate;

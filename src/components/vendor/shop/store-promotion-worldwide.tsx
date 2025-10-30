@@ -25,10 +25,10 @@ export default function StorePromotionWorldwide() {
             <Plus className="w-6 h-6" />
             Add New Coupon
           </Button>
-          <Button className="bg-[#F28C0D] text-xs font-semibold px-5 py-2.5 hover:bg-[#F28C0D] text-white rounded-[32px] md:px-6 md:py-3 md:text-sm">
+          {/* <Button className="bg-[#F28C0D] text-xs font-semibold px-5 py-2.5 hover:bg-[#F28C0D] text-white rounded-[32px] md:px-6 md:py-3 md:text-sm">
             <Plus className="w-6 h-6" />
             New Sales Event
-          </Button>
+          </Button> */}
         </div>
       </div>
 

@@ -59,9 +59,17 @@ export default async function apiCall<T = unknown>(
       
       // Handle 401 Unauthorized
       if (axiosError.response?.status === 401) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        window.location.href = "/";
+        // Only clear storage and redirect for authenticated requests, not login attempts
+        const isLoginAttempt = url.includes("/login") || url.includes("/sign-in");
+        
+        if (!isLoginAttempt) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("vendorAccessToken");
+          localStorage.removeItem("user");
+          localStorage.removeItem("vendorUser");
+          // Don't redirect immediately - let auth contexts handle it
+        }
+        // For login attempts: just throw error, don't clear storage or redirect
         return null;
       }
 
