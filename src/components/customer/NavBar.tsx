@@ -81,7 +81,7 @@ const NavBar = () => {
   const { cartItems } = useCart();
   const { logout } = useLogout();
 
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside --
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
