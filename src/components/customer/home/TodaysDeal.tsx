@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import ItemCard from "./ItemCard";
 import { Product } from "@/types/customer/product.types";
@@ -65,8 +66,6 @@ function convertDealToProduct(deal: any): Product {
 export default function TodaysDeal() {
   const { data: dealsResponse, isLoading, error } = useProductDeals();
 
-  console.log("TodaysDeal Debug:", { dealsResponse, isLoading, error });
-
   if (isLoading) {
     return (
       <section className="my-12">
@@ -75,21 +74,31 @@ export default function TodaysDeal() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {[...Array(4)].map((_, index) => (
-            <div key={index} className="bg-gray-200 animate-pulse h-64 rounded-lg"></div>
+            <div
+              key={index}
+              className="bg-gray-200 animate-pulse h-64 rounded-lg"
+            ></div>
           ))}
         </div>
       </section>
     );
   }
 
-  if (error || !dealsResponse?.data || dealsResponse?.data?.length === 0 || dealsResponse?.status === "error") {
+  if (
+    error ||
+    !dealsResponse?.data ||
+    dealsResponse?.data?.length === 0 ||
+    dealsResponse?.status === "error"
+  ) {
     return (
       <section className="my-12">
         <h2 className="text-2xl md:text-3xl font-semibold mb-6">
           Today&apos;s Deal
         </h2>
         <div className="text-center py-8">
-          <p className="text-gray-500">No deal products available at the moment.</p>
+          <p className="text-gray-500">
+            No deal products available at the moment.
+          </p>
         </div>
       </section>
     );
@@ -104,7 +113,12 @@ export default function TodaysDeal() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {deals.map((deal) => (
-          <ItemCard key={deal.id} item={deal} hasButton={true} displayRegular={false} />
+          <ItemCard
+            key={deal.id}
+            item={deal}
+            hasButton={true}
+            displayRegular={false}
+          />
         ))}
       </div>
     </section>

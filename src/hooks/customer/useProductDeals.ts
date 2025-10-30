@@ -86,6 +86,9 @@ export function useProductDeals() {
   const query = useQuery({
     queryKey: [QUERY_KEY.products, "deals"],
     queryFn: fetchProductDeals,
+    enabled: typeof window !== "undefined", // Only run on client side
+    retry: 3,
+    staleTime: 5 * 60 * 1000, // 5 minutes
     initialData: () => {
       return queryClient.getQueryData([QUERY_KEY.products, "deals"]);
     },
