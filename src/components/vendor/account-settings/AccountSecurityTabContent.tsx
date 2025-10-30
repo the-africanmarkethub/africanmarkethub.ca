@@ -5,25 +5,75 @@ import { ProfileDetailCard } from "./ProfileDetailCard";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
+import { useChangePassword } from "@/hooks/vendor/useChangePassword";
 
 export function AccountSecurityTabContent() {
+  const { mutate: changePassword, isPending } = useChangePassword();
+  
+  const [passwordData, setPasswordData] = useState({
+    current_password: "",
+    new_password: "",
+    new_password_confirmation: "",
+  });
+
+  const handleChangePassword = () => {
+    // Basic validation
+    if (!passwordData.current_password || !passwordData.new_password || !passwordData.new_password_confirmation) {
+      return;
+    }
+
+    if (passwordData.new_password !== passwordData.new_password_confirmation) {
+      return;
+    }
+
+    changePassword(passwordData, {
+      onSuccess: () => {
+        // Reset form on success
+        setPasswordData({
+          current_password: "",
+          new_password: "",
+          new_password_confirmation: "",
+        });
+      },
+    });
+  };
+
   return (
     <div>
       <Card className="mt-4 px-4 py-8 bg-white rounded-2xl md:p-8">
         <CardContent className="space-y-8 p-0 pb-8">
           <div className="space-y-2">
             <CustomLabel htmlFor="currentPassword" text="Current Password" />
-            <CustomInput id="currentPassword" placeholder="Current Password" />
+            <CustomInput 
+              id="currentPassword" 
+              type="password"
+              placeholder="Current Password"
+              value={passwordData.current_password}
+              onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+            />
           </div>
 
           <div className="space-y-2">
-            <CustomLabel htmlFor="New Password" text="New Password" />
-            <CustomInput id="newPassword" placeholder="New Password" />
+            <CustomLabel htmlFor="newPassword" text="New Password" />
+            <CustomInput 
+              id="newPassword" 
+              type="password"
+              placeholder="New Password"
+              value={passwordData.new_password}
+              onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+            />
           </div>
 
           <div className="space-y-2">
-            <CustomLabel htmlFor="Confirm Password" text="Confirm Password" />
-            <CustomInput id="confirmPassword" placeholder="Confirm Password" />
+            <CustomLabel htmlFor="confirmPassword" text="Confirm Password" />
+            <CustomInput 
+              id="confirmPassword" 
+              type="password"
+              placeholder="Confirm Password"
+              value={passwordData.new_password_confirmation}
+              onChange={(e) => setPasswordData({ ...passwordData, new_password_confirmation: e.target.value })}
+            />
           </div>
 
           <div className="flex flex-col gap-y-5 text-[#525252] text-sm font-normal ">
@@ -37,8 +87,12 @@ export function AccountSecurityTabContent() {
           </div>
 
           <div className="flex justify-end gap-x-3">
-            <Button className="bg-[#F28C0D] text-sm font-semibold hover:bg-[#F28C0D] text-white rounded-[32px]">
-              Change Password
+            <Button 
+              onClick={handleChangePassword}
+              disabled={isPending || !passwordData.current_password || !passwordData.new_password || !passwordData.new_password_confirmation}
+              className="bg-[#F28C0D] text-sm font-semibold hover:bg-[#F28C0D] text-white rounded-[32px] disabled:opacity-50"
+            >
+              {isPending ? "Changing..." : "Change Password"}
             </Button>
           </div>
         </CardContent>

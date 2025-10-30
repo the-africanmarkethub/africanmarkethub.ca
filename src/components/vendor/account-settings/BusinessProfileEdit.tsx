@@ -12,9 +12,12 @@ import {
   SelectValue,
 } from "@/components/vendor/ui/select";
 import { Checkbox } from "@/components/vendor/ui/checkbox";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CustomLabel } from "../CustomLabel";
 import { CustomInput } from "../CustomInput";
+import { useGetShopDetails } from "@/hooks/vendor/useGetShopDetails";
+import { useUpdateShop } from "@/hooks/vendor/useUpdateShop";
+import { useLocation } from "@/hooks/vendor/useLocation";
 
 export function BusinessProfileEdit({
   onBack,
@@ -23,19 +26,150 @@ export function BusinessProfileEdit({
   onBack: () => void;
   onSave: () => void;
 }) {
+  const { data: shopDetails, isLoading } = useGetShopDetails();
+  const { mutate: updateShop, isPending } = useUpdateShop();
+  const { data: location } = useLocation();
+  
   const [formData, setFormData] = useState({
-    businessName: "Base - Base Corporation",
-    businessType: "wholesale",
+    businessName: "",
+    businessType: "",
     businessDescription: "",
     businessAddress: "",
-    city: "",
-    countryState: "",
+    country_id: "",
+    state_id: "",
+    city_id: "",
     authorized: false,
   });
 
+  const [countryOptions, setCountryOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [stateOptions, setStateOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [cityOptions, setCityOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+
+  // Populate form with shop details when data is loaded
+  useEffect(() => {
+    if (shopDetails?.shops && shopDetails.shops[0]) {
+      const shop = shopDetails.shops[0];
+      setFormData({
+        businessName: shop.name || "",
+        businessType: shop.type || "",
+        businessDescription: shop.description || "",
+        businessAddress: shop.address || "",
+        country_id: shop.country_id?.toString() || "",
+        state_id: shop.state_id?.toString() || "",
+        city_id: shop.city_id?.toString() || "",
+        authorized: false,
+      });
+    }
+  }, [shopDetails]);
+
+  // Set up location options when location data loads
+  useEffect(() => {
+    if (location && location?.length > 0) {
+      const countries = location?.map(
+        (country: {
+          id: number;
+          name: string;
+          state: Array<{ id: number; name: string }>;
+          city: Array<{ id: number; name: string; state_id: number }>;
+        }) => ({
+          label: country.name,
+          value: country.id.toString(),
+        })
+      );
+      setCountryOptions(countries);
+    }
+  }, [location]);
+
+  // Update states when country is selected
+  useEffect(() => {
+    if (formData.country_id && location) {
+      const selectedCountry = location.find(
+        (country: {
+          id: number;
+          name: string;
+          state: Array<{ id: number; name: string }>;
+          city: Array<{ id: number; name: string; state_id: number }>;
+        }) => country.id.toString() === formData.country_id
+      );
+
+      if (selectedCountry && selectedCountry.state) {
+        const states = selectedCountry.state.map(
+          (state: { id: number; name: string }) => ({
+            label: state.name,
+            value: state.id.toString(),
+          })
+        );
+        setStateOptions(states);
+
+        // Reset city selection when country changes
+        if (cityOptions.length > 0) {
+          setFormData(prev => ({ ...prev, city_id: "" }));
+          setCityOptions([]);
+        }
+      }
+    }
+  }, [formData.country_id, location]);
+
+  // Update cities when state is selected
+  useEffect(() => {
+    if (formData.state_id && formData.country_id && location) {
+      const selectedCountry = location.find(
+        (country: {
+          id: number;
+          name: string;
+          state: Array<{ id: number; name: string }>;
+          city: Array<{ id: number; name: string; state_id: number }>;
+        }) => country.id.toString() === formData.country_id
+      );
+
+      if (selectedCountry) {
+        const cities = selectedCountry.city
+          .filter(
+            (city: { state_id: number; name: string; id: number }) =>
+              city.state_id.toString() === formData.state_id
+          )
+          .map((city: { state_id: number; name: string; id: number }) => ({
+            label: city.name,
+            value: city.id.toString(),
+          }));
+        setCityOptions(cities);
+      }
+    }
+  }, [formData.state_id, formData.country_id, location]);
+
   const handleSave = () => {
-    // Handle form submission logic here
-    onSave();
+    if (!shopDetails?.shops?.[0]?.slug) {
+      console.error("No shop slug available");
+      return;
+    }
+
+    const payload = {
+      name: formData.businessName,
+      type: formData.businessType,
+      description: formData.businessDescription,
+      address: formData.businessAddress,
+      country_id: formData.country_id,
+      state_id: formData.state_id,
+      city_id: formData.city_id,
+    };
+
+    updateShop(
+      { slug: shopDetails.shops[0].slug, payload },
+      {
+        onSuccess: () => {
+          onSave();
+        },
+        onError: (error) => {
+          console.error("Failed to update shop:", error);
+        },
+      }
+    );
   };
 
   return (
@@ -53,24 +187,6 @@ export function BusinessProfileEdit({
             />
           </div>
 
-          <div className="space-y-2">
-            <CustomLabel htmlFor="businessType" text="Business Type" />
-            <Select
-              value={formData.businessType}
-              onValueChange={(value) =>
-                setFormData({ ...formData, businessType: value })
-              }
-            >
-              <SelectTrigger className="w-full px-4 h-[54px] py-3 bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
-                <SelectValue placeholder="Business Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="retail">Retail</SelectItem>
-                <SelectItem value="wholesale">Wholesale</SelectItem>
-                <SelectItem value="service">Service</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
           <div className="space-y-2">
             <CustomLabel
@@ -104,35 +220,84 @@ export function BusinessProfileEdit({
           </div>
 
           <div className="space-y-2">
-            <CustomLabel htmlFor="city" text="City" />
-            <CustomInput
-              id="city"
-              placeholder="City"
-              value={formData.city}
-              onChange={(e) =>
-                setFormData({ ...formData, city: e.target.value })
+            <CustomLabel htmlFor="country_id" text="Country" />
+            <Select
+              value={formData.country_id}
+              onValueChange={(value) =>
+                setFormData({ ...formData, country_id: value })
               }
-            />
+            >
+              <SelectTrigger className="w-full px-4 h-[54px] py-3 bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
+                <SelectValue placeholder="Select Country" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {countryOptions.map((country) => (
+                  <SelectItem key={country.value} value={country.value}>
+                    {country.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
-            <CustomLabel htmlFor="countryState" text=" Country/State" />
+            <CustomLabel htmlFor="state_id" text="State" />
             <Select
-              value={formData.countryState}
+              value={formData.state_id}
               onValueChange={(value) =>
-                setFormData({ ...formData, countryState: value })
+                setFormData({ ...formData, state_id: value })
               }
+              disabled={!formData.country_id || stateOptions.length === 0}
             >
-              <SelectTrigger className="w-full px-4 py-3 h-[54px] bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
-                <SelectValue placeholder="Country/State" />
+              <SelectTrigger className="w-full px-4 h-[54px] py-3 bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
+                <SelectValue placeholder="Select State" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                <SelectItem value="us-ca">
-                  United States - California
-                </SelectItem>
-                <SelectItem value="us-ny">United States - New York</SelectItem>
-                <SelectItem value="us-tx">United States - Texas</SelectItem>
-                <SelectItem value="us-il">United States - Illinois</SelectItem>
+                {stateOptions.map((state) => (
+                  <SelectItem key={state.value} value={state.value}>
+                    {state.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <CustomLabel htmlFor="city_id" text="City" />
+            <Select
+              value={formData.city_id}
+              onValueChange={(value) =>
+                setFormData({ ...formData, city_id: value })
+              }
+              disabled={!formData.state_id || cityOptions.length === 0}
+            >
+              <SelectTrigger className="w-full px-4 h-[54px] py-3 bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
+                <SelectValue placeholder="Select City" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {cityOptions.map((city) => (
+                  <SelectItem key={city.value} value={city.value}>
+                    {city.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <CustomLabel htmlFor="businessType" text="Business Type" />
+            <Select
+              value={formData.businessType}
+              onValueChange={(value) =>
+                setFormData({ ...formData, businessType: value })
+              }
+            >
+              <SelectTrigger className="w-full px-4 h-[54px] py-3 bg-white border border-[#EEEEEE] rounded-lg placeholder:text-[16px] font-normal text-[#7C7C7C] leading-[22px]">
+                <SelectValue placeholder="Business Type" />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                <SelectItem value="products">Products</SelectItem>
+                <SelectItem value="services">Services</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -165,9 +330,10 @@ export function BusinessProfileEdit({
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-[#F28C0D] text-sm font-semibold hover:bg-[#F28C0D] text-white rounded-[32px] lg:text-[16px] lg:leading-[22px]"
+              disabled={isPending}
+              className="bg-[#F28C0D] text-sm font-semibold hover:bg-[#F28C0D] text-white rounded-[32px] lg:text-[16px] lg:leading-[22px] disabled:opacity-50"
             >
-              Save Changes
+              {isPending ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </CardContent>
