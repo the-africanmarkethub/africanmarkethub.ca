@@ -1,5 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import APICall from "@/utils/ApiCall";
+import { QUERY_KEY } from "@/constants/vendor/queryKeys";
 
 // Standalone API call function
 export async function createProductApi(data: any) {
@@ -15,7 +16,13 @@ export async function createProductApi(data: any) {
 }
 
 export function useCreateProduct() {
+  const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: createProductApi,
+    onSuccess: () => {
+      // Invalidate products queries to refetch the list
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.products] });
+    },
   });
 }

@@ -27,7 +27,7 @@ export function useCreateProduct() {
       Object.entries(data).forEach(([key, value]) => {
         if (key === "images" && Array.isArray(value)) {
           value.forEach((file: File, index: number) => {
-            formData.append(`images[${index}]`, file);
+            formData.append(`images.${index}`, file);
           });
         } else if (value instanceof Date) {
           formData.append(key, value.toISOString());
@@ -80,7 +80,7 @@ export function useUpdateProduct(id: string) {
       Object.entries(data).forEach(([key, value]) => {
         if (key === "images" && Array.isArray(value)) {
           value.forEach((file: File, index: number) => {
-            formData.append(`images[${index}]`, file);
+            formData.append(`images.${index}`, file);
           });
         } else if (value instanceof Date) {
           formData.append(key, value.toISOString());

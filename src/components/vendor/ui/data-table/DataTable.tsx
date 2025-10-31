@@ -345,43 +345,58 @@ export function DataTable<T extends { id: string | number }>({
             </TableRow>
           </TableHeader>
           <TableBody className="bg-[#FFFFFF] rounded-b-2xl">
-            {data.map((item) => (
-              <TableRow key={item.id}>
-                {enableSelection && (
-                  <TableCell>
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-300"
-                      onChange={() => handleSelectionChange([item])}
-                    />
-                  </TableCell>
-                )}
-                {columns.map((column) => (
-                  <TableCell
-                    key={`${item.id}-${String(column.accessorKey)}`}
-                    className="min-w-[120px] sm:min-w-[150px] px-3 py-4"
-                  >
-                    <div
-                      className="max-w-[200px] truncate"
-                      title={
-                        column.cell
-                          ? undefined
-                          : getNestedValue(item, String(column.accessorKey))
-                      }
-                    >
-                      {column.cell
-                        ? column.cell(item)
-                        : getNestedValue(item, String(column.accessorKey))}
-                    </div>
-                  </TableCell>
-                ))}
-                {rowActions && (
-                  <TableCell className="min-w-[100px] px-3 py-4">
-                    {rowActions(item)}
-                  </TableCell>
-                )}
+            {data.length === 0 ? (
+              <TableRow>
+                <TableCell 
+                  colSpan={
+                    columns.length + 
+                    (enableSelection ? 1 : 0) + 
+                    (rowActions ? 1 : 0)
+                  } 
+                  className="text-center py-12 text-muted-foreground"
+                >
+                  No data available
+                </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              data.map((item) => (
+                <TableRow key={item.id}>
+                  {enableSelection && (
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300"
+                        onChange={() => handleSelectionChange([item])}
+                      />
+                    </TableCell>
+                  )}
+                  {columns.map((column) => (
+                    <TableCell
+                      key={`${item.id}-${String(column.accessorKey)}`}
+                      className="min-w-[120px] sm:min-w-[150px] px-3 py-4"
+                    >
+                      <div
+                        className="max-w-[200px] truncate"
+                        title={
+                          column.cell
+                            ? undefined
+                            : getNestedValue(item, String(column.accessorKey))
+                        }
+                      >
+                        {column.cell
+                          ? column.cell(item)
+                          : getNestedValue(item, String(column.accessorKey))}
+                      </div>
+                    </TableCell>
+                  ))}
+                  {rowActions && (
+                    <TableCell className="min-w-[100px] px-3 py-4">
+                      {rowActions(item)}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

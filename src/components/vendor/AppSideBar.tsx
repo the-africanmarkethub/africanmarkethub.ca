@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/vendor/auth-context";
 import {
   LayoutDashboard,
   Package,
@@ -169,6 +170,7 @@ const getNavigationItems = (isService: boolean) => [
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   
   // Get shop details to determine if it's a service or product shop
@@ -311,7 +313,10 @@ export function AppSidebar() {
         </nav>
       </SidebarContent>
       <SidebarFooter>
-        <button className="flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+        <button 
+          onClick={logout}
+          className="flex w-full items-center gap-3 rounded-lg py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
           <LogOut className="h-4 w-4" />
           Sign Out
         </button>

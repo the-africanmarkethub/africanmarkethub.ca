@@ -18,11 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/vendor/ui/select";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, ArrowLeft, Edit } from "lucide-react";
 import useColor from "@/hooks/vendor/useColor";
 import useSizes from "@/hooks/vendor/useSizes";
 import { useShopDetails } from "@/hooks/vendor/useShopDetails";
 import { useCreateProduct } from "@/hooks/vendor/useCreateProduct";
+import { useProduct } from "@/hooks/vendor/useProduct";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -31,6 +32,13 @@ interface Variation {
   quantity: string;
   size_id: string;
   color_id: string;
+}
+
+interface ApiVariation {
+  price: number | string;
+  quantity: number | string;
+  size_id: number | string;
+  color_id: number | string;
 }
 
 interface ProductFormData {
@@ -54,12 +62,6 @@ interface ProductFormData {
   available_to?: string;
   // Other fields
   notify_user: boolean;
-  discount_type?: string;
-  discount_value?: string;
-  shipping_option?: string;
-  date_added?: string;
-  time?: string;
-  expiry_date?: string;
 }
 
 type Color = { id: number; name: string; hexcode: string };
@@ -70,11 +72,6 @@ type ColorOption = {
   value: string;
   hex: string;
 };
-
-const SHIPPING_OPTIONS = [
-  { label: "Free Shipping", value: "free" },
-  { label: "Expedited Shipping", value: "expedited" },
-];
 
 // Add a fallback map for color names to hex codes
 const COLOR_HEX_MAP: Record<string, string> = {
@@ -90,8 +87,18 @@ const COLOR_HEX_MAP: Record<string, string> = {
 
 export function ProductForm() {
   const router = useRouter();
+  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+  const productSlug = searchParams.get('slug');
+  const mode = searchParams.get('mode');
+  const isViewMode = mode === 'view';
+  
   const { data: shopDetails, isLoading: isLoadingShop } = useShopDetails();
   const createProductMutation = useCreateProduct();
+  
+  // Fetch product data if productSlug is provided (for view/edit mode)
+  const { data: productData, isLoading: isLoadingProduct } = useProduct(
+    productSlug || ""
+  );
 
   // Determine shop type, but only use it for categories after shop loads
   const shopType = shopDetails?.shops?.[0]?.type;
@@ -139,18 +146,14 @@ export function ProductForm() {
       available_to: "",
       // Other defaults
       notify_user: true,
-      discount_type: "percentage",
-      discount_value: "",
-      shipping_option: "",
-      date_added: "",
-      time: "",
-      expiry_date: "",
     },
   });
 
   // Additional state for main category (not submitted, just for UI)
   const [mainCategory, setMainCategory] = useState<string>("");
-  const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string[]>
+  >({});
 
   console.log(colorsData, "colorsData");
 
@@ -227,8 +230,6 @@ export function ProductForm() {
   const MAX_IMAGES = 8;
   const [images, setImages] = useState<(File | null)[]>([null]);
   const fileInputs = useRef<(HTMLInputElement | null)[]>([]);
-  const [hasDiscount, setHasDiscount] = useState(false);
-  const [hasExpiry, setHasExpiry] = useState(false);
   const [hasVariations, setHasVariations] = useState(false);
   const [variations, setVariations] = useState<Variation[]>([
     { price: "", quantity: "", size_id: "", color_id: "" },
@@ -242,9 +243,21 @@ export function ProductForm() {
     setImages((prev) => {
       const updated = [...prev];
       updated[idx] = file;
+
+      // Update form with the new images array
+      const validImages = updated.filter(Boolean) as File[];
+      form.setValue("images", validImages);
+
       return updated;
     });
-    form.setValue("images", images.filter(Boolean) as File[]);
+
+    // Clear image validation errors when a new image is selected
+    setValidationErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors["images.0"];
+      delete newErrors["images"];
+      return newErrors;
+    });
   };
 
   const handleBoxClick = (idx: number) => {
@@ -255,6 +268,28 @@ export function ProductForm() {
     if (images.length < MAX_IMAGES) {
       setImages((prev) => [...prev, null]);
     }
+  };
+
+  const handleRemoveImage = (idx: number) => {
+    setImages((prev) => {
+      const updated = [...prev];
+      updated.splice(idx, 1);
+      const finalUpdated = updated.length > 0 ? updated : [null]; // Ensure at least one slot
+
+      // Update form with the new images array
+      const validImages = finalUpdated.filter(Boolean) as File[];
+      form.setValue("images", validImages);
+
+      return finalUpdated;
+    });
+
+    // Clear image validation errors when image is removed
+    setValidationErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors["images.0"];
+      delete newErrors["images"];
+      return newErrors;
+    });
   };
 
   // Variation handling functions
@@ -283,8 +318,8 @@ export function ProductForm() {
     try {
       // Clear previous validation errors
       setValidationErrors({});
-      
-      // Create FormData for file upload support
+
+      // Create FormData directly to handle files properly
       const formData = new FormData();
 
       // Add basic fields
@@ -294,13 +329,20 @@ export function ProductForm() {
       formData.append("category_id", data.category_id);
       formData.append("notify_user", data.notify_user ? "1" : "0");
 
-      // Add images (ensure at least one image for services too)
+      // Add images from current state
       const validImages = images.filter(Boolean) as File[];
       if (validImages.length === 0) {
         toast.error("Please add at least one image");
         return;
       }
+
       validImages.forEach((image, index) => {
+        console.log(
+          `Adding image[${index}]:`,
+          image.name,
+          image.type,
+          image.size
+        );
         formData.append(`images[${index}]`, image);
       });
 
@@ -346,56 +388,55 @@ export function ProductForm() {
           return;
         }
 
-        if (data.pricing_model) formData.append("pricing_model", data.pricing_model);
-        if (data.delivery_method) formData.append("delivery_method", data.delivery_method);
-        formData.append("estimated_delivery_time", data.estimated_delivery_time);
-        
-        // Convert available_days to JSON string array format
+        if (data.pricing_model)
+          formData.append("pricing_model", data.pricing_model);
+        if (data.delivery_method)
+          formData.append("delivery_method", data.delivery_method);
+        formData.append(
+          "estimated_delivery_time",
+          data.estimated_delivery_time
+        );
         formData.append("available_days", JSON.stringify(data.available_days));
-        
         formData.append("available_from", data.available_from);
         formData.append("available_to", data.available_to);
       }
 
-      // Add optional fields
-      if (data.discount_type && data.discount_value) {
-        formData.append("discount_type", data.discount_type);
-        formData.append("discount_value", data.discount_value);
-      }
-
-      if (data.expiry_date) {
-        formData.append("expiry_date", data.expiry_date);
-      }
-
-      // Submit the form
+      // Submit FormData directly to API using APICall
       await createProductMutation.mutateAsync(formData);
 
       toast.success(`${itemType} created successfully!`);
-      router.push("/vendor/products"); // Redirect to products management page
+      router.push("/vendor/products/manage"); // Redirect to products management page
     } catch (error) {
       console.error("Error creating product:", error);
-      
+
       // Handle validation errors from API
-      const apiError = error as { response?: { data?: { errors?: Record<string, string[]>, message?: string } }, message?: string };
+      const apiError = error as {
+        response?: {
+          data?: { errors?: Record<string, string[]>; message?: string };
+        };
+        message?: string;
+      };
       if (apiError?.response?.data?.errors) {
         const errors = apiError.response.data.errors;
         setValidationErrors(errors); // Store validation errors for display
-        
-        // Show first validation error as toast
-        const firstField = Object.keys(errors)[0];
-        const firstError = errors[firstField][0];
-        toast.error(`${firstField.replace(/_/g, ' ')}: ${firstError}`);
-        
-        // Set form errors for all validation errors
-        Object.entries(errors).forEach(([field, messages]) => {
-          const fieldMessages = messages as string[];
-          if (fieldMessages.length > 0) {
-            form.setError(field as keyof ProductFormData, {
-              type: 'manual',
-              message: fieldMessages[0]
-            });
+
+        // Create better error messages
+        const errorCount = Object.keys(errors).length;
+        const errorMessages = Object.entries(errors).map(
+          ([field, messages]) => {
+            const fieldName = field.replace(/_/g, " ").replace(".", " ");
+            return `${fieldName}: ${(messages as string[])[0]}`;
           }
-        });
+        );
+
+        // Show user-friendly toast message
+        if (errorCount === 1) {
+          toast.error(errorMessages[0]);
+        } else {
+          toast.error(
+            `Please fix ${errorCount} validation errors. Check the form fields below.`
+          );
+        }
       } else if (apiError?.message) {
         toast.error(apiError.message);
       } else {
@@ -414,11 +455,76 @@ export function ProductForm() {
     }
   }, [isService, form]);
 
-  // Show loading state while fetching shop details
-  if (isLoadingShop) {
+  // Populate form with existing product data for view/edit mode
+  React.useEffect(() => {
+    if (productData && productSlug) {
+      const product = productData;
+      
+      // Reset form with product data
+      form.reset({
+        title: product.title || "",
+        description: product.description || "",
+        features: product.features || "",
+        category_id: product.category_id?.toString() || "",
+        regular_price: product.regular_price || "",
+        sales_price: product.sales_price || "",
+        quantity: product.quantity?.toString() || "",
+        notify_user: product.notify_user === 1,
+        images: [], // Images will be handled separately
+        // Service-specific fields
+        pricing_model: product.pricing_model || "",
+        delivery_method: product.delivery_method || "",
+        estimated_delivery_time: product.estimated_delivery_time || "",
+        available_days: product.available_days || [],
+        available_from: product.available_from || "",
+        available_to: product.available_to || "",
+      });
+
+      // Handle variations if they exist
+      if (product.variations && product.variations.length > 0) {
+        setHasVariations(true);
+        setVariations(product.variations.map((v: ApiVariation) => ({
+          price: v.price?.toString() || "",
+          quantity: v.quantity?.toString() || "",
+          size_id: v.size_id?.toString() || "",
+          color_id: v.color_id?.toString() || "",
+        })));
+      }
+
+      // Handle images - convert URLs to display (for view mode)
+      if (product.images && product.images.length > 0) {
+        // Note: In view/edit mode, we display existing images but don't preload as File objects
+        // The user would need to re-upload images if they want to change them
+      }
+    }
+  }, [productData, productSlug, form]);
+
+  // Clear validation errors when fields are updated
+  React.useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name && Object.keys(validationErrors).length > 0) {
+        setValidationErrors((prev) => {
+          const newErrors = { ...prev };
+          // Clear the specific field error
+          delete newErrors[name];
+          // Also clear related errors (e.g., category_id clears category errors)
+          if (name === "category_id") {
+            delete newErrors["category_id"];
+          }
+          return newErrors;
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, validationErrors]);
+
+  // Show loading state while fetching data
+  if (isLoadingShop || (productSlug && isLoadingProduct)) {
     return (
       <div className="flex-1 bg-[#F8F8F8] flex items-center justify-center h-screen">
-        <p className="text-gray-500">Loading shop details...</p>
+        <p className="text-gray-500">
+          {isLoadingShop ? "Loading shop details..." : "Loading product data..."}
+        </p>
       </div>
     );
   }
@@ -426,26 +532,34 @@ export function ProductForm() {
   return (
     <div className="flex-1 bg-[#F8F8F8]">
       <div className="flex items-center gap-4 p-8">
-        <h2 className="text-xl font-semibold">Add New {itemType}</h2>
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/vendor/products/manage")}
+          className="p-2 hover:bg-gray-100"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <h2 className="text-xl font-semibold">
+          {isViewMode ? `View ${itemType}` : `Add New ${itemType}`}
+        </h2>
+        {isViewMode && (
+          <Button
+            variant="outline"
+            onClick={() => {
+              const newUrl = `/vendor/products/new?slug=${productSlug}&mode=edit`;
+              router.push(newUrl);
+            }}
+            className="ml-auto border-[#F28C0D] text-[#F28C0D] hover:bg-[#F28C0D] hover:text-white"
+          >
+            <Edit className="w-4 h-4 mr-2" />
+            Edit {itemType}
+          </Button>
+        )}
       </div>
       <FormProvider {...form}>
         <div className="px-8">
           <Card className="p-8 border-none bg-[#FFFFFF] w-full">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Validation Error Summary */}
-              {Object.keys(validationErrors).length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                  <h4 className="text-red-800 font-medium mb-2">Please fix the following errors:</h4>
-                  <ul className="text-red-700 text-sm space-y-1">
-                    {Object.entries(validationErrors).map(([field, errors]) => (
-                      <li key={field}>
-                        <strong>{field.replace(/_/g, ' ')}:</strong> {errors[0]}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              
               <div className="space-y-6">
                 <CustomFormField
                   control={form.control}
@@ -488,11 +602,17 @@ export function ProductForm() {
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      {categories.map((c: Category) => (
-                        <SelectItem key={c.id} value={c.id.toString()}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
+                      {categories && categories.length > 0 ? (
+                        categories.map((c: Category) => (
+                          <SelectItem key={c.id} value={c.id.toString()}>
+                            {c.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                          No categories available
+                        </div>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -514,6 +634,11 @@ export function ProductForm() {
                     isEditable
                   />
                 )}
+                {validationErrors.category_id && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {validationErrors.category_id[0]}
+                  </p>
+                )}
 
                 {/* Image Upload */}
                 <div className="flex gap-4">
@@ -533,14 +658,26 @@ export function ProductForm() {
                         onChange={(e) => handleImageChange(idx, e)}
                       />
                       {img ? (
-                        <Image
-                          src={URL.createObjectURL(img)}
-                          alt={`preview-${idx}`}
-                          width={128}
-                          height={128}
-                          className="object-cover w-full h-full rounded"
-                          onClick={(e) => e.stopPropagation()}
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={URL.createObjectURL(img)}
+                            alt={`preview-${idx}`}
+                            width={128}
+                            height={128}
+                            className="object-cover w-full h-full rounded"
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveImage(idx);
+                            }}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
                       ) : (
                         <>
                           <span className="text-3xl text-orange-500">+</span>
@@ -563,6 +700,11 @@ export function ProductForm() {
                   Images need to be 600x600 and 2000x2000 pixels. White
                   backgrounds are recommended. Maximum image size 2Mb
                 </p>
+                {validationErrors["images.0"] && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {validationErrors["images.0"][0]}
+                  </p>
+                )}
                 {/* Variation Toggle - only show for products, not services */}
                 {!isService && (
                   <div className="flex items-center gap-2">
@@ -570,7 +712,9 @@ export function ProductForm() {
                       checked={hasVariations}
                       onCheckedChange={setHasVariations}
                     />
-                    <span className="font-medium">Enable Product Variations</span>
+                    <span className="font-medium">
+                      Enable Product Variations
+                    </span>
                   </div>
                 )}
 
@@ -726,7 +870,7 @@ export function ProductForm() {
                     )}
                   </div>
                 )}
-                
+
                 {/* Service-specific fields */}
                 {isService && (
                   <>
@@ -771,19 +915,38 @@ export function ProductForm() {
                       isEditable
                     />
                     <div>
-                      <label className="block mb-1 text-sm font-medium">Available Days</label>
+                      <label className="block mb-1 text-sm font-medium">
+                        Available Days
+                      </label>
                       <div className="grid grid-cols-2 gap-2">
-                        {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                          <label key={day} className="flex items-center space-x-2">
+                        {[
+                          "Monday",
+                          "Tuesday",
+                          "Wednesday",
+                          "Thursday",
+                          "Friday",
+                          "Saturday",
+                          "Sunday",
+                        ].map((day) => (
+                          <label
+                            key={day}
+                            className="flex items-center space-x-2"
+                          >
                             <input
                               type="checkbox"
                               value={day}
-                              checked={form.watch("available_days")?.includes(day) || false}
+                              checked={
+                                form.watch("available_days")?.includes(day) ||
+                                false
+                              }
                               onChange={(e) => {
-                                const currentDays = form.getValues("available_days") || [];
+                                const currentDays =
+                                  form.getValues("available_days") || [];
                                 const updatedDays = e.target.checked
                                   ? [...currentDays, day]
-                                  : currentDays.filter((d: string) => d !== day);
+                                  : currentDays.filter(
+                                      (d: string) => d !== day
+                                    );
                                 form.setValue("available_days", updatedDays);
                               }}
                               className="rounded border-gray-300"
@@ -795,7 +958,9 @@ export function ProductForm() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block mb-1 text-sm font-medium">Available From</label>
+                        <label className="block mb-1 text-sm font-medium">
+                          Available From
+                        </label>
                         <input
                           type="time"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -803,21 +968,29 @@ export function ProductForm() {
                             const time24 = e.target.value;
                             if (time24) {
                               // Convert 24h format (HH:MM) to h:ia format
-                              const [hours, minutes] = time24.split(':');
+                              const [hours, minutes] = time24.split(":");
                               const hour24 = parseInt(hours);
-                              const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-                              const ampm = hour24 >= 12 ? 'pm' : 'am';
+                              const hour12 =
+                                hour24 === 0
+                                  ? 12
+                                  : hour24 > 12
+                                    ? hour24 - 12
+                                    : hour24;
+                              const ampm = hour24 >= 12 ? "pm" : "am";
                               const time12 = `${hour12}:${minutes}${ampm}`;
                               form.setValue("available_from", time12);
                             }
                           }}
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                          Will be saved as: {form.watch("available_from") || "h:MMam/pm format"}
+                          Will be saved as:{" "}
+                          {form.watch("available_from") || "h:MMam/pm format"}
                         </p>
                       </div>
                       <div>
-                        <label className="block mb-1 text-sm font-medium">Available To</label>
+                        <label className="block mb-1 text-sm font-medium">
+                          Available To
+                        </label>
                         <input
                           type="time"
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -825,94 +998,27 @@ export function ProductForm() {
                             const time24 = e.target.value;
                             if (time24) {
                               // Convert 24h format (HH:MM) to h:ia format
-                              const [hours, minutes] = time24.split(':');
+                              const [hours, minutes] = time24.split(":");
                               const hour24 = parseInt(hours);
-                              const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
-                              const ampm = hour24 >= 12 ? 'pm' : 'am';
+                              const hour12 =
+                                hour24 === 0
+                                  ? 12
+                                  : hour24 > 12
+                                    ? hour24 - 12
+                                    : hour24;
+                              const ampm = hour24 >= 12 ? "pm" : "am";
                               const time12 = `${hour12}:${minutes}${ampm}`;
                               form.setValue("available_to", time12);
                             }
                           }}
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                          Will be saved as: {form.watch("available_to") || "h:MMam/pm format"}
+                          Will be saved as:{" "}
+                          {form.watch("available_to") || "h:MMam/pm format"}
                         </p>
                       </div>
                     </div>
                   </>
-                )}
-                {/* Discount Toggle */}
-                <div className="flex items-center gap-2 justify-end">
-                  <span className="font-normal">Add Discount</span>
-                  <Switch
-                    checked={hasDiscount}
-                    onCheckedChange={() => setHasDiscount((prev) => !prev)}
-                  />
-                </div>
-                {hasDiscount && (
-                  <div className="flex gap-4">
-                    <CustomFormField
-                      control={form.control}
-                      name="discount_type"
-                      label="Discount Type"
-                      fieldType={FormFieldType.SELECT}
-                      options={[
-                        { label: "Percentage", value: "percentage" },
-                        { label: "Fixed", value: "fixed" },
-                      ]}
-                      isEditable
-                    />
-                    <CustomFormField
-                      control={form.control}
-                      name="discount_value"
-                      label="Discount Value"
-                      fieldType={FormFieldType.NUMBER}
-                      isEditable
-                    />
-                  </div>
-                )}
-                {!isService && (
-                  <CustomFormField
-                    control={form.control}
-                    name="shipping_option"
-                    label="Shipping Option"
-                    fieldType={FormFieldType.SELECT}
-                    options={SHIPPING_OPTIONS}
-                    isEditable
-                  />
-                )}
-                <div className="flex gap-4">
-                  <CustomFormField
-                    control={form.control}
-                    name="date_added"
-                    label="Date Added"
-                    fieldType={FormFieldType.DATE_PICKER}
-                    isEditable
-                  />
-                  <CustomFormField
-                    control={form.control}
-                    name="time"
-                    label="Time"
-                    fieldType={FormFieldType.DATE_TIME_PICKER}
-                    isEditable
-                  />
-                </div>
-                {/* Expiry Date Toggle */}
-                <div className="flex items-center gap-2 justify-end">
-                  <span className="font-normal">Add Expiry Date</span>
-                  <Switch
-                    checked={hasExpiry}
-                    onCheckedChange={() => setHasExpiry((v) => !v)}
-                  />
-                </div>
-                {hasExpiry && (
-                  <CustomFormField
-                    control={form.control}
-                    name="expiry_date"
-                    label="Expiry Date"
-                    fieldType={FormFieldType.DATE_PICKER}
-                    isEditable
-                  />
                 )}
               </div>
               <div className="flex justify-end gap-4 pt-4">

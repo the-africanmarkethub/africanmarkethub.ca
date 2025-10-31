@@ -56,7 +56,7 @@ export default async function APICall(
     data: Data,
     headers: {
       Authorization: authToken ? `Bearer ${authToken}` : undefined,
-      "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
     },
     // timeout: timeoutOverride || process.env.REACT_APP_REQUEST_TIMEOUT,
   });

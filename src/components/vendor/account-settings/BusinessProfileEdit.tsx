@@ -231,11 +231,17 @@ export function BusinessProfileEdit({
                 <SelectValue placeholder="Select Country" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                {countryOptions.map((country) => (
-                  <SelectItem key={country.value} value={country.value}>
-                    {country.label}
-                  </SelectItem>
-                ))}
+                {countryOptions && countryOptions.length > 0 ? (
+                  countryOptions.map((country) => (
+                    <SelectItem key={country.value} value={country.value}>
+                      {country.label}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                    No countries available
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -253,11 +259,17 @@ export function BusinessProfileEdit({
                 <SelectValue placeholder="Select State" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                {stateOptions.map((state) => (
-                  <SelectItem key={state.value} value={state.value}>
-                    {state.label}
-                  </SelectItem>
-                ))}
+                {stateOptions && stateOptions.length > 0 ? (
+                  stateOptions.map((state) => (
+                    <SelectItem key={state.value} value={state.value}>
+                      {state.label}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                    {!formData.country_id ? "Please select a country first" : "No states available"}
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -275,11 +287,17 @@ export function BusinessProfileEdit({
                 <SelectValue placeholder="Select City" />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                {cityOptions.map((city) => (
-                  <SelectItem key={city.value} value={city.value}>
-                    {city.label}
-                  </SelectItem>
-                ))}
+                {cityOptions && cityOptions.length > 0 ? (
+                  cityOptions.map((city) => (
+                    <SelectItem key={city.value} value={city.value}>
+                      {city.label}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                    {!formData.state_id ? "Please select a state first" : "No cities available"}
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>

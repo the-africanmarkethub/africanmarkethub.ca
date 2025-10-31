@@ -49,6 +49,15 @@ export const CreateCouponDialog = (props: Props) => {
       return;
     }
 
+    // Date validation - ensure end date is after start date
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
+    
+    if (endDate <= startDate) {
+      toast.error("The end time field must be a date after start time.");
+      return;
+    }
+
     // Create payload that matches the CouponForm structure
     const couponData = {
       product_id: productId,
@@ -188,11 +197,17 @@ export const CreateCouponDialog = (props: Props) => {
                 <SelectValue placeholder="Select a product" />
               </SelectTrigger>
               <SelectContent>
-                {products.map((product) => (
-                  <SelectItem key={product.id} value={String(product.id)}>
-                    {product.title}
-                  </SelectItem>
-                ))}
+                {products && products.length > 0 ? (
+                  products.map((product) => (
+                    <SelectItem key={product.id} value={String(product.id)}>
+                      {product.title}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                    No products available
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>

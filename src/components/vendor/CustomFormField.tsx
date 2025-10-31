@@ -383,12 +383,18 @@ const RenderField = <TFieldValues extends FieldValues>({
               <SelectValue placeholder={props.placeholder} />
             </SelectTrigger>
             <SelectContent className="bg-[#FFFFFF]">
-              {props.options?.map(
-                (option: { label: string; value: string }) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
+              {props.options && props.options.length > 0 ? (
+                props.options.map(
+                  (option: { label: string; value: string }) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  )
                 )
+              ) : (
+                <div className="px-8 py-4 text-center text-muted-foreground text-sm">
+                  No data available
+                </div>
               )}
             </SelectContent>
           </Select>
