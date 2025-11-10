@@ -12,6 +12,7 @@ import { useEarnings } from "@/hooks/vendor/useEarnings";
 import { useWithdraw } from "@/hooks/vendor/useWithdraw";
 import { WithdrawalModal } from "@/components/vendor/modals/withdrawal-modal";
 import TableSkeletonLoader from "@/components/vendor/TableSkeletonLoader";
+import { toast } from "sonner";
 
 interface Withdrawal {
   id: string;
@@ -79,8 +80,8 @@ export default function WithdrawalPage() {
       withdrawal.status === "approved"
         ? "Completed"
         : withdrawal.status === "pending"
-        ? "Pending"
-        : "Failed",
+          ? "Pending"
+          : "Failed",
   });
 
   const withdrawals: Withdrawal[] =
@@ -88,7 +89,7 @@ export default function WithdrawalPage() {
       transformWithdrawalToTableItem
     ) || [];
   const totalEarning = earningsResponse?.data?.total_earning || "0.00CAD";
-  const hasWithdrawals = !withdrawalLoading && withdrawals.length > 0;
+  // const hasWithdrawals = !withdrawalLoading && withdrawals.length > 0;
   const isLoading = withdrawalLoading || earningsLoading;
 
   // Handle withdrawal
@@ -97,7 +98,7 @@ export default function WithdrawalPage() {
     if (availableEarnings > 0) {
       setIsWithdrawalModalOpen(true);
     } else {
-      alert("No funds available for withdrawal");
+      toast.error("No funds available for withdrawal");
     }
   };
 
@@ -107,10 +108,10 @@ export default function WithdrawalPage() {
       {
         onSuccess: () => {
           setIsWithdrawalModalOpen(false);
-          alert("Withdrawal request submitted successfully!");
+          toast.success("Withdrawal request submitted successfully!");
         },
         onError: (error: Error) => {
-          alert(`Withdrawal failed: ${error?.message || "Unknown error"}`);
+          toast.error(`Withdrawal failed: ${error?.message || "Unknown error"}`);
         },
       }
     );
@@ -134,8 +135,8 @@ export default function WithdrawalPage() {
             item.status === "Completed"
               ? "bg-green-100 text-green-800 border-green-200"
               : item.status === "Pending"
-              ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-              : "bg-red-100 text-red-800 border-red-200"
+                ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                : "bg-red-100 text-red-800 border-red-200"
           }
         >
           {item.status}
@@ -230,7 +231,7 @@ export default function WithdrawalPage() {
           <div className="p-6 text-center text-red-500">
             Error loading withdrawal history: {withdrawalError.message}
           </div>
-        ) : hasWithdrawals ? (
+        ) : (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Recent Withdrawals</h2>
             <Card className="p-0 bg-white border-none">
@@ -252,17 +253,6 @@ export default function WithdrawalPage() {
                 }
               />
             </Card>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-24 bg-white rounded-lg">
-            <div className="w-32 h-32 bg-[#FFF6D5] rounded-full flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-[#E67E22] rounded-full flex items-center justify-center">
-                <span className="text-2xl">😊</span>
-              </div>
-            </div>
-            <p className="text-lg font-medium text-gray-700 mb-2">
-              You don&apos;t have any recent withdrawal
-            </p>
           </div>
         )}
       </div>

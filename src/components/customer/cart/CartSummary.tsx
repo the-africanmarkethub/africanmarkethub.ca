@@ -95,7 +95,7 @@ export default function CartSummary({ cart }: { cart: CartItem[] }) {
         </div>
       </div>
 
-      <Link href="/checkout" className="w-full block">
+      <Link href="/customer/checkout" className="w-full block">
         <Button
           className="w-full text-sm md:text-base mt-4 md:mt-6 rounded-full bg-primary hover:bg-primary-dark"
           size="lg"

@@ -8,6 +8,7 @@ import {
 import { AddToCartPayload } from "@/types/customer/cart.types";
 import { QUERY_KEY } from "@/constants/customer/queryKeys";
 import { getAuthToken } from "@/utils/header";
+import { toast } from "sonner";
 
 export const useGetCart = () => {
   const token = typeof window !== "undefined" ? getAuthToken() : null;
@@ -23,8 +24,11 @@ export const useAddToCart = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: AddToCartPayload) => addToCart(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.cart] });
+      if (data?.message) {
+        toast.success(data.message);
+      }
     },
   });
 };

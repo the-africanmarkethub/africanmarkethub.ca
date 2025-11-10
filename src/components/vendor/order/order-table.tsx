@@ -179,7 +179,7 @@ export function OrderTable({
   };
 
   const handleView = (item: OrderWithProductImage) => {
-    router.push(`/orders/${item.id}`);
+    router.push(`/vendor/orders/${item.id}`);
   };
 
   const rowActions = (item: OrderWithProductImage) => (

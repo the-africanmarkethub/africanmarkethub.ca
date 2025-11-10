@@ -34,7 +34,8 @@ export default function Home() {
                 Welcome to Africa&apos;s leading online marketplace.
               </h1>
               <p className="text-sm leading-relaxed font-normal text-gray-600">
-                Discover a variety of authentic African products, from fashion and crafts to fresh produce and electronics.
+                Discover a variety of authentic African products, from fashion
+                and crafts to fresh produce and electronics.
               </p>
             </div>
             <div className="flex gap-2">
@@ -68,7 +69,7 @@ export default function Home() {
                 <SubmitButton className="w-[250px] text-sm rounded-[39px] h-14">
                   Explore market place
                 </SubmitButton>
-                <Link href="/sign-up">
+                <Link href="/customer/sign-up">
                   <SubmitButton className="w-[153px] bg-[#FFFFFF] text-[#0D0C0D] hover:bg-[#FFFFFF] border border-[#9C5432] rounded-[39px] h-14">
                     Get started
                   </SubmitButton>

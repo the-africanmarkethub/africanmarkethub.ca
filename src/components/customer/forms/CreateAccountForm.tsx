@@ -44,7 +44,7 @@ const formSchema = z.object({
   }),
   email: z.string().email(),
   phone: z.string().min(12, {
-    message: "Phone number must be at least 10 characters.",
+    message: "Please enter a valid Canadian phone number.",
   }),
   password: z
     .string()

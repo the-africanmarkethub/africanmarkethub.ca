@@ -8,22 +8,21 @@ interface CheckoutData {
 }
 
 interface CheckoutResponse {
-  success: boolean;
+  status: string;
   message?: string;
+  payment_link?: string;
+  payment_qr_code?: string;
   data?: any;
 }
 
 async function performCheckout(data: CheckoutData): Promise<CheckoutResponse> {
   const response = await APICall("/customer/checkout", "POST", data);
-  return response.data;
+  return response;
 }
 
 export function useCheckout() {
   return useMutation({
     mutationFn: performCheckout,
-    onSuccess: (data) => {
-      toast.success(data.message || "Checkout successful!");
-    },
     onError: (error: any) => {
       toast.error(
         error.response?.data?.message || 

@@ -4,6 +4,7 @@ import SubmitButton from "@/components/customer/SubmitButton";
 import ProductsDisplay from "@/components/customer/product/ProductsDisplay";
 import RecommendedProductCarousel from "@/components/customer/product/RecommendedProductCarousel";
 import TabSwitcher from "@/components/customer/product/TabSwitcher";
+import ProductPageSkeleton from "@/components/customer/ProductPageSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useProduct } from "@/hooks/customer/useProduct";
@@ -254,7 +255,7 @@ export default function Page() {
   };
 
   if (isProductLoading) {
-    return <span>Loading...</span>;
+    return <ProductPageSkeleton />;
   }
 
   if (status === "error") {

@@ -87,37 +87,47 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (token && localCart.length > 0) {
         setIsSyncing(true);
         toast.info("Syncing your cart...");
-        // Extract only the essential fields for API sync
-        const cartItemsForSync: AddToCartPayloadItem[] = localCart.map(
-          (item) => ({
-            product_id: item.product_id,
-            quantity: item.quantity,
-            color_id: item.color_id,
-            size_id: item.size_id,
-          })
-        );
+        
+        try {
+          // Extract only the essential fields for API sync
+          const cartItemsForSync: AddToCartPayloadItem[] = localCart.map(
+            (item) => ({
+              product_id: item.product_id,
+              quantity: item.quantity,
+              color_id: item.color_id,
+              size_id: item.size_id,
+            })
+          );
 
-        await addToCartMutation.mutateAsync(
-          { cart_items: cartItemsForSync },
-          {
-            onSuccess: () => {
-              toast.success("Cart synced successfully!");
-              setLocalCart([]);
-              localStorage.removeItem("cart");
-              queryClient.invalidateQueries({ queryKey: [QUERY_KEY.cart] });
-            },
-            onError: () => {
-              toast.error("Failed to sync cart. Please try again.");
-            },
-            onSettled: () => {
-              setIsSyncing(false);
-            },
-          }
-        );
+          await addToCartMutation.mutateAsync(
+            { cart_items: cartItemsForSync },
+            {
+              onSuccess: () => {
+                toast.success("Cart synced successfully!");
+                setLocalCart([]);
+                localStorage.removeItem("cart");
+                queryClient.invalidateQueries({ queryKey: [QUERY_KEY.cart] });
+              },
+              onError: (error) => {
+                console.error("Cart sync failed:", error);
+                toast.error("Failed to sync cart. Your items are saved locally.");
+              },
+              onSettled: () => {
+                setIsSyncing(false);
+              },
+            }
+          );
+        } catch (error) {
+          console.error("Cart sync error:", error);
+          toast.error("Failed to sync cart. Your items remain in local storage.");
+          setIsSyncing(false);
+        }
+      } else {
+        setIsSyncing(false);
       }
     };
     syncCart();
-  }, [token]);
+  }, [token, localCart.length]);
 
   const cartItems: CartItem[] = useMemo(() => {
     if (token) {
@@ -143,8 +153,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const addToCart = useCallback(
     async (item: AddToCartPayloadItem) => {
       if (token) {
-        toast.success("Item added to cart!");
-        addToCartMutation.mutate({ cart_items: [item] });
+        addToCartMutation.mutate(
+          { cart_items: [item] },
+          {
+            onError: (error) => {
+              console.error("Failed to add item to remote cart:", error);
+              toast.error("Failed to add item to cart. Please try again.");
+            }
+          }
+        );
       } else {
         // For guest users, use provided product data or fetch if not available
         try {
@@ -186,7 +203,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
     },
-    [token, localCart, addToCartMutation, queryClient]
+    [token, localCart]
   );
 
   const updateCartItemQuantity = useCallback(
@@ -215,7 +232,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         queryClient.invalidateQueries({ queryKey: [QUERY_KEY.cart] });
       }
     },
-    [token, updateCartMutation, cartItems, localCart, queryClient]
+    [token, cartItems, localCart]
   );
 
   const deleteCartItem = useCallback(
@@ -223,10 +240,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (token) {
         deleteCartMutation.mutate(itemId);
       } else {
-        // Handle local cart delete
+        // Handle local cart delete for guests
+        const updatedCart = localCart.filter((_, index) => index !== itemId);
+        setLocalCart(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY.cart] });
+        toast.success("Item removed from cart");
       }
     },
-    [token, deleteCartMutation]
+    [token, localCart]
   );
 
   const clearCart = useCallback(() => {
@@ -237,7 +259,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       setLocalCart([]);
       localStorage.removeItem("cart");
     }
-  }, [token, cartItems, deleteCartMutation]);
+  }, [token, cartItems]);
 
   const value = {
     cart: token ? remoteCart?.data || null : null,

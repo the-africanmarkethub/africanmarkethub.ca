@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Control, FieldValues } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/select";
 import { CreateAddressPayload, Address } from "@/services/addressService";
 import { Country, State, City } from "country-state-city";
+import CustomFormField from "@/components/customer/CustomFormField";
+import { FormFieldType } from "@/constants/customer/formFieldType";
+import { Form } from "@/components/ui/form";
 
 interface AddressFormProps {
   onSubmit: (data: CreateAddressPayload) => void;
@@ -35,15 +38,7 @@ export default function AddressForm({
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>("");
   const [selectedStateCode, setSelectedStateCode] = useState<string>("");
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-    // trigger,
-    reset,
-  } = useForm<CreateAddressPayload>({
+  const form = useForm<CreateAddressPayload>({
     mode: "onBlur",
     defaultValues: initialData
       ? {
@@ -66,34 +61,39 @@ export default function AddressForm({
         },
   });
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+    reset,
+    control,
+  } = form;
+
   const selectedCountry = watch("country");
   const selectedState = watch("state");
 
   // Track if form is initialized to prevent resetting on country change during edit
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Load states when country changes
+  // Load states when country changes - since we only support Canada, always load Canadian states
   useEffect(() => {
-    if (selectedCountry) {
-      const country = countries.find((c) => c.name === selectedCountry);
-      if (country) {
-        setSelectedCountryCode(country.isoCode);
-        const countryStates = State.getStatesOfCountry(country.isoCode);
-        setStates(countryStates);
+    const canada = countries.find((c) => c.name === "Canada");
+    if (canada) {
+      setSelectedCountryCode(canada.isoCode);
+      const countryStates = State.getStatesOfCountry(canada.isoCode);
+      setStates(countryStates);
 
-        // Only reset state and city when country changes after initialization
-        // Don't reset during initial load when editing
-        if (isInitialized) {
-          setValue("state", "");
-          setValue("city", "");
-          setCities([]);
-        }
+      // Only reset state and city when country changes after initialization
+      // Don't reset during initial load when editing
+      if (isInitialized && selectedCountry !== "Canada") {
+        setValue("state", "");
+        setValue("city", "");
+        setCities([]);
       }
-    } else {
-      setStates([]);
-      setCities([]);
     }
-  }, [selectedCountry, countries, setValue, isInitialized]);
+  }, [countries, setValue, isInitialized, selectedCountry]);
 
   // Load cities when state changes
   useEffect(() => {
@@ -162,25 +162,26 @@ export default function AddressForm({
     }
   }, [initialData, countries, reset]);
 
-  // Initialize Canada states by default for new addresses
+  // Initialize Canada states by default since we only support Canada
   useEffect(() => {
-    if (!initialData && selectedCountry === "Canada") {
-      const canada = countries.find((c) => c.name === "Canada");
-      if (canada) {
-        setSelectedCountryCode(canada.isoCode);
-        const canadaStates = State.getStatesOfCountry(canada.isoCode);
-        setStates(canadaStates);
-      }
+    const canada = countries.find((c) => c.name === "Canada");
+    if (canada) {
+      setSelectedCountryCode(canada.isoCode);
+      const canadaStates = State.getStatesOfCountry(canada.isoCode);
+      setStates(canadaStates);
+      // Ensure the country is always set to Canada
+      setValue("country", "Canada", { shouldValidate: true });
     }
-  }, [selectedCountry, countries, initialData]);
+  }, [countries, setValue]);
 
   return (
-    <form
-      onSubmit={handleSubmit((data) => {
-        onSubmit(data);
-      })}
-      className="space-y-6"
-    >
+    <Form {...form}>
+      <form
+        onSubmit={handleSubmit((data) => {
+          onSubmit(data);
+        })}
+        className="space-y-6"
+      >
       {/* Hidden inputs for select field validation */}
       <input
         {...register("country", { required: "Country is required" })}
@@ -254,30 +255,22 @@ export default function AddressForm({
             Country/Region
           </Label>
           <Select
-            value={watch("country")}
-            onValueChange={(value) =>
-              setValue("country", value, { shouldValidate: true })
-            }
+            value="Canada"
+            onValueChange={() => {}} // No-op since it's always Canada
+            disabled
           >
-            <SelectTrigger className="w-[274.67px] h-[54px] ">
-              <SelectValue placeholder="Select country" />
+            <SelectTrigger className="w-full h-[54px]">
+              <SelectValue placeholder="Canada" />
             </SelectTrigger>
             <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.isoCode} value={country.name}>
-                  <span className="flex items-center gap-2">
-                    <span>{country.flag}</span>
-                    <span>{country.name}</span>
-                  </span>
-                </SelectItem>
-              ))}
+              <SelectItem value="Canada">
+                <span className="flex items-center gap-2">
+                  <span>🇨🇦</span>
+                  <span>Canada</span>
+                </span>
+              </SelectItem>
             </SelectContent>
           </Select>
-          {errors.country && (
-            <p className="text-sm text-red-500 mt-1">
-              {errors.country.message}
-            </p>
-          )}
         </div>
 
         <div>
@@ -291,7 +284,7 @@ export default function AddressForm({
             }
             disabled={!selectedCountry || states.length === 0}
           >
-            <SelectTrigger className="w-[274.67px] h-[54px] ">
+            <SelectTrigger className="w-full h-[54px]">
               <SelectValue placeholder="State" />
             </SelectTrigger>
             <SelectContent>
@@ -344,7 +337,7 @@ export default function AddressForm({
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="zipCode" className="text-gray-900 font-medium">
             Zip Code
@@ -354,7 +347,7 @@ export default function AddressForm({
               required: "Postal/ZIP code is required",
             })}
             placeholder="Zip Code"
-            className="w-[274.67px] h-[54px] "
+            className="w-full h-[54px]"
           />
           {errors.zip_code && (
             <p className="text-sm text-red-500 mt-1">
@@ -363,24 +356,16 @@ export default function AddressForm({
           )}
         </div>
 
-        <div className="w-full">
-          <Label htmlFor="phone" className="text-gray-900 font-medium">
-            Phone Number
-          </Label>
-          <Input
-            {...register("phone", {
-              required: "Phone number is required",
-              pattern: {
-                value: /^[0-9+\-\s()]+$/,
-                message: "Please enter a valid phone number",
-              },
-            })}
-            placeholder="Your Phone Number"
-            className="w-full h-[54px] "
+        <div>
+          <CustomFormField
+            isEditable
+            fieldType={FormFieldType.PHONE_INPUT}
+            control={control as unknown as Control<FieldValues>}
+            name="phone"
+            label="Phone Number"
+            placeholder="(123) 456-7890"
+            widthClass="w-full"
           />
-          {errors.phone && (
-            <p className="text-sm text-red-500 mt-1">{errors.phone.message}</p>
-          )}
         </div>
       </div>
 
@@ -405,6 +390,7 @@ export default function AddressForm({
           Cancel
         </Button>
       </div>
-    </form>
+      </form>
+    </Form>
   );
 }

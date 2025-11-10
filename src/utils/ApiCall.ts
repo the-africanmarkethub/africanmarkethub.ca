@@ -1,6 +1,7 @@
 // import { refreshAccessToken } from "@/hooks/useSignIn";
 import axios from "axios";
 import { toast } from "sonner";
+import { getAuthToken, isTokenExpired } from "@/utils/auth-utils";
 
 export const Base_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -12,8 +13,17 @@ export default async function APICall(
   timeoutOverride?: number | null,
   silent?: boolean
 ) {
-  // Check for vendor token first (for vendor routes), then customer token
-  const authToken = localStorage.getItem("vendorAccessToken") || localStorage.getItem("accessToken");
+  // Use consistent token detection
+  const authToken = getAuthToken();
+  
+  // Check if token is expired and handle it
+  if (authToken && isTokenExpired(authToken)) {
+    console.warn("Token expired, clearing auth data");
+    // Clear expired tokens but don't automatically redirect
+    // Let the component handle the redirect
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("vendorAccessToken");
+  }
 
   // Create a clean axios instance for this request
   const axiosInstance = axios.create();
@@ -70,15 +80,31 @@ export default async function APICall(
 
     if (response.status >= 400 && response.status < 500) {
       if (response.status === 401) {
-        // Don't clear localStorage on 401 errors to prevent unwanted redirects
-        // 401 errors should only show error messages, not clear auth state
-        // If we need to handle token expiration, it should be done explicitly elsewhere
+        // Handle authentication failures
+        console.warn("Authentication failed (401)");
+        
+        // Clear invalid tokens
+        const currentToken = getAuthToken();
+        if (currentToken) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("vendorAccessToken");
+          
+          // For cart operations, show specific message
+          if (Url.includes("/cart")) {
+            toast.error("Session expired. Your cart items will be saved locally.");
+          } else {
+            toast.error("Session expired. Please sign in again.");
+          }
+        } else {
+          toast.error("Authentication required");
+        }
+      } else {
+        toast.error(
+          response?.data?.message ||
+            response?.data?.responseMessage ||
+            response?.data
+        );
       }
-      toast.error(
-        response?.data?.message ||
-          response?.data?.responseMessage ||
-          response?.data
-      );
       return null;
     }
 

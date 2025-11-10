@@ -294,6 +294,7 @@ const RenderField = <TFieldValues extends FieldValues>({
         >
           <PhoneInput
             defaultCountry="CA"
+            countries={["CA"]}
             placeholder={props.placeholder}
             international
             withCountryCallingCode

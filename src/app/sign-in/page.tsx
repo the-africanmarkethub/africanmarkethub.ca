@@ -30,7 +30,8 @@ export default function SignInSelectionPage() {
               <span className="text-[#F28C0D] block">Leading Marketplace</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Choose how you&apos;d like to experience our platform - shop for authentic African products or sell your own
+              Choose how you&apos;d like to experience our platform - shop for
+              authentic African products or sell your own
             </p>
           </div>
 
@@ -43,13 +44,16 @@ export default function SignInSelectionPage() {
                   <div className="w-20 h-20 bg-gradient-to-br from-[#F28C0D] to-orange-500 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <ShoppingBag className="w-10 h-10 text-white" />
                   </div>
-                  
+
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">I&apos;m a Customer</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                      I&apos;m a Customer
+                    </h2>
                     <p className="text-gray-600 mb-6">
-                      Discover authentic African products, from fashion and crafts to fresh produce and electronics
+                      Discover authentic African products, from fashion and
+                      crafts to fresh produce and electronics
                     </p>
-                    
+
                     <div className="space-y-2 text-sm text-gray-500">
                       <div className="flex items-center justify-center space-x-2">
                         <div className="w-1 h-1 bg-[#F28C0D] rounded-full"></div>
@@ -81,13 +85,16 @@ export default function SignInSelectionPage() {
                   <div className="w-20 h-20 bg-gradient-to-br from-[#9C5432] to-amber-800 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <Store className="w-10 h-10 text-white" />
                   </div>
-                  
+
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-3">I&apos;m a Vendor</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                      I&apos;m a Vendor
+                    </h2>
                     <p className="text-gray-600 mb-6">
-                      Start selling your products to customers across Africa and grow your business with us
+                      Start selling your products to customers across Canada and
+                      grow your business with us
                     </p>
-                    
+
                     <div className="space-y-2 text-sm text-gray-500">
                       <div className="flex items-center justify-center space-x-2">
                         <div className="w-1 h-1 bg-[#9C5432] rounded-full"></div>
@@ -117,8 +124,8 @@ export default function SignInSelectionPage() {
           <div className="text-center mt-12">
             <p className="text-gray-600">
               Don&apos;t have an account?{" "}
-              <Link 
-                href="/sign-up" 
+              <Link
+                href="/sign-up"
                 className="text-[#F28C0D] hover:text-orange-600 font-semibold hover:underline transition-colors duration-300"
               >
                 Create one here

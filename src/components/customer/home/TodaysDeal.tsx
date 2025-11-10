@@ -6,7 +6,7 @@ import { useProductDeals } from "@/hooks/customer/useProductDeals";
 
 function convertDealToProduct(deal: any): Product {
   return {
-    id: deal.product.id,
+    id: deal.id,
     title: deal.product.title,
     slug: deal.product.slug,
     description: deal.product.description,

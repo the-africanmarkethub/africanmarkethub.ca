@@ -37,7 +37,7 @@ export default function Home() {
                   <SubmitButton className="w-[190px] md:w-[250px] text-sm rounded-[39px] h-[44px] md:h-14">
                     Explore market place
                   </SubmitButton>
-                  <Link href="/sign-up">
+                  <Link href="/customer/sign-up">
                     <SubmitButton className="w-[120px] text-sm md:w-[153px] bg-[#FFFFFF] text-[#0D0C0D] hover:bg-[#FFFFFF] border border-[#9C5432] rounded-[39px] h-14">
                       Get started
                     </SubmitButton>

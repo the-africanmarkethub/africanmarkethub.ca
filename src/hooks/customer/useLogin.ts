@@ -26,7 +26,21 @@ export function useLogin() {
     mutationFn: ({ email, password, ip_address, device_name }: LoginData) => {
       return loginUser({ email, password, ip_address, device_name });
     },
-    onSuccess: (userData: User) => {
+    onSuccess: (userData: any) => {
+      console.log("Login response received:", userData);
+      
+      // Extract token from different possible response structures
+      let token = userData.token || 
+                  userData.access_token || 
+                  userData.authorisation?.token ||
+                  userData.authorization?.token;
+      
+      if (!token) {
+        console.error("No token found in response:", userData);
+        toast.error("Authentication failed - no token received");
+        return;
+      }
+
       // Check if user role is customer
       const userRole = userData.user?.role;
 
@@ -39,8 +53,10 @@ export function useLogin() {
       }
 
       // Store both token and user data to localStorage
-      localStorage.setItem("accessToken", userData.token);
+      localStorage.setItem("accessToken", token);
       localStorage.setItem("user", JSON.stringify(userData));
+      
+      console.log("Token saved to localStorage:", token);
       
       // Update React Query cache
       queryClient.setQueryData(["user"], userData);

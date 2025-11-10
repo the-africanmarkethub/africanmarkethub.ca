@@ -7,12 +7,23 @@ export function clearAuthData() {
   localStorage.removeItem("redirectUrl");
 }
 
-export function getAuthToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("accessToken");
+export function clearVendorAuthData() {
+  localStorage.removeItem("vendorAccessToken");
+  localStorage.removeItem("vendorRefreshToken");
 }
 
+// Use the consolidated getAuthToken from header.ts
+export { getAuthToken, getCustomerToken, getVendorToken } from "./header";
+
 export function isTokenExpired(token: string): boolean {
+  // Check if token looks like Laravel Sanctum token (format: id|hash)
+  if (token.includes("|")) {
+    // Laravel Sanctum tokens don't have built-in expiration
+    // They expire based on server-side configuration
+    // Return false to let the server validate it
+    return false;
+  }
+
   try {
     // Basic JWT decode (for exp claim)
     const payload = token.split(".")[1];
@@ -23,7 +34,8 @@ export function isTokenExpired(token: string): boolean {
     const currentTime = Date.now() / 1000;
     return decoded.exp < currentTime;
   } catch {
-    // Invalid token format
-    return true;
+    // Invalid token format for JWT, but might be valid for other token types
+    // Let the server validate it
+    return false;
   }
 }

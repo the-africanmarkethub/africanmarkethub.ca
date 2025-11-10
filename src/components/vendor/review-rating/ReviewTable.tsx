@@ -1,8 +1,7 @@
 import { CircleCheckBig, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/vendor/ui/button";
-// import TableSkeletonLoader from "@/components/TableSkeletonLoader";
-// import { useGetReviews } from "@/hooks/useReview";
+import { useGetReviews } from "@/hooks/vendor/useReview";
 import { type Review } from "../dashboard/recent-review";
 import { DataTable } from "@/components/vendor/ui/data-table/DataTable";
 import Image from "next/image";
@@ -58,10 +57,13 @@ const recentReviews = [
 ];
 
 const ReviewTable = () => {
-  // const { data: reviewResponse, isLoading } = useGetReviews();
+  const { data: reviewResponse, isLoading } = useGetReviews();
+  
+  // Use real API data if available, fallback to dummy data
+  const reviewsData = reviewResponse?.data || recentReviews;
+  
   const reviews: TableReview[] =
-    // dummy data
-    recentReviews?.map((review: Review) => {
+    reviewsData?.map((review: Review) => {
       return {
         id: review.id,
         customer:
@@ -154,7 +156,7 @@ const ReviewTable = () => {
   );
 
   return (
-    <div className="w-full rounded-2xl border border-[#DCDCDC] mx-auto pb-5 bg-white">
+    <div className="w-full rounded-2xl border border-[#DCDCDC] mx-auto pb-5 bg-white relative">
       <div className="flex justify-between items-center px-6 py-8">
         <h1 className="text-[24px] leading-[31.92px] font-medium text-gray-900">
           All Reviews
@@ -167,17 +169,22 @@ const ReviewTable = () => {
         </Link>
       </div>
 
-      {/* {isLoading ? (
-        <TableSkeletonLoader />
+      {isLoading ? (
+        <div className="px-6 py-8 text-center">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mx-auto"></div>
+          </div>
+        </div>
       ) : (
-        <DataTable data={reviews} columns={columns} rowActions={rowActions} />
-      )} */}
-      <DataTable
-        data={reviews}
-        columns={columns}
-        rowActions={rowActions}
-        enableSelection
-      />
+        <DataTable
+          data={reviews}
+          columns={columns}
+          rowActions={rowActions}
+          enableSelection
+        />
+      )}
     </div>
   );
 };

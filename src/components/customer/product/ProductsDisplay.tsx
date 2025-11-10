@@ -31,12 +31,9 @@ function ProductsDisplay({
   // Extract products array from data (handle both array and pagination object)
   const productsArray = Array.isArray(data) ? data : data?.data || [];
 
-  // Limit products based on screen size for home page
-  const displayData = showViewMore
-    ? typeof window !== "undefined" && window.innerWidth < 768
-      ? productsArray.slice(0, 8)
-      : productsArray.slice(0, 16)
-    : productsArray;
+  // For responsive behavior, show all products and let CSS handle the responsive layout
+  // We'll use Tailwind classes to hide excess items on mobile
+  const displayData = showViewMore ? productsArray.slice(0, 16) : productsArray;
 
   return (
     <div>
@@ -61,13 +58,20 @@ function ProductsDisplay({
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
         {displayData && Array.isArray(displayData) && displayData.length > 0 ? (
-          displayData.map((product) => (
-            <ItemCard
-              hasButton={hasButton}
-              item={product}
+          displayData.map((product, index) => (
+            <div
               key={product.id}
-              displayRegular={false}
-            />
+              className={showViewMore ? `${
+                // Hide items beyond 8 on mobile, beyond 16 on desktop
+                index >= 8 ? 'hidden md:block' : ''
+              } ${index >= 16 ? 'hidden' : ''}`.trim() : ''}
+            >
+              <ItemCard
+                hasButton={hasButton}
+                item={product}
+                displayRegular={false}
+              />
+            </div>
           ))
         ) : (
           <div className="col-span-2 md:col-span-3 lg:col-span-4 text-center py-8 text-gray-500">
