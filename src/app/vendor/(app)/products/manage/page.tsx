@@ -12,12 +12,16 @@ import { useDeleteProduct } from "@/hooks/vendor/useProduct";
 import { ConfirmationModal } from "@/components/vendor/ui/confirmation-modal";
 import TableSkeletonLoader from "@/components/vendor/TableSkeletonLoader";
 import { useShopDetails } from "@/hooks/vendor/useShopDetails";
+import { useProductStatistics } from "@/hooks/vendor/useProductStatistics";
+import { useGetOrderStats } from "@/hooks/vendor/useGetOrderStats";
+import Image from "next/image";
 
 // Use the Product type from the API hook
 interface ProductTableItem {
   id: number;
   slug: string;
   product: string;
+  image?: string; // Add image field
   category: string;
   qty: number;
   price: string;
@@ -90,6 +94,10 @@ const transformProductToTableItem = (product: {
     id: product.id,
     slug: product.slug,
     product: product.title || "Unknown Product",
+    image:
+      product.images && product.images.length > 0
+        ? product.images[0]
+        : undefined,
     category: product.category?.name || "Uncategorized",
     qty: product.quantity || 0,
     price: getDisplayPrice(
@@ -109,47 +117,72 @@ const transformProductToTableItem = (product: {
   };
 };
 
-const statsData = [
-  {
-    icon: "/icons/dollar-circle.svg",
-    items: [
-      { label: "Sales", value: "250,000CAD" },
-      { label: "Revenue", value: "130,000CAD" },
-    ],
-  },
-  {
-    icon: "/icons/eye.svg",
-    items: [
-      { label: "Views", value: "30" },
-      { label: "Clicks", value: "24" },
-      { label: "Star Rating", value: "30" },
-    ],
-  },
+const getStatsData = (stats: any) => [
   {
     icon: "/icons/box.svg",
     items: [
-      { label: "Low Stock", value: "250" },
-      { label: "Expired", value: "10" },
-      { label: "Returns", value: "10" },
+      {
+        label: "Total Products",
+        value: stats?.total_products?.toString() || "0",
+      },
+      {
+        label: "Active Products",
+        value: stats?.active_products?.toString() || "0",
+      },
+    ],
+  },
+  {
+    icon: "/icons/eyes.svg",
+    items: [
+      { label: "Views", value: stats?.views?.toString() || "0" },
+      {
+        label: "Reviewed Products",
+        value: stats?.reviewed_products?.toString() || "0",
+      },
+    ],
+  },
+  {
+    icon: "/icons/shoppingbag.svg",
+    items: [
+      {
+        label: "Ordered Products",
+        value: stats?.ordered_products?.toString() || "0",
+      },
+      {
+        label: "Inactive Products",
+        value: stats?.inactive_products?.toString() || "0",
+      },
     ],
   },
 ];
 
-const orderStatsData = [
+const getOrderStatsData = (stats: any) => [
   {
-    icon: "/icons/shopping-bag.svg",
+    icon: "/icons/shoppingbag.svg",
     items: [
-      { label: "All Orders", value: "250" },
-      { label: "Pending", value: "10" },
-      { label: "Completed", value: "240" },
+      { label: "Total Orders", value: stats?.total_orders?.toString() || "0" },
+      { label: "New Orders", value: stats?.new_orders?.toString() || "0" },
+      {
+        label: "Ongoing Orders",
+        value: stats?.ongoing_orders?.toString() || "0",
+      },
     ],
   },
   {
-    icon: "/icons/alert-triangle.svg",
+    icon: "/icons/shoppingbag.svg",
     items: [
-      { label: "Cancelled", value: "30" },
-      { label: "Return", value: "24" },
-      { label: "Damaged", value: "24" },
+      {
+        label: "Shipped Orders",
+        value: stats?.shipped_orders?.toString() || "0",
+      },
+      {
+        label: "Cancelled Orders",
+        value: stats?.cancelled_orders?.toString() || "0",
+      },
+      {
+        label: "Returned Orders",
+        value: stats?.returned_orders?.toString() || "0",
+      },
     ],
   },
 ];
@@ -187,6 +220,28 @@ const getColumns = (itemType: string) => [
   {
     header: itemType,
     accessorKey: "product",
+    cell: (item: ProductTableItem) => (
+      <div className="flex items-center gap-3">
+        {item.image ? (
+          <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+            <Image
+              src={item.image}
+              alt={item.product}
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+            <span className="text-gray-400 text-xs">No img</span>
+          </div>
+        )}
+        <span className="font-medium text-gray-900 truncate">
+          {item.product}
+        </span>
+      </div>
+    ),
   },
   {
     header: "Category",
@@ -258,6 +313,8 @@ export default function ProductManagement() {
 
   // Get shop details to determine if it's a service or product shop
   const { data: shopDetails } = useShopDetails();
+  const { data: productStats } = useProductStatistics();
+  const { data: orderStats } = useGetOrderStats();
   const isService = shopDetails?.shops?.[0]?.type === "services";
   const itemType = isService ? "Service" : "Product";
 
@@ -353,14 +410,14 @@ export default function ProductManagement() {
 
       {/* Product Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {statsData.map((stat, index) => (
+        {getStatsData(productStats?.data).map((stat, index) => (
           <StatsCard key={index} {...stat} />
         ))}
       </div>
 
       {/* Order Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {orderStatsData.map((stat, index) => (
+        {getOrderStatsData(orderStats?.data).map((stat, index) => (
           <StatsCard key={index} {...stat} />
         ))}
       </div>

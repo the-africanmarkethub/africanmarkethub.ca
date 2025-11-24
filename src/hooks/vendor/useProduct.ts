@@ -8,7 +8,10 @@ async function fetchProduct(productSlug: string | number) {
 }
 
 async function deleteProduct(productId: number) {
-  const response = await APICall(`/vendor/product/delete/${productId}`, "DELETE");
+  const response = await APICall(
+    `/vendor/product/delete/${productId}`,
+    "DELETE"
+  );
   return response.data;
 }
 

@@ -257,7 +257,7 @@
   }
 
   .shad-select-content {
-    @apply border-gray-300 !important;
+    @apply border-gray-300 bg-white !important;
   }
 
   .shad-dialog {

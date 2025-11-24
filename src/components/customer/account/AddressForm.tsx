@@ -55,7 +55,7 @@ export default function AddressForm({
           city: "",
           state: "",
           zip_code: "",
-          country: "Canada",
+          country: "CA",
           phone: "",
           address_label: "Home",
         },
@@ -79,7 +79,7 @@ export default function AddressForm({
 
   // Load states when country changes - since we only support Canada, always load Canadian states
   useEffect(() => {
-    const canada = countries.find((c) => c.name === "Canada");
+    const canada = countries.find((c) => c.isoCode === "CA");
     if (canada) {
       setSelectedCountryCode(canada.isoCode);
       const countryStates = State.getStatesOfCountry(canada.isoCode);
@@ -87,7 +87,7 @@ export default function AddressForm({
 
       // Only reset state and city when country changes after initialization
       // Don't reset during initial load when editing
-      if (isInitialized && selectedCountry !== "Canada") {
+      if (isInitialized && selectedCountry !== "CA") {
         setValue("state", "");
         setValue("city", "");
         setCities([]);
@@ -98,7 +98,8 @@ export default function AddressForm({
   // Load cities when state changes
   useEffect(() => {
     if (selectedState && selectedCountryCode) {
-      const state = states.find((s) => s.name === selectedState);
+      // selectedState is now already the state code (isoCode)
+      const state = states.find((s) => s.isoCode === selectedState);
       if (state) {
         setSelectedStateCode(state.isoCode);
         const stateCities = City.getCitiesOfState(
@@ -119,44 +120,47 @@ export default function AddressForm({
   // Reset form and initialize dropdowns when editing existing address
   useEffect(() => {
     if (initialData) {
-      // Reset the form with the new data
+      // Initialize country dropdown - handle both code and name formats
+      let countryCode = initialData.country;
+      if (initialData.country && initialData.country.length > 2) {
+        // If it's a full country name, find its code
+        const country = countries.find((c) => c.name === initialData.country);
+        countryCode = country ? country.isoCode : "CA";
+      } else if (!countryCode) {
+        countryCode = "CA";
+      }
+      
+      // Initialize state - handle both code and name formats
+      let stateCode = initialData.state;
+      if (countryCode) {
+        const countryStates = State.getStatesOfCountry(countryCode);
+        setStates(countryStates);
+        
+        if (initialData.state && initialData.state.length > 2) {
+          // If it's a full state name, find its code
+          const state = countryStates.find((s: any) => s.name === initialData.state);
+          stateCode = state ? state.isoCode : "";
+        }
+        
+        if (stateCode) {
+          setSelectedStateCode(stateCode);
+          const stateCities = City.getCitiesOfState(countryCode, stateCode);
+          setCities(stateCities);
+        }
+      }
+      
+      // Reset the form with the converted data
       reset({
         street_address: initialData.street_address || "",
         city: initialData.city || "",
-        state: initialData.state || "",
+        state: stateCode || "",
         zip_code: initialData.zip_code || "",
-        country: initialData.country || "",
+        country: countryCode || "CA",
         phone: initialData.phone || "",
         address_label: initialData.address_label || "Home",
       });
 
-      // Initialize country dropdown
-      if (initialData.country) {
-        const country = countries.find((c) => c.name === initialData.country);
-        if (country) {
-          setSelectedCountryCode(country.isoCode);
-          const countryStates = State.getStatesOfCountry(country.isoCode);
-          setStates(countryStates);
-
-          // Initialize state dropdown
-          if (initialData.state) {
-            const state = countryStates.find(
-              (s: any) => s.name === initialData.state
-            );
-            if (state) {
-              setSelectedStateCode(state.isoCode);
-              const stateCities = City.getCitiesOfState(
-                country.isoCode,
-                state.isoCode
-              );
-              setCities(stateCities);
-
-              // If there are no cities in the dropdown, the city field will be a text input
-              // and it already has the value from the reset() call above
-            }
-          }
-        }
-      }
+      setSelectedCountryCode(countryCode);
       // Mark as initialized after setting up the form
       // setTimeout(() => setIsInitialized(true), 100);
     }
@@ -164,13 +168,13 @@ export default function AddressForm({
 
   // Initialize Canada states by default since we only support Canada
   useEffect(() => {
-    const canada = countries.find((c) => c.name === "Canada");
+    const canada = countries.find((c) => c.isoCode === "CA");
     if (canada) {
       setSelectedCountryCode(canada.isoCode);
       const canadaStates = State.getStatesOfCountry(canada.isoCode);
       setStates(canadaStates);
-      // Ensure the country is always set to Canada
-      setValue("country", "Canada", { shouldValidate: true });
+      // Ensure the country is always set to CA (Canada code)
+      setValue("country", "CA", { shouldValidate: true });
     }
   }, [countries, setValue]);
 
@@ -255,7 +259,7 @@ export default function AddressForm({
             Country/Region
           </Label>
           <Select
-            value="Canada"
+            value="CA"
             onValueChange={() => {}} // No-op since it's always Canada
             disabled
           >
@@ -263,7 +267,7 @@ export default function AddressForm({
               <SelectValue placeholder="Canada" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Canada">
+              <SelectItem value="CA">
                 <span className="flex items-center gap-2">
                   <span>🇨🇦</span>
                   <span>Canada</span>
@@ -285,11 +289,13 @@ export default function AddressForm({
             disabled={!selectedCountry || states.length === 0}
           >
             <SelectTrigger className="w-full h-[54px]">
-              <SelectValue placeholder="State" />
+              <SelectValue placeholder="State">
+                {watch("state") && states.find(s => s.isoCode === watch("state"))?.name || watch("state")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {states.map((state) => (
-                <SelectItem key={state.isoCode} value={state.name}>
+                <SelectItem key={state.isoCode} value={state.isoCode}>
                   {state.name}
                 </SelectItem>
               ))}
@@ -363,7 +369,7 @@ export default function AddressForm({
             control={control as unknown as Control<FieldValues>}
             name="phone"
             label="Phone Number"
-            placeholder="(123) 456-7890"
+            placeholder="+1 604 555 5555"
             widthClass="w-full"
           />
         </div>

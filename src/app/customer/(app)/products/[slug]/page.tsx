@@ -30,7 +30,8 @@ export default function Page() {
 
   const searchParams = useSearchParams();
   const categoryName = searchParams.get("categoryName");
-  const validCategoryName = categoryName === "undefined" ? undefined : categoryName;
+  const validCategoryName =
+    categoryName === "undefined" ? undefined : categoryName;
 
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<Color | null>(null);
@@ -78,8 +79,21 @@ export default function Page() {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.profile] });
 
+      // Store service info for the chat
+      const serviceInfo = {
+        id: product.id.toString(),
+        title: product.title,
+        description: product.description || "",
+        shop: {
+          name: product.shop.name,
+          logo: product.shop.logo
+        }
+      };
+      
+      sessionStorage.setItem("pendingServiceInfo", JSON.stringify(serviceInfo));
+      
       toast.success("Successfully authenticated with Google!");
-      router.push("/account/chats");
+      router.push("/customer/account/chats?autoCreate=true");
       setInitiatedGoogleAuth(false); // Reset the flag
     }
   }, [session, product?.type, router, initiatedGoogleAuth, queryClient]);
@@ -232,8 +246,20 @@ export default function Page() {
         return;
       }
 
-      // User is already authenticated - just redirect to chats (no Google auth needed)
-      router.push("/account/chats");
+      // User is already authenticated - redirect to chats with service info
+      const serviceInfo = {
+        id: product.id.toString(),
+        title: product.title,
+        description: product.description || "",
+        shop: {
+          name: product.shop.name,
+          logo: product.shop.logo
+        }
+      };
+      
+      // Store service info in sessionStorage for the chat to pick up
+      sessionStorage.setItem("pendingServiceInfo", JSON.stringify(serviceInfo));
+      router.push("/customer/account/chats?autoCreate=true");
       return;
     }
 

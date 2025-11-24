@@ -43,9 +43,15 @@ const formSchema = z.object({
     message: "Username must be at least 2 characters.",
   }),
   email: z.string().email(),
-  phone: z.string().min(12, {
-    message: "Please enter a valid Canadian phone number.",
-  }),
+  phone: z.string()
+    .min(1, { message: "Phone number is required" })
+    .refine((phone) => {
+      // Canadian phone number validation for +1XXXXXXXXXX format
+      const phoneRegex = /^\+1[2-9]\d{9}$/;
+      return phoneRegex.test(phone);
+    }, {
+      message: "Please enter a valid Canadian phone number (+1 XXX XXX XXXX)",
+    }),
   password: z
     .string()
     .min(8, { message: "Password must be at least 8 characters long" })
@@ -185,7 +191,7 @@ function CreateAccountForm({ referralCode }: CreateAccountFormProps) {
               control={form.control as unknown as Control<FieldValues>}
               name="phone"
               label="Phone Number"
-              placeholder="Your Phone Number"
+              placeholder="+1 604 555 5555"
               widthClass="w-full"
             />
             <CustomFormField

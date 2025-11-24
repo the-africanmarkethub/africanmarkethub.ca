@@ -12,6 +12,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import CustomFormField from "@/components/vendor/CustomFormField";
 import { FormFieldType } from "@/constants/vendor/formFieldType";
 import SubmitButton from "@/components/vendor/SubmitButton";
+import { toast } from "sonner";
 
 interface WithdrawalModalProps {
   isOpen: boolean;
@@ -44,12 +45,12 @@ export function WithdrawalModal({
     const amount = parseFloat(data.amount);
 
     if (amount <= 0) {
-      alert("Please enter a valid amount");
+      toast.error("Please enter a valid amount");
       return;
     }
 
     if (amount > maxAmount) {
-      alert("Amount cannot exceed available earnings");
+      toast.error("Amount cannot exceed available earnings");
       return;
     }
 

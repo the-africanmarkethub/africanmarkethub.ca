@@ -19,6 +19,13 @@ export interface Product {
   vendorId: string;
   createdAt: string;
   updatedAt: string;
+  // Dimension fields
+  weight?: number;
+  height?: number;
+  length?: number;
+  width?: number;
+  size_unit?: 'cm' | 'm' | 'ft' | 'in';
+  weight_unit?: 'kg' | 'g' | 'lb' | 'oz';
 }
 
 export type ProductStatus = "active" | "draft" | "archived" | "out_of_stock";
@@ -57,6 +64,13 @@ export interface CreateProductRequest {
   sizes: string[];
   colors: string[];
   tags: string[];
+  // Dimension fields
+  weight?: number;
+  height?: number;
+  length?: number;
+  width?: number;
+  size_unit?: 'cm' | 'm' | 'ft' | 'in';
+  weight_unit?: 'kg' | 'g' | 'lb' | 'oz';
 }
 
 export interface UpdateProductRequest extends Partial<CreateProductRequest> {

@@ -60,6 +60,13 @@ interface ProductFormData {
   available_days?: string[];
   available_from?: string;
   available_to?: string;
+  // Dimension fields
+  weight?: string;
+  height?: string;
+  length?: string;
+  width?: string;
+  size_unit?: 'cm' | 'm' | 'ft' | 'in';
+  weight_unit?: 'kg' | 'g' | 'lb' | 'oz';
   // Other fields
   notify_user: boolean;
 }
@@ -144,6 +151,13 @@ export function ProductForm() {
       available_days: [],
       available_from: "",
       available_to: "",
+      // Dimension defaults
+      weight: "",
+      height: "",
+      length: "",
+      width: "",
+      size_unit: "cm",
+      weight_unit: "kg",
       // Other defaults
       notify_user: true,
     },
@@ -228,7 +242,7 @@ export function ProductForm() {
   }, [mainCategory, categories, form]);
 
   const MAX_IMAGES = 8;
-  const [images, setImages] = useState<(File | null)[]>([null]);
+  const [images, setImages] = useState<(File | string | null)[]>([null]);
   const fileInputs = useRef<(HTMLInputElement | null)[]>([]);
   const [hasVariations, setHasVariations] = useState(false);
   const [variations, setVariations] = useState<Variation[]>([
@@ -244,8 +258,8 @@ export function ProductForm() {
       const updated = [...prev];
       updated[idx] = file;
 
-      // Update form with the new images array
-      const validImages = updated.filter(Boolean) as File[];
+      // Update form with the new images array (only File objects, not URLs)
+      const validImages = updated.filter((img): img is File => img instanceof File);
       form.setValue("images", validImages);
 
       return updated;
@@ -276,8 +290,8 @@ export function ProductForm() {
       updated.splice(idx, 1);
       const finalUpdated = updated.length > 0 ? updated : [null]; // Ensure at least one slot
 
-      // Update form with the new images array
-      const validImages = finalUpdated.filter(Boolean) as File[];
+      // Update form with the new images array (only File objects, not URLs)
+      const validImages = finalUpdated.filter((img): img is File => img instanceof File);
       form.setValue("images", validImages);
 
       return finalUpdated;
@@ -328,6 +342,14 @@ export function ProductForm() {
       formData.append("features", data.features);
       formData.append("category_id", data.category_id);
       formData.append("notify_user", data.notify_user ? "1" : "0");
+
+      // Add dimension fields if they exist
+      if (data.weight) formData.append("weight", data.weight);
+      if (data.height) formData.append("height", data.height);
+      if (data.length) formData.append("length", data.length);
+      if (data.width) formData.append("width", data.width);
+      if (data.size_unit) formData.append("size_unit", data.size_unit);
+      if (data.weight_unit) formData.append("weight_unit", data.weight_unit);
 
       // Add images from current state
       const validImages = images.filter(Boolean) as File[];
@@ -457,15 +479,59 @@ export function ProductForm() {
 
   // Populate form with existing product data for view/edit mode
   React.useEffect(() => {
-    if (productData && productSlug) {
-      const product = productData;
+    if (productData && productData.product && productSlug) {
+      const product = productData.product;
+      
+      console.log("Full product data:", product);
+      
+      // First populate the main category if product has a category
+      const categoryId = product.category_id || product.category?.id;
+      
+      if (categoryId && categories.length > 0) {
+        console.log("Product category_id:", categoryId);
+        console.log("Product category object:", product.category);
+        console.log("Available categories:", categories);
+        
+        // Find if the category_id is a main category or subcategory
+        let foundMainCategory = "";
+        
+        // If product has a category object with parent_id, use that logic
+        if (product.category && product.category.parent_id) {
+          foundMainCategory = product.category.parent_id.toString();
+        } else {
+          // Otherwise, search through the categories structure
+          for (const mainCat of categories) {
+            if (mainCat.id.toString() === categoryId.toString()) {
+              // It's a main category
+              foundMainCategory = mainCat.id.toString();
+              break;
+            } else if (mainCat.children) {
+              // Check if it's a subcategory
+              for (const subCat of mainCat.children) {
+                if (subCat.id.toString() === categoryId.toString()) {
+                  foundMainCategory = mainCat.id.toString();
+                  break;
+                }
+              }
+            }
+            if (foundMainCategory) break;
+          }
+        }
+        
+        console.log("Found main category:", foundMainCategory);
+        if (foundMainCategory) {
+          setMainCategory(foundMainCategory);
+        } else {
+          console.log("No main category found for category_id:", categoryId);
+        }
+      }
       
       // Reset form with product data
       form.reset({
         title: product.title || "",
         description: product.description || "",
         features: product.features || "",
-        category_id: product.category_id?.toString() || "",
+        category_id: categoryId?.toString() || "",
         regular_price: product.regular_price || "",
         sales_price: product.sales_price || "",
         quantity: product.quantity?.toString() || "",
@@ -478,6 +544,13 @@ export function ProductForm() {
         available_days: product.available_days || [],
         available_from: product.available_from || "",
         available_to: product.available_to || "",
+        // Dimension fields
+        weight: product.weight?.toString() || "",
+        height: product.height?.toString() || "",
+        length: product.length?.toString() || "",
+        width: product.width?.toString() || "",
+        size_unit: product.size_unit || "cm",
+        weight_unit: product.weight_unit || "kg",
       });
 
       // Handle variations if they exist
@@ -491,13 +564,60 @@ export function ProductForm() {
         })));
       }
 
-      // Handle images - convert URLs to display (for view mode)
+      // Handle images - populate with existing image URLs
       if (product.images && product.images.length > 0) {
-        // Note: In view/edit mode, we display existing images but don't preload as File objects
-        // The user would need to re-upload images if they want to change them
+        const existingImages = product.images.map((imageUrl: string) => imageUrl);
+        // Add one empty slot for adding new images (unless we're at max capacity)
+        const imageSlots = [...existingImages];
+        if (imageSlots.length < MAX_IMAGES) {
+          imageSlots.push(null);
+        }
+        setImages(imageSlots);
+      } else {
+        // If no existing images, start with one empty slot
+        setImages([null]);
       }
     }
-  }, [productData, productSlug, form]);
+  }, [productData, productSlug, form, mode, categories, setMainCategory]);
+
+  // Separate effect to handle category population when both data is ready
+  React.useEffect(() => {
+    if (productData && productData.product && categories.length > 0 && !mainCategory) {
+      const product = productData.product;
+      const categoryId = product.category_id || product.category?.id;
+      
+      if (categoryId) {
+        console.log("Secondary category check - Product category_id:", categoryId);
+        console.log("Secondary category check - Available categories:", categories);
+        
+        let foundMainCategory = "";
+        
+        if (product.category && product.category.parent_id) {
+          foundMainCategory = product.category.parent_id.toString();
+        } else {
+          for (const mainCat of categories) {
+            if (mainCat.id.toString() === categoryId.toString()) {
+              foundMainCategory = mainCat.id.toString();
+              break;
+            } else if (mainCat.children) {
+              for (const subCat of mainCat.children) {
+                if (subCat.id.toString() === categoryId.toString()) {
+                  foundMainCategory = mainCat.id.toString();
+                  break;
+                }
+              }
+            }
+            if (foundMainCategory) break;
+          }
+        }
+        
+        console.log("Secondary category check - Found main category:", foundMainCategory);
+        if (foundMainCategory) {
+          setMainCategory(foundMainCategory);
+        }
+      }
+    }
+  }, [productData, categories, mainCategory, setMainCategory]);
 
   // Clear validation errors when fields are updated
   React.useEffect(() => {
@@ -521,7 +641,7 @@ export function ProductForm() {
   // Show loading state while fetching data
   if (isLoadingShop || (productSlug && isLoadingProduct)) {
     return (
-      <div className="flex-1 bg-[#F8F8F8] flex items-center justify-center h-screen">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8F8F8]">
         <p className="text-gray-500">
           {isLoadingShop ? "Loading shop details..." : "Loading product data..."}
         </p>
@@ -530,8 +650,8 @@ export function ProductForm() {
   }
 
   return (
-    <div className="flex-1 bg-[#F8F8F8]">
-      <div className="flex items-center gap-4 p-8">
+    <div className="min-h-screen">
+      <div className="flex items-center gap-4 p-8 bg-[#F8F8F8]">
         <Button
           variant="ghost"
           onClick={() => router.push("/vendor/products/manage")}
@@ -557,7 +677,7 @@ export function ProductForm() {
         )}
       </div>
       <FormProvider {...form}>
-        <div className="px-8">
+        <div className="px-8 pb-8 bg-[#F8F8F8]">
           <Card className="p-8 border-none bg-[#FFFFFF] w-full">
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-6">
@@ -660,7 +780,7 @@ export function ProductForm() {
                       {img ? (
                         <div className="relative w-full h-full">
                           <Image
-                            src={URL.createObjectURL(img)}
+                            src={typeof img === 'string' ? img : URL.createObjectURL(img)}
                             alt={`preview-${idx}`}
                             width={128}
                             height={128}
@@ -868,6 +988,75 @@ export function ProductForm() {
                         isEditable
                       />
                     )}
+                  </div>
+                )}
+
+                {/* Product Dimensions Section */}
+                {true && (
+                  <div className="space-y-4 p-4 border rounded-lg">
+                    <h3 className="font-semibold">Product Dimensions</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <CustomFormField
+                        control={form.control}
+                        name="weight"
+                        label="Weight"
+                        fieldType={FormFieldType.NUMBER}
+                        placeholder="0.00"
+                        isEditable
+                      />
+                      <CustomFormField
+                        control={form.control}
+                        name="weight_unit"
+                        label="Weight Unit"
+                        fieldType={FormFieldType.SELECT}
+                        options={[
+                          { label: "Kilograms (kg)", value: "kg" },
+                          { label: "Grams (g)", value: "g" },
+                          { label: "Pounds (lb)", value: "lb" },
+                          { label: "Ounces (oz)", value: "oz" },
+                        ]}
+                        isEditable
+                      />
+                      <CustomFormField
+                        control={form.control}
+                        name="height"
+                        label="Height"
+                        fieldType={FormFieldType.NUMBER}
+                        placeholder="0.00"
+                        isEditable
+                      />
+                      <CustomFormField
+                        control={form.control}
+                        name="length"
+                        label="Length"
+                        fieldType={FormFieldType.NUMBER}
+                        placeholder="0.00"
+                        isEditable
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <CustomFormField
+                        control={form.control}
+                        name="width"
+                        label="Width"
+                        fieldType={FormFieldType.NUMBER}
+                        placeholder="0.00"
+                        isEditable
+                      />
+                      <CustomFormField
+                        control={form.control}
+                        name="size_unit"
+                        label="Size Unit"
+                        fieldType={FormFieldType.SELECT}
+                        options={[
+                          { label: "Centimeters (cm)", value: "cm" },
+                          { label: "Meters (m)", value: "m" },
+                          { label: "Feet (ft)", value: "ft" },
+                          { label: "Inches (in)", value: "in" },
+                        ]}
+                        isEditable
+                      />
+                    </div>
                   </div>
                 )}
 

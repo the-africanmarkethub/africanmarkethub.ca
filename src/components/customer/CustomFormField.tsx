@@ -167,13 +167,15 @@ const RenderField = ({
           <PhoneInput
             defaultCountry="CA"
             countries={["CA"]}
-            placeholder={props.placeholder}
+            placeholder={props.placeholder || "+1 604 555 5555"}
             international
             withCountryCallingCode
             value={field.value}
             onChange={field.onChange}
-            className="placeholder:text-base p-2 md:p-4  md:rounded-xl"
+            className="placeholder:text-base p-2 md:p-4 md:rounded-xl"
             maxLength={17}
+            displayInitialValueAsLocalNumber={false}
+            addInternationalOption={false}
           />
         </FormControl>
       );

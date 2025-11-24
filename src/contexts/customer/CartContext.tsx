@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEY } from "@/constants/customer/queryKeys";
 import APICall from "@/utils/ApiCall";
+import { usePathname } from "next/navigation";
 
 interface CartContextType {
   cart: Cart | null;
@@ -41,12 +42,18 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = useQueryClient();
+  const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
   const [localCart, setLocalCart] = useState<LocalCartItem[]>([]);
   const [isSyncing, setIsSyncing] = useState(true);
 
-  // Get remote cart for logged-in users
-  const { data: remoteCart, isLoading: isRemoteCartLoading } = useGetCart();
+  // Check if we're on vendor side - don't load cart for vendors
+  const isVendorSide = pathname?.startsWith('/vendor') || false;
+
+  // Get remote cart for logged-in users (but not for vendor pages)
+  const { data: remoteCart, isLoading: isRemoteCartLoading } = useGetCart({
+    enabled: !isVendorSide, // Disable cart API calls on vendor side
+  });
 
   // Mutations for remote cart
   const addToCartMutation = useAddToCart();
@@ -59,6 +66,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const storedToken = getAuthToken();
     setToken(storedToken);
+
+    // Skip cart operations on vendor side
+    if (isVendorSide) {
+      setIsSyncing(false);
+      return;
+    }
 
     try {
       const savedCart = localStorage.getItem("cart");
@@ -79,10 +92,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem("cart");
     }
     setIsSyncing(false);
-  }, []);
+  }, [isVendorSide]);
 
   // Sync local cart to remote when user logs in
   useEffect(() => {
+    // Skip cart sync on vendor side
+    if (isVendorSide) {
+      return;
+    }
+
     const syncCart = async () => {
       if (token && localCart.length > 0) {
         setIsSyncing(true);
@@ -127,7 +145,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
     syncCart();
-  }, [token, localCart.length]);
+  }, [token, localCart.length, isVendorSide]);
 
   const cartItems: CartItem[] = useMemo(() => {
     if (token) {

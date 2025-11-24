@@ -24,6 +24,13 @@ export interface Product {
   discount?: number;
   colors?: Color[];
   sizes?: string[];
+  // Dimension fields
+  weight?: number;
+  height?: number;
+  length?: number;
+  width?: number;
+  size_unit?: 'cm' | 'm' | 'ft' | 'in';
+  weight_unit?: 'kg' | 'g' | 'lb' | 'oz';
 }
 
 export interface Color {

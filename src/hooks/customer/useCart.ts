@@ -10,12 +10,12 @@ import { QUERY_KEY } from "@/constants/customer/queryKeys";
 import { getAuthToken } from "@/utils/header";
 import { toast } from "sonner";
 
-export const useGetCart = () => {
+export const useGetCart = (options?: { enabled?: boolean }) => {
   const token = typeof window !== "undefined" ? getAuthToken() : null;
   return useQuery({
     queryKey: [QUERY_KEY.cart],
     queryFn: getCart,
-    enabled: !!token,
+    enabled: options?.enabled !== undefined ? options.enabled && !!token : !!token,
     refetchOnWindowFocus: false,
   });
 };

@@ -14,6 +14,7 @@ import {
 import { useGetTickets } from "@/hooks/vendor/useGetTickets";
 import { tv } from "tailwind-variants";
 import TableSkeletonLoader from "../TableSkeletonLoader";
+import { VendorTicketChat } from "./vendor-ticket-chat";
 
 const ticketingTable = tv({
   slots: {
@@ -60,6 +61,7 @@ export function TicketingTable() {
     to: undefined,
   });
   const [, /* currentPage */ setCurrentPage] = useState(1);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
   const filters: TicketFilters = {
     status: selectedStatus,
@@ -106,15 +108,16 @@ export function TicketingTable() {
     },
   ];
 
-  // const handleEdit = (item: TableTicket) => {
-  //   console.log("Edit order:", item.id);
-  // };
+  const handleView = (item: TableTicket) => {
+    setSelectedTicketId(item.id);
+  };
 
-  // const handleView = (item: TableTicket) => {
-  //   router.push(`/orders/${item.id}`);
-  // };
+  const handleEdit = (item: TableTicket) => {
+    console.log("Edit ticket:", item.id);
+    // Future: implement edit functionality
+  };
 
-  const rowActions = () => (
+  const rowActions = (item: TableTicket) => (
     <button className="">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -122,13 +125,13 @@ export function TicketingTable() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className={dropdownMenuContent()}>
           <DropdownMenuItem>
-            <Button className={dropdownButton()}>
+            <Button className={dropdownButton()} onClick={() => handleView(item)}>
               <Eye className={dropdownIcon()} />
               View Details
             </Button>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Button className={dropdownButton()}>
+            <Button className={dropdownButton()} onClick={() => handleEdit(item)}>
               <Edit className={dropdownIcon()} />
               Edit
             </Button>
@@ -151,7 +154,7 @@ export function TicketingTable() {
       options: [
         { label: "All", value: "all" },
         { label: "Close", value: "close" },
-        { label: "Open", value: "Open" },
+        { label: "Open", value: "open" },
       ],
       onSelect: (value: string) => {
         setSelectedStatus(value);
@@ -181,6 +184,18 @@ export function TicketingTable() {
       },
     },
   ];
+
+  // Show ticket chat if a ticket is selected
+  if (selectedTicketId) {
+    return (
+      <div className="mt-4">
+        <VendorTicketChat 
+          ticketId={selectedTicketId} 
+          onClose={() => setSelectedTicketId(null)} 
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mt-4">
