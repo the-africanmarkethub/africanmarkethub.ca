@@ -170,12 +170,19 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addToCart = useCallback(
     async (item: AddToCartPayloadItem) => {
+      console.log("🛒 Adding to cart:", { item, hasToken: !!token });
+      
       if (token) {
+        console.log("📡 Calling API with authenticated user");
         addToCartMutation.mutate(
           { cart_items: [item] },
           {
+            onSuccess: (data) => {
+              console.log("✅ Cart API success:", data);
+              toast.success("Item added to cart!");
+            },
             onError: (error) => {
-              console.error("Failed to add item to remote cart:", error);
+              console.error("❌ Failed to add item to remote cart:", error);
               toast.error("Failed to add item to cart. Please try again.");
             }
           }

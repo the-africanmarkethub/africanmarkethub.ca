@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/vendor/auth-context";
 import { ErrorBoundary } from "@/components/vendor/error-boundary";
 import { CartProvider } from "@/contexts/customer/CartContext";
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
+import { AuthSyncProvider } from "@/components/providers/AuthSyncProvider";
 
 const lufga = localFont({
   src: [
@@ -63,6 +64,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <Common>
             <NextAuthProvider>
+              <AuthSyncProvider />
               <AuthProvider>
                 <CartProvider>
                   <ThemeProvider

@@ -50,7 +50,14 @@ const PUBLIC_ROUTES = [
   "/reset-password",
   "/email-verification",
   "/verify-otp",
-  "/create-shop"
+  "/create-shop",
+  "/vendor/sign-in",
+  "/vendor/sign-up",
+  "/vendor/forgot-password",
+  "/vendor/reset-password",
+  "/vendor/email-verification",
+  "/vendor/verify-otp",
+  "/vendor/create-shop"
 ];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -61,7 +68,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback((token: string, userData: User) => {
     console.log("Vendor AuthProvider login called with:", { token, userData });
+    console.log("User role is:", userData.user?.role);
     
+    // Check if user role is vendor
+    if (userData.user?.role !== "vendor") {
+      console.log("BLOCKING: Non-vendor attempting to login to vendor platform:", userData.user?.role);
+      toast.error("Access denied. This platform is for vendors only.");
+      // Don't save anything to localStorage or set user state
+      return; // Just return instead of throw to avoid complications
+    }
+    
+    console.log("ALLOWING: Vendor login proceeding");
     if (typeof window !== "undefined") {
       localStorage.setItem("vendorAccessToken", token);
       localStorage.setItem("vendorUser", JSON.stringify(userData));
@@ -117,9 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      setIsLoading(true);
-      const isValid = await checkAuth();
-      
       // Only apply vendor auth logic to vendor routes
       const isVendorRoute = pathname.startsWith("/vendor");
       const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
@@ -130,6 +144,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                          pathname.startsWith("/reset-password") ||
                          pathname.startsWith("/create-shop");
 
+      // Check if customer is trying to access vendor routes FIRST, before any loading
+      if (isVendorRoute && !isPublicRoute && !isAuthRoute) {
+        const customerToken = localStorage.getItem("accessToken");
+        const customerUser = localStorage.getItem("user");
+        
+        if (customerToken && customerUser) {
+          try {
+            const userData = JSON.parse(customerUser);
+            if (userData.user?.role === "customer") {
+              console.log("Customer detected trying to access vendor route, blocking access");
+              router.replace("/customer");
+              return;
+            }
+          } catch (error) {
+            console.error("Error parsing customer data:", error);
+          }
+        }
+      }
+
+      setIsLoading(true);
+      const isValid = await checkAuth();
+
       console.log("Vendor AuthProvider check:", {
         pathname,
         isVendorRoute,
@@ -138,7 +174,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthRoute,
         userRole: user?.user?.role
       });
-      
+
       // If user is a vendor and authenticated
       if (isValid && user?.user?.role === "vendor") {
         // If vendor is trying to access non-vendor routes (but not customer routes), redirect to vendor dashboard

@@ -258,10 +258,10 @@ export default function SearchBar() {
           {/* Recent Searches */}
           {!query && hasRecentSearches && (
             <div>
-              <p className="text-gray-600 text-sm mb-2 flex items-center gap-2">
+              <div className="text-gray-600 text-sm mb-2 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Recent Searches
-              </p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {recentSearches.map((searchTerm, index) => (
                   <button

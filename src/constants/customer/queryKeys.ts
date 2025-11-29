@@ -25,4 +25,5 @@ export enum QUERY_KEY {
   productSearch = "productSearch",
   referralCode = "referralCode",
   tickets = "tickets",
+  bookings = "bookings",
 }

@@ -24,7 +24,9 @@ export const signInVendor = async (
   } catch (error) {
     // Create a ValidationError object for React Query and forms
     if (axios.isAxiosError(error)) {
-      const validationError = new Error(error.response?.data?.message || error.message) as ValidationError;
+      const validationError = new Error(
+        error.response?.data?.message || error.message
+      ) as ValidationError;
       validationError.response = error.response;
       validationError.validationErrors = error.response?.data?.errors;
       throw validationError;
@@ -51,6 +53,14 @@ export function useSignIn() {
   const mutate = useMutation<LoginResponse, ValidationError, LoginRequest>({
     mutationFn: signInVendor,
     onSuccess: (data) => {
+      // Check if user is a vendor before proceeding
+      if (data.user?.role !== "vendor") {
+        toast.error("Access denied. This platform is for vendors only.");
+        throw new Error("Access denied. This platform is for vendors only.");
+      }
+
+      console.log("Vendor login successful:", data);
+
       // Use auth context to handle login - the API response already matches the expected structure
       login(data.token, data);
 

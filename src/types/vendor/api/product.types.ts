@@ -64,6 +64,7 @@ export interface CreateProductRequest {
   sizes: string[];
   colors: string[];
   tags: string[];
+  type: 'products' | 'services';
   // Dimension fields
   weight?: number;
   height?: number;

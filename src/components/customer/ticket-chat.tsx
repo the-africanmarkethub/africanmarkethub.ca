@@ -5,6 +5,7 @@ import { useCreateTicket, type CreateTicketData } from "@/hooks/customer/useCrea
 import { useGetTickets } from "@/hooks/customer/useGetTickets";
 import { useGetTicketDetails, type TicketDetails } from "@/hooks/customer/useGetTicketDetails";
 import { useSendTicketMessage, type SendMessageData } from "@/hooks/customer/useSendTicketMessage";
+import { useCreateBooking, type CreateBookingRequest, type CreateBookingResponse } from "@/hooks/customer/useCreateBooking";
 import { 
   Paperclip, 
   Send, 
@@ -17,7 +18,9 @@ import {
   Phone,
   Video,
   Info,
-  Smile
+  Smile,
+  Calendar,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -60,6 +63,15 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingData, setBookingData] = useState<Partial<CreateBookingRequest>>({
+    delivery_method: "virtual",
+    start_date: "",
+    end_date: "",
+    address: "",
+    amount: 0,
+  });
+  const [paymentResponse, setPaymentResponse] = useState<CreateBookingResponse | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState<Partial<CreateTicketData>>({
@@ -75,6 +87,7 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
   const { data: ticketsResponse, isLoading, error } = useGetTickets();
   const createTicketMutation = useCreateTicket();
   const sendMessageMutation = useSendTicketMessage();
+  const createBookingMutation = useCreateBooking();
   
   // Fetch details for selected ticket
   const { data: ticketDetailsResponse } = useGetTicketDetails(selectedTicket?.ticket_id || null);
@@ -166,6 +179,50 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
     if (file) {
       setAttachedFile(file);
     }
+  };
+
+  const handleBookingSubmit = async () => {
+    if (!selectedTicket) {
+      toast.error("Please select a ticket first");
+      return;
+    }
+
+    if (!bookingData.start_date || !bookingData.end_date || !bookingData.amount) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      const bookingPayload: CreateBookingRequest = {
+        ticket_id: selectedTicket.ticket_id,
+        delivery_method: bookingData.delivery_method || "virtual",
+        start_date: bookingData.start_date!,
+        end_date: bookingData.end_date!,
+        amount: bookingData.amount!,
+        address: bookingData.delivery_method === "physical" ? bookingData.address : undefined,
+      };
+
+      const response = await createBookingMutation.mutateAsync(bookingPayload);
+      
+      // Store payment response for display
+      setPaymentResponse(response);
+      toast.success("Booking created! Please complete payment.");
+      
+    } catch (error) {
+      console.error("Booking creation failed:", error);
+    }
+  };
+
+  const handleClosePayment = () => {
+    setPaymentResponse(null);
+    setShowBookingForm(false);
+    setBookingData({
+      delivery_method: "virtual",
+      start_date: "",
+      end_date: "",
+      address: "",
+      amount: 0,
+    });
   };
 
   const handleCreateTicket = async () => {
@@ -525,10 +582,10 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
                     <h3 className="font-semibold text-gray-900">
                       {serviceInfo ? serviceInfo.shop.name : selectedTicketDetails ? selectedTicketDetails.service_detail.name : selectedTicket.full_name}
                     </h3>
-                    <p className="text-sm text-green-500 flex items-center">
+                    <div className="text-sm text-green-500 flex items-center">
                       <div className={`w-2 h-2 rounded-full mr-2 ${serviceInfo || (selectedTicketDetails ? selectedTicketDetails.user_detail.online_status === 'online' : selectedTicket.online_status === 'online') ? 'bg-green-500' : 'bg-gray-400'}`}></div>
                       {serviceInfo ? "Service Provider" : selectedTicketDetails ? (selectedTicketDetails.user_detail.online_status === 'online' ? "Online" : "Offline") : (selectedTicket.online_status === 'online' ? "Online" : "Offline")}
-                    </p>
+                    </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
@@ -619,6 +676,15 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
                   <Smile className="w-5 h-5" />
                 </button>
                 
+                <button
+                  onClick={() => setShowBookingForm(true)}
+                  className="px-3 py-2 bg-[#F28C0D] text-white rounded-lg hover:bg-[#F28C0D]/90 transition-colors flex items-center gap-2"
+                  title="Create Booking"
+                >
+                  <Calendar className="w-4 h-4" />
+                  <span className="text-sm font-medium">Book</span>
+                </button>
+                
                 <div className="flex-1 relative">
                   <textarea
                     value={newMessage}
@@ -685,6 +751,167 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
           </div>
         )}
       </div>
+
+      {/* Booking Form Modal */}
+      {showBookingForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {paymentResponse ? "Complete Payment" : "Create Booking"}
+                </h3>
+                <button
+                  onClick={paymentResponse ? handleClosePayment : () => setShowBookingForm(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+
+              {/* Payment View */}
+              {paymentResponse ? (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <CheckCircle className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Booking Created Successfully!</h4>
+                    <p className="text-gray-600 mb-6">{paymentResponse.message}</p>
+                  </div>
+
+                  {/* QR Code */}
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-gray-700 mb-3">Scan QR Code to Pay</p>
+                    <img 
+                      src={paymentResponse.payment_qr_code} 
+                      alt="Payment QR Code"
+                      className="w-48 h-48 mx-auto border border-gray-200 rounded-lg"
+                    />
+                  </div>
+
+                  {/* Payment Link */}
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-3">Or click the link below:</p>
+                    <a
+                      href={paymentResponse.payment_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center w-full px-4 py-3 bg-[#F28C0D] text-white rounded-lg hover:bg-[#F28C0D]/90 transition-colors font-medium"
+                    >
+                      Open Payment Link
+                    </a>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleClosePayment}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* Booking Form */
+                <>
+                  <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Delivery Method
+                  </label>
+                  <select
+                    value={bookingData.delivery_method}
+                    onChange={(e) => setBookingData(prev => ({ 
+                      ...prev, 
+                      delivery_method: e.target.value as "virtual" | "physical" 
+                    }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
+                  >
+                    <option value="virtual">Virtual</option>
+                    <option value="physical">Physical</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={bookingData.start_date}
+                    onChange={(e) => setBookingData(prev => ({ ...prev, start_date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={bookingData.end_date}
+                    onChange={(e) => setBookingData(prev => ({ ...prev, end_date: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
+                    required
+                  />
+                </div>
+
+                {bookingData.delivery_method === "physical" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Address
+                    </label>
+                    <textarea
+                      value={bookingData.address}
+                      onChange={(e) => setBookingData(prev => ({ ...prev, address: e.target.value }))}
+                      placeholder="Enter delivery address"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
+                      rows={3}
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Amount
+                  </label>
+                  <input
+                    type="number"
+                    value={bookingData.amount}
+                    onChange={(e) => setBookingData(prev => ({ ...prev, amount: Number(e.target.value) }))}
+                    placeholder="Enter booking amount"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowBookingForm(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleBookingSubmit}
+                  disabled={createBookingMutation.isPending}
+                  className="flex-1 px-4 py-2 bg-[#F28C0D] text-white rounded-lg hover:bg-[#F28C0D]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {createBookingMutation.isPending ? "Creating..." : "Create Booking"}
+                </button>
+              </div>
+                </> 
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

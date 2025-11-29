@@ -236,17 +236,7 @@ export default function Page() {
 
     // Handle services differently
     if (product.type === "services") {
-      // Check if user is authenticated
-      if (!user) {
-        // User not authenticated - redirect to Google sign-in
-        setInitiatedGoogleAuth(true); // Set flag before redirecting
-        signIn("google", {
-          callbackUrl: `/products/${product.slug}`, // Return to this product page after login
-        });
-        return;
-      }
-
-      // User is already authenticated - redirect to chats with service info
+      // Prepare service info for chat
       const serviceInfo = {
         id: product.id.toString(),
         title: product.title,
@@ -259,6 +249,18 @@ export default function Page() {
       
       // Store service info in sessionStorage for the chat to pick up
       sessionStorage.setItem("pendingServiceInfo", JSON.stringify(serviceInfo));
+
+      // Check if user is authenticated
+      if (!user) {
+        // User not authenticated - redirect to Google sign-in with chat callback
+        setInitiatedGoogleAuth(true); // Set flag before redirecting
+        signIn("google", {
+          callbackUrl: "/customer/account/chats?autoCreate=true", // Go directly to chat after login
+        });
+        return;
+      }
+
+      // User is already authenticated - redirect to chats
       router.push("/customer/account/chats?autoCreate=true");
       return;
     }

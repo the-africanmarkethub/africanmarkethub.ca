@@ -342,6 +342,7 @@ export function ProductForm() {
       formData.append("features", data.features);
       formData.append("category_id", data.category_id);
       formData.append("notify_user", data.notify_user ? "1" : "0");
+      formData.append("type", isService ? "services" : "products");
 
       // Add dimension fields if they exist
       if (data.weight) formData.append("weight", data.weight);

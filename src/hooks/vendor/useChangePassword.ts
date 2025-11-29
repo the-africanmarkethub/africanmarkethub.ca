@@ -11,29 +11,27 @@ interface ChangePasswordData {
 export function useChangePassword() {
   return useMutation({
     mutationFn: async (data: ChangePasswordData) => {
-      console.log("Vendor sending password change request:", data);
       const response = await changePassword(data);
-      console.log("Vendor password change response:", response);
       return response;
     },
     onSuccess: (data) => {
-      console.log("Vendor password changed successfully:", data);
       toast.success("Password changed successfully");
     },
     onError: (error: unknown) => {
-      console.error("Vendor password change error:", error);
-      
       const err = error as any;
       let errorMessage = "Failed to change password";
-      
+
       // Handle validation errors from the API
       if (err?.response?.data) {
         const data = err.response.data;
-        
+
         // Check for validation errors in various formats
         if (data.new_password && Array.isArray(data.new_password)) {
           errorMessage = data.new_password[0];
-        } else if (data.current_password && Array.isArray(data.current_password)) {
+        } else if (
+          data.current_password &&
+          Array.isArray(data.current_password)
+        ) {
           errorMessage = data.current_password[0];
         } else if (data.message) {
           errorMessage = data.message;
@@ -41,7 +39,7 @@ export function useChangePassword() {
           errorMessage = data.error;
         }
       }
-      
+
       toast.error(errorMessage);
     },
   });
