@@ -9,7 +9,7 @@ import { Shop } from "@/types/customer/shop.types";
 
 const ShopCard = ({ shop }: { shop: Shop }) => {
   return (
-    <Link href={`/shops/${shop.slug}`} className="group">
+    <Link href={`/customer/shops/${shop.slug}`} className="group">
       <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-200">
         {/* Shop Banner */}
         <div className="relative h-48 w-full">

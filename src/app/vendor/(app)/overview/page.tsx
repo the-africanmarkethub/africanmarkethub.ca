@@ -24,7 +24,7 @@ export default function DashboardPage() {
   const { data: orderStatsData } = useGetOrderStats();
 
   const totalEarningsStats = {
-    icon: "/assets/icons/coinstack.svg",
+    icon: "/icons/coinstack.svg",
     items: [
       {
         label: "Total Earnings",
@@ -46,7 +46,7 @@ export default function DashboardPage() {
   };
 
   const allOrdersStats = {
-    icon: "/assets/icons/shoppingbag.svg",
+    icon: "/icons/shoppingbag.svg",
     items: [
       { label: "All Orders", value: orderStatsData?.data?.total_orders ?? 0 },
       { label: "Pending", value: orderStatsData?.data?.ongoing_orders ?? 0 },
@@ -101,9 +101,12 @@ export default function DashboardPage() {
                       />
                     </svg>
                   </div>
-                  <p className="text-sm text-gray-500 font-medium">No reviews yet</p>
+                  <p className="text-sm text-gray-500 font-medium">
+                    No reviews yet
+                  </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    Reviews will appear here once customers start reviewing your products
+                    Reviews will appear here once customers start reviewing your
+                    products
                   </p>
                 </div>
               )}

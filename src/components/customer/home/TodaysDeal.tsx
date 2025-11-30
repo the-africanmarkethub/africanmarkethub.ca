@@ -68,15 +68,15 @@ export default function TodaysDeal() {
 
   if (isLoading) {
     return (
-      <section className="my-12">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+      <section className="my-6 md:my-12 px-4 md:px-0">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 md:mb-6 text-center md:text-left">
           Today&apos;s Deal
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
           {[...Array(4)].map((_, index) => (
             <div
               key={index}
-              className="bg-gray-200 animate-pulse h-64 rounded-lg"
+              className="bg-gray-200 animate-pulse h-48 md:h-64 rounded-lg"
             ></div>
           ))}
         </div>
@@ -91,12 +91,12 @@ export default function TodaysDeal() {
     dealsResponse?.status === "error"
   ) {
     return (
-      <section className="my-12">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+      <section className="my-6 md:my-12 px-4 md:px-0">
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 md:mb-6 text-center md:text-left">
           Today&apos;s Deal
         </h2>
-        <div className="text-center py-8">
-          <p className="text-gray-500">
+        <div className="text-center py-6 md:py-8">
+          <p className="text-gray-500 text-sm md:text-base">
             No deal products available at the moment.
           </p>
         </div>
@@ -107,11 +107,11 @@ export default function TodaysDeal() {
   const deals = dealsResponse.data.map(convertDealToProduct);
 
   return (
-    <section className="my-12">
-      <h2 className="text-2xl md:text-3xl font-semibold mb-6">
+    <section className="my-6 md:my-12 px-4 md:px-0">
+      <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 md:mb-6 text-center md:text-left">
         Today&apos;s Deal
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 lg:gap-8">
         {deals.map((deal) => (
           <ItemCard
             key={deal.id}

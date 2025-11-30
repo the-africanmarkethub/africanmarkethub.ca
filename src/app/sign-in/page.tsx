@@ -125,7 +125,7 @@ export default function SignInSelectionPage() {
             <p className="text-gray-600">
               Don&apos;t have an account?{" "}
               <Link
-                href="/sign-up"
+                href="/customer/sign-up"
                 className="text-[#F28C0D] hover:text-orange-600 font-semibold hover:underline transition-colors duration-300"
               >
                 Create one here

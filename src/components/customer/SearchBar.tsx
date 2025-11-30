@@ -174,7 +174,7 @@ export default function SearchBar() {
 
                   return (
                     <Link
-                      href={`/products/${product.slug}`}
+                      href={`/customer/products/${product.slug}`}
                       key={product.id}
                       className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-md transition-colors"
                       onClick={() => {
@@ -229,7 +229,7 @@ export default function SearchBar() {
               {searchMutation.data.data.total > 5 && (
                 <div className="pt-2 border-t">
                   <Link
-                    href={`/search?q=${encodeURIComponent(query)}`}
+                    href={`/customer/products?search=${encodeURIComponent(query)}`}
                     className="text-primary text-sm hover:underline flex items-center justify-center gap-1"
                     onClick={() => setShowDropdown(false)}
                   >
