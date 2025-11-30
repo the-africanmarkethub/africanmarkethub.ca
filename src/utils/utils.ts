@@ -98,7 +98,6 @@ export async function getIpAddress() {
     const data = await response.json();
     return data.ip;
   } catch (error) {
-    console.error("Failed to get IP address", error);
     return "0.0.0.0"; // Fallback value
   }
 }

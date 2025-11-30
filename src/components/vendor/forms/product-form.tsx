@@ -162,7 +162,6 @@ export function ProductForm() {
     Record<string, string[]>
   >({});
 
-  console.log(colorsData, "colorsData");
 
   // Map API data to label/value/id/hex format for the form
   const COLORS: ColorOption[] = (colorsData || []).map((color: Color) => ({
@@ -187,8 +186,6 @@ export function ProductForm() {
     };
   });
 
-  console.log(COLORS, "colors");
-  console.log(SIZES, "sizes");
 
   // Define proper type for categories with children
   interface Category {
@@ -418,8 +415,6 @@ export function ProductForm() {
       toast.success(`${itemType} created successfully!`);
       router.push("/vendor/products/manage"); // Redirect to products management page
     } catch (error) {
-      console.error("Error creating product:", error);
-
       // Handle validation errors from API
       const apiError = error as {
         response?: {
@@ -501,11 +496,8 @@ export function ProductForm() {
           }
         }
 
-        console.log("Found main category:", foundMainCategory);
         if (foundMainCategory) {
           setMainCategory(foundMainCategory);
-        } else {
-          console.log("No main category found for category_id:", categoryId);
         }
       }
 
@@ -579,14 +571,6 @@ export function ProductForm() {
       const categoryId = product.category_id || product.category?.id;
 
       if (categoryId) {
-        console.log(
-          "Secondary category check - Product category_id:",
-          categoryId
-        );
-        console.log(
-          "Secondary category check - Available categories:",
-          categories
-        );
 
         let foundMainCategory = "";
 
@@ -609,10 +593,6 @@ export function ProductForm() {
           }
         }
 
-        console.log(
-          "Secondary category check - Found main category:",
-          foundMainCategory
-        );
         if (foundMainCategory) {
           setMainCategory(foundMainCategory);
         }

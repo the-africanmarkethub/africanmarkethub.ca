@@ -67,25 +67,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const login = useCallback((token: string, userData: User) => {
-    console.log("Vendor AuthProvider login called with:", { token, userData });
-    console.log("User role is:", userData.user?.role);
     
     // Check if user role is vendor
     if (userData.user?.role !== "vendor") {
-      console.log("BLOCKING: Non-vendor attempting to login to vendor platform:", userData.user?.role);
+      // Blocking non-vendor from accessing vendor platform
       toast.error("Access denied. This platform is for vendors only.");
       // Don't save anything to localStorage or set user state
       return; // Just return instead of throw to avoid complications
     }
     
-    console.log("ALLOWING: Vendor login proceeding");
+    // Allowing vendor login to proceed
     if (typeof window !== "undefined") {
       localStorage.setItem("vendorAccessToken", token);
       localStorage.setItem("vendorUser", JSON.stringify(userData));
       
-      // Verify it was saved
-      console.log("Saved to localStorage - vendorAccessToken:", localStorage.getItem("vendorAccessToken"));
-      console.log("Saved to localStorage - vendorUser:", localStorage.getItem("vendorUser"));
+      // Token and user data saved to localStorage
     }
     setUser(userData);
   }, []);
@@ -126,7 +122,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return false;
       }
     } catch (error) {
-      console.error("Auth check failed:", error);
+      // Auth check failed
       setUser(null);
       return false;
     }
@@ -153,12 +149,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           try {
             const userData = JSON.parse(customerUser);
             if (userData.user?.role === "customer") {
-              console.log("Customer detected trying to access vendor route, blocking access");
+              // Customer detected trying to access vendor route, blocking access
               router.replace("/customer");
               return;
             }
           } catch (error) {
-            console.error("Error parsing customer data:", error);
+            // Error parsing customer data
           }
         }
       }
@@ -166,20 +162,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const isValid = await checkAuth();
 
-      console.log("Vendor AuthProvider check:", {
-        pathname,
-        isVendorRoute,
-        isValid,
-        isPublicRoute,
-        isAuthRoute,
-        userRole: user?.user?.role
-      });
 
       // If user is a vendor and authenticated
       if (isValid && user?.user?.role === "vendor") {
         // If vendor is trying to access non-vendor routes (but not customer routes), redirect to vendor dashboard
         if (!isVendorRoute && !isPublicRoute && !isCustomerRoute) {
-          console.log("Vendor trying to access non-vendor route, redirecting to vendor overview");
+          // Vendor trying to access non-vendor route, redirecting to vendor overview
           router.push("/vendor/overview");
           return;
         }
@@ -189,7 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // BUT allow create-shop for customers who want to become vendors
       const isCreateShop = pathname.includes("/create-shop");
       if (isVendorRoute && !isValid && !isPublicRoute && !isAuthRoute && !isCreateShop) {
-        console.log("Redirecting to vendor sign-in");
+        // Redirecting to vendor sign-in
         router.push("/vendor/sign-in");
       }
       

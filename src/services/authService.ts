@@ -31,7 +31,6 @@ export async function signUp(payload: {
   role: string;
 }) {
   const res = await APICall("/register", "POST", payload);
-  console.log("SignUp Response:", res);
   // API now returns just { message: "Registration is active" }
   // Return the whole response object for success checking
   return res;
@@ -73,7 +72,7 @@ export const logoutUser = async () => {
   try {
     // await APICall("/logout", "POST");
   } catch (error) {
-    console.error("Server logout failed:", error);
+    // Server logout failed - handled silently
   }
 };
 
@@ -150,7 +149,6 @@ export const continueWithGoogle = async (googleData: {
 
     return data;
   } catch (error) {
-    console.error("Google authentication error:", error);
     throw error;
   }
 };

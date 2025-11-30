@@ -48,7 +48,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [isSyncing, setIsSyncing] = useState(true);
 
   // Check if we're on vendor side - don't load cart for vendors
-  const isVendorSide = pathname?.startsWith('/vendor') || false;
+  const isVendorSide = pathname?.startsWith("/vendor") || false;
 
   // Get remote cart for logged-in users (but not for vendor pages)
   const { data: remoteCart, isLoading: isRemoteCartLoading } = useGetCart({
@@ -105,7 +105,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (token && localCart.length > 0) {
         setIsSyncing(true);
         toast.info("Syncing your cart...");
-        
+
         try {
           // Extract only the essential fields for API sync
           const cartItemsForSync: AddToCartPayloadItem[] = localCart.map(
@@ -128,7 +128,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
               },
               onError: (error) => {
                 console.error("Cart sync failed:", error);
-                toast.error("Failed to sync cart. Your items are saved locally.");
+                toast.error(
+                  "Failed to sync cart. Your items are saved locally."
+                );
               },
               onSettled: () => {
                 setIsSyncing(false);
@@ -137,7 +139,9 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           );
         } catch (error) {
           console.error("Cart sync error:", error);
-          toast.error("Failed to sync cart. Your items remain in local storage.");
+          toast.error(
+            "Failed to sync cart. Your items remain in local storage."
+          );
           setIsSyncing(false);
         }
       } else {
@@ -171,7 +175,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const addToCart = useCallback(
     async (item: AddToCartPayloadItem) => {
       console.log("🛒 Adding to cart:", { item, hasToken: !!token });
-      
+
       if (token) {
         console.log("📡 Calling API with authenticated user");
         addToCartMutation.mutate(
@@ -184,7 +188,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
             onError: (error) => {
               console.error("❌ Failed to add item to remote cart:", error);
               toast.error("Failed to add item to cart. Please try again.");
-            }
+            },
           }
         );
       } else {

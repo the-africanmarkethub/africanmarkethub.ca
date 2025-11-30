@@ -38,13 +38,11 @@ export function useCreateBooking() {
 
   return useMutation<CreateBookingResponse, unknown, CreateBookingRequest>({
     mutationFn: (data: CreateBookingRequest) => createBooking(data),
-    onSuccess: (data) => {
-      toast.success("Booking created successfully:", data);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.bookings] });
-      // Don't show toast here - let the component handle the payment flow
+      // Component handles success message and payment flow
     },
     onError: (error: unknown) => {
-      console.error("Failed to create booking:", error);
 
       const err = error as {
         response?: { status: number; data?: { message?: string } };

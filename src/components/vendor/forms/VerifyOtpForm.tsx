@@ -41,7 +41,6 @@ const VerifyOtpForm = () => {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log("Form submitted", data);
     // setLoading(true);
     // const res = await verifyEmail({
     //   otp: data.pin,

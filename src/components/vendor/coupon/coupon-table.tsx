@@ -106,14 +106,6 @@ export function CouponTable() {
     couponsResponse?.data?.map(transformCouponToTableItem) || [];
   const hasCoupons = !isLoading && coupons.length > 0;
 
-  // Debug logging
-  console.log("CouponTable Debug:", {
-    isLoading,
-    error,
-    couponsResponse,
-    couponsLength: coupons.length,
-    hasCoupons,
-  });
 
   // Handler functions
   const handleEditCoupon = (coupon: CouponTableItem) => {
@@ -206,7 +198,7 @@ export function CouponTable() {
         { label: "Inactive", value: "inactive" },
         { label: "Expired", value: "expired" },
       ],
-      onSelect: (value: string) => console.log("Status filter:", value),
+      onSelect: (value: string) => {/* Status filter handler */},
     },
     {
       label: "Date",
@@ -214,7 +206,6 @@ export function CouponTable() {
       dateRange,
       onDateRangeChange: (range: DateRange) => {
         setDateRange(range);
-        console.log("Date range:", range);
       },
     },
     {
@@ -225,7 +216,7 @@ export function CouponTable() {
         { label: "Local", value: "local" },
         { label: "International", value: "international" },
       ],
-      onSelect: (value: string) => console.log("Location filter:", value),
+      onSelect: (value: string) => {/* Location filter handler */},
     },
   ];
 
@@ -277,9 +268,9 @@ export function CouponTable() {
                 totalItems={coupons.length}
                 rowsPerPage={coupons.length}
                 onPageChange={setCurrentPage}
-                onRowsPerPageChange={(rows) =>
-                  console.log("Rows per page:", rows)
-                }
+                onRowsPerPageChange={(rows) => {
+                  /* Rows per page change handler */
+                }}
               />
             </div>
           ) : (

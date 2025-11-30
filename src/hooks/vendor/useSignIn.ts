@@ -59,7 +59,6 @@ export function useSignIn() {
         throw new Error("Access denied. This platform is for vendors only.");
       }
 
-      console.log("Vendor login successful:", data);
 
       // Use auth context to handle login - the API response already matches the expected structure
       login(data.token, data);
@@ -77,7 +76,6 @@ export function useSignIn() {
       }
     },
     onError: (error: ValidationError) => {
-      console.log("Vendor login error:", error);
 
       let errorMessage = "Login failed. Please try again.";
 

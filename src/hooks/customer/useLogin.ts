@@ -27,7 +27,6 @@ export function useLogin() {
       return loginUser({ email, password, ip_address, device_name });
     },
     onSuccess: (userData: any) => {
-      console.log("Login response received:", userData);
       
       // Extract token from different possible response structures
       let token = userData.token || 
@@ -36,7 +35,6 @@ export function useLogin() {
                   userData.authorization?.token;
       
       if (!token) {
-        console.error("No token found in response:", userData);
         toast.error("Authentication failed - no token received");
         return;
       }
@@ -56,7 +54,6 @@ export function useLogin() {
       localStorage.setItem("accessToken", token);
       localStorage.setItem("user", JSON.stringify(userData));
       
-      console.log("Token saved to localStorage:", token);
       
       // Update React Query cache
       queryClient.setQueryData(["user"], userData);

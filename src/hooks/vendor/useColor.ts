@@ -4,7 +4,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export async function fetchColors() {
   const res = await APICall("/admin/colors", "GET");
-  console.log(res, "res");
   return res.data;
 }
 

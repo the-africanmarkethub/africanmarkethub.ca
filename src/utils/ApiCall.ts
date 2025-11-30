@@ -18,7 +18,6 @@ export default async function APICall(
   
   // Check if token is expired and handle it
   if (authToken && isTokenExpired(authToken)) {
-    console.warn("Token expired, clearing auth data");
     // Clear expired tokens but don't automatically redirect
     // Let the component handle the redirect
     localStorage.removeItem("accessToken");
@@ -40,7 +39,6 @@ export default async function APICall(
       return response;
     },
     (error) => {
-      console.log(error, "THE ERROR");
       // Don't return error.response, let it throw properly
       return Promise.reject(error);
     }
@@ -81,7 +79,6 @@ export default async function APICall(
     if (response.status >= 400 && response.status < 500) {
       if (response.status === 401) {
         // Handle authentication failures
-        console.warn("Authentication failed (401)");
         
         // Clear invalid tokens
         const currentToken = getAuthToken();

@@ -20,15 +20,6 @@ export function AuthSyncProvider() {
       // Call /continue-with-google API
       const continueWithGoogle = async () => {
         try {
-          // Try to decode the ID token to see what's in it
-          try {
-            const tokenParts = googleIdToken.split(".");
-            const payload = JSON.parse(atob(tokenParts[1]));
-            console.log("🔍 ID Token payload:", payload);
-          } catch (e) {
-            console.log("❌ Could not decode token:", e);
-          }
-
           const formData = new FormData();
           formData.append("id_token", googleIdToken);
           formData.append("device_name", "web-browser");
@@ -44,17 +35,12 @@ export function AuthSyncProvider() {
 
           if (response.ok) {
             const data = await response.json();
-            console.log("✅ Backend success:", data);
-
             // Store in localStorage (same as normal login)
             localStorage.setItem("accessToken", data.token);
             localStorage.setItem("user", JSON.stringify(data.user));
-          } else {
-            const errorText = await response.text();
-            console.error("❌ Backend error:", errorText);
           }
         } catch (error) {
-          console.error("💥 Network error:", error);
+          // Silent fail - authentication errors are handled by the auth system
         }
       };
 

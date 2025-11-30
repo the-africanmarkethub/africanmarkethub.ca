@@ -49,7 +49,7 @@ export default function WithdrawFunds(props: WithdrawFund) {
       await initiateWithdrawMutation.mutateAsync({ amount });
       setShowSuccess(true);
     } catch (error) {
-      console.log(error);
+      // Error is handled by the mutation
     }
   };
 

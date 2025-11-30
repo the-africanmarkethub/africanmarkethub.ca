@@ -101,7 +101,7 @@ export function CouponForm({
             router.push("/vendor/products/promotion");
           },
           onError: (error: any) => {
-            console.error("Failed to update coupon:", error);
+            toast.error("Failed to update coupon");
             handleValidationErrors(error);
           },
         }
@@ -114,7 +114,7 @@ export function CouponForm({
           router.push("/vendor/products/promotion");
         },
         onError: (error: any) => {
-          console.error("Failed to create coupon:", error);
+          toast.error("Failed to create coupon");
           handleValidationErrors(error);
         },
       });

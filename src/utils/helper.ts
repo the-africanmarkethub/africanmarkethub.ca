@@ -15,7 +15,6 @@ export function getDeviceInfo() {
     };
     
     const deviceString = JSON.stringify(deviceData);
-    console.log("Device info:", deviceString, "Length:", deviceString.length);
     
     // Ensure it's under 255 characters
     if (deviceString.length <= 255) {
@@ -23,11 +22,9 @@ export function getDeviceInfo() {
     } else {
       // Fallback to even simpler format if still too long
       const fallback = `${result.browser.name || 'Browser'} on ${result.os.name || 'Unknown OS'}`;
-      console.log("Using fallback device info:", fallback);
       return fallback;
     }
   } catch (error) {
-    console.error("Error parsing user agent:", error);
     return "Unknown Device";
   }
 }
@@ -40,7 +37,6 @@ export async function getIpAddress() {
     const data = await response.json();
     return data.ip;
   } catch (error) {
-    console.error("Failed to get IP address", error);
     return "0.0.0.0"; // Fallback value
   }
 }

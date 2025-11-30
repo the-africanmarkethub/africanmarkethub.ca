@@ -43,13 +43,8 @@ export function useCreateShop() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: (payload: CreateShopPayload) => {
-      console.log("useCreateShop mutation called with:", payload);
-      return createShop(payload);
-    },
-    onSuccess: (data) => {
-      console.log("Create shop success:", data);
-      
+    mutationFn: (payload: CreateShopPayload) => createShop(payload),
+    onSuccess: () => {
       // Clear customer authentication tokens since user is now a vendor
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
@@ -58,7 +53,6 @@ export function useCreateShop() {
       router.push("/vendor/sign-in");
     },
     onError: (error: any) => {
-      // console.log("Create shop error:", error);
 
       // Handle API error response format
       let errorMessage = "Failed to create shop";

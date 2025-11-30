@@ -25,7 +25,7 @@ export function useInitiateWithdraw() {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.wallet] });
     },
     onError: (error) => {
-      console.error("Error creating order:", error);
+      // Error handled by calling components
     },
   });
 }

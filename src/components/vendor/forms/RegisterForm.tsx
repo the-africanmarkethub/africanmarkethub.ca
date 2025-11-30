@@ -100,11 +100,6 @@ const RegisterForm = () => {
     },
   ] : [];
 
-  console.log("categoryOptions data:", categoryOptions);
-  console.log("businessType:", businessType);
-  console.log("selectedSubscription:", selectedSubscription);
-  console.log("billingCycleOptions:", billingCycleOptions);
-  console.log("termsChecked--", termsChecked);
 
   // Reset category selection when business type changes
   useEffect(() => {
@@ -118,7 +113,6 @@ const RegisterForm = () => {
 
 
   useEffect(() => {
-    console.log("country_id--", location?.length);
     if (location && location?.length > 0) {
       const countries = location?.map(
         (country: {
@@ -133,7 +127,6 @@ const RegisterForm = () => {
       );
       setCountryOptions(countries);
 
-      console.log("Countries:", countries);
     }
   }, [location]);
 
@@ -157,7 +150,6 @@ const RegisterForm = () => {
           })
         );
         setStateOptions(states);
-        console.log("States:", states);
 
         // Reset city selection when country changes
         form.setValue("city_id", "");
@@ -198,24 +190,19 @@ const RegisterForm = () => {
     // Fields to validate in step 1
     const step1Fields = ["name", "address", "type", "description"];
 
-    console.log("Before Next - current form values:", form.getValues());
 
     // Validate only step 1 fields
     const result = await form.trigger(
       step1Fields as (keyof z.infer<typeof VendorFormValidation>)[]
     );
 
-    console.log("Step 1 validation result:", result);
-
     if (result) {
-      console.log("Moving to step 2 - form values:", form.getValues());
       setCurrentStep(2);
     }
   };
 
   // Handle form submission for both steps
   async function onSubmit(values: z.infer<typeof VendorFormValidation>) {
-    console.log("onSubmit called with values:", values);
 
     const payload = {
       name: values.name,
@@ -231,7 +218,6 @@ const RegisterForm = () => {
       billing_cycle: values.billing_cycle,
       category_id: values.category_id,
     };
-    console.log("Calling createShop with payload:", payload);
     createShop(payload);
   }
 
@@ -265,11 +251,7 @@ const RegisterForm = () => {
     <div className="space-y-4">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log("Form validation errors:", errors);
-            console.log("Current form values:", form.getValues());
-            console.log("Failed validation fields:", Object.keys(errors));
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 flex-1"
         >
           <section className="space-y-4">

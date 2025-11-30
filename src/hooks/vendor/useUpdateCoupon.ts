@@ -54,12 +54,11 @@ export function useUpdateCoupon() {
     mutationFn: ({ couponId, data }: { couponId: number; data: UpdateCouponData }) => 
       updateCoupon(couponId, data),
     onSuccess: (data) => {
-      console.log("Coupon updated successfully:", data);
       // Invalidate coupons query to refetch the list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.coupons] });
     },
     onError: (error) => {
-      console.error("Failed to update coupon:", error);
+      // Error handling for coupon update failure
     },
   });
 }
