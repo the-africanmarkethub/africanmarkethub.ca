@@ -55,7 +55,7 @@ const menuItems = [
   { name: "Services", href: "/customer/services" },
   {
     name: "About Us",
-    href: "customer/about",
+    href: "/customer/about",
   },
   {
     name: "Contact Us",
