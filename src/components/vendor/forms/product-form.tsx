@@ -65,8 +65,8 @@ interface ProductFormData {
   height?: string;
   length?: string;
   width?: string;
-  size_unit?: 'cm' | 'm' | 'ft' | 'in';
-  weight_unit?: 'kg' | 'g' | 'lb' | 'oz';
+  size_unit?: "cm" | "m" | "ft" | "in";
+  weight_unit?: "kg" | "g" | "lb" | "oz";
   // Other fields
   notify_user: boolean;
 }
@@ -94,14 +94,16 @@ const COLOR_HEX_MAP: Record<string, string> = {
 
 export function ProductForm() {
   const router = useRouter();
-  const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
-  const productSlug = searchParams.get('slug');
-  const mode = searchParams.get('mode');
-  const isViewMode = mode === 'view';
-  
+  const searchParams = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
+  const productSlug = searchParams.get("slug");
+  const mode = searchParams.get("mode");
+  const isViewMode = mode === "view";
+
   const { data: shopDetails, isLoading: isLoadingShop } = useShopDetails();
   const createProductMutation = useCreateProduct();
-  
+
   // Fetch product data if productSlug is provided (for view/edit mode)
   const { data: productData, isLoading: isLoadingProduct } = useProduct(
     productSlug || ""
@@ -115,10 +117,6 @@ export function ProductForm() {
       : "products"
     : "products";
 
-  console.log("shopDetails------------------------>>", shopDetails);
-  console.log("shopType------------------------>>", shopType);
-  console.log("categoryType------------------------>>", categoryType);
-
   const { data: colorsData } = useColor();
   const { data: sizesData } = useSizes();
 
@@ -127,11 +125,6 @@ export function ProductForm() {
     useCategories({
       type: categoryType,
     });
-
-  console.log(
-    "categoriesResponse------------------------>>",
-    categoriesResponse
-  );
 
   const form = useForm<ProductFormData>({
     defaultValues: {
@@ -213,12 +206,6 @@ export function ProductForm() {
     [categoriesResponse]
   );
 
-  console.log("categories------------------------>>", categories);
-  console.log(
-    "isLoadingCategories------------------------>>",
-    isLoadingCategories
-  );
-
   // Get subcategories based on selected main category
   const selectedCategory = categories.find(
     (cat) => cat.id.toString() === mainCategory
@@ -259,7 +246,9 @@ export function ProductForm() {
       updated[idx] = file;
 
       // Update form with the new images array (only File objects, not URLs)
-      const validImages = updated.filter((img): img is File => img instanceof File);
+      const validImages = updated.filter(
+        (img): img is File => img instanceof File
+      );
       form.setValue("images", validImages);
 
       return updated;
@@ -291,7 +280,9 @@ export function ProductForm() {
       const finalUpdated = updated.length > 0 ? updated : [null]; // Ensure at least one slot
 
       // Update form with the new images array (only File objects, not URLs)
-      const validImages = finalUpdated.filter((img): img is File => img instanceof File);
+      const validImages = finalUpdated.filter(
+        (img): img is File => img instanceof File
+      );
       form.setValue("images", validImages);
 
       return finalUpdated;
@@ -360,12 +351,6 @@ export function ProductForm() {
       }
 
       validImages.forEach((image, index) => {
-        console.log(
-          `Adding image[${index}]:`,
-          image.name,
-          image.type,
-          image.size
-        );
         formData.append(`images[${index}]`, image);
       });
 
@@ -419,7 +404,10 @@ export function ProductForm() {
           "estimated_delivery_time",
           data.estimated_delivery_time
         );
-        formData.append("available_days", JSON.stringify(data.available_days));
+        // Append each day individually as array elements
+        data.available_days?.forEach((day, index) => {
+          formData.append(`available_days[${index}]`, day);
+        });
         formData.append("available_from", data.available_from);
         formData.append("available_to", data.available_to);
       }
@@ -482,20 +470,14 @@ export function ProductForm() {
   React.useEffect(() => {
     if (productData && productData.product && productSlug) {
       const product = productData.product;
-      
-      console.log("Full product data:", product);
-      
+
       // First populate the main category if product has a category
       const categoryId = product.category_id || product.category?.id;
-      
+
       if (categoryId && categories.length > 0) {
-        console.log("Product category_id:", categoryId);
-        console.log("Product category object:", product.category);
-        console.log("Available categories:", categories);
-        
         // Find if the category_id is a main category or subcategory
         let foundMainCategory = "";
-        
+
         // If product has a category object with parent_id, use that logic
         if (product.category && product.category.parent_id) {
           foundMainCategory = product.category.parent_id.toString();
@@ -518,7 +500,7 @@ export function ProductForm() {
             if (foundMainCategory) break;
           }
         }
-        
+
         console.log("Found main category:", foundMainCategory);
         if (foundMainCategory) {
           setMainCategory(foundMainCategory);
@@ -526,7 +508,7 @@ export function ProductForm() {
           console.log("No main category found for category_id:", categoryId);
         }
       }
-      
+
       // Reset form with product data
       form.reset({
         title: product.title || "",
@@ -557,17 +539,21 @@ export function ProductForm() {
       // Handle variations if they exist
       if (product.variations && product.variations.length > 0) {
         setHasVariations(true);
-        setVariations(product.variations.map((v: ApiVariation) => ({
-          price: v.price?.toString() || "",
-          quantity: v.quantity?.toString() || "",
-          size_id: v.size_id?.toString() || "",
-          color_id: v.color_id?.toString() || "",
-        })));
+        setVariations(
+          product.variations.map((v: ApiVariation) => ({
+            price: v.price?.toString() || "",
+            quantity: v.quantity?.toString() || "",
+            size_id: v.size_id?.toString() || "",
+            color_id: v.color_id?.toString() || "",
+          }))
+        );
       }
 
       // Handle images - populate with existing image URLs
       if (product.images && product.images.length > 0) {
-        const existingImages = product.images.map((imageUrl: string) => imageUrl);
+        const existingImages = product.images.map(
+          (imageUrl: string) => imageUrl
+        );
         // Add one empty slot for adding new images (unless we're at max capacity)
         const imageSlots = [...existingImages];
         if (imageSlots.length < MAX_IMAGES) {
@@ -583,16 +569,27 @@ export function ProductForm() {
 
   // Separate effect to handle category population when both data is ready
   React.useEffect(() => {
-    if (productData && productData.product && categories.length > 0 && !mainCategory) {
+    if (
+      productData &&
+      productData.product &&
+      categories.length > 0 &&
+      !mainCategory
+    ) {
       const product = productData.product;
       const categoryId = product.category_id || product.category?.id;
-      
+
       if (categoryId) {
-        console.log("Secondary category check - Product category_id:", categoryId);
-        console.log("Secondary category check - Available categories:", categories);
-        
+        console.log(
+          "Secondary category check - Product category_id:",
+          categoryId
+        );
+        console.log(
+          "Secondary category check - Available categories:",
+          categories
+        );
+
         let foundMainCategory = "";
-        
+
         if (product.category && product.category.parent_id) {
           foundMainCategory = product.category.parent_id.toString();
         } else {
@@ -611,8 +608,11 @@ export function ProductForm() {
             if (foundMainCategory) break;
           }
         }
-        
-        console.log("Secondary category check - Found main category:", foundMainCategory);
+
+        console.log(
+          "Secondary category check - Found main category:",
+          foundMainCategory
+        );
         if (foundMainCategory) {
           setMainCategory(foundMainCategory);
         }
@@ -644,7 +644,9 @@ export function ProductForm() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F8F8F8]">
         <p className="text-gray-500">
-          {isLoadingShop ? "Loading shop details..." : "Loading product data..."}
+          {isLoadingShop
+            ? "Loading shop details..."
+            : "Loading product data..."}
         </p>
       </div>
     );
@@ -781,7 +783,11 @@ export function ProductForm() {
                       {img ? (
                         <div className="relative w-full h-full">
                           <Image
-                            src={typeof img === 'string' ? img : URL.createObjectURL(img)}
+                            src={
+                              typeof img === "string"
+                                ? img
+                                : URL.createObjectURL(img)
+                            }
                             alt={`preview-${idx}`}
                             width={128}
                             height={128}
@@ -993,7 +999,7 @@ export function ProductForm() {
                 )}
 
                 {/* Product Dimensions Section */}
-                {true && (
+                {!isService && (
                   <div className="space-y-4 p-4 border rounded-lg">
                     <h3 className="font-semibold">Product Dimensions</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

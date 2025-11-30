@@ -28,8 +28,16 @@ async function sendVendorReply(replyData: VendorReplyData): Promise<VendorReplyR
       formData.append("file", replyData.file);
     }
 
+    console.log("🎫 Vendor replying to ticket:", {
+      ticket_id: replyData.ticket_id,
+      service_id: replyData.service_id,
+      description: replyData.description.substring(0, 50) + "...",
+      endpoint: "/ticket/create"
+    });
+
     // Use the same /ticket/create endpoint but with ticket_id to update
     const response = await APICall("/ticket/create", "POST", formData);
+    console.log("📨 Vendor reply response:", response);
     return response;
   } catch (error) {
     throw error;
@@ -41,7 +49,9 @@ export function useSendVendorTicketReply() {
   
   return useMutation({
     mutationFn: sendVendorReply,
-    onSuccess: (_, variables) => {
+    onSuccess: (response, variables) => {
+      console.log("✅ Vendor reply success, invalidating queries for:", variables.ticket_id);
+      
       // Invalidate and refetch the specific ticket details
       queryClient.invalidateQueries({ 
         queryKey: [QUERY_KEY.ticket, "details", variables.ticket_id] 
@@ -49,6 +59,14 @@ export function useSendVendorTicketReply() {
       // Also invalidate the tickets list to update last message
       queryClient.invalidateQueries({ 
         queryKey: [QUERY_KEY.ticket] 
+      });
+      
+      // Also invalidate customer-side queries if they exist
+      queryClient.invalidateQueries({ 
+        queryKey: ["tickets", "details", variables.ticket_id] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ["tickets"] 
       });
     },
     onError: (error) => {

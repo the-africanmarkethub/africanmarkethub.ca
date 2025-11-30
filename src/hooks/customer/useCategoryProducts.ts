@@ -48,13 +48,30 @@ export function useCategoryProducts(
 ) {
   const queryClient = useQueryClient();
 
+  console.log("🔍 useCategoryProducts called:", {
+    categoryId,
+    queryParams,
+    enabled: !!categoryId,
+    type: typeof categoryId
+  });
+
   const query = useQuery({
     queryKey: [QUERY_KEY.categoryProducts, categoryId, queryParams],
-    queryFn: () => fetchCategoryProducts(categoryId as string | number, queryParams),
+    queryFn: () => {
+      console.log("📡 Fetching category products for:", categoryId);
+      return fetchCategoryProducts(categoryId as string | number, queryParams);
+    },
     enabled: !!categoryId, // Only fetch when categoryId is truthy
     initialData: () => {
       return queryClient.getQueryData([QUERY_KEY.categoryProducts, categoryId]);
     },
+  });
+
+  console.log("📊 useCategoryProducts result:", {
+    isLoading: query.isLoading,
+    isError: query.isError,
+    hasData: !!query.data,
+    error: query.error
   });
 
   return query;

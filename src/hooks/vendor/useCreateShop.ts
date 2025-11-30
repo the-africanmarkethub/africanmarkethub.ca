@@ -49,12 +49,30 @@ export function useCreateShop() {
     },
     onSuccess: (data) => {
       console.log("Create shop success:", data);
+      
+      // Clear customer authentication tokens since user is now a vendor
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+      
       toast.success(`Shop created successfully! Please login to continue.`);
       router.push("/vendor/sign-in");
     },
-    onError: (error: Error) => {
-      console.log("Create shop error:", error);
-      toast.error(error.message || "Failed to create shop");
+    onError: (error: any) => {
+      // console.log("Create shop error:", error);
+
+      // Handle API error response format
+      let errorMessage = "Failed to create shop";
+
+      if (error?.response?.data) {
+        const errorData = error.response.data;
+        // Use error_detail if available, otherwise use message
+        errorMessage =
+          errorData.error_detail || errorData.message || errorMessage;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error(errorMessage);
     },
   });
 }

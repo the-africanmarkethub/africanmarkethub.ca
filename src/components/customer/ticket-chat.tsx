@@ -65,7 +65,7 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [bookingData, setBookingData] = useState<Partial<CreateBookingRequest>>({
-    delivery_method: "virtual",
+    delivery_method: "online",
     start_date: "",
     end_date: "",
     address: "",
@@ -195,11 +195,11 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
     try {
       const bookingPayload: CreateBookingRequest = {
         ticket_id: selectedTicket.ticket_id,
-        delivery_method: bookingData.delivery_method || "virtual",
+        delivery_method: bookingData.delivery_method || "online",
         start_date: bookingData.start_date!,
         end_date: bookingData.end_date!,
         amount: bookingData.amount!,
-        address: bookingData.delivery_method === "physical" ? bookingData.address : undefined,
+        address: (bookingData.delivery_method === "onsite" || bookingData.delivery_method === "pickup" || bookingData.delivery_method === "delivery") ? bookingData.address : undefined,
       };
 
       const response = await createBookingMutation.mutateAsync(bookingPayload);
@@ -217,7 +217,7 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
     setPaymentResponse(null);
     setShowBookingForm(false);
     setBookingData({
-      delivery_method: "virtual",
+      delivery_method: "online",
       start_date: "",
       end_date: "",
       address: "",
@@ -824,12 +824,17 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
                     value={bookingData.delivery_method}
                     onChange={(e) => setBookingData(prev => ({ 
                       ...prev, 
-                      delivery_method: e.target.value as "virtual" | "physical" 
+                      delivery_method: e.target.value as "online" | "virtual" | "remote" | "onsite" | "pickup" | "delivery" | "hybrid"
                     }))}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F28C0D]/20 focus:border-[#F28C0D]"
                   >
+                    <option value="online">Online</option>
                     <option value="virtual">Virtual</option>
-                    <option value="physical">Physical</option>
+                    <option value="remote">Remote</option>
+                    <option value="onsite">Onsite</option>
+                    <option value="pickup">Pickup</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="hybrid">Hybrid</option>
                   </select>
                 </div>
 
@@ -859,7 +864,7 @@ export function TicketChat({ serviceInfo, autoCreateTicket = false }: TicketChat
                   />
                 </div>
 
-                {bookingData.delivery_method === "physical" && (
+                {(bookingData.delivery_method === "onsite" || bookingData.delivery_method === "pickup" || bookingData.delivery_method === "delivery") && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Address

@@ -2,211 +2,105 @@
 
 import { useState } from "react";
 import { PageHeader } from "@/components/vendor/page-header";
-import { EmailSidebar } from "@/components/vendor/customer-feedback/email-sidebar";
-import { EmailDetail } from "@/components/vendor/customer-feedback/email-detail";
-import { EmailList } from "@/components/vendor/customer-feedback/email-list";
-import EmailComposer from "@/components/vendor/customer-feedback/email-composer";
-export interface Email {
-  id: string;
-  sender: string;
+import { VendorTicketChat } from "@/components/vendor/vendor-support/vendor-ticket-chat";
+import { useGetTickets } from "@/hooks/vendor/useGetTickets";
+import { User } from "lucide-react";
+
+interface Ticket {
+  ticket_id: string;
+  full_name: string;
   email: string;
   subject: string;
-  preview: string;
-  time: string;
-  isRead: boolean;
-  isStarred: boolean;
-  avatar: string;
+  description: string;
+  last_message: string;
+  last_message_time: string;
+  status: string;
+  service_title?: string;
 }
 
-const mockEmails: Email[] = [
-  {
-    id: "1",
-    sender: "Brooklyn Simmons",
-    email: "brooklynsimmons@gmail.com",
-    subject: "Enquiry",
-    preview: "Hi, I want make enquiries about your s...",
-    time: "12:55 am",
-    isStarred: false,
-    isRead: false,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "2",
-    sender: "James Smith",
-    email: "jamessmith@gmail.com",
-    subject: "Product Details",
-    preview: "Can you provide details about the late...",
-    time: "1:15 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/assets/images/avatar.png",
-  },
-  {
-    id: "3",
-    sender: "Emily Johnson",
-    email: "emilyjohnson@gmail.com",
-    subject: "Return Policy",
-    preview: "I would like to know the return policy f...",
-    time: "1:30 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "4",
-    sender: "Michael Brown",
-    email: "michaelbrown@gmail.com",
-    subject: "Recommendations",
-    preview: "Do you have recommendations for sh...",
-    time: "2:00 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "5",
-    sender: "Henry, Arthur",
-    email: "henryarthur@gmail.com",
-    subject: "Size Inquiry",
-    preview: "What sizes do you have available for t...",
-    time: "2:45 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "6",
-    sender: "Miles, Esther",
-    email: "milesester@gmail.com",
-    subject: "Size Inquiry",
-    preview: "What sizes do you have available for t...",
-    time: "2:45 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "7",
-    sender: "Black, Marvin",
-    email: "blackmarvin@gmail.com",
-    subject: "Size Inquiry",
-    preview: "What sizes do you have available for t...",
-    time: "2:45 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "8",
-    sender: "Nguyen, Shane",
-    email: "nguyenshane@gmail.com",
-    subject: "Size Inquiry",
-    preview: "What sizes do you have available for t...",
-    time: "2:45 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "9",
-    sender: "Sofia Martinez",
-    email: "sofiamartinez@gmail.com",
-    subject: "Material Question",
-    preview: "Can you tell me more about the mater...",
-    time: "3:10 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "10",
-    sender: "Liam Johnson",
-    email: "liamjohnson@gmail.com",
-    subject: "Discount Inquiry",
-    preview: "Are there any discounts available for...",
-    time: "3:25 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "11",
-    sender: "Ava Wilson",
-    email: "avawilson@gmail.com",
-    subject: "Shipping Question",
-    preview: "Do you offer international shipping for...",
-    time: "3:40 am",
-    isStarred: false,
-    isRead: true,
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-];
-
 export default function CustomerMessagePage() {
-  const [emails] = useState<Email[]>(mockEmails);
-  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
-  const [isComposingMail, setIsComposingMail] = useState<boolean>(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  
+  // Fetch real tickets from API
+  const { data: ticketsResponse, isLoading, error } = useGetTickets();
+  const tickets: Ticket[] = ticketsResponse?.data?.data || [];
 
-  const handleEmailSelect = (email: Email) => {
-    setSelectedEmail(email);
-    setSidebarOpen(false); // Close sidebar on mobile when email is selected
+  const handleTicketSelect = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
   };
 
   const handleBackToList = () => {
-    setSelectedEmail(null);
-  };
-
-  const handleStarToggle = (emailId: string) => {
-    // star toggle logic
-    console.log("Toggle star for email:", emailId);
-  };
-
-  const handleMenuToggle = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSelectedTicket(null);
   };
 
   return (
     <div className="xl:space-y-8 xl:p-8">
       <div className="hidden xl:block">
-        <PageHeader title="Customer Message" />
+        <PageHeader title="Customer Messages" />
       </div>
 
       <div className="flex h-screen xl:h-full xl:gap-x-6">
-        {/* Sidebar */}
-        <div className="hidden xl:block">
-          <EmailSidebar />
+        {/* Ticket List Sidebar */}
+        <div className="w-80 bg-white border-r border-gray-200">
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">Customer Support Tickets</h3>
+          </div>
+          
+          <div className="overflow-y-auto h-full">
+            {isLoading ? (
+              <div className="p-4 text-center text-gray-500">Loading tickets...</div>
+            ) : error ? (
+              <div className="p-4 text-center text-red-500">Error loading tickets</div>
+            ) : tickets.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">No tickets found</div>
+            ) : (
+              tickets.map((ticket) => (
+                <div
+                  key={ticket.ticket_id}
+                  onClick={() => handleTicketSelect(ticket)}
+                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+                    selectedTicket?.ticket_id === ticket.ticket_id ? 'bg-[#F28C0D]/10 border-l-4 border-l-[#F28C0D]' : ''
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium text-gray-900 truncate">{ticket.full_name}</h4>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      ticket.status === 'open' ? 'bg-green-100 text-green-800' :
+                      ticket.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {ticket.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-1">{ticket.subject}</p>
+                  {ticket.service_title && (
+                    <p className="text-xs text-[#F28C0D] mb-2">Service: {ticket.service_title}</p>
+                  )}
+                  <p className="text-xs text-gray-500 truncate">{ticket.last_message}</p>
+                  <p className="text-xs text-gray-400 mt-1">{ticket.last_message_time}</p>
+                </div>
+              ))
+            )}
+          </div>
         </div>
 
-        {/* Mobile Sidebar */}
-        <EmailSidebar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-          setIsComposingMail={() => setIsComposingMail(true)}
-          className="xl:hidden"
-        />
-
-        {/* Main Content */}
-        <div className="flex flex-1 xl:rounded-2xl overflow-hidden">
-          {selectedEmail ? (
-            <EmailDetail
-              email={selectedEmail}
-              onBack={handleBackToList}
-              onStarToggle={handleStarToggle}
-              onMenuToggle={handleMenuToggle}
-            />
-          ) : isComposingMail ? (
-            <EmailComposer
-              setIsComposingMail={() => setIsComposingMail(false)}
+        {/* Chat Area */}
+        <div className="flex-1">
+          {selectedTicket ? (
+            <VendorTicketChat
+              ticketId={selectedTicket.ticket_id}
+              onClose={handleBackToList}
             />
           ) : (
-            <EmailList
-              emails={emails}
-              setIsComposingMail={() => setIsComposingMail(true)}
-              onEmailSelect={handleEmailSelect}
-              onStarToggle={handleStarToggle}
-              onMenuToggle={handleMenuToggle}
-            />
+            <div className="flex items-center justify-center h-full bg-gray-50">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-[#F28C0D]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <User className="w-8 h-8 text-[#F28C0D]" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a ticket</h3>
+                <p className="text-gray-500">Choose a customer support ticket to view the conversation and reply.</p>
+              </div>
+            </div>
           )}
         </div>
       </div>

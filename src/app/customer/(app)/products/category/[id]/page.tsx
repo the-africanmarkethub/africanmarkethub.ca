@@ -22,13 +22,13 @@ interface FilterState {
 
 function Page() {
   const pathname = usePathname();
-  const categoryId = decodeURIComponent(pathname.split("/")[3]);
+  const categoryId = decodeURIComponent(pathname.split("/")[4]); // Fix: should be index 4, not 3
   const searchParams = useSearchParams();
   const categoryName = searchParams.get("name");
-  
+
   // State for active filters from sidebar
   const [activeFilters, setActiveFilters] = useState<FilterState>({});
-  
+
   // Handle filter changes from sidebar
   const handleFiltersChange = useCallback((filters: FilterState) => {
     setActiveFilters(filters);
@@ -38,7 +38,10 @@ function Page() {
     data: productData,
     isLoading: isProductLoading,
     error: productError,
-  } = useCategoryProducts(categoryId, Object.keys(activeFilters).length > 0 ? activeFilters : undefined);
+  } = useCategoryProducts(
+    categoryId,
+    Object.keys(activeFilters).length > 0 ? activeFilters : undefined
+  );
 
   const products = productData?.products?.data || [];
 
@@ -117,7 +120,10 @@ function Page() {
                 {/* Product Grid Loading Skeleton */}
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-gray-100 rounded-lg animate-pulse">
+                    <div
+                      key={i}
+                      className="bg-gray-100 rounded-lg animate-pulse"
+                    >
                       <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
                       <div className="p-3 space-y-2">
                         <div className="h-4 bg-gray-200 rounded w-3/4"></div>
