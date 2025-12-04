@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ItemCard } from "@/components/ItemCard";
 import { TodaysDeals } from "@/components/TodaysDeals";
+import { FeaturedProductsCarousel } from "@/components/FeaturedProductsCarousel";
 import { useRecommendedProducts } from "@/hooks/useRecommendedProducts";
 import { useProductCategories } from "@/hooks/useCategories";
 
@@ -34,43 +35,43 @@ export default function Home() {
     };
   }, []);
 
+
   const handleSkipSplash = () => {
     setFadeOut(true);
     setTimeout(() => setShowSplash(false), 300);
   };
 
-  if (showSplash) {
-    return (
-      <div
-        className={`fixed inset-0 bg-white flex items-center justify-center z-50 transition-opacity duration-500 ${
-          fadeOut ? "opacity-0" : "opacity-100"
-        }`}
-        onClick={handleSkipSplash}
-      >
-        <div className="text-center">
-          <div className="animate-bounce">
-            <Image
-              src="/icon/logo.svg"
-              alt="African Market Hub"
-              width={400}
-              height={134}
-              className="mx-auto"
-            />
-          </div>
-          <div className="mt-8">
-            <div
-              className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
-              style={{ borderColor: "#F28C0D" }}
-            ></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Marketplace Landing Page
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="relative min-h-screen bg-gray-50">
+      {/* Splash Screen Overlay */}
+      {showSplash && (
+        <div
+          className={`fixed inset-0 bg-white flex items-center justify-center z-50 transition-opacity duration-500 ${
+            fadeOut ? "opacity-0" : "opacity-100"
+          }`}
+          onClick={handleSkipSplash}
+        >
+          <div className="text-center">
+            <div className="animate-bounce">
+              <Image
+                src="/icon/logo.svg"
+                alt="African Market Hub"
+                width={400}
+                height={134}
+                className="mx-auto"
+              />
+            </div>
+            <div className="mt-8">
+              <div
+                className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto"
+                style={{ borderColor: "#F28C0D" }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Hero Section */}
       <section
         className="relative py-4 md:py-8"
@@ -130,95 +131,18 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Featured Products Preview */}
-              <div className="grid grid-cols-3 gap-2 md:gap-4 mt-6 md:mt-12">
-                {isLoading
-                  ? // Loading skeleton for featured products
-                    Array.from({ length: 3 }, (_, index) => (
-                      <div
-                        key={index}
-                        className="bg-gray-100 rounded-lg p-2 md:p-4 text-center animate-pulse"
-                      >
-                        <div className="h-12 md:h-20 rounded-lg mb-2 bg-gray-200"></div>
-                        <div className="h-3 bg-gray-200 rounded mb-1 w-3/4 mx-auto"></div>
-                        <div className="h-3 bg-gray-200 rounded mb-1 w-1/2 mx-auto"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/3 mx-auto"></div>
-                      </div>
-                    ))
-                  : recommendedProducts?.data?.data
-                      ?.slice(0, 3)
-                      ?.map((product: any) => {
-                        const hasDiscount =
-                          parseFloat(product.regular_price) >
-                          parseFloat(product.sales_price);
-                        const discountPercentage = hasDiscount
-                          ? Math.round(
-                              ((parseFloat(product.regular_price) -
-                                parseFloat(product.sales_price)) /
-                                parseFloat(product.regular_price)) *
-                                100
-                            )
-                          : 0;
-
-                        return (
-                          <div
-                            key={product.id}
-                            className="bg-gray-100 rounded-lg p-2 md:p-4 text-center"
-                          >
-                            <div className="h-12 md:h-20 rounded-lg mb-2 relative overflow-hidden bg-gray-200">
-                              <Image
-                                src={product.images[0] || "/icon/auth.svg"}
-                                alt={product.title}
-                                fill
-                                className="object-cover rounded-lg"
-                              />
-                            </div>
-                            {hasDiscount && (
-                              <p className="text-xs text-red-500">
-                                {discountPercentage}% discount!
-                              </p>
-                            )}
-                            <p className="text-xs md:text-sm font-semibold">
-                              ${parseFloat(product.sales_price).toFixed(2)} CAD
-                            </p>
-                            {hasDiscount && (
-                              <p className="text-xs text-gray-400 line-through">
-                                ${parseFloat(product.regular_price).toFixed(2)}{" "}
-                                CAD
-                              </p>
-                            )}
-                          </div>
-                        );
-                      }) ||
-                    // Fallback to original placeholder if no products
-                    Array.from({ length: 3 }, (_, index) => (
-                      <div
-                        key={index}
-                        className="bg-gray-100 rounded-lg p-2 md:p-4 text-center"
-                      >
-                        <div
-                          className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
-                          style={{ backgroundColor: "#F28C0D" }}
-                        ></div>
-                        <p className="text-xs text-red-500">
-                          Up to 50% discount!
-                        </p>
-                        <p className="text-xs md:text-sm font-semibold">
-                          60.15 CAD
-                        </p>
-                        <p className="text-xs text-gray-400 line-through">
-                          141.19 CAD
-                        </p>
-                      </div>
-                    ))}
-              </div>
+              {/* Featured Products Preview - Carousel */}
+              <FeaturedProductsCarousel 
+                products={recommendedProducts?.data?.data}
+                isLoading={isLoading}
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Popular Categories */}
-      <section className="py-16">
+      <section className="py-16 min-h-[500px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
             Popular Product Category
@@ -331,7 +255,7 @@ export default function Home() {
       </section>
 
       {/* Shop by Category */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white min-h-[400px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-12">
             Shop by Category
@@ -361,7 +285,7 @@ export default function Home() {
       </section>
 
       {/* Recommended for You */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white min-h-[600px]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-gray-900">
@@ -427,40 +351,46 @@ export default function Home() {
               </div>
             ) : (
               // Actual data - limit to 8 products
-              recommendedProducts?.data?.data?.slice(0, 8)?.map((product: any) => {
-                const hasDiscount =
-                  parseFloat(product.regular_price) >
-                  parseFloat(product.sales_price);
-                const discountPercentage = hasDiscount
-                  ? Math.round(
-                      ((parseFloat(product.regular_price) -
-                        parseFloat(product.sales_price)) /
-                        parseFloat(product.regular_price)) *
-                        100
-                    )
-                  : 0;
+              recommendedProducts?.data?.data
+                ?.slice(0, 8)
+                ?.map((product: any) => {
+                  const hasDiscount =
+                    parseFloat(product.regular_price) >
+                    parseFloat(product.sales_price);
+                  const discountPercentage = hasDiscount
+                    ? Math.round(
+                        ((parseFloat(product.regular_price) -
+                          parseFloat(product.sales_price)) /
+                          parseFloat(product.regular_price)) *
+                          100
+                      )
+                    : 0;
 
-                return (
-                  <ItemCard
-                    key={product.id}
-                    id={product.id}
-                    title={product.title}
-                    slug={product.slug}
-                    price={`$${parseFloat(product.sales_price).toFixed(2)} CAD`}
-                    originalPrice={
-                      hasDiscount
-                        ? `$${parseFloat(product.regular_price).toFixed(2)} CAD`
-                        : undefined
-                    }
-                    rating={product.average_rating || 5}
-                    image={product.images[0] || "/icon/auth.svg"}
-                    discount={
-                      hasDiscount ? `${discountPercentage}% off` : undefined
-                    }
-                    type={product.type === "services" ? "service" : "product"}
-                  />
-                );
-              })
+                  return (
+                    <ItemCard
+                      key={product.id}
+                      id={product.id}
+                      title={product.title}
+                      slug={product.slug}
+                      price={`$${parseFloat(product.sales_price).toFixed(
+                        2
+                      )} CAD`}
+                      originalPrice={
+                        hasDiscount
+                          ? `$${parseFloat(product.regular_price).toFixed(
+                              2
+                            )} CAD`
+                          : undefined
+                      }
+                      rating={product.average_rating || 5}
+                      image={product.images[0] || "/icon/auth.svg"}
+                      discount={
+                        hasDiscount ? `${discountPercentage}% off` : undefined
+                      }
+                      type={product.type === "services" ? "service" : "product"}
+                    />
+                  );
+                })
             )}
           </div>
         </div>
