@@ -77,6 +77,8 @@ export default function ProductDetailPage() {
 
   const product = productData.data.product;
   const relatedProducts = productData.data.frequently_bought_together;
+  const recommendedProducts = productData.data.recommended;
+  const otherViewsProducts = productData.data.otherViews;
   const starRating = productData.data.star_rating;
   const hasDiscount =
     parseFloat(product.regular_price) > parseFloat(product.sales_price);
@@ -718,7 +720,111 @@ export default function ProductDetailPage() {
             </div>
           </div>
         )}
+
+        {/* Recommended for You - Carousel */}
+        {recommendedProducts && recommendedProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+              Recommended for You
+            </h2>
+            <div className="relative overflow-hidden">
+              <div className="flex space-x-4 pb-4" style={{ animation: 'scroll 20s linear infinite' }}>
+                {[...recommendedProducts, ...recommendedProducts].map((recommendedProduct, index) => {
+                  const hasRecommendedDiscount =
+                    parseFloat(recommendedProduct.regular_price) >
+                    parseFloat(recommendedProduct.sales_price);
+                  const recommendedDiscountPercentage = hasRecommendedDiscount
+                    ? Math.round(
+                        ((parseFloat(recommendedProduct.regular_price) -
+                          parseFloat(recommendedProduct.sales_price)) /
+                          parseFloat(recommendedProduct.regular_price)) *
+                          100
+                      )
+                    : 0;
+
+                  return (
+                    <div key={`${recommendedProduct.id}-${index}`} className="flex-none w-64">
+                      <ItemCard
+                        id={recommendedProduct.id}
+                        title={recommendedProduct.title}
+                        slug={recommendedProduct.slug}
+                        price={`$${parseFloat(recommendedProduct.sales_price).toFixed(2)} CAD`}
+                        originalPrice={
+                          hasRecommendedDiscount
+                            ? `$${parseFloat(recommendedProduct.regular_price).toFixed(2)} CAD`
+                            : undefined
+                        }
+                        rating={recommendedProduct.average_rating || 5}
+                        image={recommendedProduct.images[0] || "/icon/auth.svg"}
+                        discount={
+                          hasRecommendedDiscount
+                            ? `${recommendedDiscountPercentage}% off`
+                            : undefined
+                        }
+                        type={recommendedProduct.type === "services" ? "service" : "product"}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Customer who viewed this also viewed */}
+        {otherViewsProducts && otherViewsProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+              Customer who viewed this also viewed
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {otherViewsProducts.slice(0, 10).map((otherProduct) => {
+                const hasOtherDiscount =
+                  parseFloat(otherProduct.regular_price) >
+                  parseFloat(otherProduct.sales_price);
+                const otherDiscountPercentage = hasOtherDiscount
+                  ? Math.round(
+                      ((parseFloat(otherProduct.regular_price) -
+                        parseFloat(otherProduct.sales_price)) /
+                        parseFloat(otherProduct.regular_price)) *
+                        100
+                    )
+                  : 0;
+
+                return (
+                  <ItemCard
+                    key={otherProduct.id}
+                    id={otherProduct.id}
+                    title={otherProduct.title}
+                    slug={otherProduct.slug}
+                    price={`$${parseFloat(otherProduct.sales_price).toFixed(2)} CAD`}
+                    originalPrice={
+                      hasOtherDiscount
+                        ? `$${parseFloat(otherProduct.regular_price).toFixed(2)} CAD`
+                        : undefined
+                    }
+                    rating={otherProduct.average_rating || 5}
+                    image={otherProduct.images[0] || "/icon/auth.svg"}
+                    discount={
+                      hasOtherDiscount
+                        ? `${otherDiscountPercentage}% off`
+                        : undefined
+                    }
+                    type={otherProduct.type === "services" ? "service" : "product"}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
+
+      <style jsx>{`
+        @keyframes scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </div>
   );
 }
