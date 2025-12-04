@@ -132,39 +132,85 @@ export default function Home() {
 
               {/* Featured Products Preview */}
               <div className="grid grid-cols-3 gap-2 md:gap-4 mt-6 md:mt-12">
-                <div className="bg-gray-100 rounded-lg p-2 md:p-4 text-center">
-                  <div
-                    className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
-                    style={{ backgroundColor: "#F28C0D" }}
-                  ></div>
-                  <p className="text-xs text-red-500">Up to 50% discount!</p>
-                  <p className="text-xs md:text-sm font-semibold">60.15 CAD</p>
-                  <p className="text-xs text-gray-400 line-through">
-                    141.19 CAD
-                  </p>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-2 md:p-4 text-center">
-                  <div
-                    className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
-                    style={{ backgroundColor: "#F28C0D" }}
-                  ></div>
-                  <p className="text-xs text-red-500">Up to 50% discount!</p>
-                  <p className="text-xs md:text-sm font-semibold">141.19 CAD</p>
-                  <p className="text-xs text-gray-400 line-through">
-                    141.19 CAD
-                  </p>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-2 md:p-4 text-center">
-                  <div
-                    className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
-                    style={{ backgroundColor: "#F28C0D" }}
-                  ></div>
-                  <p className="text-xs text-red-500">Up to 50% discount!</p>
-                  <p className="text-xs md:text-sm font-semibold">141.19 CAD</p>
-                  <p className="text-xs text-gray-400 line-through">
-                    141.19 CAD
-                  </p>
-                </div>
+                {isLoading
+                  ? // Loading skeleton for featured products
+                    Array.from({ length: 3 }, (_, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-100 rounded-lg p-2 md:p-4 text-center animate-pulse"
+                      >
+                        <div className="h-12 md:h-20 rounded-lg mb-2 bg-gray-200"></div>
+                        <div className="h-3 bg-gray-200 rounded mb-1 w-3/4 mx-auto"></div>
+                        <div className="h-3 bg-gray-200 rounded mb-1 w-1/2 mx-auto"></div>
+                        <div className="h-3 bg-gray-200 rounded w-1/3 mx-auto"></div>
+                      </div>
+                    ))
+                  : recommendedProducts?.data?.data
+                      ?.slice(0, 3)
+                      ?.map((product: any) => {
+                        const hasDiscount =
+                          parseFloat(product.regular_price) >
+                          parseFloat(product.sales_price);
+                        const discountPercentage = hasDiscount
+                          ? Math.round(
+                              ((parseFloat(product.regular_price) -
+                                parseFloat(product.sales_price)) /
+                                parseFloat(product.regular_price)) *
+                                100
+                            )
+                          : 0;
+
+                        return (
+                          <div
+                            key={product.id}
+                            className="bg-gray-100 rounded-lg p-2 md:p-4 text-center"
+                          >
+                            <div className="h-12 md:h-20 rounded-lg mb-2 relative overflow-hidden bg-gray-200">
+                              <Image
+                                src={product.images[0] || "/icon/auth.svg"}
+                                alt={product.title}
+                                fill
+                                className="object-cover rounded-lg"
+                              />
+                            </div>
+                            {hasDiscount && (
+                              <p className="text-xs text-red-500">
+                                {discountPercentage}% discount!
+                              </p>
+                            )}
+                            <p className="text-xs md:text-sm font-semibold">
+                              ${parseFloat(product.sales_price).toFixed(2)} CAD
+                            </p>
+                            {hasDiscount && (
+                              <p className="text-xs text-gray-400 line-through">
+                                ${parseFloat(product.regular_price).toFixed(2)}{" "}
+                                CAD
+                              </p>
+                            )}
+                          </div>
+                        );
+                      }) ||
+                    // Fallback to original placeholder if no products
+                    Array.from({ length: 3 }, (_, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-100 rounded-lg p-2 md:p-4 text-center"
+                      >
+                        <div
+                          className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
+                          style={{ backgroundColor: "#F28C0D" }}
+                        ></div>
+                        <p className="text-xs text-red-500">
+                          Up to 50% discount!
+                        </p>
+                        <p className="text-xs md:text-sm font-semibold">
+                          60.15 CAD
+                        </p>
+                        <p className="text-xs text-gray-400 line-through">
+                          141.19 CAD
+                        </p>
+                      </div>
+                    ))}
               </div>
             </div>
           </div>
