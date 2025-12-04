@@ -51,8 +51,7 @@ export const FeaturedProductsCarousel = ({
                   </div>
                 </div>
               ))
-            : displayProducts.length > 0
-            ? displayProducts.map((product) => {
+            : displayProducts.map((product) => {
                 const hasDiscount =
                   parseFloat(product.regular_price) >
                   parseFloat(product.sales_price);
@@ -100,28 +99,7 @@ export const FeaturedProductsCarousel = ({
                     </Link>
                   </div>
                 );
-              })
-            : // Fallback to original placeholder if no products
-              Array.from({ length: 8 }, (_, index) => (
-                <div key={index} className="flex-none w-1/3 px-1">
-                  <div className="bg-gray-100 rounded-lg p-2 md:p-4 text-center">
-                    <div
-                      className="h-12 md:h-20 rounded-lg mb-2 opacity-30"
-                      style={{ backgroundColor: "#F28C0D" }}
-                    ></div>
-                    <p className="text-xs md:text-sm font-medium text-gray-800 mb-1 truncate px-1">
-                      Sample Product
-                    </p>
-                    <p className="text-xs text-red-500">Up to 50% discount!</p>
-                    <p className="text-xs md:text-sm font-semibold">
-                      60.15 CAD
-                    </p>
-                    <p className="text-xs text-gray-400 line-through">
-                      141.19 CAD
-                    </p>
-                  </div>
-                </div>
-              ))}
+              })}
         </div>
       </div>
     </div>
