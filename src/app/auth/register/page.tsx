@@ -5,32 +5,44 @@ import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
-import toast from 'react-hot-toast';
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import toast from "react-hot-toast";
 import { useRegister } from "@/hooks/useAuth";
 import { PasswordInput } from "@/components/PasswordInput";
 import { GoogleOAuthButton } from "@/components/GoogleOAuthButton";
 
 // Validation schema
 const schema = yup.object({
-  name: yup.string()
-    .required('First name is required')
-    .min(2, 'Must be at least 2 characters')
-    .matches(/^[A-Za-z\s]+$/, 'Name must contain only letters'),
-  last_name: yup.string()
-    .required('Last name is required')
-    .min(2, 'Must be at least 2 characters')
-    .matches(/^[A-Za-z\s]+$/, 'Last name must contain only letters'),
-  email: yup.string().required('Email is required').email('Please enter a valid email address'),
-  phone: yup.string().required('Phone number is required').min(10, 'Please enter a valid phone number'),
-  password: yup.string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters')
-    .matches(/[A-Z]/, 'Password must contain an uppercase letter')
-    .matches(/[a-z]/, 'Password must contain a lowercase letter') 
-    .matches(/\d/, 'Password must contain a number')
-    .matches(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'Password must contain a symbol'),
+  name: yup
+    .string()
+    .required("First name is required")
+    .min(2, "Must be at least 2 characters")
+    .matches(/^[A-Za-z\s]+$/, "Name must contain only letters"),
+  last_name: yup
+    .string()
+    .required("Last name is required")
+    .min(2, "Must be at least 2 characters")
+    .matches(/^[A-Za-z\s]+$/, "Last name must contain only letters"),
+  email: yup
+    .string()
+    .required("Email is required")
+    .email("Please enter a valid email address"),
+  phone: yup
+    .string()
+    .required("Phone number is required")
+    .min(10, "Please enter a valid phone number"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, "Password must contain an uppercase letter")
+    .matches(/[a-z]/, "Password must contain a lowercase letter")
+    .matches(/\d/, "Password must contain a number")
+    .matches(
+      /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/,
+      "Password must contain a symbol"
+    ),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -38,8 +50,12 @@ type FormData = yup.InferType<typeof schema>;
 export default function RegisterPage() {
   const router = useRouter();
   const register = useRegister();
-  
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: "",
@@ -47,45 +63,51 @@ export default function RegisterPage() {
       email: "",
       phone: "",
       password: "",
-    }
+    },
   });
 
   const onSubmit = (data: FormData) => {
-    register.mutate({
-      name: data.name,
-      last_name: data.last_name,
-      email: data.email,
-      phone: data.phone,
-      role: 'customer',
-      password: data.password,
-    }, {
-      onSuccess: () => {
-        toast.success('Account created successfully!');
-        router.push(`/auth/verify-email?email=${encodeURIComponent(data.email)}`);
+    register.mutate(
+      {
+        name: data.name,
+        last_name: data.last_name,
+        email: data.email,
+        phone: data.phone,
+        role: "customer",
+        password: data.password,
       },
-      onError: (error: any) => {
-        console.error('Registration failed:', error);
-        
-        // Handle the exact API error structure: {errors: {email: ["message"]}}
-        if (error?.errors) {
-          const apiErrors = error.errors;
-          Object.keys(apiErrors).forEach(field => {
-            const messages = apiErrors[field];
-            if (Array.isArray(messages)) {
-              messages.forEach((message: string) => {
-                toast.error(message);
-              });
-            } else if (typeof messages === 'string') {
-              toast.error(messages);
-            }
-          });
-        } else {
-          toast.error(error?.message || 'Registration failed. Please try again.');
-        }
-      }
-    });
-  };
+      {
+        onSuccess: () => {
+          toast.success("Account created successfully!");
+          router.push(
+            `/auth/verify-email?email=${encodeURIComponent(data.email)}`
+          );
+        },
+        onError: (error: any) => {
+          console.error("Registration failed:", error);
 
+          // Handle the exact API error structure: {errors: {email: ["message"]}}
+          if (error?.errors) {
+            const apiErrors = error.errors;
+            Object.keys(apiErrors).forEach((field) => {
+              const messages = apiErrors[field];
+              if (Array.isArray(messages)) {
+                messages.forEach((message: string) => {
+                  toast.error(message);
+                });
+              } else if (typeof messages === "string") {
+                toast.error(messages);
+              }
+            });
+          } else {
+            toast.error(
+              error?.message || "Registration failed. Please try again."
+            );
+          }
+        },
+      }
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -115,9 +137,11 @@ export default function RegisterPage() {
                 />
               )}
             />
-            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
           </div>
-          
+
           <div>
             <label
               htmlFor="last_name"
@@ -138,7 +162,11 @@ export default function RegisterPage() {
                 />
               )}
             />
-            {errors.last_name && <p className="text-red-500 text-sm mt-1">{errors.last_name.message}</p>}
+            {errors.last_name && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.last_name.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -162,7 +190,9 @@ export default function RegisterPage() {
               />
             )}
           />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div>
@@ -178,14 +208,16 @@ export default function RegisterPage() {
             render={({ field }) => (
               <PhoneInput
                 {...field}
-                countries={['CA']}
+                countries={["CA"]}
                 defaultCountry="CA"
                 placeholder="(123) 456-7890"
                 className="phone-input-custom"
               />
             )}
           />
-          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+          {errors.phone && (
+            <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+          )}
           <style jsx global>{`
             .phone-input-custom {
               display: flex !important;
@@ -193,7 +225,7 @@ export default function RegisterPage() {
             .phone-input-custom .PhoneInputInput {
               width: 100% !important;
               padding: 0.75rem 1rem !important;
-              border: 1px solid #E5E7EB !important;
+              border: 1px solid #e5e7eb !important;
               border-left: none !important;
               border-radius: 0 0.5rem 0.5rem 0 !important;
               font-size: 1rem !important;
@@ -203,19 +235,19 @@ export default function RegisterPage() {
               color: #1f2937 !important;
             }
             .phone-input-custom .PhoneInputInput:focus {
-              border-color: #F28C0D !important;
-              box-shadow: 0 0 0 1px #F28C0D !important;
+              border-color: #f28c0d !important;
+              box-shadow: 0 0 0 1px #f28c0d !important;
             }
             .phone-input-custom .PhoneInputCountrySelect {
-              border: 1px solid #E5E7EB !important;
+              border: 1px solid #e5e7eb !important;
               border-right: none !important;
               border-radius: 0.5rem 0 0 0.5rem !important;
               padding: 0.75rem 0.5rem !important;
               background-color: white !important;
             }
             .phone-input-custom .PhoneInputCountrySelect:focus {
-              border-color: #F28C0D !important;
-              box-shadow: 0 0 0 1px #F28C0D !important;
+              border-color: #f28c0d !important;
+              box-shadow: 0 0 0 1px #f28c0d !important;
             }
           `}</style>
         </div>
@@ -240,23 +272,30 @@ export default function RegisterPage() {
               />
             )}
           />
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-          
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
+
           {/* Password requirements */}
           <div className="mt-2 text-xs text-gray-500">
-            Password must contain: uppercase, lowercase, number, symbol (min 8 chars)
+            Password must contain: uppercase, lowercase, number, symbol (min 8
+            chars)
           </div>
         </div>
 
-
         <div className="text-sm text-gray-500">
           By creating an account you agree with our{" "}
-          <Link href="/terms" className="text-[#F28C0D] hover:text-orange-400">
+          <Link
+            href="/footer/terms"
+            className="text-[#F28C0D] hover:text-orange-400"
+          >
             Terms of Service
           </Link>
           , and{" "}
           <Link
-            href="/privacy"
+            href="/footer/privacy"
             className="text-[#F28C0D] hover:text-orange-400"
           >
             Privacy Policy
@@ -269,7 +308,7 @@ export default function RegisterPage() {
           disabled={register.isPending}
           className="w-full bg-[#F28C0D] hover:bg-orange-400 text-white font-medium py-3 px-4 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#F28C0D] focus:ring-offset-2 disabled:opacity-50"
         >
-          {register.isPending ? 'Creating account...' : 'Create account'}
+          {register.isPending ? "Creating account..." : "Create account"}
         </button>
       </form>
 
