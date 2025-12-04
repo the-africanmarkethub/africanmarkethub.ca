@@ -86,45 +86,60 @@ export default function CheckoutPage() {
   const cities = City.getCitiesOfState(selectedCountryCode, selectedStateCode);
 
   // Get selected address for shipping calculation
-  const selectedAddress = addressesData?.data?.find(addr => addr.id === selectedAddressId);
-  
+  const selectedAddress = addressesData?.data?.find(
+    (addr) => addr.id === selectedAddressId
+  );
+
   // Get user data for shipping calculation
-  const userData = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
-  
+  const userData =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : {};
+
   // Prepare shipping payload when address is selected
-  const shippingPayload = selectedAddress && cartData?.data ? {
-    to_name: userData.name || "",
-    to_lastname: userData.last_name || "",
-    to_email: userData.email || "",
-    to_phone: selectedAddress.phone,
-    to_street: selectedAddress.street_address,
-    to_city: selectedAddress.city,
-    to_state: selectedAddress.state,
-    to_zip: selectedAddress.zip_code,
-    to_country: selectedAddress.country,
-    products: cartData.data.map(item => ({
-      id: item.product_id,
-      quantity: item.quantity
-    }))
-  } : null;
+  const shippingPayload =
+    selectedAddress && cartData?.data
+      ? {
+          to_name: userData.name || "",
+          to_lastname: userData.last_name || "",
+          to_email: userData.email || "",
+          to_phone: selectedAddress.phone,
+          to_street: selectedAddress.street_address,
+          to_city: selectedAddress.city,
+          to_state: selectedAddress.state,
+          to_zip: selectedAddress.zip_code,
+          to_country: selectedAddress.country,
+          products: cartData.data.map((item) => ({
+            id: item.product_id,
+            quantity: item.quantity,
+          })),
+        }
+      : null;
 
   // Get shipping rates when address is selected
   const { data: shippingRates, isLoading: shippingLoading } = useShippingRates(
-    shippingPayload, 
+    shippingPayload,
     !!selectedAddress && !!cartData?.data
   );
 
   const calculateTotals = () => {
     if (!cartData?.data)
-      return { subtotal: 0, shipping: 0, tax: 50.15, total: 0, deliveryDays: '' };
+      return {
+        subtotal: 0,
+        shipping: 0,
+        tax: 50.15,
+        total: 0,
+        deliveryDays: "",
+      };
 
     const subtotal = cartData.data.reduce((sum, item) => {
       return sum + (parseFloat(item.subtotal) || 0);
     }, 0);
 
     // Use dynamic shipping rate or fallback
-    const shipping = shippingRates?.rates?.total || 400.5;
-    const deliveryDays = shippingRates?.rates?.delivery_days || '2-3 business days';
+    const shipping = shippingRates?.rates?.total || 0;
+    const deliveryDays =
+      shippingRates?.rates?.delivery_days || "2-3 business days";
     const tax = 50.15;
     const total = subtotal + shipping + tax;
 
@@ -135,56 +150,59 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = () => {
     if (!selectedAddressId) {
-      toast.error('Please select a shipping address');
+      toast.error("Please select a shipping address");
       return;
     }
 
     if (!cartData?.data || cartData.data.length === 0) {
-      toast.error('Your cart is empty');
+      toast.error("Your cart is empty");
       return;
     }
 
-    const orderItemIds = cartData.data.map(item => item.id);
-    
-    toast.loading('Processing your order...', { id: 'place-order' });
+    const orderItemIds = cartData.data.map((item) => item.id);
 
-    checkout.mutate({
-      order_item_id: orderItemIds,
-      address_id: selectedAddressId
-    }, {
-      onSuccess: (response) => {
-        toast.dismiss('place-order');
-        if (response.message) {
-          toast.success(response.message);
-        } else {
-          toast.success('Order placed successfully!');
-        }
+    toast.loading("Processing your order...", { id: "place-order" });
 
-        // Handle payment link if provided
-        if (response.payment_link) {
-          window.open(response.payment_link, '_blank');
-          // Redirect to cart page after opening payment window
-          router.push('/cart');
-        }
+    checkout.mutate(
+      {
+        order_item_id: orderItemIds,
+        address_id: selectedAddressId,
       },
-      onError: (error: any) => {
-        toast.dismiss('place-order');
-        console.error('Checkout failed:', error);
-        
-        if (error?.errors) {
-          Object.keys(error.errors).forEach(field => {
-            const messages = error.errors[field];
-            if (Array.isArray(messages)) {
-              messages.forEach((message: string) => toast.error(message));
-            }
-          });
-        } else if (error?.message) {
-          toast.error(error.message);
-        } else {
-          toast.error('Failed to place order. Please try again.');
-        }
+      {
+        onSuccess: (response) => {
+          toast.dismiss("place-order");
+          if (response.message) {
+            toast.success(response.message);
+          } else {
+            toast.success("Order placed successfully!");
+          }
+
+          // Handle payment link if provided
+          if (response.payment_link) {
+            window.open(response.payment_link, "_blank");
+            // Redirect to cart page after opening payment window
+            router.push("/cart");
+          }
+        },
+        onError: (error: any) => {
+          toast.dismiss("place-order");
+          console.error("Checkout failed:", error);
+
+          if (error?.errors) {
+            Object.keys(error.errors).forEach((field) => {
+              const messages = error.errors[field];
+              if (Array.isArray(messages)) {
+                messages.forEach((message: string) => toast.error(message));
+              }
+            });
+          } else if (error?.message) {
+            toast.error(error.message);
+          } else {
+            toast.error("Failed to place order. Please try again.");
+          }
+        },
       }
-    });
+    );
   };
 
   const onSubmitAddress = (data: AddressFormData) => {
@@ -611,7 +629,7 @@ export default function CheckoutPage() {
                 disabled={!selectedAddressId || checkout.isPending}
                 className="w-full mt-6 bg-[#F28C0D] text-white py-3 rounded-full font-medium hover:opacity-90 transition-colors disabled:opacity-50"
               >
-                {checkout.isPending ? 'Processing...' : 'Place Order'}
+                {checkout.isPending ? "Processing..." : "Place Order"}
               </button>
             </div>
 

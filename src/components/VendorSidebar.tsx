@@ -543,7 +543,7 @@ export function VendorSidebar() {
         </div>
       </nav>
 
-      <div className="absolute bottom-4 left-4">
+      {/* <div className="absolute bottom-4 left-4">
         <button
           onClick={logout}
           className="text-[#8B4513] flex items-center text-sm font-medium hover:text-[#F28C0D]"
@@ -563,7 +563,7 @@ export function VendorSidebar() {
           </svg>
           Log out
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
