@@ -255,30 +255,102 @@ export default function Home() {
       </section>
 
       {/* Shop by Category */}
-      <section className="py-16 bg-white min-h-[400px]">
+      <section className="py-16 bg-white mb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#FFF4E6] rounded-lg p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">Viva!</h3>
-              <p className="text-gray-600 mb-6">Your Fashion Choice</p>
-              <button className="bg-[#F28C0D] text-white px-6 py-2 rounded-full">
-                Shop Now
-              </button>
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Shop by Category
+            </h2>
+            <Link href="/categories">
+              <div className="flex items-center space-x-2 text-[#F28C0D] hover:opacity-80 transition-opacity">
+                <span className="text-sm font-medium">See all</span>
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-6 h-[800px]">
+            {/* Main featured category - left half */}
+            <div className="relative rounded-2xl overflow-hidden h-full">
+              <div className="absolute inset-0">
+                <Image
+                  src="/icon/cat.svg"
+                  alt="Featured Category"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="relative z-10 p-8 h-full flex flex-col justify-center text-gray-900">
+                <h3 className="text-4xl md:text-6xl font-bold mb-4">Viva!</h3>
+                <p className="text-xl md:text-2xl mb-6 opacity-90">Your Fashion Choice</p>
+                <button className="bg-black text-white px-8 py-3 rounded-full w-fit hover:bg-gray-800 transition-colors">
+                  Shop Now
+                </button>
+                
+                {/* Featured product cards */}
+                <div className="flex space-x-4 mt-8">
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 text-black w-32">
+                    <div className="bg-gray-100 rounded-lg h-16 mb-2"></div>
+                    <p className="text-xs text-red-500">Up to 50% discount!</p>
+                    <div className="flex items-center mb-1">
+                      {[1,2,3,4,5].map((star) => (
+                        <svg key={star} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="font-bold text-sm">120 CAD</p>
+                    <p className="text-xs text-gray-500 line-through">300 CAD</p>
+                    <p className="text-xs text-gray-600">200+ sold</p>
+                  </div>
+                  
+                  <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 text-black w-32">
+                    <div className="bg-gray-100 rounded-lg h-16 mb-2"></div>
+                    <p className="text-xs text-red-500">Up to 50% discount!</p>
+                    <div className="flex items-center mb-1">
+                      {[1,2,3,4,5].map((star) => (
+                        <svg key={star} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="font-bold text-sm">120 CAD</p>
+                    <p className="text-xs text-gray-500 line-through">300 CAD</p>
+                    <p className="text-xs text-gray-600">300+ sold</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="bg-blue-100 rounded-lg p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">Electronics</h3>
-              <button className="bg-blue-500 text-white px-6 py-2 rounded-full">
-                Shop Now
-              </button>
-            </div>
-            <div className="bg-green-100 rounded-lg p-8 text-center">
-              <h3 className="text-2xl font-bold mb-4">Food & Drinks</h3>
-              <button className="bg-green-500 text-white px-6 py-2 rounded-full">
-                Shop Now
-              </button>
+
+            {/* Right side category grid - right half */}
+            <div className="grid grid-cols-2 gap-4 h-full">
+              {categoriesResponse?.categories
+                ?.filter((category) => !category.parent_id)
+                ?.slice(0, 6)
+                ?.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/category/products/${category.id}`}
+                    className="group relative rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300"
+                  >
+                    <div className="h-full bg-gradient-to-br from-blue-400 to-purple-600 relative rounded-xl">
+                      <Image
+                        src={category.image || "/icon/cat.svg"}
+                        alt={category.name}
+                        fill
+                        className="object-cover mix-blend-multiply"
+                      />
+                      <div className="absolute inset-0 bg-black/20"></div>
+                    </div>
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="bg-[#F28C0D] text-white px-4 py-2 rounded-lg text-center font-semibold">
+                        {category.name}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
             </div>
           </div>
         </div>

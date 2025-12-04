@@ -20,7 +20,7 @@ export default function VendorHeader() {
     if (pathname.includes("/vendor/customers")) return "Customer Feedback";
     if (pathname.includes("/vendor/finance")) return "Finance & Payment";
     if (pathname.includes("/vendor/analytics")) return "Analytics & Report";
-    if (pathname.includes("/vendor/accounts")) return "Account & Settings";
+    if (pathname.includes("/vendor/settings")) return "Account & Settings";
     if (pathname.includes("/vendor/support")) return "Vendor Support";
     if (pathname.includes("/vendor/shop")) return "Shop Management";
     return "Dashboard";
@@ -93,7 +93,7 @@ export default function VendorHeader() {
               {showUserDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50">
                   <Link
-                    href="/vendor/accounts"
+                    href="/vendor/settings"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Profile Settings
@@ -120,7 +120,9 @@ export default function VendorHeader() {
 
       {/* Mobile Header */}
       <div className="lg:hidden bg-white border-b px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-gray-900">{getPageTitle()}</h1>
+        <h1 className="text-lg font-semibold text-gray-900">
+          {getPageTitle()}
+        </h1>
         <div className="flex items-center space-x-2">
           <button className="p-2 text-gray-400 hover:text-gray-600 relative">
             <svg
@@ -138,7 +140,7 @@ export default function VendorHeader() {
             </svg>
             <span className="absolute top-1 right-1 block h-1.5 w-1.5 rounded-full bg-red-500"></span>
           </button>
-          
+
           <button
             onClick={() => setShowUserDropdown(!showUserDropdown)}
             className="relative h-8 w-8 rounded-full bg-gradient-to-r from-[#F28C0D] to-orange-600 flex items-center justify-center text-white font-bold text-sm"
@@ -146,11 +148,11 @@ export default function VendorHeader() {
             {user?.name?.charAt(0) || "J"}
           </button>
         </div>
-        
+
         {showUserDropdown && (
           <div className="absolute right-4 top-14 w-48 bg-white rounded-lg shadow-lg py-1 z-50">
             <Link
-              href="/vendor/accounts"
+              href="/vendor/settings"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Profile Settings

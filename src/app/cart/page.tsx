@@ -293,12 +293,12 @@ export default function CartPage() {
                     </span>
                   </div>
 
-                  <div className="flex text-gray-600 justify-between text-sm">
+                  {/* <div className="flex text-gray-600 justify-between text-sm">
                     <span className="text-gray-600">Shipping Fee:</span>
                     <span className="font-medium">
                       ${shipping.toFixed(2)} CAD
                     </span>
-                  </div>
+                  </div> */}
 
                   <div className="flex justify-between text-sm border-b border-gray-200 pb-2">
                     <span className="text-gray-600">Coupon</span>
