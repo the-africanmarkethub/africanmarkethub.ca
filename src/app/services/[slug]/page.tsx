@@ -85,19 +85,23 @@ export default function ServiceDetailPage() {
 
   const handleBookNow = () => {
     // Check if user is logged in
-    const token = localStorage.getItem('auth_token');
-    
+    const token = localStorage.getItem("auth_token");
+
     if (!token) {
       // Not logged in - redirect to login with Google, then to chat
       const returnUrl = `/chat?vendor=${service.shop.id}&service=${service.id}`;
-      router.push(`/auth/login?returnUrl=${encodeURIComponent(returnUrl)}&authType=google`);
+      router.push(
+        `/auth/login?returnUrl=${encodeURIComponent(returnUrl)}&authType=google`
+      );
     } else {
       // Check user role
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      
-      if (user.role === 'vendor') {
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      if (user.role === "vendor") {
         // Vendor trying to book - show toast message
-        toast.error('Only customers can book services. Vendors cannot book from other vendors.');
+        toast.error(
+          "Only customers can book services. Vendors cannot book from other vendors."
+        );
       } else {
         // Customer - go directly to chat
         router.push(`/chat?vendor=${service.shop.id}&service=${service.id}`);
@@ -443,9 +447,9 @@ export default function ServiceDetailPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-3">
                   <span className="text-[#F28C0D]">Seller Information</span>
-                  <span className="ml-2 text-xs bg-[#FFF4E6] text-[#F28C0D] px-2 py-1 rounded">
+                  {/* <span className="ml-2 text-xs bg-[#FFF4E6] text-[#F28C0D] px-2 py-1 rounded">
                     View Shop
-                  </span>
+                  </span> */}
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-start space-x-2">

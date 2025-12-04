@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useProductDetail } from "@/hooks/useProductDetail";
 import { ItemCard } from "@/components/ItemCard";
 import { useAddToCart } from "@/hooks/useCart";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -98,50 +98,53 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     // Check if user is logged in
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem("auth_token");
     if (!token) {
-      toast.error('Please login to add items to cart');
+      toast.error("Please login to add items to cart");
       return;
     }
 
-    addToCart.mutate({
-      cart_items: [
-        {
-          product_id: product.id,
-          quantity: quantity,
-        }
-      ]
-    }, {
-      onSuccess: (data) => {
-        if (data.message) {
-          toast.success(data.message);
-        } else {
-          toast.success('Item added to cart successfully!');
-        }
+    addToCart.mutate(
+      {
+        cart_items: [
+          {
+            product_id: product.id,
+            quantity: quantity,
+          },
+        ],
       },
-      onError: (error: any) => {
-        console.error('Add to cart failed:', error);
-        
-        // Handle API errors
-        if (error?.errors) {
-          const apiErrors = error.errors;
-          Object.keys(apiErrors).forEach(field => {
-            const messages = apiErrors[field];
-            if (Array.isArray(messages)) {
-              messages.forEach((message: string) => {
-                toast.error(message);
-              });
-            } else if (typeof messages === 'string') {
-              toast.error(messages);
-            }
-          });
-        } else if (error?.message) {
-          toast.error(error.message);
-        } else {
-          toast.error('Failed to add item to cart. Please try again.');
-        }
+      {
+        onSuccess: (data) => {
+          if (data.message) {
+            toast.success(data.message);
+          } else {
+            toast.success("Item added to cart successfully!");
+          }
+        },
+        onError: (error: any) => {
+          console.error("Add to cart failed:", error);
+
+          // Handle API errors
+          if (error?.errors) {
+            const apiErrors = error.errors;
+            Object.keys(apiErrors).forEach((field) => {
+              const messages = apiErrors[field];
+              if (Array.isArray(messages)) {
+                messages.forEach((message: string) => {
+                  toast.error(message);
+                });
+              } else if (typeof messages === "string") {
+                toast.error(messages);
+              }
+            });
+          } else if (error?.message) {
+            toast.error(error.message);
+          } else {
+            toast.error("Failed to add item to cart. Please try again.");
+          }
+        },
       }
-    });
+    );
   };
 
   return (
@@ -337,12 +340,12 @@ export default function ProductDetailPage() {
                 </div>
 
                 <div className="flex w-full space-x-4">
-                  <button 
+                  <button
                     onClick={handleAddToCart}
                     disabled={addToCart.isPending}
                     className="flex-1 bg-[#F28C0D] text-white px-6 py-3 rounded-full font-medium hover:opacity-90 transition-colors disabled:opacity-50"
                   >
-                    {addToCart.isPending ? 'Adding...' : 'Add to Cart'}
+                    {addToCart.isPending ? "Adding..." : "Add to Cart"}
                   </button>
                   <button className="px-6 py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors">
                     ♡
@@ -427,12 +430,12 @@ export default function ProductDetailPage() {
                 <h3 className="font-semibold text-gray-900">
                   Seller Information
                 </h3>
-                <Link
+                {/* <Link
                   href={`/shop/${product.shop.slug}`}
                   className="text-[#F28C0D] text-xs hover:underline"
                 >
                   View Shop
-                </Link>
+                </Link> */}
               </div>
               <div className="flex items-start space-x-3">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
