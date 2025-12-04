@@ -1,85 +1,61 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import localFont from "next/font/local";
-import { ThemeProvider } from "@/components/vendor/theme-provider";
-import Common from "@/utils/common";
-import { cn } from "@/lib/utils";
-import { AuthProvider } from "@/contexts/vendor/auth-context";
-import { ErrorBoundary } from "@/components/vendor/error-boundary";
-import { CartProvider } from "@/contexts/customer/CartContext";
-import NextAuthProvider from "@/components/providers/NextAuthProvider";
-import { AuthSyncProvider } from "@/components/providers/AuthSyncProvider";
+import { Providers } from "@/lib/providers";
+import { ConditionalHeader } from "@/components/ConditionalHeader";
+import { ConditionalFooter } from "@/components/ConditionalFooter";
+import { Toaster } from "react-hot-toast";
 
-const lufga = localFont({
-  src: [
-    {
-      path: "../../public/fonts/lufga/LufgaRegular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/lufga/LufgaMedium.ttf",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/lufga/LufgaSemiBold.ttf",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/lufga/LufgaBold.ttf",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-lufga",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "African Market Hub",
-  description: "African Market Hub - Connect customers and vendors across Africa",
-  icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/img/African Market Hub.svg", type: "image/svg+xml" }
-    ],
-    apple: "/img/African Market Hub Banner.png",
-  },
+  title: "MarketHub",
+  description: "Marketplace for customers and vendors",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
-        className={cn(
-          "min-h-screen w-full font-lufga antialiased",
-          lufga.variable
-        )}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ErrorBoundary>
-          <Common>
-            <NextAuthProvider>
-              <AuthSyncProvider />
-              <AuthProvider>
-                <CartProvider>
-                  <ThemeProvider
-                    attribute="class"
-                    defaultTheme="light"
-                    enableSystem
-                    disableTransitionOnChange
-                  >
-                    {children}
-                  </ThemeProvider>
-                </CartProvider>
-              </AuthProvider>
-            </NextAuthProvider>
-          </Common>
-        </ErrorBoundary>
+        <Providers>
+          <ConditionalHeader />
+          {children}
+          <ConditionalFooter />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                background: '#363636',
+                color: '#fff',
+              },
+              success: {
+                style: {
+                  background: '#22c55e',
+                },
+              },
+              error: {
+                style: {
+                  background: '#ef4444',
+                },
+              },
+            }}
+          />
+        </Providers>
       </body>
     </html>
   );
