@@ -327,53 +327,6 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-
-            {/* Frequently Bought Together */}
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                Frequently bought together
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {/* Placeholder for related products */}
-                {Array.from({ length: 4 }, (_, index) => (
-                  <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-sm p-4"
-                  >
-                    <div className="aspect-square bg-gray-200 rounded-lg mb-4"></div>
-                    <h3 className="font-medium text-gray-900 mb-2">
-                      Ankara gown
-                    </h3>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="flex items-center">
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <svg
-                            key={i}
-                            className="w-4 h-4 text-yellow-400"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                          </svg>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-2 mb-3">
-                      <span className="font-bold">141.19 CAD</span>
-                      <span className="text-sm text-gray-400 line-through">
-                        141.19 CAD
-                      </span>
-                      <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
-                        60%
-                      </span>
-                    </div>
-                    <button className="w-full bg-[#F28C0D] text-white py-2 rounded-full text-sm font-medium">
-                      Add to Cart
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
           </>
         ) : (
           // Empty Cart State
