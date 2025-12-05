@@ -17,8 +17,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MarketHub",
-  description: "Marketplace for customers and vendors",
+  title: "African Market Hub",
+  description: "Africa's leading online marketplace - Discover authentic African products",
+  icons: {
+    icon: '/icon/logo.svg',
+    shortcut: '/icon/logo.svg',
+    apple: '/icon/logo.svg',
+  },
 };
 
 export default function RootLayout({
