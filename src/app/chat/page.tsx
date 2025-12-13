@@ -25,6 +25,7 @@ function ChatContent() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isInitializingChat, setIsInitializingChat] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   // API hooks
   const { data: ticketsData, isLoading: ticketsLoading } = useTickets();
@@ -148,6 +149,13 @@ function ChatContent() {
 
   const handleSelectTicket = (ticketId: string) => {
     setSelectedTicketId(ticketId);
+    // On mobile, hide sidebar when chat is selected
+    setShowSidebar(false);
+  };
+
+  const handleBackToList = () => {
+    setShowSidebar(true);
+    setSelectedTicketId(null);
   };
 
   const formatTime = (timestamp: string) => {
@@ -204,17 +212,25 @@ function ChatContent() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-gray-50">
+    <div className="flex h-[calc(100vh-80px)] bg-gray-50 relative">
       {/* Sidebar - Contact List */}
-      <div className="w-96 bg-white border-r border-gray-200 flex flex-col">
+      <div className={`${showSidebar ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative inset-y-0 left-0 z-30 w-full sm:w-80 lg:w-96 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ease-in-out h-full lg:h-auto`}>
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="p-4 border-b border-gray-200 flex items-center justify-between lg:block">
+          <button
+            onClick={() => setShowSidebar(false)}
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h2 className="text-lg lg:text-xl font-semibold text-gray-900 lg:mb-4">
             Your Vendor Chats
           </h2>
 
           {/* Search */}
-          <div className="relative">
+          <div className="relative mt-4 lg:mt-0">
             <input
               type="text"
               placeholder="Search"
@@ -297,14 +313,30 @@ function ChatContent() {
         </div>
       </div>
 
+      {/* Overlay for mobile */}
+      {showSidebar && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-20"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
+
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col w-full">
         {selectedTicketId && ticketDetail?.data ? (
           <>
             {/* Chat Header */}
-            <div className="bg-white border-b border-gray-200 p-4">
+            <div className="bg-white border-b border-gray-200 p-3 lg:p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
+                  <button
+                    onClick={handleBackToList}
+                    className="lg:hidden mr-2 p-1.5 hover:bg-gray-100 rounded-lg"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
                   <div className="relative mr-3">
                     {ticketDetail.data.user_detail.profile_photo ? (
                       <Image
@@ -325,24 +357,24 @@ function ChatContent() {
                       <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm lg:text-base truncate">
                       {ticketDetail.data.user_detail.full_name}
                     </h3>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 truncate">
                       {ticketDetail.data.service_detail.name} • {ticketDetail.data.subject}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+                <div className="flex items-center space-x-2 lg:space-x-4">
+                  <button className="hidden sm:block p-1.5 lg:p-2 text-gray-600 hover:bg-gray-100 rounded-full">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                         d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                   </button>
-                  <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+                  <button className="p-1.5 lg:p-2 text-gray-600 hover:bg-gray-100 rounded-full">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -353,7 +385,7 @@ function ChatContent() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-3 lg:p-4 bg-gray-50">
               <div className="space-y-4">
                 {/* Service info at the top */}
                 <div className="text-center py-4">
@@ -379,7 +411,7 @@ function ChatContent() {
                     }`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md ${
+                      className={`max-w-[70%] sm:max-w-xs lg:max-w-md ${
                         msg.sender === "customer"
                           ? "bg-[#F28C0D] text-white"
                           : "bg-white text-gray-900"
@@ -421,13 +453,13 @@ function ChatContent() {
             </div>
 
             {/* Message Input */}
-            <div className="bg-white border-t border-gray-200 p-4">
-              <div className="flex items-center space-x-2">
+            <div className="bg-white border-t border-gray-200 p-3 lg:p-4">
+              <div className="flex items-center space-x-2 flex-wrap sm:flex-nowrap">
                 <button 
                   onClick={() => setShowBookingModal(true)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium"
+                  className="hidden sm:block px-3 lg:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium whitespace-nowrap"
                 >
-                  Book Service
+                  Book
                 </button>
 
                 <div className="flex-1 relative">
@@ -451,7 +483,7 @@ function ChatContent() {
                   </button>
                 </div>
 
-                <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+                <button className="hidden sm:block p-2 text-gray-600 hover:bg-gray-100 rounded-full">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                       d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -472,7 +504,15 @@ function ChatContent() {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
+          <div className="flex-1 flex items-center justify-center bg-gray-50 px-4">
+            <button
+              onClick={() => setShowSidebar(true)}
+              className="lg:hidden fixed top-20 left-4 z-10 p-2 bg-white shadow-lg rounded-lg hover:bg-gray-100"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div className="text-center">
               {(createTicket.isPending || isInitializingChat) ? (
                 <>
@@ -486,7 +526,7 @@ function ChatContent() {
                       d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
-                  <p className="text-gray-500">Choose a vendor from the list to start chatting</p>
+                  <p className="text-gray-500 text-sm sm:text-base">Choose a vendor from the list to start chatting</p>
                 </>
               )}
             </div>

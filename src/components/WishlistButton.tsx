@@ -26,20 +26,22 @@ export function WishlistButton({
     lg: "w-6 h-6",
   };
 
-  const handleWishlistToggle = async () => {
-    try {
-      if (isInWishlist && wishlistItem) {
-        await deleteFromWishlist.mutateAsync(wishlistItem.id);
-        toast.success("Removed from wishlist");
-      } else {
-        await addToWishlist.mutateAsync({
-          product_id: productId,
-          quantity: 1,
-        });
-        toast.success("Added to wishlist");
-      }
-    } catch (error) {
-      toast.error("Failed to update wishlist");
+  const handleWishlistToggle = () => {
+    if (isInWishlist && wishlistItem) {
+      deleteFromWishlist.mutate(wishlistItem.id, {
+        onSuccess: () => {
+          toast.success("Removed from wishlist");
+        }
+      });
+    } else {
+      addToWishlist.mutate({
+        product_id: productId,
+        quantity: 1,
+      }, {
+        onSuccess: () => {
+          toast.success("Added to wishlist");
+        }
+      });
     }
   };
 

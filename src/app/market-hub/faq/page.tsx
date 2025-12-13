@@ -166,7 +166,7 @@ export default function FAQPage() {
                 Can't find the answer you're looking for? Our support team is here to help.
               </p>
               <Link
-                href="/footer/contact"
+                href="/market-hub/contact"
                 className="inline-flex items-center bg-[#F28C0D] hover:bg-orange-600 text-white font-medium py-3 px-6 rounded-lg transition-colors"
               >
                 Contact Support

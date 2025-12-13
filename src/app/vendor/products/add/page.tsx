@@ -193,7 +193,7 @@ export default function AddProductPage() {
       const hour = parseInt(hours);
       const ampm = hour >= 12 ? "pm" : "am";
       const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-      return `${hour12}:${minutes}${ampm}`;
+      return `${hour12}:${minutes} ${ampm}`;
     };
 
     // Prepare submission data

@@ -180,7 +180,7 @@ export default function CreateShopPage() {
 
         // Create preview URL
         const previewUrl = URL.createObjectURL(file);
-        
+
         setFiles((prev) => ({ ...prev, [type]: file }));
         setImagePreviews((prev) => ({ ...prev, [type]: previewUrl }));
         toast.success(`${type} uploaded successfully!`);
@@ -664,7 +664,9 @@ export default function CreateShopPage() {
                           <p className="text-gray-600 text-xs">
                             {files.logo?.name}
                           </p>
-                          <p className="text-xs text-gray-400">Click to change</p>
+                          <p className="text-xs text-gray-400">
+                            Click to change
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -721,7 +723,9 @@ export default function CreateShopPage() {
                           <p className="text-gray-600 text-xs">
                             {files.banner?.name}
                           </p>
-                          <p className="text-xs text-gray-400">Click to change</p>
+                          <p className="text-xs text-gray-400">
+                            Click to change
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -767,14 +771,14 @@ export default function CreateShopPage() {
                   <label htmlFor="terms" className="text-sm text-gray-600">
                     By creating an account you agree to our{" "}
                     <Link
-                      href="/footer/terms"
+                      href="/market-hub/terms"
                       className="text-[#F28C0D] hover:text-orange-600 font-medium"
                     >
                       Terms of Service
                     </Link>{" "}
                     and{" "}
                     <Link
-                      href="/footer/privacy"
+                      href="/market-hub/privacy"
                       className="text-[#F28C0D] hover:text-orange-600 font-medium"
                     >
                       Privacy Policy
@@ -801,7 +805,6 @@ export default function CreateShopPage() {
                 </div>
               </form>
             )}
-
           </div>
         </div>
       </div>

@@ -11,6 +11,7 @@ export default function VendorCustomerMessagesPage() {
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSidebar, setShowSidebar] = useState(true);
 
   // API hooks - vendors see tickets from their perspective
   const { data: ticketsData, isLoading: ticketsLoading } = useTickets();
@@ -55,6 +56,13 @@ export default function VendorCustomerMessagesPage() {
 
   const handleSelectTicket = (ticketId: string) => {
     setSelectedTicketId(ticketId);
+    // On mobile, hide sidebar when chat is selected
+    setShowSidebar(false);
+  };
+
+  const handleBackToList = () => {
+    setShowSidebar(true);
+    setSelectedTicketId(null);
   };
 
   const formatTime = (timestamp: string) => {
@@ -89,7 +97,7 @@ export default function VendorCustomerMessagesPage() {
   return (
     <div className="flex h-[calc(100vh-80px)] bg-gray-50">
       {/* Sidebar - Customer List */}
-      <div className="w-96 bg-white border-r border-gray-200 flex flex-col">
+      <div className={`${showSidebar ? 'flex' : 'hidden'} md:flex w-full md:w-96 bg-white border-r border-gray-200 flex-col`}>
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -103,7 +111,7 @@ export default function VendorCustomerMessagesPage() {
               placeholder="Search customers"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-[#F28C0D]"
+              className="w-full pl-10 pr-4 py-2 text-sm md:text-base bg-gray-100 rounded-lg outline-none focus:ring-2 focus:ring-[#F28C0D]"
             />
             <svg
               className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -136,7 +144,7 @@ export default function VendorCustomerMessagesPage() {
               <div
                 key={ticket.ticket_id}
                 onClick={() => handleSelectTicket(ticket.ticket_id)}
-                className={`flex items-center p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 ${
+                className={`flex items-center p-3 md:p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 ${
                   selectedTicketId === ticket.ticket_id ? "bg-orange-50" : ""
                 }`}
               >
@@ -145,13 +153,13 @@ export default function VendorCustomerMessagesPage() {
                     <Image
                       src={ticket.profile_photo}
                       alt={ticket.full_name}
-                      width={48}
-                      height={48}
-                      className="rounded-full object-cover"
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-gray-600 font-semibold">
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-gray-600 font-semibold text-sm md:text-base">
                         {ticket.full_name.charAt(0)}
                       </span>
                     </div>
@@ -163,14 +171,14 @@ export default function VendorCustomerMessagesPage() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-medium text-gray-900 truncate">
+                    <h3 className="font-medium text-gray-900 truncate text-sm md:text-base">
                       {ticket.full_name}
                     </h3>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 flex-shrink-0">
                       {formatDate(ticket.last_message_time)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 truncate">
+                  <p className="text-xs md:text-sm text-gray-600 truncate">
                     {ticket.last_message}
                   </p>
                 </div>
@@ -181,25 +189,35 @@ export default function VendorCustomerMessagesPage() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className={`${!showSidebar ? 'flex' : 'hidden'} md:flex flex-1 flex-col`}>
         {selectedTicketId && ticketDetail?.data ? (
           <>
             {/* Chat Header */}
-            <div className="bg-white border-b border-gray-200 p-4">
+            <div className="bg-white border-b border-gray-200 p-3 md:p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
+                {/* Back button for mobile */}
+                <button
+                  onClick={handleBackToList}
+                  className="md:hidden p-2 text-gray-600 hover:text-[#F28C0D] mr-2"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <div className="flex items-center flex-1">
                   <div className="relative mr-3">
                     {ticketDetail.data.user_detail.profile_photo ? (
                       <Image
                         src={ticketDetail.data.user_detail.profile_photo}
                         alt={ticketDetail.data.user_detail.full_name}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover"
+                        width={36}
+                        height={36}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                        <span className="text-gray-600 font-semibold">
+                      <div className="w-9 h-9 md:w-10 md:h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                        <span className="text-gray-600 font-semibold text-sm">
                           {ticketDetail.data.user_detail.full_name.charAt(0)}
                         </span>
                       </div>
@@ -208,18 +226,18 @@ export default function VendorCustomerMessagesPage() {
                       <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
                     )}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">
                       {ticketDetail.data.user_detail.full_name}
                     </h3>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 truncate">
                       {ticketDetail.data.service_detail.name} • Ticket #{ticketDetail.data.ticket_id}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${
                     ticketDetail.data.response_status === 'open' 
                       ? 'bg-green-100 text-green-800' 
                       : 'bg-gray-100 text-gray-800'
@@ -231,7 +249,7 @@ export default function VendorCustomerMessagesPage() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-3 md:p-4 bg-gray-50">
               <div className="space-y-4">
                 {/* Service info at the top */}
                 <div className="text-center py-4">
@@ -257,7 +275,7 @@ export default function VendorCustomerMessagesPage() {
                     }`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md ${
+                      className={`max-w-[280px] md:max-w-xs lg:max-w-md ${
                         msg.sender === "vendor"
                           ? "bg-[#F28C0D] text-white"
                           : "bg-white text-gray-900"
@@ -274,7 +292,7 @@ export default function VendorCustomerMessagesPage() {
                           />
                         </div>
                       )}
-                      <div className="px-4 py-2">
+                      <div className="px-3 md:px-4 py-2">
                         <p className="text-sm">{msg.message}</p>
                         <p className={`text-xs mt-1 ${
                           msg.sender === "vendor" ? "text-orange-100" : "text-gray-500"
@@ -299,7 +317,7 @@ export default function VendorCustomerMessagesPage() {
             </div>
 
             {/* Message Input */}
-            <div className="bg-white border-t border-gray-200 p-4">
+            <div className="bg-white border-t border-gray-200 p-3 md:p-4">
               <div className="flex items-center space-x-2">
                 <div className="flex-1 relative">
                   <input
@@ -309,16 +327,16 @@ export default function VendorCustomerMessagesPage() {
                     onKeyDown={handleKeyDown}
                     placeholder="Type your reply..."
                     disabled={updateTicket.isPending}
-                    className="w-full px-4 py-2 bg-gray-100 rounded-full outline-none focus:ring-2 focus:ring-[#F28C0D] disabled:opacity-50"
+                    className="w-full px-3 md:px-4 py-2 text-sm md:text-base bg-gray-100 rounded-full outline-none focus:ring-2 focus:ring-[#F28C0D] disabled:opacity-50"
                   />
                 </div>
 
                 <button
                   onClick={handleSendMessage}
                   disabled={!message.trim() || updateTicket.isPending}
-                  className="p-2 bg-[#F28C0D] text-white rounded-full hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-2 md:p-2.5 bg-[#F28C0D] text-white rounded-full hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
                       d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>

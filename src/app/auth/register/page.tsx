@@ -288,14 +288,14 @@ export default function RegisterPage() {
         <div className="text-sm text-gray-500">
           By creating an account you agree with our{" "}
           <Link
-            href="/footer/terms"
+            href="/market-hub/terms"
             className="text-[#F28C0D] hover:text-orange-400"
           >
             Terms of Service
           </Link>
           , and{" "}
           <Link
-            href="/footer/privacy"
+            href="/market-hub/privacy"
             className="text-[#F28C0D] hover:text-orange-400"
           >
             Privacy Policy

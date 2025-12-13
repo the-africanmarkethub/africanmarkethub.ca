@@ -64,7 +64,12 @@ export function TodaysDeals() {
 
   const deals = dealsResponse.data.slice(0, 8); // Show max 8 deals
 
-  const getDiscountPercentage = (deal: any) => {
+  const getDiscountPercentage = (deal: {
+    product: {
+      regular_price: string;
+      sales_price: string;
+    };
+  }) => {
     const originalPrice = parseFloat(deal.product.regular_price);
     const salesPrice = parseFloat(deal.product.sales_price);
     
@@ -79,35 +84,35 @@ export function TodaysDeals() {
     <section className="py-16 bg-gray-50 min-h-[600px]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with Countdown */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Today's Deal</h2>
-            <p className="text-gray-600">Limited time offers - don't miss out!</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">Today&apos;s Deal</h2>
+            <p className="text-gray-600">Limited time offers - don&apos;t miss out!</p>
           </div>
 
           {/* Countdown Timer */}
-          <div className="flex items-center space-x-4 mt-6 md:mt-0">
+          <div className="flex items-center space-x-2 md:space-x-4 mt-6 lg:mt-0">
             <div className="text-center">
-              <div className="bg-white rounded-lg shadow-sm p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-gray-900">{timeLeft.days.toString().padStart(2, '0')}</div>
+              <div className="bg-white rounded-lg shadow-sm p-2 md:p-3 min-w-[50px] md:min-w-[60px]">
+                <div className="text-lg md:text-2xl font-bold text-gray-900">{timeLeft.days.toString().padStart(2, '0')}</div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Days</div>
               </div>
             </div>
             <div className="text-center">
-              <div className="bg-white rounded-lg shadow-sm p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-gray-900">{timeLeft.hours.toString().padStart(2, '0')}</div>
+              <div className="bg-white rounded-lg shadow-sm p-2 md:p-3 min-w-[50px] md:min-w-[60px]">
+                <div className="text-lg md:text-2xl font-bold text-gray-900">{timeLeft.hours.toString().padStart(2, '0')}</div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Hours</div>
               </div>
             </div>
             <div className="text-center">
-              <div className="bg-white rounded-lg shadow-sm p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-gray-900">{timeLeft.minutes.toString().padStart(2, '0')}</div>
+              <div className="bg-white rounded-lg shadow-sm p-2 md:p-3 min-w-[50px] md:min-w-[60px]">
+                <div className="text-lg md:text-2xl font-bold text-gray-900">{timeLeft.minutes.toString().padStart(2, '0')}</div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Mins</div>
               </div>
             </div>
             <div className="text-center">
-              <div className="bg-white rounded-lg shadow-sm p-3 min-w-[60px]">
-                <div className="text-2xl font-bold text-gray-900">{timeLeft.seconds.toString().padStart(2, '0')}</div>
+              <div className="bg-white rounded-lg shadow-sm p-2 md:p-3 min-w-[50px] md:min-w-[60px]">
+                <div className="text-lg md:text-2xl font-bold text-gray-900">{timeLeft.seconds.toString().padStart(2, '0')}</div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide">Secs</div>
               </div>
             </div>
@@ -115,7 +120,7 @@ export function TodaysDeals() {
         </div>
 
         {/* Deals Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {deals.map((deal) => {
             const discountPercentage = getDiscountPercentage(deal);
 

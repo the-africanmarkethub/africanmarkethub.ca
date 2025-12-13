@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import { handleApiError } from "@/utils/errorHandler";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -109,7 +110,8 @@ const createProduct = async (data: ProductFormData): Promise<any> => {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || "Failed to create product");
+    // Throw the full error object to preserve validation errors
+    throw error;
   }
 
   return response.json();
@@ -126,8 +128,11 @@ export const useCreateProduct = () => {
       queryClient.invalidateQueries({ queryKey: ["vendorProducts"] });
       queryClient.invalidateQueries({ queryKey: ["vendorItems"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to create product");
+    onError: (error: any) => {
+      // Use the error handler to properly display validation errors
+      handleApiError(error, {
+        customMessage: "Failed to create product. Please check your input."
+      });
     },
   });
 };
