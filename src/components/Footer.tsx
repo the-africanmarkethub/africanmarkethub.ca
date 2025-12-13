@@ -25,7 +25,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/footer/about"
+                  href="/market-hub/about"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   About Us
@@ -33,7 +33,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/footer/tutorial"
+                  href="/market-hub/tutorial"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   Tutorial
@@ -41,7 +41,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/footer/faq"
+                  href="/market-hub/faq"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   FAQ
@@ -56,7 +56,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/footer/contact"
+                  href="/market-hub/contact"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   Contact Us
@@ -71,7 +71,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/footer/terms"
+                  href="/market-hub/terms"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   Terms of Service
@@ -79,7 +79,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/footer/privacy"
+                  href="/market-hub/privacy"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   Privacy Policy
@@ -94,7 +94,7 @@ export function Footer() {
             <ul className="space-y-3 mb-6">
               <li>
                 <Link
-                  href="/footer/reviews"
+                  href="/market-hub/reviews"
                   className="text-sm text-white/80 hover:text-white transition-colors"
                 >
                   Review
@@ -133,7 +133,7 @@ export function Footer() {
           </p>
           <div className="flex justify-end space-x-6">
             <a
-              href="#"
+              href="https://www.facebook.com/profile.php?id=61580801731074&ref=waios.fb_links_xma_control"
               className="text-white/80 hover:text-white transition-colors"
               aria-label="Facebook"
             >
@@ -142,7 +142,7 @@ export function Footer() {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/africanmarkethub/"
               className="text-white/80 hover:text-white transition-colors"
               aria-label="Instagram"
             >
@@ -151,7 +151,7 @@ export function Footer() {
               </svg>
             </a>
             <a
-              href="#"
+              href="https://x.com/africanmkthub"
               className="text-white/80 hover:text-white transition-colors"
               aria-label="Twitter"
             >

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -137,8 +138,16 @@ export const useAddToWishlist = () => {
       // Refetch wishlist after adding
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Add to wishlist failed:", error);
+      
+      if (error?.message?.includes("not authorized") || error?.message?.includes("Login as a customer")) {
+        toast.error("Please login to add items to your wishlist");
+      } else if (error?.message) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to add item to wishlist");
+      }
     },
   });
 };
@@ -167,10 +176,18 @@ export const useDeleteFromWishlist = () => {
       // Return a context object with the snapshotted value
       return { previousWishlist };
     },
-    onError: (err, wishlistId, context) => {
+    onError: (err: any, wishlistId, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(["wishlist"], context?.previousWishlist);
       console.error("Delete from wishlist failed:", err);
+      
+      if (err?.message?.includes("not authorized") || err?.message?.includes("Login as a customer")) {
+        toast.error("Please login to manage your wishlist");
+      } else if (err?.message) {
+        toast.error(err.message);
+      } else {
+        toast.error("Failed to remove item from wishlist");
+      }
     },
     onSettled: () => {
       // Always refetch after error or success to ensure we have the correct data

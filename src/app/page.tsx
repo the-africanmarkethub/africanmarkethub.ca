@@ -111,7 +111,7 @@ export default function Home() {
                 and crafts to fresh produce and electronics.
               </p>
               <div className="flex  gap-3 md:gap-4">
-                <Link href="/auth/login">
+                <Link href="/products">
                   <button
                     className="text-white px-8 text-sm md:text-base py-3 rounded-full font-normal md:font-semibold transition-colors hover:opacity-90"
                     style={{ backgroundColor: "#F28C0D" }}
@@ -279,9 +279,9 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 h-[800px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-auto lg:h-[800px]">
             {/* Main featured category - left half */}
-            <div className="relative rounded-2xl overflow-hidden h-full">
+            <div className="relative rounded-2xl overflow-hidden h-[400px] lg:h-full">
               <div className="absolute inset-0">
                 <Image
                   src="/icon/cat.svg"
@@ -290,9 +290,13 @@ export default function Home() {
                   className="object-cover"
                 />
               </div>
-              <div className="relative z-10 p-8 h-full flex flex-col justify-center text-white">
-                <h3 className="text-6xl md:text-8xl font-bold mb-6">Viva!</h3>
-                <p className="text-2xl md:text-4xl mb-8">Your Fashion Choice</p>
+              <div className="relative z-10 p-4 md:p-8 h-full flex flex-col justify-center text-white">
+                <h3 className="text-4xl md:text-6xl lg:text-8xl font-bold mb-4 lg:mb-6">
+                  Viva!
+                </h3>
+                <p className="text-lg md:text-2xl lg:text-4xl mb-6 lg:mb-8">
+                  Your Fashion Choice
+                </p>
                 <button className="bg-black text-white px-8 py-3 rounded-full w-fit hover:bg-gray-800 transition-colors">
                   Shop Now
                 </button>
@@ -300,7 +304,7 @@ export default function Home() {
             </div>
 
             {/* Right side category grid - right half */}
-            <div className="grid grid-cols-2 gap-4 h-full">
+            <div className="grid grid-cols-2 gap-4 h-auto lg:h-full">
               {categoriesResponse?.categories
                 ?.filter((category) => !category.parent_id)
                 ?.slice(0, 6)

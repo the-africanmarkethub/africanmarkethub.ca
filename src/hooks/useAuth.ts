@@ -11,6 +11,8 @@ import {
   GoogleOAuthPayload,
   ChangePasswordPayload,
 } from "@/types/auth";
+import { handleApiError } from "@/utils/errorHandler";
+import toast from "react-hot-toast";
 
 interface ApiError {
   message?: string;
@@ -178,19 +180,44 @@ const verifyEmail = async (
 const forgotPassword = async (
   payload: ForgotPasswordPayload
 ): Promise<AuthResponse> => {
-  const response = await fetch(`${API_BASE_URL}/forget-password`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/forget-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-  if (!response.ok) {
-    throw new Error(`Forgot password failed: ${response.statusText}`);
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch (parseError) {
+        throw {
+          message: `HTTP ${response.status}: ${response.statusText}`,
+          status: response.status,
+          statusText: response.statusText,
+        };
+      }
+      throw {
+        ...errorData,
+        status: response.status,
+        statusText: response.statusText,
+      };
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw {
+        message: "Network error: Please check your internet connection",
+        type: "network_error",
+        originalError: error.message,
+      };
+    }
+    throw error;
   }
-
-  return response.json();
 };
 
 // Reset password
@@ -296,6 +323,8 @@ export const useRegister = () => {
         errors: error?.errors,
         full_error: error
       });
+      // Handle validation errors from API
+      handleApiError(error);
     },
   });
 };
@@ -320,6 +349,8 @@ export const useLogin = () => {
         errors: error?.errors,
         full_error: error
       });
+      // Handle validation errors from API
+      handleApiError(error);
     },
   });
 };

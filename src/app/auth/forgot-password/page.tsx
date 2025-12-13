@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForgotPassword } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,22 @@ export default function ForgotPasswordPage() {
       email
     }, {
       onSuccess: () => {
+        toast.success("Reset code sent successfully!");
         router.push(`/auth/reset-password?email=${encodeURIComponent(email)}`);
+      },
+      onError: (error: any) => {
+        if (error?.errors?.email) {
+          const emailErrors = error.errors.email;
+          if (Array.isArray(emailErrors)) {
+            emailErrors.forEach((msg: string) => toast.error(msg));
+          } else if (typeof emailErrors === 'string') {
+            toast.error(emailErrors);
+          }
+        } else if (error?.message) {
+          toast.error(error.message);
+        } else {
+          toast.error("Failed to send reset code. Please try again.");
+        }
       }
     });
   };
@@ -59,12 +75,6 @@ export default function ForgotPasswordPage() {
         >
           {forgotPassword.isPending ? "Sending Code..." : "Send Code"}
         </button>
-        
-        {forgotPassword.isError && (
-          <div className="text-red-600 text-sm text-center">
-            Failed to send reset code. Please try again.
-          </div>
-        )}
       </form>
 
       <div className="text-center space-y-2">
