@@ -78,7 +78,7 @@ export default function DesktopSearch() {
            />
            <input
              type="text"
-             placeholder="Search by"
+             placeholder="Search items..."
              className="flex-1 ml-3 bg-transparent outline-none text-sm text-gray-900 placeholder-gray-400"
              value={searchTerm}
              onChange={handleSearchChange}

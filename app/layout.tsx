@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: APP_NAME,
   manifest: "/site.webmanifest",
   description:
-    "Buy authentic African groceries, clothes, and the best African foods online. Ayokah Foods and Services brings you fresh ingredients, fashion, and essentials from Africa — all in one trusted online marketplace.",
+    "Buy authentic African groceries, clothes, and the best African foods online. African Market Hub brings you fresh ingredients, fashion, and essentials from Africa — all in one trusted online marketplace.",
   keywords: [
     "African groceries",
     "African clothes",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: APP_NAME,
     description:
-      "Buy authentic African groceries, clothes, and foods online. Ayokah Foods and Services delivers Africa’s best — fresh ingredients, fashion & essentials — right to your door.",
+      "Buy authentic African groceries, clothes, and foods online. African Market Hub delivers Africa’s best — fresh ingredients, fashion & essentials — right to your door.",
     url: "https://ayokah.co.uk",
     siteName: APP_NAME,
     images: [
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: APP_NAME,
     description:
-      "Shop authentic African groceries, clothes & foods online. Ayokah Foods and Services delivers Africa’s best directly to your home.",
+      "Shop authentic African groceries, clothes & foods online. African Market Hub delivers Africa’s best directly to your home.",
     images: ["https://ayokah.co.uk/Twitter.png"],
   },
 };

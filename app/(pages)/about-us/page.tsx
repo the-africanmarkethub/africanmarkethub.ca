@@ -39,10 +39,10 @@ interface CompanyData {
   strategicEdge: string[];
 }
 const COMPANY_DATA: CompanyData = {
-  name: "Ayokah Foods and Services",
+  name: "African Market Hub",
   tagline: "Your Everyday Convenience Partner.",
   about:
-    "Ayokah Foods and Services is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, Ayokah is redefining modern food accessibility with trust and excellence.",
+    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, Ayokah is redefining modern food accessibility with trust and excellence.",
   mission:
     "To deliver high-quality food products and services with unmatched convenience, ensuring every household has access to safe, affordable, and reliable essentials.",
   vision:

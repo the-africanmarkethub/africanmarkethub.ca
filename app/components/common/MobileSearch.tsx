@@ -54,7 +54,7 @@ export default function MobileSearch() {
                     <MagnifyingGlassIcon className="w-5 h-5 text-hub-primary" />
                     <input
                       type="text"
-                      placeholder="Search by"
+                      placeholder="Search items..."
                       className="flex-1 ml-3 bg-transparent outline-none text-sm text-gray-900 placeholder-gray-400"
                       value={searchTerm}
                       onChange={handleSearchChange}
