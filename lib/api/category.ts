@@ -1,3 +1,4 @@
+import Category from "@/interfaces/category";
 import api from "./axios";
 
 export async function listCategories(
@@ -19,6 +20,20 @@ export async function listCategories(
 
   const { categories, banner } = response.data;
   return { categories, banner };
+}
+
+export async function listChildrenCategory(
+  type: string,
+  slug: string
+): Promise<Category[]> {
+  const response = await api.get("/subcategories", {
+    params: {
+      type,
+      slug,
+    },
+  });
+
+  return response.data.children || [];
 }
 
 export async function getCategoryItems(category_slug: string) {

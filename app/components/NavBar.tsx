@@ -1,13 +1,9 @@
 "use client";
 
-import { Fragment, JSX, useState } from "react";
+import { Fragment, JSX } from "react";
 import { Menu, MenuButton, MenuItems, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
-  ChevronRightIcon,
-  HomeModernIcon,
-  SparklesIcon,
-  TagIcon,
   CubeIcon,
   GiftIcon,
   PhoneIcon,
@@ -18,126 +14,91 @@ import {
 
 import { IoIosArrowDown } from "react-icons/io";
 
-import { listCategories } from "@/lib/api/category";
-import { useQuery } from "@tanstack/react-query";
-import Category from "@/interfaces/category";
-import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { HiOutlineBriefcase } from "react-icons/hi";
-
-const iconMap: Record<string, JSX.Element> = {
-  chair: <HomeModernIcon className="w-5 h-5 text-hub-secondary" />,
-  table: <CubeIcon className="w-5 h-5 text-hub-secondary" />,
-  decor: <SparklesIcon className="w-5 h-5 text-hub-secondary" />,
-  gift: <GiftIcon className="w-5 h-5 text-hub-secondary" />,
-  default: <TagIcon className="w-5 h-5 text-hub-secondary" />,
-};
-
+import CategoryList from "./CategoryList";
+ 
 export default function NavBar() {
   return (
     <nav className="bg-hub-primary text-white">
       <div className="container mx-auto flex items-center justify-between px-2">
-        <Menu as="div" className="relative">
-          <MenuButton className="flex items-center gap-2 bg-hub-secondary text-white px-3 py-3 text-sm font-medium rounded-full sm:rounded hover:bg-hub-secondary/80 active:scale-95 transition-all duration-200 shadow-md focus:outline-none cursor-pointer">
-            <Bars3Icon
-              aria-label="Browse Categories"
-              className="w-5 h-5 block lg:hidden"
-            />
-            <div className="hidden lg:flex items-center gap-2">
-              <Bars3Icon aria-label="Browse categories" className="w-5 h-5" />
-              <span>Browse Categories</span>
-              <IoIosArrowDown aria-label="Browse categories" className="w-5 h-5" />
-            </div>
-          </MenuButton>
+        {/* The relative parent for the absolute MenuItems */}
+        <Menu as="div" className="relative z-50">
+          {({ close }) => (
+            <>
+              {" "}
+              <MenuButton className="flex items-center gap-2 bg-hub-secondary text-white px-3 py-3 text-sm font-medium rounded-full sm:rounded hover:bg-hub-secondary/80 active:scale-95 transition-all duration-200 shadow-md focus:outline-none cursor-pointer">
+                <Bars3Icon
+                  aria-label="Browse Categories"
+                  className="w-5 h-5 block lg:hidden"
+                />
+                <div className="hidden lg:flex items-center gap-2">
+                  <Bars3Icon
+                    aria-label="Browse categories"
+                    className="w-5 h-5"
+                  />
+                  <span>Browse Categories</span>
+                  <IoIosArrowDown
+                    aria-label="Browse categories"
+                    className="w-5 h-5"
+                  />
+                </div>
+              </MenuButton>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-150"
+                enterFrom="transform opacity-0 translate-y-2 scale-95"
+                enterTo="transform opacity-100 translate-y-0 scale-100"
+                leave="transition ease-in duration-100"
+                leaveFrom="transform opacity-100 translate-y-0 scale-100"
+                leaveTo="transform opacity-0 translate-y-1 scale-95"
+              >
+                {/* 🎯 THE KEY CHANGE FOR RESPONSIVENESS */}
+                <MenuItems
+                  className="
+                      absolute
+                      top-full
+                      left-0
+                      mt-2
 
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-150"
-            enterFrom="transform opacity-0 translate-y-2 scale-95"
-            enterTo="transform opacity-100 translate-y-0 scale-100"
-            leave="transition ease-in duration-100"
-            leaveFrom="transform opacity-100 translate-y-0 scale-100"
-            leaveTo="transform opacity-0 translate-y-1 scale-95"
-          >
-            <MenuItems className="absolute left-0 mt-2 w-56 origin-top-left border border-hub-primary/40 bg-white/95 backdrop-blur-md text-gray-700 shadow-xl rounded-xl focus:outline-none z-50 overflow-hidden">
-              <div className="border-t border-gray-100 ">
-                <CategoryList />
-              </div>
-            </MenuItems>
-          </Transition>
+                      w-[calc(100vw-24px)]
+                      max-w-none
+
+                      border border-hub-primary/40
+                      bg-white/95 backdrop-blur-md
+                      text-gray-700 shadow-xl
+                      rounded-xl
+                      focus:outline-none
+                      overflow-hidden
+
+                      /* ---------- DESKTOP ---------- */
+                      md:left-0
+                      md:w-150
+                      md:max-w-150
+
+                      lg:w-225
+                      lg:max-w-225
+
+                      xl:w-275
+                      xl:max-w-275
+                    "
+                >
+                  <div className="border-t border-gray-100 ">
+                    <CategoryList onNavigate={close} /> 
+                  </div>
+                </MenuItems>
+              </Transition>
+            </>
+          )}
         </Menu>
-
         <DesktopNavLinks />
 
         <MobileNavLinks />
       </div>
     </nav>
-  );
-}
-
-function CategoryList() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["categories", "products"],
-    queryFn: () => listCategories(10, 0, undefined, "products"),
-  });
-
-  const [showAll, setShowAll] = useState(false);
-
-  if (isLoading) {
-    return (
-      <div className="p-2 space-y-2">
-        <Skeleton height={20} count={4} />
-      </div>
-    );
-  }
-
-  if (!data?.categories?.length) {
-    return <p className="px-4 py-2 text-sm text-gray-500">No categories</p>;
-  }
-
-  const categoriesToShow = showAll
-    ? data.categories
-    : data.categories.slice(0, 10);
-
-  return (
-    <div className="py-2">
-      {categoriesToShow.map((cat: Category) => {
-        const key = cat.name.toLowerCase();
-        const icon = iconMap[key] || iconMap.default;
-
-        return (
-          <motion.div
-            key={cat.id}
-            whileHover={{ x: 5, scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 200, damping: 15 }}
-          >
-            <Link
-              href={`/items?category=${cat.slug}&type=products`}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-hub-primary rounded-md transition-all duration-200"
-            >
-              {icon}
-              <span className="truncate">{cat.name}</span>
-            </Link>
-          </motion.div>
-        );
-      })}
-
-      {/* View All button */}
-      {data.categories.length > 10 && (
-        <div className="flex justify-center mt-2">
-          <Link
-            href="/categories"
-            className="text-sm text-yellow-50 hover:underline flex items-center bg-hub-secondary p-3 rounded-md gap-1"
-          >
-            View All Categories
-            <ChevronRightIcon className="w-4 h-4" />
-          </Link>
-        </div>
-      )}
-    </div>
   );
 }
 
