@@ -29,10 +29,13 @@ export default function MobileSearch() {
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={openModal}
-        className="md:hidden p-2 flex items-center justify-center rounded-full bg-orange-100 text-orange-700"
+        className="md:hidden p-2 flex items-center justify-center rounded-full bg-hub-primary text-white"
         aria-label="Open search"
       >
-        <MagnifyingGlassIcon aria-label="Open search icon" className="w-5 h-5" />
+        <MagnifyingGlassIcon
+          aria-label="Open search icon"
+          className="w-4 h-4 transition"
+        />
       </motion.button>
 
       {/* Full-Screen Search Modal */}
@@ -66,7 +69,10 @@ export default function MobileSearch() {
                       className="ml-2 p-1"
                       aria-label="Close search"
                     >
-                      <XMarkIcon aria-label="Close search" className="w-5 h-5 text-gray-400" />
+                      <XMarkIcon
+                        aria-label="Close search"
+                        className="w-5 h-5 text-gray-400"
+                      />
                     </motion.button>
                   </div>
                 </div>

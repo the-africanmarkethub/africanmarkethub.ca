@@ -1,15 +1,15 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import timezone from "dayjs/plugin/timezone"; // <-- add this
+import timezone from "dayjs/plugin/timezone";
 import isTodayPlugin from "dayjs/plugin/isToday";
 import isYesterdayPlugin from "dayjs/plugin/isYesterday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { UK_TIMEZONE } from "@/setting";
+import { CANADA_TIMEZONE } from "@/setting";
 import utc from "dayjs/plugin/utc";
 
-dayjs.extend(utc);          // must extend before timezone
-dayjs.extend(timezone);     // <-- extend timezone
+dayjs.extend(utc); 
+dayjs.extend(timezone); 
 dayjs.extend(relativeTime);
 dayjs.extend(isTodayPlugin);
 dayjs.extend(isYesterdayPlugin);
@@ -34,13 +34,13 @@ export const formatTimeAgo = (timestamp: string): string => {
  * - Yesterday, 11:18AM
  * - Tue 5:21PM (same week)
  * - 3rd, January (older)
- */ 
+ */
 
 export function formatHumanReadableDate(timestamp: string): string {
-  const date = dayjs.utc(timestamp).tz(UK_TIMEZONE); // convert to UK time
+  const date = dayjs.utc(timestamp).tz(CANADA_TIMEZONE); 
   if (!date.isValid()) return "";
 
-  const now = dayjs().tz(UK_TIMEZONE);
+  const now = dayjs().tz(CANADA_TIMEZONE);
   const tomorrow = now.add(1, "day");
 
   if (date.isToday()) {
@@ -63,9 +63,8 @@ export function formatHumanReadableDate(timestamp: string): string {
     return `${date.format("ddd")} ${date.format("h:mma")}`;
   }
 
-  return date.format("Do MMMM, YYYY");
+  return date.format("DD MMMM, YYYY");
 }
-
 
 /**
  * Simple short formatting (e.g. "21 Feb")

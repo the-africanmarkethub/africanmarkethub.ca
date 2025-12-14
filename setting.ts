@@ -173,7 +173,7 @@ export const CARRIER_ICONS: Record<
   default: { icon: MdLocalShipping, color: "#FF9920" },
 };
 
-export const UK_TIMEZONE = "Europe/London";
+export const CANADA_TIMEZONE = "America/Toronto";
 
 export const ALLOWED_COUNTRIES = [
   "GB", // United Kingdom
