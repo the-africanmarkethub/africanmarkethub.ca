@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState, FC, useMemo } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import Product, { Category } from "@/interfaces/items";
 import { useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 import { listItems } from "@/lib/api/items";
-import debounce from "lodash.debounce"; 
+import debounce from "lodash.debounce";
 import ProductGrid from "./components/ProductGrid";
 
 interface ItemsProps {
@@ -120,9 +120,9 @@ const Items: FC<ItemsProps> = ({}) => {
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > totalPages) return;
     setFilters((prev) => ({ ...prev, offset: (newPage - 1) * prev.limit }));
-  }; 
+  };
   return (
-    <div className="p-4 bg-gray-50 ">
+    <div className="container mx-auto sm:px-0 px-2 py-12 bg-gray-50 min-h-screen">
       {/* Category Header */}
       {loading ? (
         <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
@@ -132,26 +132,32 @@ const Items: FC<ItemsProps> = ({}) => {
         </div>
       ) : (
         categoryInfo && (
-          <div className="mb-6 bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row items-center gap-6">
+          <header className="relative mb-10 rounded-xl overflow-hidden shadow-xl">
+            {/* Background Image */}
             {categoryInfo.image && (
-              <Image
-                src={categoryInfo.image}
-                alt={categoryInfo.name}
-                width={150}
-                height={150}
-                className="w-36 h-36 rounded-full object-cover border-4 border-orange-100 shrink-0"
-              />
+              <div className="absolute inset-0">
+                <Image
+                  src={categoryInfo.image}
+                  alt={categoryInfo.name}
+                  fill
+                  className="object-cover w-full h-full brightness-75"
+                />
+                <div className="absolute inset-0 bg-black/40"></div>
+              </div>
             )}
-            <div className="text-center md:text-left">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+
+            {/* Caption Content */}
+            <div className="relative z-10 p-6 flex flex-col justify-end h-64">
+              <h1 className="sm:text-4xl text-sm font-extrabold text-white! mb-2">
                 {categoryInfo.name}
               </h1>
-              <div
-                className="text-gray-600 prose"
-                dangerouslySetInnerHTML={{ __html: categoryInfo.description }}
-              />
+              {categoryInfo.description && (
+                <p className="sm:text-lg text-xs text-white/80! mb-4 line-clamp-2">
+                  {categoryInfo.description}
+                </p>
+              )}
             </div>
-          </div>
+          </header>
         )
       )}
 
@@ -163,7 +169,7 @@ const Items: FC<ItemsProps> = ({}) => {
           columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-6"
           onClickItem={(product) => router.push(`/items/${product.slug}`)}
         />
-       
+
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 mt-12">
             <button
