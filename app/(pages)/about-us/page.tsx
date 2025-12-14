@@ -177,7 +177,7 @@ const AboutPageContent: React.FC = () => {
           </p>
           <div className="max-w-4xl mx-auto p-4 bg-orange-50 rounded-lg border-l-4 border-orange-600">
             <p className="text-md text-gray-800 italic">
-              &quot;Ayokah Foods & Services is a modern, people-focused food and
+              &quot;African Market Hub is a modern, people-focused food and
               service marketplace created to make everyday living simpler,
               faster, and more convenient.&quot;
             </p>

@@ -17,6 +17,7 @@
   max-width: none;
   max-height: none;
 }
+
 /* Light mode defaults */
 :root {
   --background: #ffffff;
@@ -38,6 +39,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  /* === Theme Colors === */
+  --color-hub-primary: #F28C0D;
+  --color-hub-secondary: #C2680C;
 }
 
 /* Typography defaults */

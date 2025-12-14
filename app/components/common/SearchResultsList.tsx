@@ -33,7 +33,7 @@ export default function SearchResultsList({
             <Link
               href={`/items/${item.slug}`}
               onClick={onItemClick}
-              className="block p-3 hover:bg-orange-50 text-gray-700 transition"
+              className="block p-3 hover:bg-hub-primary/10 text-gray-700 transition"
             >
               {item.title}
             </Link>
@@ -45,7 +45,7 @@ export default function SearchResultsList({
 
   if (isTouched && results.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-400">No results found</div>
+      <div className="p-4 text-center text-gray-400">No such item found</div>
     );
   }
 

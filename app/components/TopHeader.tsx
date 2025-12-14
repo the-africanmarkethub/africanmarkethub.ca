@@ -9,7 +9,7 @@ import MobileSearch from "./common/MobileSearch";
 
 export default function TopHeader() {
   return (
-    <header className="relative w-full border-b bg-orange-50 px-4 sm:px-6 py-3 flex items-center justify-between text-gray-500">
+    <header className="relative w-full border-b bg-white px-4 sm:px-6 py-3 flex items-center justify-between text-gray-500">
       {/* Logo */}
       <div className="shrink-0">
         <Link href="/">

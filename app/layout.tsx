@@ -9,6 +9,7 @@ import PublicLayoutElements from "./PublicLayoutElements";
 import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
 import "react-loading-skeleton/dist/skeleton.css";
+import { APP_NAME } from "@/setting";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const instrumentSans = Instrument_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Ayokah Foods and Services",
+  title: APP_NAME,
   manifest: "/site.webmanifest",
   description:
     "Buy authentic African groceries, clothes, and the best African foods online. Ayokah Foods and Services brings you fresh ingredients, fashion, and essentials from Africa — all in one trusted online marketplace.",
@@ -32,17 +33,17 @@ export const metadata: Metadata = {
     "Afrovending",
   ],
   openGraph: {
-    title: "Ayokah Foods and Services | African Groceries, Clothes & Foods",
+    title: APP_NAME,
     description:
       "Buy authentic African groceries, clothes, and foods online. Ayokah Foods and Services delivers Africa’s best — fresh ingredients, fashion & essentials — right to your door.",
     url: "https://ayokah.co.uk",
-    siteName: "Ayokah Foods and Services",
+    siteName: APP_NAME,
     images: [
       {
         url: "https://ayokah.co.uk/OpenGraph.png",
         width: 1200,
         height: 630,
-        alt: "Ayokah Foods and Services - African Online Market",
+        alt: APP_NAME,
       },
     ],
     locale: "en_US",
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ayokah Foods and Services | African Groceries, Clothes & Foods",
+    title: APP_NAME,
     description:
       "Shop authentic African groceries, clothes & foods online. Ayokah Foods and Services delivers Africa’s best directly to your home.",
     images: ["https://ayokah.co.uk/Twitter.png"],
@@ -73,7 +74,6 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <PublicLayoutElements />
-              {/* ✅ MAIN LANDMARK FIX */}
               <main id="main-content" role="main" className="bg-gray-50 flex-1">
                 {children}
               </main>
