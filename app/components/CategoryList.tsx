@@ -8,6 +8,7 @@ import { ChevronRightIcon } from "@heroicons/react/24/solid";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
 
 const typeMap = {
   products: {
@@ -33,19 +34,19 @@ type Props = {
   onNavigate?: () => void;
 };
 
-
 export default function CategoryList({ onNavigate }: Props) {
   const [selectedType, setSelectedType] = useState<"products" | "services">(
     "products"
   );
   const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null);
 
-  const { data: mainData } = useQuery<CategoriesResponse>({
+  const { data: mainData, isLoading } = useQuery<CategoriesResponse>({
     queryKey: ["categories", selectedType],
     queryFn: () => listCategories(50, 0, undefined, selectedType),
   });
 
-  const subCategories = hoveredCategory?.children || [];
+  const subCategories = hoveredCategory?.children?.slice(0, 3) || [];
+  const hasMoresubCategories = (hoveredCategory?.children?.length || 0) > 3;
 
   // Limit main categories to first 8
   const mainCategoriesToShow = mainData?.categories?.slice(0, 8) || [];
@@ -112,10 +113,24 @@ export default function CategoryList({ onNavigate }: Props) {
                   onClick={onNavigate}
                   className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-700 hover:text-hub-primary transition"
                 >
-                  {icon}
-                  <span className="truncate font-medium">{cat.name}</span>
-                  {cat.children && cat.children.length > 0 && (
-                    <ChevronRightIcon className="w-4 h-4 ml-auto text-gray-400" />
+                  {/* Icon */}
+                  {isLoading ? <Skeleton className="w-5 h-5 rounded" /> : icon}
+
+                  {/* Category name */}
+                  {isLoading ? (
+                    <Skeleton className="h-4 w-full max-w-35" />
+                  ) : (
+                    <span className="truncate font-medium">{cat.name}</span>
+                  )}
+
+                  {/* Arrow */}
+                  {isLoading ? (
+                    <Skeleton className="w-4 h-4 ml-auto rounded" />
+                  ) : (
+                    cat.children &&
+                    cat.children.length > 0 && (
+                      <ChevronRightIcon className="w-4 h-4 ml-auto text-gray-400" />
+                    )
                   )}
                 </Link>
               </div>
@@ -181,6 +196,21 @@ export default function CategoryList({ onNavigate }: Props) {
                     </Link>
                   ))}
                 </div>
+                {hasMoresubCategories && (
+                  <div className="mt-8">
+                    <Link
+                      onClick={onNavigate}
+                      // href={`/categories?type=${selectedType}`}
+                      href={`/categories/${hoveredCategory.slug}?type=${selectedType}`}
+                      className="flex items-center justify-between px-4 py-2 text-sm font-medium text-hub-primary cursor-pointer bg-yellow-50 rounded-md"
+                    >
+                      <span className="truncate" title={hoveredCategory.name}>
+                        View All Categories in {hoveredCategory.name}{" "}
+                      </span>
+                      <ChevronRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
           </motion.div>

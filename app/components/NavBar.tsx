@@ -24,7 +24,7 @@ import CategoryList from "./CategoryList";
 export default function NavBar() {
   return (
     <nav className="bg-hub-primary text-white">
-      <div className="container mx-auto flex items-center justify-between px-1">
+      <div className="container mx-auto flex items-center justify-between px-2 sm:px-4">
         {/* The relative parent for the absolute MenuItems */}
         <Menu as="div" className="relative z-50">
           {({ close }) => (
