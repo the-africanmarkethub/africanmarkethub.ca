@@ -31,48 +31,56 @@ export default function ConfirmResetCode() {
     }
   }, [router]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
-  const value = e.target.value;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) => {
+    const value = e.target.value;
 
-  if (!/^[0-9]?$/.test(value)) return; 
-
-  const newOtp = [...otp];
-  newOtp[idx] = value;
-  setOtp(newOtp);
-
-  // Move to next input automatically
-  if (value && idx < 5) {
-    inputsRef.current[idx + 1]?.focus();
-  }
-
-  // Update main code state
-  setCode(newOtp.join(""));
-};
-
-const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, idx: number) => {
-  if (e.key === "Backspace" && !otp[idx] && idx > 0) {
-    const prev = idx - 1;
-    inputsRef.current[prev]?.focus();
+    if (!/^[0-9]?$/.test(value)) return;
 
     const newOtp = [...otp];
-    newOtp[prev] = "";
+    newOtp[idx] = value;
+    setOtp(newOtp);
+
+    // Move to next input automatically
+    if (value && idx < 5) {
+      inputsRef.current[idx + 1]?.focus();
+    }
+
+    // Update main code state
+    setCode(newOtp.join(""));
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    idx: number
+  ) => {
+    if (e.key === "Backspace" && !otp[idx] && idx > 0) {
+      const prev = idx - 1;
+      inputsRef.current[prev]?.focus();
+
+      const newOtp = [...otp];
+      newOtp[prev] = "";
+      setOtp(newOtp);
+      setCode(newOtp.join(""));
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const paste = e.clipboardData
+      .getData("text")
+      .slice(0, 6)
+      .replace(/\D/g, "");
+
+    if (paste.length !== 6) return;
+
+    const newOtp = paste.split("");
     setOtp(newOtp);
     setCode(newOtp.join(""));
-  }
-};
 
-const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-  const paste = e.clipboardData.getData("text").slice(0, 6).replace(/\D/g, "");
-
-  if (paste.length !== 6) return;
-
-  const newOtp = paste.split("");
-  setOtp(newOtp);
-  setCode(newOtp.join(""));
-
-  inputsRef.current[5]?.focus();
-};
-
+    inputsRef.current[5]?.focus();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +90,7 @@ const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
 
       const payload = { email, otp: code };
       const result = await confirmResetCode(payload);
-      
+
       toast.success(result.message || "Code confirmed successfully.");
       router.replace("/reset-password");
     } catch (err) {
@@ -99,7 +107,6 @@ const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
   const setInputRef = (index: number) => (el: HTMLInputElement | null) => {
     inputsRef.current[index] = el;
   };
-
 
   return (
     <div className="flex min-screen">
@@ -122,7 +129,7 @@ const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
           <div hidden className="mb-8 flex justify-center">
             <Link href="/">
               <Image
-                src="/images/logo.svg"
+                src="/logo.svg"
                 alt="African Market Hub"
                 width={180}
                 height={40}

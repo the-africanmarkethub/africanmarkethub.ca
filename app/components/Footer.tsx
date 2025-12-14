@@ -17,7 +17,7 @@ export default function Footer() {
             <div className="flex items-center gap-2">
               <Link href={"/"}>
                 <Image
-                  src="/images/logo.svg"
+                  src="/logo.svg"
                   alt="African Market Hub"
                   className="cursor-pointer"
                   width={140}

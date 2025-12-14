@@ -66,7 +66,7 @@ export default function ForgetPassword() {
           <div hidden className="mb-8 flex justify-center">
             <Link href="/">
               <Image
-                src="/images/logo.svg"
+                src="/logo.svg"
                 alt="African Market Hub"
                 width={180}
                 height={40}

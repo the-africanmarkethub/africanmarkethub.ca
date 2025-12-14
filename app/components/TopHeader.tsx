@@ -14,7 +14,7 @@ export default function TopHeader() {
       <div className="shrink-0">
         <Link href="/">
           <Image
-            src="/images/logo.svg"
+            src="/logo.svg"
             alt="African Market Hub"
             width={150}
             height={40}
