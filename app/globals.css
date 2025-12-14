@@ -41,6 +41,7 @@
   --color-foreground: var(--foreground);
   /* === Theme Colors === */
   --color-hub-primary: #F28C0D;
+  --color-hub-light-primary: #fff085;
   --color-hub-secondary: #C2680C;
 }
 

@@ -15,6 +15,9 @@ import {
   HomeIcon,
   BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
+
+import { IoIosArrowDown } from "react-icons/io";
+
 import { listCategories } from "@/lib/api/category";
 import { useQuery } from "@tanstack/react-query";
 import Category from "@/interfaces/category";
@@ -23,28 +26,30 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
+import { HiOutlineBriefcase } from "react-icons/hi";
 
 const iconMap: Record<string, JSX.Element> = {
-  chair: <HomeModernIcon className="w-5 h-5 text-yellow-600" />,
-  table: <CubeIcon className="w-5 h-5 text-yellow-600" />,
-  decor: <SparklesIcon className="w-5 h-5 text-yellow-600" />,
-  gift: <GiftIcon className="w-5 h-5 text-yellow-600" />,
-  default: <TagIcon className="w-5 h-5 text-yellow-600" />,
+  chair: <HomeModernIcon className="w-5 h-5 text-hub-secondary" />,
+  table: <CubeIcon className="w-5 h-5 text-hub-secondary" />,
+  decor: <SparklesIcon className="w-5 h-5 text-hub-secondary" />,
+  gift: <GiftIcon className="w-5 h-5 text-hub-secondary" />,
+  default: <TagIcon className="w-5 h-5 text-hub-secondary" />,
 };
 
 export default function NavBar() {
   return (
-    <nav className="bg-yellow-900 text-white">
+    <nav className="bg-hub-primary text-white">
       <div className="container mx-auto flex items-center justify-between px-2">
         <Menu as="div" className="relative">
-          <MenuButton className="flex items-center gap-2 bg-yellow-700 text-white px-3 py-3 text-sm font-medium rounded-full hover:bg-yellow-600 active:scale-95 transition-all duration-200 shadow-md focus:outline-none cursor-pointer">
+          <MenuButton className="flex items-center gap-2 bg-hub-secondary text-white px-3 py-3 text-sm font-medium rounded-full sm:rounded hover:bg-hub-secondary/80 active:scale-95 transition-all duration-200 shadow-md focus:outline-none cursor-pointer">
             <Bars3Icon
-              aria-label="All categories"
+              aria-label="Browse Categories"
               className="w-5 h-5 block lg:hidden"
             />
             <div className="hidden lg:flex items-center gap-2">
-              <Bars3Icon aria-label="All categories" className="w-5 h-5" />
-              <span>All Categories</span>
+              <Bars3Icon aria-label="Browse categories" className="w-5 h-5" />
+              <span>Browse Categories</span>
+              <IoIosArrowDown aria-label="Browse categories" className="w-5 h-5" />
             </div>
           </MenuButton>
 
@@ -57,7 +62,7 @@ export default function NavBar() {
             leaveFrom="transform opacity-100 translate-y-0 scale-100"
             leaveTo="transform opacity-0 translate-y-1 scale-95"
           >
-            <MenuItems className="absolute left-0 mt-2 w-56 origin-top-left border border-yellow-100 bg-white/95 backdrop-blur-md text-gray-700 shadow-xl rounded-xl focus:outline-none z-50 overflow-hidden">
+            <MenuItems className="absolute left-0 mt-2 w-56 origin-top-left border border-hub-primary/40 bg-white/95 backdrop-blur-md text-gray-700 shadow-xl rounded-xl focus:outline-none z-50 overflow-hidden">
               <div className="border-t border-gray-100 ">
                 <CategoryList />
               </div>
@@ -111,7 +116,7 @@ function CategoryList() {
           >
             <Link
               href={`/items?category=${cat.slug}&type=products`}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700 rounded-md transition-all duration-200"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-hub-primary rounded-md transition-all duration-200"
             >
               {icon}
               <span className="truncate">{cat.name}</span>
@@ -125,7 +130,7 @@ function CategoryList() {
         <div className="flex justify-center mt-2">
           <Link
             href="/categories"
-            className="text-sm text-yellow-50 hover:underline flex items-center bg-yellow-600 p-3 rounded-md gap-1"
+            className="text-sm text-yellow-50 hover:underline flex items-center bg-hub-secondary p-3 rounded-md gap-1"
           >
             View All Categories
             <ChevronRightIcon className="w-4 h-4" />
@@ -139,25 +144,28 @@ function CategoryList() {
 function MobileNavLinks() {
   const { user } = useAuthStore();
 
-  const links = [
+  const MOBILE_MENU_LINK = [
     {
       label: "Products",
       href: "/items?type=products",
-      icon: <CubeIcon className="w-4 h-4 text-yellow-500" />,
+      icon: <CubeIcon className="w-4 h-4" />,
     },
     {
-      label: "Order to Call",
+      label: "Services",
+      href: "/items?type=services",
+      icon: <HiOutlineBriefcase className="w-4 h-4" />,
+    },
+    {
+      label: "Need Help?",
       href: "/contact-us",
-      icon: <PhoneIcon className="w-4 h-4 text-yellow-500" />,
+      icon: <PhoneIcon className="w-4 h-4" />,
     },
     ...(user?.role === "customer"
       ? [
           {
-            label: "Become a Seller",
+            label: "Start Selling",
             href: "/seller-onboarding",
-            icon: (
-              <BuildingStorefrontIcon className="w-4 h-4 text-yellow-500" />
-            ),
+            icon: <BuildingStorefrontIcon className="w-4 h-4 " />,
           },
         ]
       : []),
@@ -170,7 +178,7 @@ function MobileNavLinks() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {links.map((link, idx) => (
+      {MOBILE_MENU_LINK.map((link, idx) => (
         <motion.div
           key={idx}
           whileHover={{ y: -2, scale: 1.05 }}
@@ -180,9 +188,8 @@ function MobileNavLinks() {
           <Link
             href={link.href}
             title={link.label}
-            className="flex items-center gap-1.5 text-xs text-gray-100 hover:text-yellow-200 transition-all duration-200"
+            className="flex items-center gap-1.5 text-xs text-gray-100 hover:text-hub-light-primary transition-all duration-200"
           >
-            {link.icon}
             <span>{link.label}</span>
           </Link>
         </motion.div>
@@ -194,27 +201,32 @@ function DesktopNavLinks() {
   const pathname = usePathname();
   const { user } = useAuthStore();
 
-  const links = [
+  const DESKOPT_MENU_LINK = [
     { label: "Home", href: "/", icon: <HomeIcon className="w-4 h-4" /> },
     {
-      label: "Products",
+      label: "Shop Products",
       href: "/items?type=products",
       icon: <CubeIcon className="w-4 h-4" />,
     },
     {
-      label: "Categories",
-      href: "/categories",
+      label: "Book Services",
+      href: "/items?type=services",
+      icon: <GiftIcon className="w-4 h-4" />,
+    },
+    {
+      label: "Our Story",
+      href: "/about-us",
       icon: <Squares2X2Icon className="w-4 h-4" />,
     },
     {
-      label: "Shops",
-      href: "/shops",
-      icon: <GiftIcon className="w-4 h-4" />,
+      label: "Need Help?",
+      href: "/contact-us",
+      icon: <Squares2X2Icon className="w-4 h-4" />,
     },
     ...(user?.role === "customer"
       ? [
           {
-            label: "Become a Seller",
+            label: "Start Selling",
             href: "/seller-onboarding",
             icon: <BuildingStorefrontIcon className="w-4 h-4" />,
           },
@@ -224,7 +236,7 @@ function DesktopNavLinks() {
 
   return (
     <ul className="hidden md:flex items-center gap-8 text-[15px] font-medium">
-      {links.map((link, idx) => {
+      {DESKOPT_MENU_LINK.map((link, idx) => {
         const isActive = pathname === link.href;
 
         return (
@@ -239,11 +251,10 @@ function DesktopNavLinks() {
               title={link.label}
               className={`flex items-center gap-1.5 transition-colors duration-200 ${
                 isActive
-                  ? "text-yellow-400"
-                  : "text-gray-100 hover:text-yellow-200"
+                  ? "text-hub-primary"
+                  : "text-gray-100 hover:text-hub-light-primary"
               }`}
             >
-              <span className="text-yellow-300">{link.icon}</span>
               {link.label}
             </Link>
 
@@ -251,7 +262,7 @@ function DesktopNavLinks() {
             <motion.span
               layoutId="underline"
               className={`absolute left-0 -bottom-1 h-0.5 rounded-full ${
-                isActive ? "bg-yellow-400 w-full" : "bg-yellow-400 w-0"
+                isActive ? "bg-hub-primary w-full" : "bg-hub-primary w-0"
               } group-hover:w-full transition-all duration-300`}
             />
           </motion.li>
