@@ -1,17 +1,32 @@
 @import "tailwindcss";
 
+.iiZ__zoomed-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.iiZ__zoomed-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.iiZ__zoomed-image img {
+  display: block;
+  max-width: none;
+  max-height: none;
+}
+/* Light mode defaults */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-heading: var(--font-instrument-sans), system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Dark mode overrides */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,53 +34,94 @@
   }
 }
 
+/* Optional: define Tailwind theme variable linkage */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+/* Typography defaults */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* Phone Input Styling */
-.phone-input-custom {
-  position: relative !important;
-  display: block !important;
+html,
+body,
+#__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.phone-input-custom .PhoneInputInput {
-  width: 100% !important;
-  padding: 0.75rem 1rem 0.75rem 4rem !important;
-  border: 1px solid #E5E7EB !important;
-  border-radius: 0.5rem !important;
-  font-size: 1rem !important;
-  outline: none !important;
-  transition: border-color 0.2s !important;
-  background-color: white !important;
-  color: #1f2937 !important;
+.input {
+  @apply w-full border border-gray-300 p-3 rounded-lg focus:ring-2 text-gray-500 focus:ring-orange-400 focus:outline-none;
 }
 
-.phone-input-custom .PhoneInputInput:focus {
-  border-color: #F28C0D !important;
-  box-shadow: 0 0 0 2px rgba(242, 140, 13, 0.2) !important;
+/* ------------------------------
+   BUTTON BASE STYLE
+------------------------------ */
+.btn {
+  @apply py-2.5 px-2.5 rounded-lg font-semibold transition-colors duration-200 cursor-pointer;
 }
 
-.phone-input-custom .PhoneInputCountrySelect {
-  position: absolute !important;
-  left: 0.75rem !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-  z-index: 10 !important;
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
 
-.phone-input-custom .PhoneInputCountrySelectArrow {
-  display: none !important;
+/* ------------------------------
+   PRIMARY BUTTON (Orange)
+------------------------------ */
+.btn-primary {
+  @apply bg-orange-800 hover:bg-orange-500 text-white;
 }
 
-/* Global input text color */
-input,
-textarea,
-select {
-  color: #000000 !important;
+/* ------------------------------
+   SECONDARY BUTTON (Gray)
+------------------------------ */
+.btn-gray {
+  @apply bg-gray-200 hover:bg-gray-300 text-gray-700;
+}
+
+/* ------------------------------
+   CARD STYLE
+------------------------------ */
+.card {
+  @apply p-6 bg-white rounded-xl shadow-sm;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: theme('colors.gray.700');
+  font-family: var(--font-heading);
+  font-weight: 600;
+}
+
+p {
+  color: theme('colors.gray.500');
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn .5s ease-out;
 }

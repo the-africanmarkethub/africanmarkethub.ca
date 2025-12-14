@@ -1,0 +1,193 @@
+"use client";
+
+import { useEffect, useState, FC, useMemo } from "react";
+import Image from "next/image"; 
+import Product, { Category } from "@/interfaces/items";
+import { useRouter, useSearchParams } from "next/navigation";
+import Skeleton from "react-loading-skeleton";
+import { listItems } from "@/lib/api/items";
+import debounce from "lodash.debounce"; 
+import ProductGrid from "./components/ProductGrid";
+
+interface ItemsProps {
+  params: { slug: string };
+}
+
+interface ApiResponse {
+  status: string;
+  message: string;
+  category_info: Category | null;
+  data: Product[];
+  total: number;
+  offset: number;
+  limit: number;
+  stats: Record<string, number>;
+}
+
+const Items: FC<ItemsProps> = ({}) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const queryType = searchParams.get("type") || "products";
+  const queryCategory = searchParams.get("category") || "";
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categoryInfo, setCategoryInfo] = useState<Category | null>(null);
+  const [total, setTotal] = useState(0);
+
+  const [filters, setFilters] = useState<{
+    limit: number;
+    offset: number;
+    search: string;
+    type: string;
+    status: string;
+    category: string;
+    sort: "asc" | "desc";
+    availability?: string;
+    rating?: number;
+  }>({
+    limit: 20,
+    offset: 0,
+    search: "",
+    type: queryType,
+    status: "active",
+    category: queryCategory,
+    sort: "asc",
+    availability: undefined,
+    rating: undefined,
+  });
+
+  // Fetch products
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+
+        const params = {
+          limit: filters.limit,
+          offset: filters.offset,
+          search: filters.search || undefined,
+          type: filters.type,
+          status: filters.status,
+          category: filters.category || undefined,
+          direction: filters.sort,
+          availability: filters.availability,
+        };
+
+        const res: ApiResponse = await listItems(params);
+
+        setProducts(res.data || []);
+        setCategoryInfo(res.category_info || null);
+        setTotal(res.total || 0);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, [filters]);
+
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      type: queryType,
+      category: queryCategory,
+      offset: 0,
+    }));
+  }, [queryType, queryCategory]);
+
+  // debounce search updates by 500ms
+  const debouncedSetSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setFilters((prev) => ({ ...prev, search: value, offset: 0 }));
+      }, 500),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [debouncedSetSearch]);
+
+  const totalPages = Math.ceil(total / filters.limit);
+  const currentPage = Math.floor(filters.offset / filters.limit) + 1;
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setFilters((prev) => ({ ...prev, offset: (newPage - 1) * prev.limit }));
+  }; 
+  return (
+    <div className="p-4 bg-gray-50 ">
+      {/* Category Header */}
+      {loading ? (
+        <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
+          <Skeleton circle width={144} height={144} className="mb-4" />
+          <Skeleton height={36} width={250} className="mb-2" />
+          <Skeleton count={2} />
+        </div>
+      ) : (
+        categoryInfo && (
+          <div className="mb-6 bg-white p-6 rounded-lg shadow-md flex flex-col md:flex-row items-center gap-6">
+            {categoryInfo.image && (
+              <Image
+                src={categoryInfo.image}
+                alt={categoryInfo.name}
+                width={150}
+                height={150}
+                className="w-36 h-36 rounded-full object-cover border-4 border-orange-100 shrink-0"
+              />
+            )}
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                {categoryInfo.name}
+              </h1>
+              <div
+                className="text-gray-600 prose"
+                dangerouslySetInnerHTML={{ __html: categoryInfo.description }}
+              />
+            </div>
+          </div>
+        )
+      )}
+
+      {/* Product Grid */}
+      <main className="col-span-12 lg:col-span-9">
+        <ProductGrid
+          products={products}
+          loading={loading}
+          columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-6"
+          onClickItem={(product) => router.push(`/items/${product.slug}`)}
+        />
+       
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-12">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="btn btn-gray w-1/7"
+            >
+              Previous
+            </button>
+            <span className="text-yellow-800 font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="btn btn-gray w-1/7"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default Items;
