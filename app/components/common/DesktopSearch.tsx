@@ -55,7 +55,7 @@ export default function DesktopSearch() {
   // );
  return (
    <div className="hidden md:flex flex-1 mx-6 relative" ref={searchRef}>
-     <div className="relative w-full max-w-xl z-50">
+     <div className="relative w-full max-w-xl z-9999">
        {/* SHARED BORDER CONTAINER */}
        <div
          className={`
