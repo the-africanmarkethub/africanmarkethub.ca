@@ -27,7 +27,10 @@ export default function Footer() {
                 />
               </Link>
             </div>
-            <span className="text-sm line-clamp-2">
+            <span
+              className="text-sm line-clamp-2"
+              title={COMPANY_CONTACT_INFO.companyDescription}
+            >
               {COMPANY_CONTACT_INFO.companyDescription}
             </span>
           </div>
@@ -56,7 +59,7 @@ export default function Footer() {
 
         <div className="mt-8 flex gap-4 justify-end text-xl">
           <Link
-            href="https://www.facebook.com/ayokah_foods"
+            href="https://www.facebook.com/africanmarkethub"
             rel="noopener noreferrer"
             className="hover:text-yellow-600 transition duration-150 cursor-pointer"
             aria-label="Facebook link"
@@ -65,7 +68,7 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://www.twitter.com/ayokah_foods"
+            href="https://www.twitter.com/africanmarkethub"
             rel="noopener noreferrer"
             className="hover:text-gray-900 transition duration-150 cursor-pointer"
             aria-label="Twitter link"
@@ -74,7 +77,13 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="mailto:support@ayokah.co.ke"
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = `mailto:${
+                "support" + "@" + "africanmarkethub.ca/"
+              }`;
+            }}
             className="hover:text-red-500 transition duration-150 cursor-pointer"
             aria-label="Email link"
           >

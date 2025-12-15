@@ -57,7 +57,7 @@ export default function HeroBanner() {
   const nextItem = useCallback(() => {
     setIsAnimating(true);
     setItemIndex((prev) => prev + 1);
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (extendedItems.length <= VISIBLE) return;
@@ -102,7 +102,7 @@ export default function HeroBanner() {
   }
 
   return (
-    <section className="w-full mx-auto px-4">
+    <section className="w-full mx-auto px-4 bg-amber-50 pb-8">
       <div className="grid lg:grid-cols-3 gap-3 items-stretch">
         <div className="lg:col-span-2 relative overflow-hidden rounded-b-3xl h-125">
           <div
@@ -155,14 +155,14 @@ export default function HeroBanner() {
             <div className="flex gap-4 mt-6 flex-wrap">
               <Link
                 href="/marketplace"
-                className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full bg-orange-500 text-white font-medium hover:bg-orange-600 active:scale-95 transition transform"
+                className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full bg-hub-primary text-white font-medium hover:bg-hub-secondary active:scale-95 transition transform"
               >
                 Explore marketplace
               </Link>
 
               <Link
                 href="/register"
-                className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full border border-orange-500 text-orange-600 font-medium hover:bg-orange-50 active:scale-95 transition transform"
+                className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full border border-hub-primary text-gray-950 hover:text-white font-medium hover:bg-hub-secondary bg-white active:scale-95 transition transform"
               >
                 Get started
               </Link>
@@ -184,34 +184,56 @@ export default function HeroBanner() {
                 transform: `translateX(-${itemIndex * (100 / VISIBLE)}%)`,
               }}
             >
-              {extendedItems.map((item, idx) => (
-                <Link
-                  key={`${item.id}-${idx}`}
-                  href={`/items/${item.slug}`}
-                  className="w-1/3 shrink-0 px-0.5"
-                >
-                  <div className="bg-white rounded-xl shadow hover:scale-[1.02] transition">
-                    <div className="relative h-34 rounded-t-lg overflow-hidden">
-                      <Image
-                        src={optimizeImage(item.images?.[0])}
-                        alt={item.title}
-                        fill
-                        className="object-cover transition-transform duration-700 hover:scale-110"
-                        placeholder="blur"
-                        blurDataURL="/placeholder.png"
-                      />
+              {extendedItems.map((item, idx) => {
+                const salesPrice = parseFloat(item.sales_price || "0");
+                const regularPrice = parseFloat(item.regular_price || "0");
+                const discount =
+                  regularPrice > salesPrice
+                    ? Math.round(
+                        ((regularPrice - salesPrice) / regularPrice) * 100
+                      )
+                    : 0;
+
+                return (
+                  <Link
+                    key={`${item.id}-${idx}`}
+                    href={`/items/${item.slug}`}
+                    className="w-1/3 shrink-0 px-0.5 relative"
+                  >
+                    <div className="bg-white rounded-xl shadow hover:scale-[1.02] transition">
+                      <div className="relative h-34 rounded-t-lg overflow-hidden">
+                        <Image
+                          src={optimizeImage(item.images?.[0])}
+                          alt={item.title}
+                          fill
+                          className="object-cover transition-transform duration-700 hover:scale-110"
+                          placeholder="blur"
+                          blurDataURL="/placeholder.png"
+                        />
+                        {/* Discount badge */}
+                        {discount > 0 && (
+                          <div className="absolute top-2 left-2 bg-red-600 text-white font-bold text-[9px] px-1.5 py-0.5 rounded shadow z-10">
+                            Up to {discount}% discount
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="mt-2 text-xs font-semibold ml-2 truncate">
+                        {item.title}
+                      </p>
+
+                      <p className="text-[9px] text-orange-600 ml-2 font-bold pb-1 mb-0.5 flex items-center gap-1">
+                        {formatAmount(salesPrice)}
+                        {discount > 0 && (
+                          <span className="text-[10px] line-through text-gray-600">
+                            {formatAmount(regularPrice)}
+                          </span>
+                        )}
+                      </p>
                     </div>
-
-                    <p className="mt-2 text-xs font-semibold ml-2 truncate">
-                      {item.title}
-                    </p>
-
-                    <p className="text-[9px] text-orange-600! ml-2 font-bold pb-1 mb-0.5">
-                      {formatAmount(item.sales_price || item.regular_price)}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

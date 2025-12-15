@@ -121,17 +121,19 @@ const CategorySection: FC = () => {
 
   return (
     <section className="py-6">
-      <div className="max-w-full mx-auto px-4 md:px-6 lg:px-8">
-        <h2 className="md:text-xl text-sm font-bold mb-4 ">Shop by Category</h2>
+      <div className="w-full mx-auto px-4">
+        <h2 className="md:text-xl text-sm font-bold mb-2">
+          Shop by Product Category
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {renderBanner}
           <div className="col-span-1 md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-6">
             {renderCategories}
-            {/* View All Button */}
+
             {!loading && categories.length > 0 && (
               <div className="flex items-center justify-center col-span-2 md:col-span-3 mt-2">
                 <button
-                  className="btn btn-gray w-full md:w-auto"
+                  className="btn btn-gray w-full"
                   onClick={() => router.push("/categories")}
                   aria-label="View all"
                 >
