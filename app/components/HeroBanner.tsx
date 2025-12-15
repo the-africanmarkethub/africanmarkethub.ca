@@ -222,10 +222,10 @@ export default function HeroBanner() {
                         {item.title}
                       </p>
 
-                      <p className="text-[9px] text-orange-600 ml-2 font-bold pb-1 mb-0.5 flex items-center gap-1">
+                      <p className="text-[9px] text-gray-600! ml-2 font-bold pb-1 mb-0.5 flex items-center gap-1 truncate">
                         {formatAmount(salesPrice)}
                         {discount > 0 && (
-                          <span className="text-[10px] line-through text-gray-600">
+                          <span className="text-[10px] line-through text-gray-400">
                             {formatAmount(regularPrice)}
                           </span>
                         )}
