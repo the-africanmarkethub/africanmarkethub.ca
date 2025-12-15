@@ -80,7 +80,7 @@ body,
    BUTTON BASE STYLE
 ------------------------------ */
 .btn {
-  @apply py-2.5 px-2.5 rounded-lg font-semibold transition-colors duration-200 cursor-pointer;
+  @apply py-2 px-2.5 rounded-lg font-semibold transition-colors duration-200 cursor-pointer;
 }
 
 .btn:disabled {
@@ -91,7 +91,7 @@ body,
    PRIMARY BUTTON (Orange)
 ------------------------------ */
 .btn-primary {
-  @apply bg-orange-800 hover:bg-orange-500 text-white;
+  @apply bg-hub-secondary  text-white hover:bg-hub-light-primary hover:text-gray-900;
 }
 
 /* ------------------------------

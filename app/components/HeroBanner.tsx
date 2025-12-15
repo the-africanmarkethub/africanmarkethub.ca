@@ -144,7 +144,7 @@ export default function HeroBanner() {
 
         <div className="flex flex-col justify-between p-0">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 leading-tight p-2">
+            <h1 className="sm:text-3xl text-xl font-bold text-gray-900 leading-tight mt-2">
               Welcome to {APP_NAME}.
             </h1>
 
@@ -152,7 +152,7 @@ export default function HeroBanner() {
               {COMPANY_CONTACT_INFO.companyDescription}
             </p>
 
-            <div className="flex gap-4 mt-6 flex-wrap">
+            <div className="flex gap-4 mt-6  items-center">
               <Link
                 href="/marketplace"
                 className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full bg-hub-primary text-white font-medium hover:bg-hub-secondary active:scale-95 transition transform"
