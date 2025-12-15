@@ -8,6 +8,8 @@ import Skeleton from "react-loading-skeleton";
 import { listItems } from "@/lib/api/items";
 import debounce from "lodash.debounce";
 import ProductGrid from "./components/ProductGrid";
+import Link from "next/link";
+import FilterDrawer from "./components/FilterDrawer";
 
 interface ItemsProps {
   params: { slug: string };
@@ -121,78 +123,114 @@ const Items: FC<ItemsProps> = ({}) => {
     if (newPage < 1 || newPage > totalPages) return;
     setFilters((prev) => ({ ...prev, offset: (newPage - 1) * prev.limit }));
   };
+
   return (
-    <div className="container mx-auto sm:px-0 px-2 py-12 bg-gray-50 min-h-screen">
-      {/* Category Header */}
-      {loading ? (
-        <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
-          <Skeleton circle width={144} height={144} className="mb-4" />
-          <Skeleton height={36} width={250} className="mb-2" />
-          <Skeleton count={2} />
-        </div>
-      ) : (
-        categoryInfo && (
-          <header className="relative mb-10 rounded-xl overflow-hidden shadow-xl">
-            {/* Background Image */}
-            {categoryInfo.image && (
-              <div className="absolute inset-0">
-                <Image
-                  src={categoryInfo.image}
-                  alt={categoryInfo.name}
-                  fill
-                  className="object-cover w-full h-full brightness-75"
-                />
-                <div className="absolute inset-0 bg-black/40"></div>
-              </div>
-            )}
+    <>
+      {!categoryInfo && (
+        <div className="relative w-full h-40 md:h-48 lg:h-56">
+          <Image
+            src="/account-header.jpg"
+            alt="Account Header"
+            fill
+            className="object-cover brightness-39"
+            priority
+          />
 
-            {/* Caption Content */}
-            <div className="relative z-10 p-6 flex flex-col justify-end h-64">
-              <h1 className="sm:text-4xl text-sm font-extrabold text-white! mb-2">
-                {categoryInfo.name}
-              </h1>
-              {categoryInfo.description && (
-                <p className="sm:text-lg text-xs text-white/80! mb-4 line-clamp-2">
-                  {categoryInfo.description}
-                </p>
-              )}
+          <div className="absolute inset-0 flex flex-col justify-center px-5 md:px-10 text-white">
+            <h1 className="text-2xl md:text-3xl text-white! font-semibold">
+              All {queryType}
+            </h1>
+
+            <div className="text-sm mt-2 opacity-90">
+              <Link href="/" className="hover:underline">
+                Home
+              </Link>{" "}
+              /<span className="ml-1">{queryType}</span>
             </div>
-          </header>
-        )
-      )}
-
-      {/* Product Grid */}
-      <main className="col-span-12 lg:col-span-9">
-        <ProductGrid
-          products={products}
-          loading={loading}
-          columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-6"
-          onClickItem={(product) => router.push(`/items/${product.slug}`)}
-        />
-
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-12">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="btn btn-gray w-1/7"
-            >
-              Previous
-            </button>
-            <span className="text-yellow-800 font-medium">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="btn btn-gray w-1/7"
-            >
-              Next
-            </button>
           </div>
+        </div>
+      )}
+      <div className="mx-auto sm:px-4 px-4 py-12 min-h-screen">
+        {/* Category Header */}
+        {loading ? (
+          <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
+            <Skeleton circle width={144} height={144} className="mb-4" />
+            <Skeleton height={36} width={250} className="mb-2" />
+            <Skeleton count={2} />
+          </div>
+        ) : (
+          categoryInfo && (
+            <header className="relative mb-10 rounded-xl overflow-hidden shadow-xl">
+              {/* Background Image */}
+              {categoryInfo.image && (
+                <div className="absolute inset-0">
+                  <Image
+                    src={categoryInfo.image}
+                    alt={categoryInfo.name}
+                    fill
+                    className="object-cover w-full h-full brightness-75"
+                  />
+                  <div className="absolute inset-0 bg-black/40"></div>
+                </div>
+              )}
+
+              {/* Caption Content */}
+              <div className="relative z-10 p-6 flex flex-col justify-end h-64">
+                <h1 className="sm:text-4xl text-sm font-extrabold text-white! mb-2">
+                  {categoryInfo.name}
+                </h1>
+                {categoryInfo.description && (
+                  <p className="sm:text-lg text-xs text-white/80! mb-4 line-clamp-2">
+                    {categoryInfo.description}
+                  </p>
+                )}
+              </div>
+            </header>
+          )
         )}
-      </main>
-    </div>
+
+        {/* Product Grid */}
+        <div className="flex justify-start mb-4">
+          <FilterDrawer
+            filters={filters}
+            setFilters={setFilters}
+            debouncedSetSearch={debouncedSetSearch}
+            type={queryType}
+          />
+        </div>
+
+        <main className="col-span-12 lg:col-span-9">
+          <ProductGrid
+            products={products}
+            loading={loading}
+            columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3"
+            onClickItem={(product) => router.push(`/items/${product.slug}`)}
+          />
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-12">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="btn btn-gray w-1/7"
+              >
+                Previous
+              </button>
+              <span className="text-yellow-800 font-medium">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="btn btn-gray w-1/7"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 };
 

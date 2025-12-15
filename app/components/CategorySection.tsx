@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 import { optimizeImage } from "@/utils/optimizeImage";
+import { SlCalender } from "react-icons/sl";
 
 interface CategorySectionProps {
   type: string;
@@ -118,10 +119,18 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
             </p>
 
             <button
-              aria-label="Shop now"
-              className="mt-4 bg-hub-secondary text-white sm:px-6 sm:py-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-hub-light-primary hover:text-gray-900 transition cursor-pointer"
+              aria-label={type === "services" ? "Book now" : "Shop now"}
+              className="mt-4 bg-orange-100 text-hub-secondary sm:px-6 sm:py-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-orange-200 transition cursor-pointer"
             >
-              <ShoppingBagIcon className="w-3 h-3 sm:w-5 sm:h-5" /> Shop Now
+              {type === "services" ? (
+                <>
+                  <SlCalender className="w-3 h-3 sm:w-5 sm:h-5" /> Book Now
+                </>
+              ) : (
+                <>
+                  <ShoppingBagIcon className="w-3 h-3 sm:w-5 sm:h-5" /> Shop Now
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -131,7 +140,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
 
   return (
     <section className="py-6">
-      <div className="w-full mx-auto px-3 sm:px-4 ">
+      <div className="w-full mx-auto px-3 sm:px-4">
         <h2 className="md:text-xl text-sm font-bold mb-2">
           Shop by <span className="capitalize">{type}</span> Categories
         </h2>
@@ -141,13 +150,12 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
             {renderCategories}
 
             {!loading && categories.length > 0 && (
-              <div className="flex items-center justify-center col-span-2 md:col-span-3 mt-2">
+              <div className="flex justify-center col-span-2 md:col-span-3 mt-4">
                 <button
-                  className="btn btn-gray w-full"
                   onClick={() => router.push("/categories?type=" + type)}
-                  aria-label="View all"
+                  className="px-6 py-3 bg-hub-secondary text-white font-semibold rounded-lg shadow-lg hover:bg-hub-primary hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  View All
+                  View All <span className="capitalize">{type}</span>
                 </button>
               </div>
             )}
@@ -157,5 +165,4 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
     </section>
   );
 };
-
 export default CategorySection;

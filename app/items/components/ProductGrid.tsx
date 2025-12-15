@@ -21,7 +21,7 @@ interface ProductGridProps {
 const ProductGrid: FC<ProductGridProps> = ({
   products,
   loading = false,
-  columns = "grid-cols-2 sm:grid-cols-3 md:grid-cols-6",
+  columns = "grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3",
   onClickItem,
   limit = 12,
   variant = "grid",
@@ -30,9 +30,9 @@ const ProductGrid: FC<ProductGridProps> = ({
     Array.from({ length: limit }).map((_, idx) => (
       <div
         key={idx}
-        className="bg-white rounded-xl overflow-hidden shadow relative"
+        className="bg-gray-50 rounded-xl overflow-hidden shadow relative"
       >
-        <Skeleton height={224} className="w-full h-56" />
+        <Skeleton height={160} className="w-full h-40" />
         <div className="p-3">
           <Skeleton width={80} height={16} className="mb-2" />
           <Skeleton height={16} className="mb-2" />
@@ -44,11 +44,11 @@ const ProductGrid: FC<ProductGridProps> = ({
   return (
     <>
       {loading ? (
-        <div className={`grid ${columns} gap-6`}>{renderSkeletons()}</div>
+        <div className={`grid ${columns}`}>{renderSkeletons()}</div>
       ) : products.length === 0 ? (
         <EmptyItem message=" No items available." />
       ) : (
-        <div className={`grid ${columns} gap-6`}>
+        <div className={`grid ${columns}`}>
           {products.map((product) => {
             const salesPrice = parseFloat(product.sales_price);
             const regularPrice = parseFloat(product.regular_price);
@@ -61,7 +61,7 @@ const ProductGrid: FC<ProductGridProps> = ({
               <div
                 key={product.id}
                 onClick={() => onClickItem?.(product)}
-                className={`bg-white rounded-xl overflow-hidden shadow relative group cursor-pointer
+                className={`bg-gray-50 rounded-xl overflow-hidden shadow relative group cursor-pointer hover:shadow-lg transition-shadow
                             ${
                               variant === "horizontal"
                                 ? "min-w-45 snap-start"
@@ -79,7 +79,7 @@ const ProductGrid: FC<ProductGridProps> = ({
                     alt={product.title}
                     width={400}
                     height={400}
-                    className="w-full h-56 object-cover"
+                    className="w-full h-40 object-cover"
                     placeholder="blur"
                     blurDataURL="/placeholder.png"
                     quality={70}

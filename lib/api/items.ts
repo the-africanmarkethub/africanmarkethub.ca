@@ -45,10 +45,13 @@ export async function getItemDetail(slug: string) {
   return response.data;
 }
 
-export async function listRecommendedItems() {
-  const response = await api.get(`/products/recommended`);
+export async function listRecommendedItems(type?: string) {
+  const response = await api.get(`/products/recommended`, {
+    params: { type },  
+  });
   return response.data;
 }
+
 
 export async function getItemStatictics() {
   const { data } = await api.get(`/vendor/items/statistics`);

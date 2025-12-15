@@ -1,7 +1,6 @@
 import CategorySection from "./components/CategorySection";
-import HeroBanner from "./components/HeroBanner";
-import LatestProducts from "./components/LatestProducts";
-import TodaysDeal from "./components/TodaysDeal";
+import HeroBanner from "./components/HeroBanner"; 
+import RecommendedItems from "./components/RecommendedItems"; 
 
 export default function Home() {
   return (
@@ -9,8 +8,9 @@ export default function Home() {
       <HeroBanner />
       <CategorySection type="products" />
       <CategorySection type="services" />
-      {/* <TodaysDeal />
-      <LatestProducts /> */}
+      <RecommendedItems type="products" />
+      <RecommendedItems type="services" /> 
+      
     </div>
   );
 }
