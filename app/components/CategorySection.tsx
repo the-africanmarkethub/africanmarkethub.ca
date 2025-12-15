@@ -9,7 +9,7 @@ import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
-import { optimizeImage } from "./BannerCarousel";
+import { optimizeImage } from "@/utils/optimizeImage";
 
 const CategorySection: FC = () => {
   const router = useRouter();
@@ -55,31 +55,27 @@ const CategorySection: FC = () => {
               <Skeleton height={224} />
             </div>
           ))
-        : categories.slice(0, 6).map(
-            (
-              cat
-            ) => (
-              <div
-                key={cat.id}
-                onClick={() => handleClick(cat.slug, "products")}
-                className="relative rounded-xl overflow-hidden group cursor-pointer border border-orange-100"
-              >
-                <Image
-                  src={cat.image || "/placeholder.png"}
-                  alt={cat.name}
-                  width={400}
-                  height={400}
-                  loading="lazy"
-                  className="w-full h-56 object-cover group-hover:scale-105 transition"
-                />
-                <div className="absolute bottom-3 left-3 right-3">
-                  <div className="bg-orange-800 lg:text-sm text-white text-center py-2 rounded-lg font-semibold text-xs md:text-base truncate">
-                    {cat.name}
-                  </div>
+        : categories.slice(0, 6).map((cat) => (
+            <div
+              key={cat.id}
+              onClick={() => handleClick(cat.slug, "products")}
+              className="relative rounded-xl overflow-hidden group cursor-pointer border border-orange-100"
+            >
+              <Image
+                src={cat.image || "/placeholder.png"}
+                alt={cat.name}
+                width={400}
+                height={400}
+                loading="lazy"
+                className="w-full h-56 object-cover group-hover:scale-105 transition"
+              />
+              <div className="absolute bottom-3 left-3 right-3">
+                <div className="bg-orange-800 lg:text-sm text-white text-center py-2 rounded-lg font-semibold text-xs md:text-base truncate">
+                  {cat.name}
                 </div>
               </div>
-            )
-          ),
+            </div>
+          )),
     [categories, loading, handleClick]
   );
 
@@ -91,11 +87,11 @@ const CategorySection: FC = () => {
         <div
           className="relative bg-white rounded-2xl overflow-hidden cursor-pointer"
           onClick={() => router.push(`/items?type=products`)}
-        > 
+        >
           <Image
             src={optimizeImage(banner.banner, 1600)}
             alt={banner.type}
-            fill 
+            fill
             sizes="(max-width: 640px) 100vw,
                    (max-width: 1024px) 100vw,
                    (max-width: 1280px) 100vw,
@@ -111,7 +107,10 @@ const CategorySection: FC = () => {
                 ? "Nearby Service Providers"
                 : "Essential Daily Needs"}
             </p>
-            <button aria-label="Shop now" className="mt-4 bg-orange-100 text-orange-800 sm:px-6 sm:py-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-orange-200 transition cursor-pointer">
+            <button
+              aria-label="Shop now"
+              className="mt-4 bg-orange-100 text-orange-800 sm:px-6 sm:py-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-orange-200 transition cursor-pointer"
+            >
               <ShoppingBagIcon className="w-3 h-3 sm:w-5 sm:h-5" /> Shop Now
             </button>
           </div>

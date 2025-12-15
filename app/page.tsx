@@ -1,4 +1,4 @@
-import BannerCarousel from "./components/BannerCarousel";
+import HeroBanner from "./components/HeroBanner";
 import CategorySection from "./components/CategorySection";
 import LatestProducts from "./components/LatestProducts";
 import TodaysDeal from "./components/TodaysDeal";
@@ -6,7 +6,7 @@ import TodaysDeal from "./components/TodaysDeal";
 export default function Home() {
   return (
     <div className="bg-gray-50">
-      <BannerCarousel />
+      <HeroBanner />
       <CategorySection />
       {/* <TodaysDeal />
       <LatestProducts /> */}

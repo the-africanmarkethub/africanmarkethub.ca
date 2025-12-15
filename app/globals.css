@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .iiZ__zoomed-image-wrapper {
   position: relative;
   display: inline-block;

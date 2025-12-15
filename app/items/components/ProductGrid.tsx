@@ -6,9 +6,8 @@ import Image from "next/image";
 import { formatAmount } from "@/utils/formatCurrency";
 import Skeleton from "react-loading-skeleton";
 import Product from "@/interfaces/items";
-import { CubeIcon } from "@heroicons/react/20/solid";
 import EmptyItem from "./EmptyItem";
-import { optimizeImage } from "@/app/components/BannerCarousel";
+import { optimizeImage } from "@/utils/optimizeImage";
 
 interface ProductGridProps {
   products: Product[];
@@ -16,6 +15,7 @@ interface ProductGridProps {
   columns?: string;
   onClickItem?: (product: Product) => void;
   limit?: number;
+  variant?: "grid" | "horizontal";
 }
 
 const ProductGrid: FC<ProductGridProps> = ({
@@ -24,6 +24,7 @@ const ProductGrid: FC<ProductGridProps> = ({
   columns = "grid-cols-2 sm:grid-cols-3 md:grid-cols-6",
   onClickItem,
   limit = 12,
+  variant = "grid",
 }) => {
   const renderSkeletons = () =>
     Array.from({ length: limit }).map((_, idx) => (
@@ -60,7 +61,13 @@ const ProductGrid: FC<ProductGridProps> = ({
               <div
                 key={product.id}
                 onClick={() => onClickItem?.(product)}
-                className="bg-white rounded-xl overflow-hidden shadow relative group cursor-pointer"
+                className={`bg-white rounded-xl overflow-hidden shadow relative group cursor-pointer
+                            ${
+                              variant === "horizontal"
+                                ? "min-w-45 snap-start"
+                                : ""
+                            }
+                          `}
               >
                 {/* Product Image */}
                 <div className="relative">
@@ -86,7 +93,6 @@ const ProductGrid: FC<ProductGridProps> = ({
                 </div>
 
                 <div className="p-3">
-                  {/* Ratings */}
                   <div className="flex items-center gap-1 text-yellow-400 mb-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span key={i}>

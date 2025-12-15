@@ -26,7 +26,7 @@ import {
 } from "react-icons/lu";
 
 export const APP_NAME =
-  "African Market Hub | African Groceries, Clothes, Foods and Services";
+  "African Market Hub";
 
 interface NavItem {
   id: number;
@@ -202,8 +202,7 @@ Whether you're shopping for daily essentials, placing a food order, booking a se
 At African Market Hub, we don't just deliver products — we deliver comfort, reliability, and a better way to live every day.
 `,
   companyDescription: `
-African Market Hub is a modern food and service marketplace designed to make everyday living simpler, faster, and more convenient. We connect customers with a wide range of quality foods, trusted sellers, home services, and essential products — all in one easy-to-use platform.
-  `,
+Discover Africa's vibrant economy in one marketplace. We connect you directly with local entrepreneurs offering authentic African products—from stunning fashion and intricate crafts to farm-fresh produce and essential electronics. Buyers, find quality, heritage, and value. Sellers, access new markets and grow your business effortlessly. Your gateway to African excellence.`,
 };
 
 export const ROLE_OPTIONS = [

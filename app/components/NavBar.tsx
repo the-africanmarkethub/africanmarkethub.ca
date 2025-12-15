@@ -20,12 +20,11 @@ import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { HiOutlineBriefcase } from "react-icons/hi";
 import CategoryList from "./CategoryList";
- 
+
 export default function NavBar() {
   return (
     <nav className="bg-hub-primary text-white">
-      <div className="container mx-auto flex items-center justify-between px-2 sm:px-4">
-        {/* The relative parent for the absolute MenuItems */}
+      <div className="mx-auto flex items-center justify-between px-2 sm:px-4">
         <Menu as="div" className="relative z-50">
           {({ close }) => (
             <>
@@ -87,7 +86,7 @@ export default function NavBar() {
                     "
                 >
                   <div className="border-t border-gray-100 ">
-                    <CategoryList onNavigate={close} /> 
+                    <CategoryList onNavigate={close} />
                   </div>
                 </MenuItems>
               </Transition>
@@ -95,7 +94,6 @@ export default function NavBar() {
           )}
         </Menu>
         <DesktopNavLinks />
-
         <MobileNavLinks />
       </div>
     </nav>
