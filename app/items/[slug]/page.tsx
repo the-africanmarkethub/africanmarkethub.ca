@@ -80,7 +80,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
       },
       offers: {
         "@type": "Offer",
-        url: `https://ayokah.co.uk/items/${product.slug}`,
+        url: `https://africanmarkethub.ca/items/${product.slug}`,
         priceCurrency: "GBP",
         price: product.sales_price,
         itemCondition: "https://schema.org/NewCondition",

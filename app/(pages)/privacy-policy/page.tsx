@@ -144,9 +144,9 @@ const PrivacyPolicyContent: React.FC = () => {
             7. Data Security
           </h2>
           <p className="text-gray-700">
-            Ayokah implements industry-standard security measures including
-            encryption, secure authentication, access control, monitoring, and
-            audits to safeguard personal information.
+            African Market Hub implements industry-standard security measures
+            including encryption, secure authentication, access control,
+            monitoring, and audits to safeguard personal information.
           </p>
         </section>
 

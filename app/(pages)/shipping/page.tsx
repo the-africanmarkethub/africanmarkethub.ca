@@ -93,7 +93,8 @@ const ShippingPage: React.FC = () => {
             </li>
             <li>
               <strong>Real-Time Tracking:</strong> Receive your tracking number
-              to monitor your delivery in real-time on the Ayokah platform.
+              to monitor your delivery in real-time on the African Market Hub
+              platform.
             </li>
             <li>
               <strong>Delivery Verification:</strong> Our system confirms

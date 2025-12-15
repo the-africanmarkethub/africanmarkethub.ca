@@ -36,11 +36,11 @@ export const metadata: Metadata = {
     title: APP_NAME,
     description:
       "Buy authentic African groceries, clothes, and foods online. African Market Hub delivers Africa’s best — fresh ingredients, fashion & essentials — right to your door.",
-    url: "https://ayokah.co.uk",
+    url: "https://africanmarkethub.ca",
     siteName: APP_NAME,
     images: [
       {
-        url: "https://ayokah.co.uk/OpenGraph.png",
+        url: "https://africanmarkethub.ca/OpenGraph.png",
         width: 1200,
         height: 630,
         alt: APP_NAME,
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     title: APP_NAME,
     description:
       "Shop authentic African groceries, clothes & foods online. African Market Hub delivers Africa’s best directly to your home.",
-    images: ["https://ayokah.co.uk/Twitter.png"],
+    images: ["https://africanmarkethub.ca/Twitter.png"],
   },
 };
 

@@ -266,7 +266,7 @@ export default function ItemTabs({
 
       {/* ------------------- RECOMMENDED / SIMILAR / MOST VIEWED ------------------- */}
       <div className="mt-6 p-4 bg-gray-100">
-        <h2 className="text-xl font-semibold  mb-4">
+        {/* <h2 className="text-xl font-semibold  mb-4">
           Customer also viewed this{" "}
         </h2>
         {customerAlsoViewed.length === 0 ? (
@@ -274,9 +274,9 @@ export default function ItemTabs({
         ) : (
           <ProductGrid
             products={customerAlsoViewed}
-            columns="grid-cols-2 sm:grid-cols-4"
+            columns="grid-cols-2 sm:grid-cols-4 gap-3"
           />
-        )}
+        )} */}
 
         <h2 className="text-xl font-semibold  mb-4">Similar Items</h2>
         {frequentlyBoughtTogether.length === 0 ? (
@@ -284,7 +284,7 @@ export default function ItemTabs({
         ) : (
           <ProductGrid
             products={frequentlyBoughtTogether}
-            columns="grid-cols-2 sm:grid-cols-4"
+            columns="grid-cols-2 sm:grid-cols-4 gap-3"
           />
         )}
 
@@ -294,7 +294,7 @@ export default function ItemTabs({
         ) : (
           <ProductGrid
             products={recommended}
-            columns="grid-cols-2 sm:grid-cols-4"
+            columns="grid-cols-2 sm:grid-cols-4 gap-3"
           />
         )}
       </div>

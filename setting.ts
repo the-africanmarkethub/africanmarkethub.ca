@@ -25,8 +25,7 @@ import {
   LuList,
 } from "react-icons/lu";
 
-export const APP_NAME =
-  "African Market Hub";
+export const APP_NAME = "African Market Hub";
 
 interface NavItem {
   id: number;
@@ -190,14 +189,14 @@ export const ALLOWED_COUNTRIES = [
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
   phone: "+44 7930 173135",
-  email: "info@ayokah.co.uk",
+  email: "info@africanmarkethub.ca",
   companyName: APP_NAME,
   about: `
-African Market Hub is a modern, people-focused food and service marketplace created to make everyday living simpler, faster, and more convenient. Built with the needs of today’s consumers in mind, Ayokah connects individuals, families, and communities with high-quality foods, trusted sellers, essential products, and reliable home services — all through one easy-to-use digital platform.
+African Market Hub is a modern, people-focused food and service marketplace created to make everyday living simpler, faster, and more convenient. Built with the needs of today’s consumers in mind, African Market Hub connects individuals, families, and communities with high-quality foods, trusted sellers, essential products, and reliable home services — all through one easy-to-use digital platform.
 
-From freshly prepared meals to groceries, home essentials, and professional services, Ayokah brings everything closer to you. Our platform empowers local vendors, supports small businesses, and ensures that customers enjoy competitive pricing, verified quality, and seamless delivery experiences.
+From freshly prepared meals to groceries, home essentials, and professional services, African Market Hub brings everything closer to you. Our platform empowers local vendors, supports small businesses, and ensures that customers enjoy competitive pricing, verified quality, and seamless delivery experiences.
 
-Whether you're shopping for daily essentials, placing a food order, booking a service professional, or exploring new offerings, Ayokah is designed to save you time, reduce stress, and enhance convenience. We are committed to redefining lifestyle simplicity by merging technology, trust, and real human need into a single ecosystem that works for everyone.
+Whether you're shopping for daily essentials, placing a food order, booking a service professional, or exploring new offerings, African Market Hub is designed to save you time, reduce stress, and enhance convenience. We are committed to redefining lifestyle simplicity by merging technology, trust, and real human need into a single ecosystem that works for everyone.
 
 At African Market Hub, we don't just deliver products — we deliver comfort, reliability, and a better way to live every day.
 `,

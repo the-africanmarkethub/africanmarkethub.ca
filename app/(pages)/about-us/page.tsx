@@ -42,7 +42,7 @@ const COMPANY_DATA: CompanyData = {
   name: "African Market Hub",
   tagline: "Your Everyday Convenience Partner.",
   about:
-    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, Ayokah is redefining modern food accessibility with trust and excellence.",
+    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, African Market Hub is redefining modern food accessibility with trust and excellence.",
   mission:
     "To deliver high-quality food products and services with unmatched convenience, ensuring every household has access to safe, affordable, and reliable essentials.",
   vision:
@@ -81,7 +81,7 @@ const COMPANY_DATA: CompanyData = {
   ],
   businesses: [
     {
-      name: "Ayokah Foods SUPERMARKET",
+      name: "African Market HubSUPERMARKET",
       icon: FaShoppingCart,
       description:
         "A modern and affordable supermarket providing groceries, beverages, home essentials, organic produce, and FMCG products. Our supermarket supports local suppliers and guarantees fresh, verified, and quality-assured items.",
@@ -92,7 +92,7 @@ const COMPANY_DATA: CompanyData = {
       ],
     },
     {
-      name: "Ayokah EVENTS & CATERING",
+      name: "African Market Hub EVENTS & CATERING",
       icon: FaCalendarAlt,
       description:
         "Premium catering services for weddings, birthdays, corporate events, house parties, private dining, and large outdoor celebrations. We combine African and continental cuisines to create memorable experiences.",
@@ -103,10 +103,10 @@ const COMPANY_DATA: CompanyData = {
       ],
     },
     {
-      name: "Ayokah SERVICES",
+      name: "African Market Hub SERVICES",
       icon: FaUtensils,
       description:
-        "Ayokah Services offers lifestyle support solutions including home cleaning, laundry, private chef, and event support. Our professional team ensures convenience, reliability, and quality service for homes and businesses alike.",
+        "African Market Hub Services offers lifestyle support solutions including home cleaning, laundry, private chef, and event support. Our professional team ensures convenience, reliability, and quality service for homes and businesses alike.",
       features: [
         "Trained and verified service professionals",
         "Flexible packages for homes and events",

@@ -109,7 +109,7 @@ export default function ItemDetail({
                 <img
                   src={selectedImage}
                   alt={product.title}
-                  className="rounded-lg shadow-md w-full object-cover max-h-[550px] cursor-zoom-in"
+                  className="rounded-lg shadow-md w-full object-cover max-h-137.5 cursor-zoom-in"
                 />
               </Zoom>
             </div>
