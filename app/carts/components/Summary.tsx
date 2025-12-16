@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { formatAmount } from "@/utils/formatCurrency";
-import { formatHumanReadableDate } from "@/utils/formatDate";
+import { formatHumanReadable, formatHumanReadableDate } from "@/utils/formatDate";
 import { CARRIER_ICONS } from "@/setting";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCart } from "@/context/CartContext";
@@ -55,8 +55,9 @@ export default function OrderSummary({
 
     const estimatedDelivery =
       deliveryDays.length > 0
-        ? vendors.find((v) => v.delivery_days === Math.min(...deliveryDays))
-            ?.estimated_delivery
+        ? vendors.find( 
+            (v) => Number(v.delivery_days) === Math.min(...deliveryDays)
+          )?.estimated_delivery
         : vendors
             .map((v) => v.estimated_delivery)
             .filter(Boolean)
@@ -211,7 +212,7 @@ export default function OrderSummary({
                   <p className="text-sm text-gray-500">
                     Arrives:{" "}
                     {estimatedDelivery
-                      ? formatHumanReadableDate(estimatedDelivery)
+                      ? formatHumanReadable(estimatedDelivery)
                       : "N/A"}
                   </p>
                 </div>
