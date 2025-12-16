@@ -59,7 +59,7 @@ export default function GoogleOneTap() {
         if (role === "customer") {
           router.push("/account");
         } else if (role === "vendor") {
-          router.push("/dashboard"); 
+          router.push("/dashboard");
         } else {
           router.push("/"); // fallback
         }
@@ -71,7 +71,7 @@ export default function GoogleOneTap() {
     };
     const handleLoad = () => {
       if (window.google?.accounts.id) {
-        const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+        const clientId = process.env.NEXT_GOOGLE_CLIENT_ID;
         if (!clientId) {
           console.error("CLIENT_ID is missing from environment variables.");
           return;

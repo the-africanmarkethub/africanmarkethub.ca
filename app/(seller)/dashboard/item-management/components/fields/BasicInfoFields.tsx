@@ -23,7 +23,7 @@ export default function BasicInfoFields(props: any) {
           Description <span className="text-red-500">*</span>
         </label>
         <TinyMCEEditor
-          apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+          apiKey={process.env.NEXT_TINYMCE_API_KEY}
           value={description}
           init={{
             height: 200,

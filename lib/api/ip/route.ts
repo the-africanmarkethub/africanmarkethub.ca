@@ -27,7 +27,7 @@ export async function numverifyValidatePhone({
   countryCode: string;
 }) {
   try {
-    const apiKey = process.env.NEXT_PUBLIC_NUMVERIFY_API;
+    const apiKey = process.env.NEXT_NUMVERIFY_API;
 
     const url = `https://apilayer.net/api/validate?access_key=${apiKey}&number=${number}&country_code=${countryCode}&format=1`;
 

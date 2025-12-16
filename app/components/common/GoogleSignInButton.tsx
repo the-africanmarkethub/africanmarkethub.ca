@@ -39,7 +39,7 @@ const decodeJWT = (token: string): GoogleUserPayload | null => {
 export default function GoogleSignInButton() {
   const router = useRouter();
   const [isSdkLoaded, setIsSdkLoaded] = useState(false);
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const clientId = process.env.NEXT_GOOGLE_CLIENT_ID;
 
   const handleCredentialResponse = async (response: {
     credential?: string;
@@ -64,21 +64,21 @@ export default function GoogleSignInButton() {
 
       // API Call
       const result = await ContinueWithGoogle(payload);
-      useAuthStore.getState().setAuth(result.token, result.user); 
-      
+      useAuthStore.getState().setAuth(result.token, result.user);
+
       document.cookie = `token=${result.token}; path=/;`;
       document.cookie = `role=${result.user.role}; path=/;`;
 
       const role = result.user.role;
 
       if (role === "customer") {
-        router.push("/account"); 
+        router.push("/account");
       } else if (role === "vendor") {
         router.push("/dashboard"); // seller dashboard
       } else {
-        // router.push("/"); 
+        // router.push("/");
       }
-      toast.success("Welcome Back" );
+      toast.success("Welcome Back");
     } catch (error) {
       console.error("Authentication failed on the server:", error);
       toast.error("Login failed. Please try again.");
