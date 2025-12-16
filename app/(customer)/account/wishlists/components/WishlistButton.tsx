@@ -12,7 +12,7 @@ type Props = {
   product: {
     id: number;
     title: string;
-    sales_price?: string; 
+    sales_price?: string;
     images?: string | string[];
     stock?: boolean | number;
     slug?: string;
@@ -52,22 +52,27 @@ export default function WishlistButton({ product }: Props) {
     <button
       onClick={handleToggle}
       className={clsx(
-        "inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition cursor-pointer",
+        // Default (mobile) padding is p-2 for icon only. Sm screens use px-3 py-1.5 for text+icon
+        "inline-flex items-center gap-2 p-2 sm:px-3 sm:py-1.5 rounded-full text-sm font-medium transition cursor-pointer",
         wishlisted
           ? "bg-amber-50 text-amber-700 border border-amber-200"
-          : "bg-gray-100 text-gray-700"
+          : "bg-amber-100 text-amber-700"
       )}
       aria-pressed={wishlisted}
+      aria-label="wishlist"
+      title="Wishlist"
     >
       {wishlisted ? (
         <>
           <HeartSolid className="w-4 h-4 text-amber-600" />
-          Saved
+          {/* Added hidden class for mobile, sm:inline for desktop visibility */}
+          <span className="hidden sm:inline">Saved</span>
         </>
       ) : (
         <>
           <HeartOutline className="w-4 h-4" />
-          Wishlist
+          {/* Added hidden class for mobile, sm:inline for desktop visibility */}
+          <span className="hidden sm:inline">Wishlist</span>
         </>
       )}
     </button>

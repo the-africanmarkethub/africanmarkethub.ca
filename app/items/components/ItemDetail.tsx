@@ -22,6 +22,8 @@ import "react-medium-image-zoom/dist/styles.css";
 import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
 import { FaShareAlt } from "react-icons/fa";
 import { getStockStatus, StarFilled, StarEmpty } from "@/utils/ItemUtils";
+import AddToCartButton from "./AddToCartButton";
+import QuantityControl from "./QuantityControl";
 
 interface ItemDetailProps {
   product: Item;
@@ -73,6 +75,7 @@ export default function ItemDetail({
         title: product.title,
         slug: product.slug,
         type: product.type,
+        stockQty: product.quantity,
         price: salesPrice,
         image: selectedImage,
         qty: quantity,
@@ -154,7 +157,7 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold m-0">{product.title}</h1>
+              <h1 className="sm:text-2xl text-sm font-semibold m-0 ">{product.title}</h1>
 
               <span
                 className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
@@ -230,49 +233,22 @@ export default function ItemDetail({
               </div>
             )}
 
-            {/* QUANTITY + ADD TO CART */}
+            {/* QUANTITY + ADD TO CART */} 
             <div className="flex items-center gap-2 mt-5">
-              <div className="flex items-center rounded-md">
-                <button
-                  onClick={decreaseQty}
-                  className="btn btn-gray rounded-full!"
-                >
-                  <MinusIcon className="h-3 w-3" />
-                </button>
-                <span className="px-4 text-gray-500 font-semibold">
-                  {quantity}
-                </span>
-                <button
-                  onClick={increaseQty}
-                  className="btn btn-gray rounded-full!"
-                >
-                  <PlusIcon className="h-3 w-3" />
-                </button>
-              </div>
+              <QuantityControl
+                quantity={quantity}
+                stockQty={product.quantity}
+                increase={() => setQuantity((q) => q + 1)}
+                decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
+              />
 
-              <button
-                onClick={handleAddToCart}
-                className={`btn btn-primary rounded-full! text-xs! ${
-                  added
-                    ? "bg-red-800 text-white scale-105"
-                    : isInCart
-                    ? "bg-red-800 text-white hover:bg-red-700"
-                    : "bg-red-400 text-white hover:bg-red-800"
-                }`}
-              >
-                {added ? (
-                  <>
-                    <CheckIcon className="h-5 w-5 text-white animate-bounce" />
-                    Added!
-                  </>
-                ) : isInCart ? (
-                  "View Cart"
-                ) : (
-                  "Add to Cart"
-                )}
-              </button>
+              <AddToCartButton
+                product={product}
+                selectedImage={selectedImage}
+                quantity={quantity}
+                stockQty={product.quantity}
+              />
 
-              
               <WishlistButton product={product} />
             </div>
 
