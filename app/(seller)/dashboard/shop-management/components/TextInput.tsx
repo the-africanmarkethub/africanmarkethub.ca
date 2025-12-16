@@ -11,6 +11,8 @@ interface Props {
   required?: boolean;
   maxLength?: number;
   className?: string;
+  disabled?: boolean;
+
 }
 
 export default function TextInput({
@@ -21,6 +23,7 @@ export default function TextInput({
   required = false,
   maxLength,
   className = "",
+  disabled = false,
 }: Props) {
   return (
     <div className={className}>
@@ -36,6 +39,7 @@ export default function TextInput({
         placeholder={placeholder}
         required={required}
         maxLength={maxLength}
+        disabled={disabled}
       />
     </div>
   );

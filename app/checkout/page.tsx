@@ -3,14 +3,12 @@
 import { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import OrderSummary from "../carts/components/Summary";
-import AddressAutocomplete from "./components/AddressAutocomplete";
 import Address from "@/interfaces/address";
 import { shippingRate } from "@/lib/api/customer/shippingRate";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { ShippingRateResponse } from "@/interfaces/shippingRate";
 import { useAuthStore } from "@/store/useAuthStore";
-import Script from "next/script";
 import TextInput from "../(seller)/dashboard/shop-management/components/TextInput";
 import AppointmentPicker from "./components/AppointmentPicker";
 import GoogleAddressAutocomplete from "../(seller)/dashboard/shop-management/components/GoogleAddressAutocomplete";
@@ -82,7 +80,7 @@ export default function CheckoutPage() {
         return toast.error("State is required");
       }
       if (!address.zip_code.trim()) {
-        return toast.error("Zip code is required");
+        return toast.error("Postal code is required");
       }
       if (!address.country.trim()) {
         return toast.error("Country is required");
@@ -101,8 +99,7 @@ export default function CheckoutPage() {
       lastname,
       email,
       phone,
-      country: address.country || "UK",
-      ip: userIP,
+      country: address.country || "CA",
       products: cart.map((item) => ({
         id: item.id,
         quantity: item.qty,
@@ -226,13 +223,14 @@ export default function CheckoutPage() {
                           }
                         />
                       )}
-                    </div> 
+                    </div>
                     <TextInput
                       placeholder="Street address"
                       label="Street Address"
                       value={address.street_address}
                       onChange={(e) => handleAddressChange("street_address", e)}
                       required
+                      // disabled={!!address.street_address}
                     />
                     <TextInput
                       placeholder="City"
@@ -240,6 +238,7 @@ export default function CheckoutPage() {
                       value={address.city}
                       onChange={(e) => handleAddressChange("city", e)}
                       required
+                      disabled={!!address.city}
                     />
                     <TextInput
                       placeholder="Province"
@@ -247,6 +246,7 @@ export default function CheckoutPage() {
                       value={address.state}
                       onChange={(e) => handleAddressChange("state", e)}
                       required
+                      disabled={!!address.state}
                     />
                     <TextInput
                       placeholder="Postal code"
@@ -254,6 +254,7 @@ export default function CheckoutPage() {
                       value={address.zip_code}
                       onChange={(e) => handleAddressChange("zip_code", e)}
                       required
+                      disabled={!!address.zip_code}
                     />
                     <TextInput
                       placeholder="Country"
@@ -261,34 +262,34 @@ export default function CheckoutPage() {
                       value={address.country}
                       onChange={(e) => handleAddressChange("country", e)}
                       required
+                      disabled={!!address.country}
                     />
-                    {/* <TextInput
-                      placeholder="Phone number"
-                      label="Phone Number"
-                      value={phone}
-                      onChange={(e) => setPhone(e)}
-                      required
-                    /> */}
-                    <div className="flex items-center">
-                      {/* Flag + Dial Code */}
-                      <div className="flex items-center justify-center h-12.25 px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-25">
-                        <span className="mr-2">
-                          {countryCodeToFlag(address.country)}
-                        </span>
-                        <span>{address.dialCode}</span>
+                    {/* Phone input wrapper with label to match other grid items */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Phone Number
+                      </label>
+                      <div className="flex items-stretch h-12"> 
+                        <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-20">
+                          <span className="mr-2">
+                            {countryCodeToFlag(address.country)}
+                          </span>
+                          <span className="font-medium">
+                            {address.dialCode || "+1"}
+                          </span>
+                        </div>
+                        {/* Phone input */}
+                        <input
+                          type="tel"
+                          className="input rounded-l-none! flex-1"
+                          value={phone}
+                          onChange={(e) =>
+                            setPhone(e.target.value.replace(/\D/g, ""))
+                          }
+                          placeholder="712 345 678"
+                          required
+                        />
                       </div>
-
-                      {/* Phone input */}
-                      <input
-                        type="tel"
-                        className="input rounded-l-none flex-1"
-                        value={phone}
-                        onChange={(e) =>
-                          setPhone(e.target.value.replace(/\D/g, ""))
-                        }
-                        placeholder="712 345 678"
-                        required
-                      />
                     </div>
                   </>
                 ) : (
