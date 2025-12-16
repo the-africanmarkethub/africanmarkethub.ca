@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import Coupon from "@/interfaces/coupon";
 import { ClipLoader } from "react-spinners";
 import { formatAmount } from "@/utils/formatCurrency";
+import { getStockStatus } from "@/utils/ItemUtils";
 
 export default function CartPage() {
   const { cart, updateQty, removeFromCart } = useCart();
@@ -102,7 +103,7 @@ export default function CartPage() {
             height="180"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#c2410c"
+            stroke="#c2410c" /* Matches orange-800-ish tone */
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -113,6 +114,7 @@ export default function CartPage() {
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
           </svg>
 
+          {/* This font size (text-2xl) is fine for empty states even on mobile */}
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">
             Your Cart is Empty
           </h2>
@@ -125,7 +127,7 @@ export default function CartPage() {
             onClick={() => router.push("/items")}
             className="px-6 py-3 bg-orange-800 text-white rounded-full font-medium hover:bg-orange-700 transition cursor-pointer"
           >
-            Start Shopping
+            Explore Marketplace
           </button>
         </div>
       )}
@@ -134,7 +136,8 @@ export default function CartPage() {
         <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8">
           {/* Cart Items */}
           <div className="flex-1 space-y-4">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 bg-white p-4 rounded-xl shadow">
+            {/* Reduced mobile size to text-lg, scales up to text-xl on small screens and above */}
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 bg-white p-4 rounded-xl shadow">
               Your Cart ({cart.length})
             </h2>
 
@@ -152,36 +155,51 @@ export default function CartPage() {
                     className="rounded-md object-cover"
                   />
                   <div>
-                    <h3 className="font-medium text-gray-800">{item.title}</h3>
+                    {/* Prioritizes text-sm on mobile, scales up to text-lg on sm screens and above */}
+                    <h3
+                      title={item.title}
+                      className="text-sm sm:text-lg font-medium text-gray-800 line-clamp-1"
+                    >
+                      {item.title}
+                    </h3>
+
                     <span
-                      className={`text-xs font-medium ${
-                        item.stock ? "text-orange-800" : "text-orange-800"
+                      className={`text-white text-xs font-semibold px-2 py-1 rounded-full ${
+                        getStockStatus(item.qty).bgClass
                       }`}
                     >
-                      {item.stock ? "In stock" : "Out of stock"}
+                      {getStockStatus(item.qty).text}
                     </span>
-
-                    {/* Quantity */}
+                    {/* Quantity controls use standard text-sm which works well on mobile */}
                     <div className="flex items-center gap-2 mt-2 text-orange-800">
                       <button
+                        aria-label="quantity reduce"
                         onClick={() => updateQty(item.id, item.qty - 1)}
                         className="w-5 h-5 flex items-center justify-center rounded-full cursor-pointer bg-orange-100 text-orange-800"
                       >
-                        <MinusIcon className="w-3 h-3" />
+                        <MinusIcon
+                          aria-label="Reduce icon"
+                          className="w-3 h-3"
+                        />
                       </button>
                       <span className="text-sm font-medium">{item.qty}</span>
                       <button
+                        aria-label="quantity increase"
                         onClick={() => updateQty(item.id, item.qty + 1)}
                         className="w-5 h-5 flex items-center justify-center rounded-full cursor-pointer bg-orange-100 text-orange-800"
                       >
-                        <PlusIcon className="w-3 h-3" />
+                        <PlusIcon
+                          aria-label="Increase icon"
+                          className="w-3 h-3"
+                        />
                       </button>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-end justify-between h-full">
-                  <span className="text-lg font-semibold text-gray-800">
+                  {/* Prioritizes text-base on mobile, scales up to text-lg on sm screens and above */}
+                  <span className="text-base sm:text-lg font-semibold text-gray-800">
                     {formatAmount(Number(item.price) * Number(item.qty))}
                   </span>
                   <div className="flex items-center gap-2 mt-4">
@@ -189,7 +207,10 @@ export default function CartPage() {
                       onClick={() => setItemToDelete(item.id)}
                       className="p-2 hover:text-orange-800"
                     >
-                      <TrashIcon className="h-5 w-5 cursor-pointer text-gray-500 hover:text-red-500 " />
+                      <TrashIcon
+                        aria-label="Trash icon"
+                        className="h-5 w-5 cursor-pointer text-gray-500 hover:text-red-500 "
+                      />
                     </button>
                   </div>
                 </div>
@@ -199,9 +220,11 @@ export default function CartPage() {
 
           {/* Summary */}
           <div className="w-full lg:w-1/3 bg-white rounded-lg shadow-md p-6 h-fit">
+            {/* Summary title standard text-lg, appropriate for mobile sidebar */}
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Summary
             </h3>
+            {/* Standard text-sm for details */}
             <div className="space-y-3 text-sm text-gray-600">
               <div className="flex justify-between">
                 <span>Subtotal</span>
@@ -287,28 +310,8 @@ export default function CartPage() {
           </button>
         </div>
       </Modal>
-
-      <Modal
-        isOpen={itemToDelete !== null}
-        onClose={() => setItemToDelete(null)}
-        title="Remove Item?"
-        description="Are you sure you want to remove this item from your cart?"
-      >
-        <div className="flex justify-end gap-3 mt-4">
-          <button
-            onClick={() => setItemToDelete(null)}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 cursor-pointer"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirmRemove}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer"
-          >
-            Remove
-          </button>
-        </div>
-      </Modal>
     </div>
   );
+
+
 }
