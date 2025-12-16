@@ -47,18 +47,6 @@ export default function ItemDetail({
   const [selectedImage, setSelectedImage] = useState(
     product.images?.[0] || "/placeholder.png"
   );
-  const [added, setAdded] = useState(false);
-
-  const { addToCart, cart } = useCart();
-  const router = useRouter();
-
-  const isInCart = useMemo(
-    () => cart?.some((item) => item.id === product.id),
-    [cart, product.id]
-  );
-
-  const increaseQty = () => setQuantity((q) => q + 1);
-  const decreaseQty = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
   const salesPrice = parseFloat(product.sales_price);
   const regularPrice = parseFloat(product.regular_price);
@@ -67,28 +55,6 @@ export default function ItemDetail({
     regularPrice > salesPrice
       ? Math.round(((regularPrice - salesPrice) / regularPrice) * 100)
       : 0;
-
-  const handleAddToCart = () => {
-    if (!isInCart) {
-      addToCart({
-        id: product.id,
-        title: product.title,
-        slug: product.slug,
-        type: product.type,
-        stockQty: product.quantity,
-        price: salesPrice,
-        image: selectedImage,
-        qty: quantity,
-        stock: true,
-      });
-
-      toast.success("Item added to cart!");
-      setAdded(true);
-      setTimeout(() => setAdded(false), 1000);
-    } else {
-      router.push("/carts");
-    }
-  };
 
   const productUrl =
     typeof window !== "undefined"
@@ -157,15 +123,19 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0 ">{product.title}</h1>
+              <h1 className="sm:text-2xl text-sm font-semibold m-0 ">
+                {product.title}
+              </h1>
 
-              <span
-                className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
-                  getStockStatus(product.quantity).bgClass
-                }`}
-              >
-                {getStockStatus(product.quantity).text}
-              </span>
+              {product.type === "products" && (
+                <span
+                  className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
+                    getStockStatus(product.quantity).bgClass
+                  }`}
+                >
+                  {getStockStatus(product.quantity).text}
+                </span>
+              )}
             </div>
 
             <div className="flex items-center text-xs gap-1 -mt-2">
@@ -199,6 +169,7 @@ export default function ItemDetail({
             </div>
 
             {/* Variations Section */}
+
             {product.variations && product.variations.length > 0 && (
               <div className="text-sm text-gray-700 space-y-2 pt-2">
                 <p className="font-semibold">Available Variations:</p>
@@ -233,14 +204,16 @@ export default function ItemDetail({
               </div>
             )}
 
-            {/* QUANTITY + ADD TO CART */} 
+            {/* QUANTITY + ADD TO CART */}
             <div className="flex items-center gap-2 mt-5">
-              <QuantityControl
-                quantity={quantity}
-                stockQty={product.quantity}
-                increase={() => setQuantity((q) => q + 1)}
-                decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
-              />
+              {product.type === "products" && (
+                <QuantityControl
+                  quantity={quantity}
+                  stockQty={product.quantity}
+                  increase={() => setQuantity((q) => q + 1)}
+                  decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
+                />
+              )}
 
               <AddToCartButton
                 product={product}
@@ -269,7 +242,7 @@ export default function ItemDetail({
                 Seller:{" "}
                 <Link className="" href={`/shops/${product?.shop?.slug}`}>
                   <span className="text-red-800 text-xs truncate">
-                    Similar items from {product?.shop?.name}
+                    Similar listing from {product?.shop?.name}
                   </span>
                 </Link>
               </p>

@@ -1,7 +1,11 @@
 // AddToCartButton.tsx
 "use client";
 
-import { CheckIcon } from "@heroicons/react/24/outline";
+import {
+  CalendarIcon,
+  CheckIcon,
+  ShoppingCartIcon,
+} from "@heroicons/react/24/outline";
 import { useCart } from "@/context/CartContext";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -29,7 +33,27 @@ export default function AddToCartButton({
     [cart, product.id]
   );
 
+  const isService = product.type !== "products";
+
   const handleAddToCart = () => {
+    if (cart.length > 0) {
+      const firstItemType = cart[0].type;
+      const isFirstItemService = firstItemType !== "products";
+
+      if (isService !== isFirstItemService) {
+        toast.error(
+          `Cart already contains ${
+            isFirstItemService ? "services" : "products"
+          }. Clear it to switch types.`,
+          {
+            duration: 9000,
+            icon: "⚠️",
+          }
+        );
+        return;
+      }
+    }
+
     if (stockQty <= 0) return;
 
     if (!isInCart) {
@@ -55,25 +79,36 @@ export default function AddToCartButton({
   return (
     <button
       onClick={handleAddToCart}
-      disabled={stockQty <= 0}
-      className={`btn btn-primary rounded-full! text-xs! ${
+      disabled={stockQty <= 0 && !isService}
+      className={`btn rounded-full! text-xs! transition-all duration-300 flex items-center gap-2 px-6 py-2 font-bold ${
         added
-          ? "bg-red-800 text-white scale-105"
+          ? "bg-[#C2680C] text-white scale-105 shadow-inner"
           : isInCart
-          ? "bg-red-800 text-white hover:bg-red-700"
-          : stockQty > 0
-          ? "bg-red-400 text-white hover:bg-red-800"
+          ? "bg-[#C2680C] text-white hover:opacity-90 shadow-md"
+          : stockQty > 0 || isService
+          ? "bg-hub-primary text-white hover:bg-hub-secondary shadow-md active:scale-95"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
       }`}
     >
       {added ? (
         <>
-          <CheckIcon className="h-5 w-5 text-white animate-bounce" /> Added!
+          <CheckIcon className="h-4 w-4 text-white animate-pulse" />
+          {isService ? "Booked!" : "Added!"}
         </>
       ) : isInCart ? (
-        "View Cart"
-      ) : stockQty > 0 ? (
-        "Add to Cart"
+        <>
+          <ShoppingCartIcon className="h-4 w-4" />
+          View Cart
+        </>
+      ) : stockQty > 0 || isService ? (
+        <>
+          {isService ? (
+            <CalendarIcon className="h-4 w-4" />
+          ) : (
+            <ShoppingCartIcon className="h-4 w-4" />
+          )}
+          {isService ? "Book Now" : "Add to Cart"}
+        </>
       ) : (
         "Out of Stock"
       )}

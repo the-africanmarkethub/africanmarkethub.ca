@@ -248,7 +248,10 @@ export default function CheckoutPage() {
                 ) : (
                   <>
                     <div className="flex flex-col gap-2 md:col-span-2">
-                      <label htmlFor="serviceNote" className="text-sm font-medium text-gray-700 block mb">
+                      <label
+                        htmlFor="serviceNote"
+                        className="text-sm font-medium text-gray-700 block mb"
+                      >
                         Service Notes
                       </label>
                       <textarea
@@ -262,7 +265,7 @@ export default function CheckoutPage() {
                         maxLength={250}
                       />
                     </div>
-{/* 
+                    {/* 
                     <div className="flex flex-col gap-2 md:col-span-2">
                       <label htmlFor="preferredDate" className="text-sm font-medium text-gray-700 block">
                         Preferred Date & Time

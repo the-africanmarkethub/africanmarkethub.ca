@@ -45,19 +45,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
-
-  // const addToCart = (item: CartItem) => {
-  //   setCart((prev) => {
-  //     const existing = prev.find((c) => c.id === item.id);
-  //     if (existing) {
-  //       return prev.map((c) =>
-  //         c.id === item.id ? { ...c, qty: c.qty + item.qty } : c
-  //       );
-  //     }
-  //     return [...prev, item];
-  //   });
-  // };
-
+ 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
       const existing = prev.find((c) => c.id === item.id);
