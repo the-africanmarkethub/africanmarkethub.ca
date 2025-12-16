@@ -21,24 +21,11 @@ export default function RemoveItemModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Remove Item"
-      description="Do you want to remove this item from your cart or save it for later?"
+      title="Remove from cart"
+      description="Do you really want to remove this item from your cart?"
     >
-      {item && (
-        <div className="mb-4 text-sm text-gray-700">
-          <strong>{item.title}</strong> will be removed from your cart.
-        </div>
-      )}
-
+      
       <div className="flex justify-end gap-2 mt-6">
-        {/* Cancel */}
-        <button
-          onClick={onClose}
-          className="btn btn-gray"
-        >
-          Cancel
-        </button>
-
         {/* Move to Wishlist */}
         {item && (
           <WishlistButton product={item} /> 
@@ -49,7 +36,7 @@ export default function RemoveItemModal({
           onClick={onConfirm}
           className="btn btn-primary"
         >
-          Remove
+          Remove item
         </button>
       </div>
     </Modal>

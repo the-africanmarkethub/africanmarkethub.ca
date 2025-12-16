@@ -127,12 +127,15 @@ export const MONTHS = [
 ];
 
 export const DIMENSION_OPTIONS = [
-  { label: "pound", value: "lbs" }, // ShipEngine expects "pound"
-  { label: "ounce", value: "oz" }, // ShipEngine expects "ounce"
+  { label: "pound", value: "lbs" },
+  { label: "ounce", value: "oz" },
+  { label: "kilogram", value: "kg" },
+  { label: "gram", value: "g" },
 ];
 
 export const SIZE_UNIT_OPTIONS = [
-  { label: "inch", value: "in" }, // ShipEngine expects "inch"
+  { label: "inch", value: "in" },
+  { label: "centimeter", value: "cm" },
 ];
 
 export const PRICING_MODEL_OPTIONS = [
