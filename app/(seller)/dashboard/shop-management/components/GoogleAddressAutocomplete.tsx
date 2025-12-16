@@ -1,13 +1,9 @@
 "use client";
 
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
+import { useEffect, useRef } from "react";
 import GoogleAddress from "@/interfaces/googleAddress";
 import { ALLOWED_COUNTRIES } from "@/setting";
 import { getDialCode } from "@/lib/api/ip/countries";
-import Script from "next/script";
 
 type Address = {
   street_address: string;
@@ -28,98 +24,76 @@ type Props = {
 
 export default function GoogleAddressAutocomplete({
   onSelect,
-  placeholder = "Start typing shop address...",
+  placeholder = "Start typing address (autocomplete)...",
   countryRestrictions = ALLOWED_COUNTRIES.map((c) => c.toLowerCase()),
 }: Props) {
-  const {
-    ready,
-    value,
-    setValue,
-    suggestions: { status, data },
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    debounce: 300,
-    requestOptions: {
-      componentRestrictions: { country: countryRestrictions },
-    },
-  });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const autoCompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
-  const handleSelect = async (desc: string) => {
-    setValue(desc, false);
-    clearSuggestions();
+  useEffect(() => {
+    const google = (window as any).google;
 
-    try {
-      const results = await getGeocode({ address: desc });
-      if (!results || results.length === 0) return;
+    if (typeof window !== "undefined" && google && inputRef.current) {
+      autoCompleteRef.current = new google.maps.places.Autocomplete(
+        inputRef.current,
+        {
+          componentRestrictions: { country: countryRestrictions },
+          fields: ["address_components", "geometry", "formatted_address"],
+        }
+      );
 
-      const { lat, lng } = await getLatLng(results[0]);
-      const components: Record<string, string> = {};
+      autoCompleteRef.current?.addListener("place_changed", async () => {
+        const place = autoCompleteRef.current?.getPlace();
+        if (!place || !place.address_components) return;
 
-      results[0].address_components.forEach((comp: GoogleAddress) => {
-        if (comp.types.includes("street_number"))
-          components.street = comp.long_name;
-        if (comp.types.includes("route"))
-          components.street = `${components.street ?? ""} ${
-            comp.long_name
-          }`.trim();
-        if (
-          comp.types.includes("locality") ||
-          comp.types.includes("postal_town")
-        )
-          components.city = comp.long_name;
-        if (comp.types.includes("administrative_area_level_1"))
-          components.state = comp.short_name ?? comp.long_name;
-        if (comp.types.includes("postal_code")) components.zip = comp.long_name;
-        if (comp.types.includes("country"))
-          components.country = comp.short_name ?? comp.long_name;
+        const lat = place.geometry?.location?.lat();
+        const lng = place.geometry?.location?.lng();
+
+        const components: Record<string, string> = {};
+
+        place.address_components.forEach((comp: GoogleAddress) => {
+          const types = comp.types;
+          if (types.includes("street_number"))
+            components.street = comp.long_name;
+          if (types.includes("route"))
+            components.street = `${components.street ?? ""} ${
+              comp.long_name
+            }`.trim();
+          if (types.includes("locality") || types.includes("postal_town"))
+            components.city = comp.long_name;
+          if (types.includes("administrative_area_level_1"))
+            components.state = comp.short_name ?? comp.long_name;
+          if (types.includes("postal_code")) components.zip = comp.long_name;
+          if (types.includes("country"))
+            components.country = comp.short_name ?? comp.long_name;
+        });
+
+        const dialCode = components.country
+          ? await getDialCode(components.country)
+          : "";
+
+        onSelect({
+          street_address: components.street ?? place.formatted_address ?? "",
+          city: components.city ?? "",
+          state: components.state ?? "",
+          zip_code: components.zip ?? "",
+          country: components.country ?? "",
+          lat,
+          lng,
+          dialCode,
+        });
       });
-
-      const dialCode = components.country
-        ? await getDialCode(components.country)
-        : "";
-
-      onSelect({
-        street_address: components.street ?? desc,
-        city: components.city ?? "",
-        state: components.state ?? "",
-        zip_code: components.zip ?? "",
-        country: components.country ?? "",
-        lat,
-        lng,
-        dialCode,
-      });
-    } catch (err) {
-      console.error("Geocode error:", err);
     }
-  };
+  }, [countryRestrictions, onSelect]);
 
   return (
-    <div className="relative">
-      <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}&libraries=places`}
-        strategy="beforeInteractive"
-      />
+    <div className="relative w-full">
       <input
+        ref={inputRef}
         className="input w-full"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        disabled={!ready}
         placeholder={placeholder}
+        autoComplete="off"
       />
-
-      {status === "OK" && data.length > 0 && (
-        <ul className="absolute z-30 w-full bg-white border rounded mt-1 max-h-56 overflow-y-auto shadow">
-          {data.map((d) => (
-            <li
-              key={d.place_id}
-              className="p-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-500!"
-              onClick={() => handleSelect(d.description)}
-            >
-              {d.description}
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }

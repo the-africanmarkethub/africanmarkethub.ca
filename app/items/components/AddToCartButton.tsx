@@ -82,9 +82,9 @@ export default function AddToCartButton({
       disabled={stockQty <= 0 && !isService}
       className={`btn rounded-full! text-xs! transition-all duration-300 flex items-center gap-2 px-6 py-2 font-bold ${
         added
-          ? "bg-[#C2680C] text-white scale-105 shadow-inner"
+          ? "bg-hub-secondary text-white scale-105 shadow-inner"
           : isInCart
-          ? "bg-[#C2680C] text-white hover:opacity-90 shadow-md"
+          ? "bg-hub-secondary text-white hover:opacity-90 shadow-md"
           : stockQty > 0 || isService
           ? "bg-hub-primary text-white hover:bg-hub-secondary shadow-md active:scale-95"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"

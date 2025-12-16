@@ -93,7 +93,7 @@ const ProductGrid: FC<ProductGridProps> = ({
                       className="pointer-events-auto"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <button className="px-6 py-2 bg-[#F28C0D] text-white text-xs font-bold rounded-full shadow-lg hover:bg-[#C2680C] transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                      <button className="px-6 py-2 bg-hub-primary text-white text-xs font-bold rounded-full shadow-lg hover:bg-hub-secondary transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                         {product.type === "products" ? (
                           <>
                             <svg

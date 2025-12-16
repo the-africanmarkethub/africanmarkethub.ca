@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import OrderSummary from "../carts/components/Summary";
 import AddressAutocomplete from "./components/AddressAutocomplete";
@@ -13,6 +13,8 @@ import { useAuthStore } from "@/store/useAuthStore";
 import Script from "next/script";
 import TextInput from "../(seller)/dashboard/shop-management/components/TextInput";
 import AppointmentPicker from "./components/AppointmentPicker";
+import GoogleAddressAutocomplete from "../(seller)/dashboard/shop-management/components/GoogleAddressAutocomplete";
+import { countryCodeToFlag } from "@/utils/countryFlag";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -31,6 +33,7 @@ export default function CheckoutPage() {
     zip_code: "",
     phone: "",
     address_label: "",
+    dialCode: "",
     country: "",
   });
 
@@ -145,6 +148,25 @@ export default function CheckoutPage() {
     }
   };
 
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  useEffect(() => {
+    if ((window.google as any)?.maps?.places) {
+      setGoogleLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
+
   return (
     <div className="bg-gray-50 py-8">
       <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8">
@@ -195,13 +217,16 @@ export default function CheckoutPage() {
                 {/* 👇 Conditional Fields */}
                 {!isServiceOrder ? (
                   <>
+                    {/* Only render AddressAutocomplete after script loaded */}
                     <div className="md:col-span-2">
-                      <AddressAutocomplete
-                        onSelectAddress={(addr) =>
-                          setAddress((prev) => ({ ...prev, ...addr }))
-                        }
-                      />
-                    </div>
+                      {googleLoaded && (
+                        <GoogleAddressAutocomplete
+                          onSelect={(addr) =>
+                            setAddress((prev) => ({ ...prev, ...addr }))
+                          }
+                        />
+                      )}
+                    </div> 
                     <TextInput
                       placeholder="Street address"
                       label="Street Address"
@@ -217,15 +242,15 @@ export default function CheckoutPage() {
                       required
                     />
                     <TextInput
-                      placeholder="State"
-                      label="State/Province"
+                      placeholder="Province"
+                      label="Province"
                       value={address.state}
                       onChange={(e) => handleAddressChange("state", e)}
                       required
                     />
                     <TextInput
-                      placeholder="Zip code"
-                      label="ZIP Code"
+                      placeholder="Postal code"
+                      label="Postal Code"
                       value={address.zip_code}
                       onChange={(e) => handleAddressChange("zip_code", e)}
                       required
@@ -237,13 +262,34 @@ export default function CheckoutPage() {
                       onChange={(e) => handleAddressChange("country", e)}
                       required
                     />
-                    <TextInput
+                    {/* <TextInput
                       placeholder="Phone number"
                       label="Phone Number"
                       value={phone}
                       onChange={(e) => setPhone(e)}
                       required
-                    />
+                    /> */}
+                    <div className="flex items-center">
+                      {/* Flag + Dial Code */}
+                      <div className="flex items-center justify-center h-12.25 px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-25">
+                        <span className="mr-2">
+                          {countryCodeToFlag(address.country)}
+                        </span>
+                        <span>{address.dialCode}</span>
+                      </div>
+
+                      {/* Phone input */}
+                      <input
+                        type="tel"
+                        className="input rounded-l-none flex-1"
+                        value={phone}
+                        onChange={(e) =>
+                          setPhone(e.target.value.replace(/\D/g, ""))
+                        }
+                        placeholder="712 345 678"
+                        required
+                      />
+                    </div>
                   </>
                 ) : (
                   <>

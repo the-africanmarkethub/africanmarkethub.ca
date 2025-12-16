@@ -164,26 +164,14 @@ export const CARRIER_ICONS: Record<
   ups: { icon: SiUps, color: "#180B02" },
   usps: { icon: SiUsps, color: "#3333CC" },
   amazon: { icon: SiAmazon, color: "#FF9900" },
-
-  // fallback carriers you may add later
   deliveroo: { icon: SiDeliveroo, color: "#00CCBC" },
-
-  // default fallback
   default: { icon: MdLocalShipping, color: "#FF9920" },
 };
 
 export const CANADA_TIMEZONE = "America/Toronto";
 
 export const ALLOWED_COUNTRIES = [
-  "GB", // United Kingdom
-  "KE", // Kenya
-  "NG", // Nigeria
-  "GH", // Ghana
-  "ZA", // South Africa
-  "MA", // Morocco
-  "UG", // Uganda
-  "TZ", // Tanzania
-  "RW", // Rwanda
+  "CA", // Canada 
 ];
 
 export const COMPANY_CONTACT_INFO = {
