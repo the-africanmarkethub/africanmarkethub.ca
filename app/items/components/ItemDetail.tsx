@@ -116,8 +116,6 @@ export default function ItemDetail({
     `${shareText} ${productUrl}`
   )}`;
 
-
-
   return (
     <>
       <div className="bg-white">
@@ -154,13 +152,10 @@ export default function ItemDetail({
           </div>
 
           {/* PRODUCT INFO */}
-          {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
-            {/* TITLE ROW: Title and Stock Status side-by-side */}
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold m-0">{product.title}</h1>
 
-              {/* Stock Indicator Badge (Beside the title) */}
               <span
                 className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
                   getStockStatus(product.quantity).bgClass
@@ -170,10 +165,8 @@ export default function ItemDetail({
               </span>
             </div>
 
-            {/* RATING ROW: Stars below the title row */}
             <div className="flex items-center text-xs gap-1 -mt-2">
               {" "}
-              {/* Added -mt-2 to reduce space between title and stars */}
               {Array.from({ length: 5 }).map((_, i) => (
                 <span key={i}>
                   {i < product.average_rating ? <StarFilled /> : <StarEmpty />}
@@ -201,6 +194,41 @@ export default function ItemDetail({
             <div className="text-gray-500 line-clamp-2">
               {parse(product.description)}
             </div>
+
+            {/* Variations Section */}
+            {product.variations && product.variations.length > 0 && (
+              <div className="text-sm text-gray-700 space-y-2 pt-2">
+                <p className="font-semibold">Available Variations:</p>
+                <div className="flex flex-wrap gap-3">
+                  {product.variations.map((variant) => (
+                    <div
+                      key={variant.id}
+                      className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full text-xs font-medium text-gray-800"
+                    >
+                      {/* Display Color Name (if available) */}
+                      {variant.color?.name && (
+                        <span className="flex items-center gap-1">
+                          <span
+                            className="w-3 h-3 rounded-full "
+                            style={{
+                              backgroundColor:
+                                variant.color.hexcode || "#ffffff",
+                            }}
+                            title={`Color: ${variant.color.name}`}
+                          />
+                          {variant.color.name}
+                        </span>
+                      )}
+
+                      {/* Display Size Name (if available) */}
+                      {variant.size?.name && (
+                        <span>Size: {variant.size.name}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* QUANTITY + ADD TO CART */}
             <div className="flex items-center gap-2 mt-5">
@@ -244,7 +272,7 @@ export default function ItemDetail({
                 )}
               </button>
 
-              {/* @ts-ignore */}
+              
               <WishlistButton product={product} />
             </div>
 

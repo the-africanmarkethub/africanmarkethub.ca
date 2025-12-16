@@ -12,7 +12,7 @@ type Props = {
   product: {
     id: number;
     title: string;
-    sales_price?: number;
+    sales_price?: string; 
     images?: string | string[];
     stock?: boolean | number;
     slug?: string;
@@ -39,11 +39,13 @@ export default function WishlistButton({ product }: Props) {
     }
 
     addToWishlist({
-        id: product.id,
-        title: product.title,
-        price: product.sales_price || 0,
-        image: Array.isArray(product.images) ? product.images[0] : product.images ?? "/placeholder.png",
-      });
+      id: product.id,
+      title: product.title,
+      price: parseFloat(product.sales_price || "0") || 0,
+      image: Array.isArray(product.images)
+        ? product.images[0]
+        : product.images ?? "/placeholder.png",
+    });
   };
 
   return (

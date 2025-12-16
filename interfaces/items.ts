@@ -34,10 +34,23 @@ export interface Category {
   image: string;
 }
  
+interface Color {
+  id: number;
+  name: string;
+  hexcode: string;
+}
 
+interface Size {
+  id: number;
+  name: string;
+}
+ 
 export interface Variation {
   id?: number;
   name?: string;
   price?: string;
   [key: string]: unknown;
+  quantity: number;
+  color?: Color;
+  size?: Size;
 }
