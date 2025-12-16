@@ -1,4 +1,3 @@
-// components/ProductGrid.tsx
 "use client";
 
 import { FC } from "react";
@@ -8,6 +7,8 @@ import Skeleton from "react-loading-skeleton";
 import Product from "@/interfaces/items";
 import EmptyItem from "./EmptyItem";
 import { optimizeImage } from "@/utils/optimizeImage";
+import Link from "next/link";
+import { StarFilled, StarEmpty } from "@/utils/ItemUtils";
 
 interface ProductGridProps {
   products: Product[];
@@ -61,7 +62,7 @@ const ProductGrid: FC<ProductGridProps> = ({
               <div
                 key={product.id}
                 onClick={() => onClickItem?.(product)}
-                className={`bg-gray-50 rounded-xl overflow-hidden shadow relative group cursor-pointer hover:shadow-lg transition-shadow
+                className={`bg-gray-50 rounded-xl overflow-hidden shadow relative group cursor-pointer hover:p-2 hover:shadow-lg transition-shadow
                             ${
                               variant === "horizontal"
                                 ? "min-w-45 snap-start"
@@ -85,6 +86,19 @@ const ProductGrid: FC<ProductGridProps> = ({
                     quality={70}
                   />
 
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100  transition-opacity flex items-center justify-center pointer-events-none">
+                    <Link
+                      href={`/items/${product.slug}`}
+                      className="pointer-events-auto"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button className="px-4 py-2 bg-hub-primary text-white text-xs font-semibold rounded-full shadow hover:bg-hub-secondary transition cursor-pointer">
+                        Add to Cart
+                      </button>
+                    </Link>
+                  </div>
+
                   {discount > 0 && (
                     <div className="absolute top-2 left-2 bg-red-600 text-white font-bold text-xs px-2 py-1 rounded shadow">
                       -{discount}%
@@ -93,18 +107,21 @@ const ProductGrid: FC<ProductGridProps> = ({
                 </div>
 
                 <div className="p-3">
-                  <div className="flex items-center gap-1 text-yellow-400 mb-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <span key={i}>
-                        {i < product.average_rating ? "★" : "☆"}
-                      </span>
-                    ))}
-                  </div>
-
                   {/* Title */}
                   <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">
                     {product.title}
                   </h3>
+                  <div className="flex items-center text-[8px]! gap-1 text-yellow-400 mb-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span key={i}>
+                        {i < product.average_rating ? (
+                          <StarFilled />
+                        ) : (
+                          <StarEmpty />
+                        )}
+                      </span>
+                    ))}
+                  </div>
 
                   {/* Price */}
                   <p className="flex items-baseline gap-1">

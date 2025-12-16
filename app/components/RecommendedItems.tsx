@@ -51,12 +51,12 @@ const RecommendedItems: FC<RecommendedItemsProps> = ({ type }) => {
         <ProductGrid
           products={products}
           loading={loading}
-          columns="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3"
+          columns="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4"
           onClickItem={(product) => router.push(`/items/${product.slug}`)}
         />
 
         {/* Fancy View More Button */}
-        {!loading && products.length > 0 && (
+        {!loading && products.length > 24 && (
           <div className="flex justify-center mt-6">
             <button
               onClick={() => router.push("/items?type=" + type)}

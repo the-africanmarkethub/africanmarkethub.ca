@@ -154,7 +154,7 @@ export default function HeroBanner() {
 
             <div className="flex gap-4 mt-6  items-center">
               <Link
-                href="/marketplace"
+                href="/items"
                 className="sm:px-6 sm:py-3 px-2.5 py-2 text-xs sm:text-sm rounded-full bg-hub-primary text-white font-medium hover:bg-hub-secondary active:scale-95 transition transform"
               >
                 Explore marketplace

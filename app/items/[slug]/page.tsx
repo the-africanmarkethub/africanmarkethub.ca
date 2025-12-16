@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import ItemDetail from "../components/ItemDetail";
 import { getItemDetail } from "@/lib/api/items";
+import { IoChevronForward } from "react-icons/io5";
+import Link from "next/link";
 
 export async function generateMetadata({
   params,
@@ -109,7 +111,39 @@ export default async function ItemDetailPage({ params }: PageParams) {
             __html: JSON.stringify(productSchema),
           }}
         />
+        <nav className="text-sm text-gray-500 my-4" aria-label="Breadcrumb">
+          <ol className="list-none ml-4 inline-flex">
+            {/* Home Link */}
+            <li className="flex items-center">
+              <Link
+                href="/"
+                className="text-hub-primary hover:text-hub-secondary"
+              >
+                Home
+              </Link>
+              <span className="mx-2">
+                <IoChevronForward />
+              </span>
+            </li>
 
+            <li className="flex items-center">
+              <Link
+                href={`/items?category=${product.category.slug}&type=${product.type}`}
+                className="text-hub-primary hover:text-hub-secondary"
+              >
+                <span className="truncate">{product.category.name}</span>
+              </Link>
+              <span className="mx-2">
+                <IoChevronForward />
+              </span>
+            </li>
+
+            {/* Current Product (Active) */}
+            <li className="text-gray-700 font-semibold" aria-current="page">
+              <span className="truncate">{product.title}</span>
+            </li>
+          </ol>
+        </nav>
         <ItemDetail
           product={product}
           reviews={reviews}

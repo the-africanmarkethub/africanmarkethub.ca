@@ -2,7 +2,12 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import { MinusIcon, PlusIcon, CheckIcon } from "@heroicons/react/24/outline";
+import {
+  MinusIcon,
+  PlusIcon,
+  CheckIcon,
+  ShareIcon,
+} from "@heroicons/react/24/outline";
 import ItemTabs, { StarRating } from "./ItemTabs";
 import { useCart } from "@/context/CartContext";
 import { formatAmount } from "@/utils/formatCurrency";
@@ -14,6 +19,9 @@ import parse from "html-react-parser";
 import Item from "@/interfaces/items";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { FaFacebook, FaWhatsapp } from "react-icons/fa6";
+import { FaShareAlt } from "react-icons/fa";
+import { getStockStatus, StarFilled, StarEmpty } from "@/utils/ItemUtils";
 
 interface ItemDetailProps {
   product: Item;
@@ -32,7 +40,6 @@ export default function ItemDetail({
   recommended,
   frequentlyBoughtTogether,
   otherViews,
-  customerAlsoViewed,
 }: ItemDetailProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(
@@ -80,6 +87,37 @@ export default function ItemDetail({
     }
   };
 
+  const productUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/items/${product.slug}`
+      : "";
+
+  const shareText = `${product.title} - Check this out`;
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.title,
+          text: shareText,
+          url: productUrl,
+        });
+      } catch (err) {
+        // user cancelled — silently ignore
+      }
+    }
+  };
+
+  const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+    productUrl
+  )}`;
+
+  const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
+    `${shareText} ${productUrl}`
+  )}`;
+
+
+
   return (
     <>
       <div className="bg-white">
@@ -116,8 +154,32 @@ export default function ItemDetail({
           </div>
 
           {/* PRODUCT INFO */}
+          {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
-            <h1 className="text-2xl font-semibold">{product.title}</h1>
+            {/* TITLE ROW: Title and Stock Status side-by-side */}
+            <div className="flex items-center gap-4">
+              <h1 className="text-2xl font-semibold m-0">{product.title}</h1>
+
+              {/* Stock Indicator Badge (Beside the title) */}
+              <span
+                className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
+                  getStockStatus(product.quantity).bgClass
+                }`}
+              >
+                {getStockStatus(product.quantity).text}
+              </span>
+            </div>
+
+            {/* RATING ROW: Stars below the title row */}
+            <div className="flex items-center text-xs gap-1 -mt-2">
+              {" "}
+              {/* Added -mt-2 to reduce space between title and stars */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span key={i}>
+                  {i < product.average_rating ? <StarFilled /> : <StarEmpty />}
+                </span>
+              ))}
+            </div>
 
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold text-gray-900">
@@ -129,7 +191,7 @@ export default function ItemDetail({
                   <span className="line-through text-gray-400">
                     {formatAmount(regularPrice)}
                   </span>
-                  <span className="text-red-800 font-semibold">
+                  <span className="flex items-center justify-center text-white bg-red-600 rounded-full w-8 h-8 text-xs font-normal">
                     -{discount}%
                   </span>
                 </>
@@ -147,7 +209,7 @@ export default function ItemDetail({
                   onClick={decreaseQty}
                   className="btn btn-gray rounded-full!"
                 >
-                  <MinusIcon className="h-4 w-4" />
+                  <MinusIcon className="h-3 w-3" />
                 </button>
                 <span className="px-4 text-gray-500 font-semibold">
                   {quantity}
@@ -156,7 +218,7 @@ export default function ItemDetail({
                   onClick={increaseQty}
                   className="btn btn-gray rounded-full!"
                 >
-                  <PlusIcon className="h-4 w-4" />
+                  <PlusIcon className="h-3 w-3" />
                 </button>
               </div>
 
@@ -208,6 +270,40 @@ export default function ItemDetail({
                 </Link>
               </p>
             </div>
+            <div className="flex items-center gap-3 pt-2">
+              <span className="text-xs text-gray-500">Share:</span>
+
+              {/* Native share (mobile-first) */}
+              <button
+                onClick={handleShare}
+                aria-label="Share product"
+                className="p-2 rounded-full hover:bg-gray-100 transition"
+              >
+                <FaShareAlt className="w-4.5 h-4.5 text-hub-primary" />
+              </button>
+
+              {/* Facebook */}
+              <Link
+                href={facebookShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on Facebook"
+                className="p-2 rounded-full hover:bg-blue-50 transition"
+              >
+                <FaFacebook className="w-5 h-5 fill-blue-600" />
+              </Link>
+
+              {/* WhatsApp */}
+              <Link
+                href={whatsappShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Share on WhatsApp"
+                className="p-2 rounded-full hover:bg-green-50 transition"
+              >
+                <FaWhatsapp className="w-5 h-5 fill-green-600" />
+              </Link>
+            </div>
           </div>
 
           {/* RIGHT-SIDE DESKTOP SECTION */}
@@ -258,7 +354,6 @@ export default function ItemDetail({
         star_rating={star_rating}
         recommended={recommended}
         frequentlyBoughtTogether={frequentlyBoughtTogether}
-        customerAlsoViewed={customerAlsoViewed}
       />
     </>
   );

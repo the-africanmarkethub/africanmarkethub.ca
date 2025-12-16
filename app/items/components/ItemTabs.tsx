@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import parse from "html-react-parser";
@@ -51,7 +51,6 @@ interface ItemTabsProps {
   star_rating: StarRating;
   recommended: Item[];
   frequentlyBoughtTogether: Item[];
-  customerAlsoViewed: Item[];
 }
 
 export default function ItemTabs({
@@ -60,7 +59,6 @@ export default function ItemTabs({
   star_rating,
   recommended,
   frequentlyBoughtTogether,
-  customerAlsoViewed,
 }: ItemTabsProps) {
   const [activeTab, setActiveTab] = useState<"description" | "reviews">(
     "description"
@@ -79,7 +77,18 @@ export default function ItemTabs({
   const [showAllReviews, setShowAllReviews] = useState(false);
 
   const visibleReviews = showAllReviews ? reviews : reviews.slice(0, 3);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [canToggleDescription, setCanToggleDescription] = useState(false);
+
+  useEffect(() => {
+    if (!descriptionRef.current) return;
+
+    const el = descriptionRef.current;
+
+    const isOverflowing = el.scrollHeight > el.clientHeight;
+    setCanToggleDescription(isOverflowing);
+  }, [description]);
 
   return (
     <div className="bg-gray-50">
@@ -112,17 +121,22 @@ export default function ItemTabs({
         {/* DESCRIPTION */}
         {activeTab === "description" && (
           <div className="prose max-w-none text-gray-700">
-            <div className={showFullDescription ? "" : "line-clamp-5"}>
+            <div
+              ref={descriptionRef}
+              className={showFullDescription ? "" : "line-clamp-5"}
+            >
               {parse(description)}
             </div>
 
-            {/* Toggle Button */}
-            <button
-              onClick={() => setShowFullDescription(!showFullDescription)}
-              className="mt-2 text-red-800 font-medium text-sm"
-            >
-              {showFullDescription ? "Show less" : "Read more"}
-            </button>
+            {/* Toggle Button — only when needed */}
+            {canToggleDescription && (
+              <button
+                onClick={() => setShowFullDescription((prev) => !prev)}
+                className="mt-2 text-red-800 font-medium text-sm"
+              >
+                {showFullDescription ? "Show less" : "Read more"}
+              </button>
+            )}
           </div>
         )}
 
@@ -266,35 +280,27 @@ export default function ItemTabs({
 
       {/* ------------------- RECOMMENDED / SIMILAR / MOST VIEWED ------------------- */}
       <div className="mt-6 p-4 bg-gray-100">
-        {/* <h2 className="text-xl font-semibold  mb-4">
-          Customer also viewed this{" "}
+        <h2 className="text-xs sm:text-sm font-semibold mb-4">
+          Frequently bought together
         </h2>
-        {customerAlsoViewed.length === 0 ? (
-          <EmptyItem message="No customer also items" />
-        ) : (
-          <ProductGrid
-            products={customerAlsoViewed}
-            columns="grid-cols-2 sm:grid-cols-4 gap-3"
-          />
-        )} */}
-
-        <h2 className="text-xl font-semibold  mb-4">Similar Items</h2>
         {frequentlyBoughtTogether.length === 0 ? (
-          <EmptyItem message="No similar items" />
+          <EmptyItem message="No Frequently bought together items" />
         ) : (
           <ProductGrid
             products={frequentlyBoughtTogether}
-            columns="grid-cols-2 sm:grid-cols-4 gap-3"
+            columns="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4"
           />
         )}
 
-        <h2 className="text-xl font-semibold mb-4 mt-6">Recommended</h2>
+        <h2 className="text-xs sm:text-sm font-semibold mb-4 mt-8">
+          Recommended for you
+        </h2>
         {recommended.length === 0 ? (
           <EmptyItem message="No recommended items" />
         ) : (
           <ProductGrid
             products={recommended}
-            columns="grid-cols-2 sm:grid-cols-4 gap-3"
+            columns="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4"
           />
         )}
       </div>
