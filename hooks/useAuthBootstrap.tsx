@@ -2,43 +2,31 @@
 
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
+import { getUserProfile } from "@/lib/api/auth/profile";
 
 export function useAuthBootstrap() {
-  const { token, user, _hasHydrated, setAuth, clearAuth } = useAuthStore();
-
+  const { token, _hasHydrated, setAuth, clearAuth } = useAuthStore();
   const ranRef = useRef(false);
 
   useEffect(() => {
-    if (!_hasHydrated) return;
-    if (!token) return;
-    if (ranRef.current) return;
+    if (!_hasHydrated || !token || ranRef.current) return;
 
     ranRef.current = true;
 
-    const checkAuth = async () => {
+    const bootstrap = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/user`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!res.ok) throw new Error("Unauthorized");
-
-        const json = await res.json();
-
-        // ✅ Trust server, not storage
-        setAuth(token, json.data);
+        const userData = await getUserProfile();
+        if (userData) {
+          setAuth(token, userData);
+        } else {
+          throw new Error("Invalid user data");
+        }
       } catch (err) {
-        // 🚨 Token lies → full reset
+        console.error("Session expired or invalid token:", err);
         clearAuth();
       }
     };
 
-    checkAuth();
-  }, [_hasHydrated, token, user, setAuth, clearAuth]);
+    bootstrap();
+  }, [_hasHydrated, token, setAuth, clearAuth]);
 }

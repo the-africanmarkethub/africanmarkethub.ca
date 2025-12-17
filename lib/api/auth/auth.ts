@@ -24,8 +24,8 @@ export async function loginUser(payload: {
   return response.data;
 }
 export async function registerUser(payload: {
-  name: string;
-  last_name: string;
+  firstname: string;
+  lastname: string;
   phone: string;
   email: string;
   password: string;

@@ -31,6 +31,7 @@ export const useAuthStore = create<AuthStore>()(
         });
         if (typeof window !== "undefined") {
           localStorage.removeItem("auth-storage");
+          sessionStorage.clear();
         }
       },
 

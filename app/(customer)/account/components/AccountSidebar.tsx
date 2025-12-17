@@ -5,8 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CUSTOMER_MENU } from "@/setting";
 import { FiLogOut } from "react-icons/fi";
-
-
+import { logoutProfile } from "@/lib/api/auth/profile";
+import { toast } from "react-hot-toast";
 
 export default function AccountSidebar() {
   const pathname = usePathname();
@@ -14,9 +14,19 @@ export default function AccountSidebar() {
 
   const clearAuth = useAuthStore((state) => state.clearAuth);
 
-  const handleLogout = () => {
-    clearAuth();
-    router.push("/login"); 
+  const handleLogout = async () => {
+    try {
+      // 1. Tell the backend to revoke the token
+      await logoutProfile();
+    } catch (error) {
+      console.error(
+        "Backend logout failed, but clearing local session anyway."
+      );
+    } finally {
+      clearAuth();
+      router.replace("/login");
+      toast.success("Logged out successfully");
+    }
   };
   return (
     <aside className="md:sticky md:top-28 bg-white rounded-xl shadow-sm p-4 overflow-x-auto md:overflow-visible">

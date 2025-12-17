@@ -12,8 +12,8 @@ import { RadioGroup } from "@headlessui/react";
 import { registerUser } from "@/lib/api/auth/auth";
 
 export default function RegisterPage() {
-  const [name, setName] = useState("");
-  const [last_name, setLastName] = useState("");
+  const [firstname, setName] = useState("");
+  const [lastname, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,8 +31,8 @@ export default function RegisterPage() {
       const device_name = navigator.userAgent || "web";
 
       const payload = {
-        name,
-        last_name,
+        firstname,
+        lastname,
         phone,
         email,
         password,
@@ -43,7 +43,7 @@ export default function RegisterPage() {
       const response = await registerUser(payload);
       if (response.status === "success") {
         sessionStorage.setItem("registerEmail", email);
-        toast.success("Confirm your email to continue");
+        toast.success(response.message || "Registration successful!");
         router.replace("/confirm-email");
       }
     } catch (error) {
@@ -109,7 +109,7 @@ export default function RegisterPage() {
               <input
                 type="text"
                 required
-                value={name}
+                value={firstname}
                 onChange={(e) => setName(e.target.value)}
                 className="input"
                 placeholder="John"
@@ -125,7 +125,7 @@ export default function RegisterPage() {
               <input
                 type="text"
                 required
-                value={last_name}
+                value={lastname}
                 onChange={(e) => setLastName(e.target.value)}
                 className="input"
                 placeholder="Doe"

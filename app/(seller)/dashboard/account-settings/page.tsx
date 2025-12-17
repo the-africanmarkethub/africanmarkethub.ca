@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import Image from "next/image";
 import { updateUserProfile } from "@/lib/api/auth/profile";
 import toast from "react-hot-toast";
-import useUKGreeting from "@/hooks/useUKGreeting";
+import useUKGreeting from "@/hooks/useCanadaGreeting";
 
 export default function OverviewSection() {
   const user = useAuthStore((state) => state.user);
