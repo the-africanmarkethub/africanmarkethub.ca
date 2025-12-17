@@ -56,7 +56,6 @@ export default function RegisterPage() {
           message = error.response.data.message;
         }
       }
-
       toast.error(message);
     } finally {
       setLoading(false);
