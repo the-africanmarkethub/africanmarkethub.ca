@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import Providers from "./providers";
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
-import Script from "next/script";
 import PublicLayoutElements from "./PublicLayoutElements";
 import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
@@ -66,10 +65,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${instrumentSans.variable}`}>
       <body className={`antialiased bg-gray-50 h-full flex flex-col`}>
-        <Script
-          src="https://accounts.google.com/gsi/client"
-          strategy="afterInteractive"
-        />
         <Providers>
           <CartProvider>
             <WishlistProvider>
