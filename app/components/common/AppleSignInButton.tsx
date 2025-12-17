@@ -1,25 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 export default function AppleSignInButton() {
   const handleAppleSignIn = () => {
-    // These params come from your Apple Developer Portal
-    const params = new URLSearchParams({
-      client_id: "com.africanmarkethub.service", // Replace with your Service ID
-      redirect_uri: "https://api.africanmarkethub.ca/auth/apple/callback", // Your backend URL
-      response_type: "code id_token",
-      scope: "name email",
-      response_mode: "form_post", // Mandatory for Apple to send email/name
+    toast("Apple Sign-In is coming soon!", {
+      icon: "🍎",
+      style: {
+        borderRadius: "10px",
+        background: "#333",
+        color: "#fff",
+      },
     });
-
-    window.location.href = `https://appleid.apple.com/auth/authorize?${params.toString()}`;
   };
 
   return (
     <button
       onClick={handleAppleSignIn}
-      className="cursor-pointer flex items-center justify-center w-75 h-11 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-all shadow-sm"
+      className="cursor-pointer flex items-center justify-center w-75 h-11 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-all shadow-sm active:scale-95"
     >
       <svg
         className="w-4 h-4 mr-2 mb-1"
