@@ -22,7 +22,6 @@ const RecommendedItems: FC<RecommendedItemsProps> = ({ type }) => {
         setLoading(true);
         const res = await listRecommendedItems(type);
         setProducts(res.data);
-        console.log(`Recommended items for type=${type}:`, res.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {

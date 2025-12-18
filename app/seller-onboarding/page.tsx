@@ -76,6 +76,7 @@ function OnboardingContent() {
     }
   };
 
+  
   return (
     <OnboardingLayout steps={STEPS} currentStep={currentStep}>
       {renderStepComponent()}

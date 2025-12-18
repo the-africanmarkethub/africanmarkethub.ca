@@ -20,7 +20,7 @@ export default function AppleSignInButton() {
       className="cursor-pointer flex items-center justify-center w-75 h-11 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-all shadow-sm active:scale-95"
     >
       <svg
-        className="w-4 h-4 mr-2 mb-1"
+        className="w-5 h-5 mr-2 mb-1"
         viewBox="0 0 384 512"
         fill="currentColor"
       >

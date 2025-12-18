@@ -44,7 +44,7 @@ export default function CategorySelector({
       {/* Category Selector */}
       <div>
         {categoriesLoading ? (
-          <Skeleton height={44} />
+          <Skeleton height={45} className="mt-6" />
         ) : categoriesError ? (
           <div className="text-sm text-red-500">{categoriesError}</div>
         ) : (

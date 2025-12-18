@@ -12,7 +12,7 @@ import { numverifyValidatePhone } from "@/lib/api/ip/route";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
 import { StepProps } from "@/interfaces/StepProps";
-import { FaPencil } from "react-icons/fa6"; 
+import { FaPencil } from "react-icons/fa6";
 import { DefaultOption } from "@/app/components/common/SelectField";
 import CategorySelector from "@/app/(seller)/dashboard/shop-management/components/CategorySelector";
 import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
@@ -75,7 +75,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
 
   const LIMIT = 5000;
- 
+
   useEffect(() => {
     let cancelled = false;
     const loadCats = async () => {
@@ -254,6 +254,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
       const response = await saveShop(form);
 
+      console.log("Save shop response:", response);
       if (response.status === "success") {
         toast.success("Shop updated successfully");
         onNext?.({ shopId: response.data.id });
@@ -272,6 +273,25 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
   const isFormDisabled =
     loading || categoriesLoading || !selectedCategory || isPhoneValid === false;
+
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  useEffect(() => {
+    if ((window.google as any)?.maps?.places) {
+      setGoogleLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
 
   return (
     <div className="mx-auto">
@@ -372,21 +392,43 @@ export default function StepShopInfo({ onNext }: StepProps) {
             />
 
             <FadeSlide keyId="address">
-              <GoogleAddressAutocomplete onSelect={handleAddressSelect} />
+              {googleLoaded && (
+                <GoogleAddressAutocomplete onSelect={handleAddressSelect} />
+              )}
             </FadeSlide>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
               <div>
-                <TextInput label="City" value={city} onChange={setCity} />
+                <TextInput
+                  label="City"
+                  value={city}
+                  onChange={setCity}
+                  disabled={!!city}
+                />
               </div>
               <div>
-                <TextInput label="ZIP" value={zip} onChange={setZip} />
+                <TextInput
+                  label="ZIP"
+                  value={zip}
+                  onChange={setZip}
+                  disabled={!!zip}
+                />
               </div>
               <div>
                 <TextInput
                   label="State"
                   value={stateCode}
                   onChange={setStateCode}
+                  disabled={!!stateCode}
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Address (street / building)"
+                  value={addressLine}
+                  onChange={setAddressLine}
+                  placeholder="Street address"
+                  required
                 />
               </div>
             </div>
@@ -398,14 +440,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
               onChange={setPhoneNumber}
               validating={isValidatingPhone}
               valid={isPhoneValid}
-            />
-
-            <TextInput
-              label="Address (street / building)"
-              value={addressLine}
-              onChange={setAddressLine}
-              placeholder="Street address"
-              required
             />
 
             <TextareaField

@@ -1,5 +1,4 @@
 export default interface Address {
-  address_id?: number;
   street_address: string;
   city: string;
   state: string;
@@ -7,5 +6,6 @@ export default interface Address {
   country: string;
   phone: string;
   dialCode?: string;
-  address_label: string;
+  lat?: number;
+  lng?: number;
 }

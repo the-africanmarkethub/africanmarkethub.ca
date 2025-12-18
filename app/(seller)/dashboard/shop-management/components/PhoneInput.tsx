@@ -24,16 +24,16 @@ export default function PhoneInput({
   return (
     <div>
       <label className="text-sm font-medium mb-1 block text-gray-700">
-        Shop phone number
+        Phone number
       </label>
       <div className="flex items-center">
-        <div className="flex items-center justify-center h-[49px] px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700! text-sm min-w-[100px]">
+        <div className="flex items-center justify-center h-[49px] px-3 border border-gray-300 rounded-l-md bg-gray-50 text-gray-700! text-sm min-w-[100px]">
           <span className="mr-2">{countryFlag}</span>
           <span>{dialCode}</span>
         </div>
         <input
           type="tel"
-          className="input"
+          className="rounded-r-xl px-3 h-[49px] border border-gray-300 focus:border-hub-primary focus:ring-1 focus:ring-hub-primary outline-none w-full text-gray-900 text-sm"
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/\D/g, ""))}
           placeholder="712 345 678"
