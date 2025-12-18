@@ -13,11 +13,11 @@ import {
   verifyOnboardingStatus,
   retryOnboardingStatus,
 } from "@/lib/api/seller/shop";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function OnboardingSuccessContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
+  const { clearAuth } = useAuthStore(); // Access the clearAuth method
   // States
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
@@ -36,6 +36,7 @@ export default function OnboardingSuccessContent() {
       if (response.data.completed) {
         setStatus("success");
         triggerConfetti();
+        clearAuth();
       } else {
         setStatus("error");
       }
@@ -52,13 +53,14 @@ export default function OnboardingSuccessContent() {
     }
   }, []);
 
-  // Auto-redirect logic
+  // Countdown to Login/Dashboard
   useEffect(() => {
     if (status === "success" && countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (status === "success" && countdown === 0) {
-      router.push("/dashboard");
+      // Redirect to login so they can enter with fresh session data
+      router.push("/login?message=onboarding_complete");
     }
   }, [status, countdown, router]);
 
