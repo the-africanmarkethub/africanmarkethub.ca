@@ -17,7 +17,7 @@ import { FiSettings } from "react-icons/fi";
 declare const api: {
   get: (url: string) => Promise<any>;
   post: (url: string, payload: any) => Promise<any>;
-}; 
+};
 const ToggleSwitch = ({
   label,
   checked,
@@ -180,14 +180,6 @@ export default function CommunicationSettingsPage() {
 
   const isSaveDisabled = isLoading || isSaving || !settingsHaveChanged();
 
-  if (isLoading) {
-    return (
-      <div className="card p-8 flex justify-center items-center h-40 bg-white rounded-xl shadow-md">
-        <p className="text-gray-500">Loading settings...</p>
-      </div>
-    );
-  }
-
   const handleCancel = () => {
     if (!initialSettings) return;
 
@@ -202,130 +194,161 @@ export default function CommunicationSettingsPage() {
       sms: initialSettings.new_products,
     });
   };
- return (
-   <>
-     {/* Card Header */}
-     <div className="card mb-6 hover:shadow-lg transition-all duration-300 rounded-xl bg-white cursor-default p-4">
-       <h2 className="text-lg font-semibold flex items-center text-orange-800! gap-2">
-         <FiSettings />
-         Setting
-       </h2>
-       <p className="text-sm mt-1 text-gray-600">
-         From your account dashboard, you can easily check, modify and view your
-         <span className="text-orange-800"> Notification settings</span>
-       </p>
-     </div>
 
-     {/* Main Card */}
-     <div className="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-       {/* Order Status */}
-       <section className="mb-8 group transition-all">
-         <div className="flex items-start mb-2">
-           <h3 className="text-xl font-medium text-gray-800 group-hover:text-orange-700 transition-colors">
-             Order Status
-           </h3>
-         </div>
-         <p className="text-gray-600 mb-4">
-           Receive notifications about the progress of your orders.
-         </p>
+  if (isLoading) return <SettingsSkeleton />;
 
-         <div className="pl-4 space-y-2">
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="Push Notification (System)"
-               checked={orderSettings.push}
-               onChange={(checked) => handleOrderChange("push", checked)}
-               disabled={isSaving}
-             />
-           </div>
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="Emails (Service Updates)"
-               checked={orderSettings.emails}
-               onChange={(checked) => handleOrderChange("emails", checked)}
-               disabled={isSaving}
-             />
-           </div>
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="SMS (Delivery Alerts)"
-               checked={orderSettings.sms}
-               onChange={(checked) => handleOrderChange("sms", checked)}
-               disabled={isSaving}
-             />
-           </div>
-         </div>
-       </section>
+  return (
+    <>
+      {/* Card Header */}
+      <div className="card mb-6 hover:shadow-lg transition-all duration-300 rounded-xl bg-white cursor-default p-4">
+        <h2 className="text-lg font-semibold flex items-center text-orange-800! gap-2">
+          <FiSettings />
+          Setting
+        </h2>
+        <p className="text-sm mt-1 text-gray-600">
+          From your account dashboard, you can easily check, modify and view
+          your
+          <span className="text-orange-800"> Notification settings</span>
+        </p>
+      </div>
 
-       <hr className="my-6 border-gray-200" />
+      {/* Main Card */}
+      <div className="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+        {/* Order Status */}
+        <section className="mb-8 group transition-all">
+          <div className="flex items-start mb-2">
+            <h3 className="text-xl font-medium text-gray-800 group-hover:text-orange-700 transition-colors">
+              Order Status
+            </h3>
+          </div>
+          <p className="text-gray-600 mb-4">
+            Receive notifications about the progress of your orders.
+          </p>
 
-       {/* Promotional Offers */}
-       <section className="group transition-all">
-         <div className="flex items-start mb-2">
-           <h3 className="text-xl font-medium text-gray-800 group-hover:text-orange-700 transition-colors">
-             Promotional Offers
-           </h3>
-         </div>
-         <p className="text-gray-600 mb-4">
-           Be notified about exclusive deals and discounts.
-         </p>
+          <div className="pl-4 space-y-2">
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="Push Notification (System)"
+                checked={orderSettings.push}
+                onChange={(checked) => handleOrderChange("push", checked)}
+                disabled={isSaving}
+              />
+            </div>
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="Emails (Service Updates)"
+                checked={orderSettings.emails}
+                onChange={(checked) => handleOrderChange("emails", checked)}
+                disabled={isSaving}
+              />
+            </div>
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="SMS (Delivery Alerts)"
+                checked={orderSettings.sms}
+                onChange={(checked) => handleOrderChange("sms", checked)}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+        </section>
 
-         <div className="pl-4 space-y-2">
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="Push Notification (Promotions)"
-               checked={promoSettings.push}
-               onChange={(checked) => handlePromoChange("push", checked)}
-               disabled={isSaving}
-             />
-           </div>
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="Emails (Marketing Campaigns)"
-               checked={promoSettings.emails}
-               onChange={(checked) => handlePromoChange("emails", checked)}
-               disabled={isSaving}
-             />
-           </div>
-           <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
-             <ToggleSwitch
-               label="SMS (New Product Alerts)"
-               checked={promoSettings.sms}
-               onChange={(checked) => handlePromoChange("sms", checked)}
-               disabled={isSaving}
-             />
-           </div>
-         </div>
-       </section>
+        <hr className="my-6 border-gray-200" />
 
-       {/* Buttons */}
-       <div className="flex justify-end mt-8 pt-4 border-t border-gray-200">
-         <button
-           className={`px-4 py-2 font-semibold rounded-lg transition-all duration-200 mr-4 ${
-             isSaving || !settingsHaveChanged()
-               ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-               : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm cursor-pointer"
-           }`}
-           onClick={handleCancel}
-           disabled={isSaving || !settingsHaveChanged()}
-         >
-           Cancel
-         </button>
+        {/* Promotional Offers */}
+        <section className="group transition-all">
+          <div className="flex items-start mb-2">
+            <h3 className="text-xl font-medium text-gray-800 group-hover:text-orange-700 transition-colors">
+              Promotional Offers
+            </h3>
+          </div>
+          <p className="text-gray-600 mb-4">
+            Be notified about exclusive deals and discounts.
+          </p>
 
-         <button
-           className={`px-4 py-2 font-semibold rounded-lg transition-all duration-200 ${
-             isSaveDisabled
-               ? "bg-orange-300 text-white cursor-not-allowed"
-               : "bg-orange-800 text-white hover:bg-orange-700 hover:shadow-md hover:-translate-y-px cursor-pointer"
-           }`}
-           onClick={handleSave}
-           disabled={isSaveDisabled}
-         >
-           {isSaving ? "Saving..." : "Save Changes"}
-         </button>
-       </div>
-     </div>
-   </>
- );
+          <div className="pl-4 space-y-2">
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="Push Notification (Promotions)"
+                checked={promoSettings.push}
+                onChange={(checked) => handlePromoChange("push", checked)}
+                disabled={isSaving}
+              />
+            </div>
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="Emails (Marketing Campaigns)"
+                checked={promoSettings.emails}
+                onChange={(checked) => handlePromoChange("emails", checked)}
+                disabled={isSaving}
+              />
+            </div>
+            <div className="p-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <ToggleSwitch
+                label="SMS (New Product Alerts)"
+                checked={promoSettings.sms}
+                onChange={(checked) => handlePromoChange("sms", checked)}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+        </section>
 
+        {/* Buttons */}
+        <div className="flex justify-end mt-8 pt-4 border-t border-gray-200">
+          <button
+            className={`px-4 py-2 font-semibold rounded-lg transition-all duration-200 mr-4 ${
+              isSaving || !settingsHaveChanged()
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-sm cursor-pointer"
+            }`}
+            onClick={handleCancel}
+            disabled={isSaving || !settingsHaveChanged()}
+          >
+            Cancel
+          </button>
+
+          <button
+            className={`px-4 py-2 font-semibold rounded-lg transition-all duration-200 ${
+              isSaveDisabled
+                ? "bg-orange-300 text-white cursor-not-allowed"
+                : "bg-orange-800 text-white hover:bg-orange-700 hover:shadow-md hover:-translate-y-px cursor-pointer"
+            }`}
+            onClick={handleSave}
+            disabled={isSaveDisabled}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
+      </div>
+    </>
+  );
 }
+
+const SettingsSkeleton = () => (
+  <div className="animate-pulse">
+    {/* Header Skeleton */}
+    <div className="bg-gray-200 h-28 w-full rounded-xl mb-6" />
+
+    {/* Main Card Skeleton */}
+    <div className="p-6 bg-white rounded-xl shadow-md space-y-8">
+      {[1, 2].map((section) => (
+        <div key={section} className="space-y-4">
+          <div className="h-6 bg-gray-200 rounded w-1/4" />
+          <div className="h-4 bg-gray-200 rounded w-1/2" />
+          <div className="space-y-3 pl-4">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="flex justify-between items-center py-2"
+              >
+                <div className="h-4 bg-gray-200 rounded w-1/3" />
+                <div className="h-6 bg-gray-200 rounded-full w-10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);

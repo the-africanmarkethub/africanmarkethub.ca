@@ -10,6 +10,9 @@ import {
   FiSettings,
   FiLifeBuoy,
   FiBell,
+  FiTruck,
+  FiCreditCard,
+  FiMail,
 } from "react-icons/fi";
 
 import {
@@ -35,80 +38,120 @@ interface NavItem {
   children?: NavItem[];
 }
 
-export const NAVIGATION: NavItem[] = [
+// export const VENDOR_MENU: NavItem[] = [
+//   { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
+//   {
+//     id: 2,
+//     label: "Item Management",
+//     href: "/dashboard/item-management",
+//     icon: LuPackage,
+//     children: [],
+//   },
+//   {
+//     id: 3,
+//     label: "Order Management",
+//     href: "/dashboard/order-management",
+//     icon: LuShoppingCart,
+//   },
+//   {
+//     id: 4,
+//     label: "Customer Feedback",
+//     href: "/dashboard/customer-feedback",
+//     icon: LuMessageCircle,
+//   },
+//   {
+//     id: 5,
+//     label: "Finance & Payment",
+//     href: "/dashboard/finance-payment",
+//     icon: LuWallet,
+//   },
+//   {
+//     id: 9,
+//     label: "Shop Management",
+//     href: "/dashboard/shop-management",
+//     icon: LuShoppingBag,
+//     children: [
+//       {
+//         id: 91,
+//         label: "Shop Profile & Branding",
+//         href: "/shop-management/profile",
+//         icon: LuShoppingBag,
+//       },
+//       {
+//         id: 92,
+//         label: "Promotions & Discounts",
+//         href: "/shop-management/promotions",
+//         icon: LuMegaphone,
+//       },
+//       {
+//         id: 93,
+//         label: "Store Policies",
+//         href: "/shop-management/policies",
+//         icon: LuList,
+//       },
+//     ],
+//   },
+//   {
+//     id: 7,
+//     label: "Accounts & Settings",
+//     href: "/dashboard/account-settings",
+//     icon: LuSettings,
+//     children: [
+//       // Assuming sub-settings links
+//     ],
+//   },
+//   // { id: 8, label: "Vendor Support", href: "/vendor-support", icon: LuUsers },
+// ];
+
+export const VENDOR_MENU: NavItem[] = [
   { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
   {
     id: 2,
-    label: "Item Management",
+    label: "Products & Inventory", // More descriptive
     href: "/dashboard/item-management",
     icon: LuPackage,
-    children: [],
   },
   {
     id: 3,
-    label: "Order Management",
+    label: "Orders & Fulfillment", // "Fulfillment" is a huge buzzword in CA/US
     href: "/dashboard/order-management",
     icon: LuShoppingCart,
   },
   {
     id: 4,
-    label: "Customer Feedback",
+    label: "Reviews", // Simple and direct
     href: "/dashboard/customer-feedback",
     icon: LuMessageCircle,
   },
   {
     id: 5,
-    label: "Finance & Payment",
+    label: "Earnings & Payouts", // "Earnings" is more motivating than "Finance"
     href: "/dashboard/finance-payment",
     icon: LuWallet,
   },
   {
     id: 9,
-    label: "Shop Management",
+    label: "Storefront",
     href: "/dashboard/shop-management",
-    icon: LuShoppingBag,
-    children: [
-      {
-        id: 91,
-        label: "Shop Profile & Branding",
-        href: "/shop-management/profile",
-        icon: LuShoppingBag,
-      },
-      {
-        id: 92,
-        label: "Promotions & Discounts",
-        href: "/shop-management/promotions",
-        icon: LuMegaphone,
-      },
-      {
-        id: 93,
-        label: "Store Policies",
-        href: "/shop-management/policies",
-        icon: LuList,
-      },
-    ],
+    icon: LuShoppingBag, 
   },
   {
     id: 7,
-    label: "Accounts & Settings",
+    label: "Settings",
     href: "/dashboard/account-settings",
     icon: LuSettings,
-    children: [
-      // Assuming sub-settings links
-    ],
   },
-  // { id: 8, label: "Vendor Support", href: "/vendor-support", icon: LuUsers },
 ];
-
 export const CUSTOMER_MENU = [
-  { name: "Account Overview", href: "/account", icon: FiUser },
-  { name: "Orders", href: "/account/orders", icon: FiPackage },
-  { name: "Track Order", href: "/account/tracking-order", icon: FiMapPin },
+  { name: "Overview", href: "/account", icon: FiUser },
+  { name: "My Orders", href: "/account/orders", icon: FiPackage },
+  { name: "Track Shipments", href: "/account/tracking", icon: FiTruck },
   { name: "Wishlist", href: "/account/wishlists", icon: FiHeart },
-  { name: "Address", href: "/account/address", icon: FiMapPin },
+  { name: "Saved Addresses", href: "/account/address", icon: FiMapPin },
+  // { name: "Inbox", href: "/account/messages", icon: FiMail }, 
   { name: "Notifications", href: "/account/notifications", icon: FiBell },
-  { name: "Support", href: "/account/support", icon: FiLifeBuoy },
-  { name: "Setting", href: "/account/settings", icon: FiSettings },
+  { name: "Support & Returns", href: "/account/support", icon: FiLifeBuoy },
+  { name: "Security & Settings", href: "/account/settings", icon: FiSettings },
 ];
 
 export const MONTHS = [
