@@ -152,7 +152,7 @@ export default function ConfirmResetCode() {
             Confirm Email Address
           </h1>
           <p className="text-gray-600 mb-6 text-sm">
-            We sent a code to <span className="font-semibold">{email}</span>
+            We sent a code to <span className="font-semibold">{email}</span> Enter or paste it here
           </p>
 
           <form
