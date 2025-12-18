@@ -1,17 +1,17 @@
-// components/SetupSuccessContent.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
 import confetti from "canvas-confetti";
-import { verifyStripeSession } from "@/lib/api/customer/checkout";
 import { useAuthStore } from "@/store/useAuthStore";
-import { verifySubscriptionCheckout } from "@/lib/api/seller/shop";
+import {
+  retryOnboardingStatus,
+  verifyOnboardingStatus, 
+} from "@/lib/api/seller/shop";
 
-export default function SuccessContent() {
+export default function OnboardingSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,11 +42,10 @@ export default function SuccessContent() {
 
     const verifyPayment = async () => {
       try {
-        const response = await verifySubscriptionCheckout(sessionId);
-        if (response.data.status === "paid" && response.data.onboarding_url) {
+        const response = await verifyOnboardingStatus(sessionId);
+        if (response.data.completed === true) {
           setStatus("success");
           triggerConfetti();
-          window.location.href = response.data.onboarding_url;
         } else {
           setStatus("error");
         }
@@ -59,15 +58,14 @@ export default function SuccessContent() {
     verifyPayment();
   }, [sessionId, clearAuth]);
 
-  // Countdown to dashboard
-  // useEffect(() => {
-  //   if (status === "success" && countdown > 0) {
-  //     const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-  //     return () => clearTimeout(timer);
-  //   } else if (status === "success" && countdown === 0) {
-  //     router.push("/dashboard");
-  //   }
-  // }, [status, countdown, router]);
+  useEffect(() => {
+    if (status === "success" && countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (status === "success" && countdown === 0) {
+      router.push("/dashboard");
+    }
+  }, [status, countdown, router]);
 
   const triggerConfetti = () => {
     const duration = 3000;
@@ -95,6 +93,28 @@ export default function SuccessContent() {
     })();
   };
 
+  const [isRetrying, setIsRetrying] = useState(false);
+
+  const handleRetryButton = async () => {
+    setIsRetrying(true);
+    try {
+      // This calls your Laravel endpoint verifyCheckoutSubscriptionSession
+      const response = await retryOnboardingStatus();
+
+      // Note: Ensure your Laravel backend returns 'paid' or 'success'
+      if (response.onboarding_url) {
+        // Redirect to Stripe Connect Onboarding immediately
+        window.location.href = response.onboarding_url;
+      } else {
+        setStatus("error");
+        setIsRetrying(false);
+      }
+    } catch (err) {
+      console.error("Verification failed", err);
+      setStatus("error");
+      setIsRetrying(false);
+    }
+  };
   if (status === "loading") {
     return (
       <div className="text-center">
@@ -103,7 +123,7 @@ export default function SuccessContent() {
           Finalizing your shop setup...
         </h2>
         <p className="text-gray-500 mt-2">
-          Please wait while we confirm your payment.
+          Please wait while we confirm your Pay account on stripe.
         </p>
       </div>
     );
@@ -117,15 +137,41 @@ export default function SuccessContent() {
           Something went wrong
         </h2>
         <p className="text-gray-600 mb-6">
-          We couldn't verify your session ID. Please check your email for a
-          receipt or contact support.
+          We couldn't verify your session. You can try refreshing the session
+          below.
         </p>
-        <Link
-          href="/seller-onboarding"
-          className="text-hub-secondary font-medium hover:text-yellow-700 underline"
+
+        <button
+          onClick={handleRetryButton}
+          disabled={isRetrying}
+          className="inline-flex items-center px-6 py-2 bg-hub-secondary text-white font-medium rounded-md hover:bg-yellow-600 transition-colors disabled:opacity-50"
         >
-          Return to Onboarding
-        </Link>
+          {isRetrying ? (
+            <>
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Retrying...
+            </>
+          ) : (
+            "Retry Onboarding"
+          )}
+        </button>
       </div>
     );
   }
@@ -139,7 +185,7 @@ export default function SuccessContent() {
 
       <h1 className="text-3xl font-bold text-gray-900 mb-2">You're all set!</h1>
       <p className="text-gray-600 mb-8">
-        Your subscription is active and your shop has been created successfully.
+        Your payout action is activated and your shop now ready for business.
       </p>
 
       <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 mb-8">

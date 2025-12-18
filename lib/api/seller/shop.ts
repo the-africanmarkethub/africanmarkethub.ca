@@ -28,6 +28,10 @@ export const verifyOnboardingStatus = async (sessionId: string) => {
   );
   return response.data;
 };
+export async function retryOnboardingStatus(){
+  const response = await api.get(`/vendor/subscription/onboarding/retry`);
+  return response.data;
+};
 
 export async function updateShopLogo(shopId: number, file: File) {
   const formData = new FormData();
