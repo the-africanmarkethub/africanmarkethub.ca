@@ -116,7 +116,7 @@ export default function OverviewSection() {
     }
   };
   return (
-    <div className="max-w-4xl mx-auto space-y-6 px-4 py-8">
+    <div className="mx-auto space-y-6">
       <WelcomeBox greeting={greeting} name={user?.name} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
