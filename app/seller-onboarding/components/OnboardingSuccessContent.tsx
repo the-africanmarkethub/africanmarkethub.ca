@@ -68,8 +68,8 @@ export default function OnboardingSuccessContent() {
     setIsRetrying(true);
     try {
       const response = await retryOnboardingStatus();
-      if (response.data.onboarding_url) {
-        window.location.href = response.data.onboarding_url;
+      if (response.onboarding_url) {
+        window.location.href = response.onboarding_url;
       }
     } catch (err) {
       console.error("Retry failed", err);
@@ -113,14 +113,16 @@ export default function OnboardingSuccessContent() {
         </p>
         <button
           onClick={handleRetryOnboarding}
+          aria-label="retry button"
           disabled={isRetrying}
-          className="w-full flex items-center justify-center bg-orange-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-700 transition-all disabled:opacity-50"
+          className="cursor-pointer w-full flex items-center justify-center bg-orange-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-700 transition-all disabled:opacity-50"
         >
           {isRetrying ? "Generating Link..." : "Complete Stripe Setup"}
         </button>
         <button
           onClick={() => router.push("/dashboard")}
-          className="mt-4 text-sm text-gray-500 hover:underline"
+          aria-label="dashboard"
+          className="cursor-pointer mt-4 text-sm text-gray-500 hover:underline"
         >
           Go to Dashboard anyway
         </button>
@@ -151,7 +153,7 @@ export default function OnboardingSuccessContent() {
 
       <button
         onClick={() => router.push("/dashboard")}
-        className="w-full flex items-center justify-center bg-gray-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-all shadow-lg"
+        className="cursor-pointer w-full flex items-center justify-center bg-gray-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-all shadow-lg"
       >
         Go to Dashboard Now
         <ArrowRightIcon className="h-5 w-5 ml-2" />
