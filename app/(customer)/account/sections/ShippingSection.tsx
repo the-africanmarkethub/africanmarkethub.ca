@@ -132,11 +132,13 @@ export default function ShippingSection({ user }: { user: User | null }) {
                 label="City"
                 value={formData.city}
                 onChange={(v) => setFormData((p) => ({ ...p, city: v }))}
+                disabled={!!formData.city}
               />
               <TextInput
-                label="State"
+                label="Province"
                 value={formData.state}
                 onChange={(v) => setFormData((p) => ({ ...p, state: v }))}
+                disabled={!!formData.state}
               />
             </div>
 
@@ -145,6 +147,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
                 label="Postal Code"
                 value={formData.zip_code}
                 onChange={(v) => setFormData((p) => ({ ...p, zip_code: v }))}
+                disabled={!!formData.zip_code}
               />
               <TextInput
                 label="Country (2-letter)"
@@ -153,6 +156,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
                   setFormData((p) => ({ ...p, country: v.toUpperCase() }))
                 }
                 maxLength={2}
+                disabled={!!formData.country}
               />
             </div>
 
@@ -166,13 +170,13 @@ export default function ShippingSection({ user }: { user: User | null }) {
               <button
                 disabled={loading}
                 onClick={handleSave}
-                className="btn btn-primary"
+                className="btn btn-primary w-full!"
               >
                 {loading ? "Saving..." : "Update Address"}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="btn btn-gray"
+                className="btn btn-gray w-full!"
               >
                 Cancel
               </button>
