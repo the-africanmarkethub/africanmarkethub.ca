@@ -22,9 +22,9 @@ export const verifySubscriptionCheckout = async (sessionId: string) => {
   return response.data;
 };
 
-export const verifyOnboardingStatus = async (sessionId: string) => {
+export async function verifyOnboardingStatus(){
   const response = await api.get(
-    `/vendor/subscription/onboarding/verify?session_id=${sessionId}`
+    `/vendor/subscription/onboarding/verify`
   );
   return response.data;
 };
