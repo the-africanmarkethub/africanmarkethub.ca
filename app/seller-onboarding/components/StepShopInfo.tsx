@@ -417,15 +417,16 @@ export default function StepShopInfo({ onNext }: StepProps) {
               </div>
               <div>
                 <TextInput
-                  label="ZIP"
+                  label="Postal Code"
                   value={zip}
                   onChange={setZip}
                   disabled={!!zip}
                 />
               </div>
+              
               <div>
                 <TextInput
-                  label="Provience"
+                  label="Province"
                   value={stateCode}
                   onChange={setStateCode}
                   disabled={!!stateCode}

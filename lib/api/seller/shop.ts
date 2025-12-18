@@ -15,6 +15,20 @@ export async function subscriptionCheckout(priceId: string) {
   return response.data;
 }
 
+export const verifySubscriptionCheckout = async (sessionId: string) => {
+  const response = await api.get(
+    `/vendor/subscription/checkout/verify?session_id=${sessionId}`
+  );
+  return response.data;
+};
+
+export const verifyOnboardingStatus = async (sessionId: string) => {
+  const response = await api.get(
+    `/vendor/subscription/onboarding/verify?session_id=${sessionId}`
+  );
+  return response.data;
+};
+
 export async function updateShopLogo(shopId: number, file: File) {
   const formData = new FormData();
   formData.append("shop_id", String(shopId));

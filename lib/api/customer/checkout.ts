@@ -25,7 +25,7 @@ interface CheckoutProduct {
 }
 
 export const checkoutStripe = async (payload: CheckoutPayload) => {
-  const res = await api.post("/session/checkout", {
+  const res = await api.post("stripe/checkout", {
     ...payload,
     device_name: navigator.userAgent,
   });
@@ -33,6 +33,13 @@ export const checkoutStripe = async (payload: CheckoutPayload) => {
 };
 
 export const verifyStripeSession = async (sessionId: string) => {
-  const res = await api.get(`/stripe/verify-session?session_id=${sessionId}`);
+  const res = await api.get(`/stripe/checkout/verify?session_id=${sessionId}`);
+  return res.data;
+};
+
+export const verifyOnboardingStripeSession = async (sessionId: string) => {
+  const res = await api.get(
+    `/stripe/verify-onboarding-session?session_id=${sessionId}`
+  );
   return res.data;
 };

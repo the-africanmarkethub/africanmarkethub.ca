@@ -11,8 +11,8 @@ import { getMyShop } from "@/lib/api/seller/shop";
 
 const STEPS = [
   { id: 1, label: "Shop Info" }, 
-  { id: 3, label: "Bank Info" },
-  { id: 4, label: "Shop Sub" },
+  { id: 2, label: "Shop Sub" },
+  { id: 3, label: "Payout Info" },
 ];
 
 function OnboardingContent() {
@@ -68,9 +68,9 @@ function OnboardingContent() {
       case 1:
         return <StepShopInfo onNext={handleNextStep} />;
       case 2:
-        return <StepBankInfo onNext={handleNextStep} />;
-      case 3:
         return <StepSubscription onNext={handleNextStep} />;
+      case 3:
+        return <StepBankInfo onNext={handleNextStep} />;
       default:
         return null;
     }

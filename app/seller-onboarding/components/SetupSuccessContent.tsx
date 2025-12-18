@@ -41,11 +41,12 @@ export default function SuccessContent() {
 
     const verifyPayment = async () => {
       try {
-        const data = await verifyStripeSession(sessionId);
-        if (data.status === "paid") {
+        const response = await verifyStripeSession(sessionId);
+        if (response.data.status === "paid" && response.data.onboarding_url) {
           setStatus("success");
           triggerConfetti();
-          clearAuth();
+          // clearAuth();
+          window.location.href = response.data.onboarding_url;
         } else {
           setStatus("error");
         }
@@ -59,14 +60,14 @@ export default function SuccessContent() {
   }, [sessionId, clearAuth]);
 
   // Countdown to dashboard
-  useEffect(() => {
-    if (status === "success" && countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else if (status === "success" && countdown === 0) {
-      router.push("/dashboard");
-    }
-  }, [status, countdown, router]);
+  // useEffect(() => {
+  //   if (status === "success" && countdown > 0) {
+  //     const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+  //     return () => clearTimeout(timer);
+  //   } else if (status === "success" && countdown === 0) {
+  //     router.push("/dashboard");
+  //   }
+  // }, [status, countdown, router]);
 
   const triggerConfetti = () => {
     const duration = 3000;
