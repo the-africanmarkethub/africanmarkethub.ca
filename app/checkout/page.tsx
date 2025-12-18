@@ -18,7 +18,6 @@ export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { user } = useAuthStore(); // get logged-in user
 
-  const [userIP] = useState<string>("178.238.11.6");
   const [loading, setLoading] = useState(false);
   const [shippingRates, setShippingRates] =
     useState<ShippingRateResponse | null>(null);
@@ -30,7 +29,6 @@ export default function CheckoutPage() {
     state: "",
     zip_code: "",
     phone: "",
-    address_label: "",
     dialCode: "",
     country: "",
   });

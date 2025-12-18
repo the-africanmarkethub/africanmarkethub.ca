@@ -72,7 +72,11 @@ export default function ShippingSection({ user }: { user: User | null }) {
     setLoading(true);
     try {
       const updated = await updateAddress(formData);
-      setFormData(updated);
+      setFormData({
+        ...updated,
+        lat: updated.lat ?? formData.lat,
+        lng: updated.lng ?? formData.lng,
+      });
       toast.success("Shipping address synchronized");
       setIsEditing(false);
     } catch (err: any) {
