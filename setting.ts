@@ -37,72 +37,7 @@ interface NavItem {
   icon: React.ElementType;
   children?: NavItem[];
 }
-
-// export const VENDOR_MENU: NavItem[] = [
-//   { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
-//   {
-//     id: 2,
-//     label: "Item Management",
-//     href: "/dashboard/item-management",
-//     icon: LuPackage,
-//     children: [],
-//   },
-//   {
-//     id: 3,
-//     label: "Order Management",
-//     href: "/dashboard/order-management",
-//     icon: LuShoppingCart,
-//   },
-//   {
-//     id: 4,
-//     label: "Customer Feedback",
-//     href: "/dashboard/customer-feedback",
-//     icon: LuMessageCircle,
-//   },
-//   {
-//     id: 5,
-//     label: "Finance & Payment",
-//     href: "/dashboard/finance-payment",
-//     icon: LuWallet,
-//   },
-//   {
-//     id: 9,
-//     label: "Shop Management",
-//     href: "/dashboard/shop-management",
-//     icon: LuShoppingBag,
-//     children: [
-//       {
-//         id: 91,
-//         label: "Shop Profile & Branding",
-//         href: "/shop-management/profile",
-//         icon: LuShoppingBag,
-//       },
-//       {
-//         id: 92,
-//         label: "Promotions & Discounts",
-//         href: "/shop-management/promotions",
-//         icon: LuMegaphone,
-//       },
-//       {
-//         id: 93,
-//         label: "Store Policies",
-//         href: "/shop-management/policies",
-//         icon: LuList,
-//       },
-//     ],
-//   },
-//   {
-//     id: 7,
-//     label: "Accounts & Settings",
-//     href: "/dashboard/account-settings",
-//     icon: LuSettings,
-//     children: [
-//       // Assuming sub-settings links
-//     ],
-//   },
-//   // { id: 8, label: "Vendor Support", href: "/vendor-support", icon: LuUsers },
-// ];
-
+ 
 export const VENDOR_MENU: NavItem[] = [
   { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
   {
@@ -220,6 +155,21 @@ export const ALLOWED_COUNTRIES = [
   "CA", // Canada 
 ];
 
+export interface CountryOption {
+  code: string; // ISO 3166-1 alpha-2
+  dial_code: string; // E.164 dial code
+  flag: string; // Emoji or URL
+  name: string;
+}
+
+export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
+  {
+    code: "CA",
+    dial_code: "+1",
+    flag: "🇨🇦",
+    name: "Canada",
+  },
+];
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
   phone: "+44 7930 173135",

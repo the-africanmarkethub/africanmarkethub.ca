@@ -61,7 +61,7 @@ export default function Footer() {
           <Link
             href="https://www.facebook.com/africanmarkethub"
             rel="noopener noreferrer"
-            className="hover:text-yellow-600 transition duration-150 cursor-pointer"
+            className="hover:text-hub-secondary transition duration-150 cursor-pointer"
             aria-label="Facebook link"
           >
             <FaFacebookF className="w-6 h-6" />

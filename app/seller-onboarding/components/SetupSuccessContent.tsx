@@ -29,34 +29,34 @@ export default function SuccessContent() {
   const { clearAuth } = useAuthStore();
 
   // Verify Stripe payment
- useEffect(() => {
-   // Wait until searchParams loads
-   if (sessionId === null) return;
+  useEffect(() => {
+    // Wait until searchParams loads
+    if (sessionId === null) return;
 
-   // If loaded but empty → invalid
-   if (!sessionId) {
-     setStatus("error");
-     return;
-   }
+    // If loaded but empty → invalid
+    if (!sessionId) {
+      setStatus("error");
+      return;
+    }
 
-   const verifyPayment = async () => {
-     try {
-       const data = await verifyStripeSession(sessionId);
-       if (data.status === "paid") {
-         setStatus("success");
-         triggerConfetti();
-         clearAuth();
-       } else {
-         setStatus("error");
-       }
-     } catch (err) {
-       console.error("Verification failed", err);
-       setStatus("error");
-     }
-   };
+    const verifyPayment = async () => {
+      try {
+        const data = await verifyStripeSession(sessionId);
+        if (data.status === "paid") {
+          setStatus("success");
+          triggerConfetti();
+          clearAuth();
+        } else {
+          setStatus("error");
+        }
+      } catch (err) {
+        console.error("Verification failed", err);
+        setStatus("error");
+      }
+    };
 
-   verifyPayment();
- }, [sessionId, clearAuth]);
+    verifyPayment();
+  }, [sessionId, clearAuth]);
 
   // Countdown to dashboard
   useEffect(() => {
@@ -121,7 +121,7 @@ export default function SuccessContent() {
         </p>
         <Link
           href="/seller-onboarding"
-          className="text-yellow-600 font-medium hover:text-yellow-700 underline"
+          className="text-hub-secondary font-medium hover:text-yellow-700 underline"
         >
           Return to Onboarding
         </Link>

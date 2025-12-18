@@ -102,10 +102,7 @@ export default function ConfirmResetCode() {
     } finally {
       setLoading(false);
     }
-  };
-  const setInputRef = (index: number) => (el: HTMLInputElement | null) => {
-    inputsRef.current[index] = el;
-  };
+  }; 
 
   return (
     <div className="flex min-screen">

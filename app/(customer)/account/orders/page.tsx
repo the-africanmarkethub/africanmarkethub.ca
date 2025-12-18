@@ -364,7 +364,7 @@ export default function Orders() {
                         prev.filter((_, i) => i !== index)
                       )
                     }
-                    className="absolute top-1 right-1 bg-yellow-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
+                    className="absolute top-1 right-1 bg-hub-secondary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
                   >
                     &times;
                   </button>

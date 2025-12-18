@@ -72,8 +72,26 @@ body,
   padding: 0;
 }
 
+/* 1. Remove the 'Eye' icon in Microsoft Edge */
+input::-ms-reveal {
+  display: none;
+}
+
+/* 2. Remove the 'X' clear button in IE/Edge */
+input::-ms-clear {
+  display: none;
+}
+
+/* 3. Ensure modern Webkit (Safari/Chrome) password managers 
+      don't overlap your custom icon */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  margin-right: 24px;
+  /* Adjust if your icon overlaps auto-fill */
+}
+
 .input {
-  @apply w-full border border-gray-300 p-3 rounded-lg focus:ring-2 text-gray-500 focus:ring-orange-400 focus:outline-none;
+  @apply w-full border border-gray-300 p-3 rounded-lg focus:ring-2 text-gray-500 focus:ring-orange-400 focus:outline-none bg-white;
 }
 
 /* ------------------------------

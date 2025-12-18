@@ -75,7 +75,7 @@ export default function SelectDropdown({
                       {option.label}
                     </span>
                     {selected && (
-                      <span className="absolute inset-y-0 left-2 flex items-center text-yellow-600">
+                      <span className="absolute inset-y-0 left-2 flex items-center text-hub-secondary">
                         <CheckIcon className="h-4 w-4" aria-hidden="true" />
                       </span>
                     )}

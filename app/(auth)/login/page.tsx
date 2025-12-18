@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { loginUser } from "@/lib/api/auth/auth";
+import { Input } from "../register/page";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -118,32 +119,44 @@ export default function LoginPage() {
                 Email Address
               </label>
               <input
+                id="email-address"
                 type="email"
+                name="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="input w-full"
-                placeholder="you@example.com"
+                autoComplete="email"
+                inputMode="email"
+                placeholder="mary.j@example.ca"
+                className="input appearance-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5">
+              <label
+                htmlFor="password"
+                className="block text-sm font-semibold mb-1.5 text-gray-700"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
+                  id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="input w-full pr-10"
+                  autoComplete="current-password"
+                  className="input outline-none transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  // Use tabIndex="-1" so the user doesn't accidentally tab onto the eye icon instead of the button
+                  tabIndex={-1}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
                 >
                   {showPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -152,10 +165,10 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+
               <div className="text-right mt-2">
                 <Link
                   href="/forget-password"
-                  title="Reset your password"
                   className="text-sm font-medium text-red-700 hover:text-red-800 transition-colors"
                 >
                   Forgot Password?

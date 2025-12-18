@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { registerUser } from "@/lib/api/auth/auth";
+import { REGISTRATION_COUNTRY_LIST } from "@/setting";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -26,7 +27,9 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState(""); // Default empty to force choice
-
+  const [selectedCountry, setSelectedCountry] = useState(
+    REGISTRATION_COUNTRY_LIST[0]
+  );
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -89,12 +92,12 @@ export default function RegisterPage() {
           <div className="flex justify-center mb-8 gap-2">
             <div
               className={`h-1.5 w-12 rounded-full ${
-                step >= 1 ? "bg-yellow-600" : "bg-gray-200"
+                step >= 1 ? "bg-hub-primary" : "bg-gray-200"
               }`}
             ></div>
             <div
               className={`h-1.5 w-12 rounded-full ${
-                step >= 2 ? "bg-yellow-600" : "bg-gray-200"
+                step >= 2 ? "bg-hub-primary" : "bg-gray-200"
               }`}
             ></div>
           </div>
@@ -136,7 +139,7 @@ export default function RegisterPage() {
                 Already have an account?{" "}
                 <button
                   onClick={() => router.push("/login")}
-                  className="text-yellow-700 font-semibold hover:underline"
+                  className="text-hub-primary cursor-pointer font-semibold hover:underline"
                 >
                   Login here
                 </button>
@@ -149,7 +152,8 @@ export default function RegisterPage() {
             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
               <button
                 onClick={() => setStep(1)}
-                className="flex items-center text-sm text-gray-500 hover:text-gray-800 mb-4 transition-colors"
+                aria-label="back"
+                className="flex items-center text-sm text-gray-500 hover:text-gray-800 mb-4 transition-colors cursor-pointer"
               >
                 <ArrowLeftIcon className="w-4 h-4 mr-1" /> Back to roles
               </button>
@@ -158,7 +162,7 @@ export default function RegisterPage() {
                 Tell us about yourself
               </h1>
 
-              {/* do not show this is role selected is vendor */}
+              {/* do not show this when role selected is vendor */}
               {role !== "vendor" && (
                 <>
                   <div className="mb-6">
@@ -182,35 +186,72 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     label="First Name"
+                    name="given-name" // Standard HTML name
+                    autoComplete="given-name" // Helps browser autofill
                     value={firstname}
                     onChange={setName}
-                    placeholder="John"
+                    placeholder="Mary"
+                    required
                   />
                   <Input
                     label="Last Name"
+                    name="family-name" // Standard HTML name
+                    autoComplete="family-name" // Helps browser autofill
                     value={lastname}
                     onChange={setLastName}
-                    placeholder="Doe"
+                    placeholder="Joseph"
+                    required
                   />
                 </div>
+
                 <Input
                   label="Email"
                   type="email"
+                  name="email"
+                  autoComplete="email" // Critical for password managers
+                  inputMode="email" // Forces the "@" and ".com" keyboard on mobile
                   value={email}
                   onChange={setEmail}
-                  placeholder="john@example.com"
+                  placeholder="mary.j@example.ca" // Localized Canadian example
+                  required
                 />
-                <Input
-                  label="Phone"
-                  type="tel"
-                  value={phone}
-                  onChange={setPhone}
-                  placeholder="+1..."
-                />
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    Phone Number
+                  </label>
+                  <div className="flex  bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-hub-primary focus-within:border-hub-primary transition-all">
+                    {/* Country Selector Prefix */}
+                    <div className="flex items-center gap-1 bg-gray-50 px-3 border-r border-gray-300">
+                      <span className="text-lg">{selectedCountry.flag}</span>
+                      <span className="text-sm font-medium text-gray-600">
+                        {selectedCountry.dial_code}
+                      </span>
+                      {/* If you eventually have multiple countries, you'd add a ChevronDownIcon here */}
+                    </div>
+
+                    {/* Phone Input Field */}
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, ""))
+                      } // Only allow digits
+                      className="flex-1 py-2.5 px-3 focus:outline-none text-gray-700 placeholder:text-gray-400"
+                      placeholder="6470000000"
+                      maxLength={10}
+                    />
+                  </div>
+                  <p className="text-[10px] text-gray-500 mt-1">
+                    Currently accepting Canada-based numbers only.
+                  </p>
+                </div>
 
                 <div className="relative">
                   <Input
                     label="Password"
+                    id="password" // Add this
+                    name="password" // Add this
+                    autoComplete="new-password" // This triggers the suggestion
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={setPassword}
@@ -219,7 +260,8 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                    tabIndex={-1} // Pro tip: prevents tabbing to the eye icon
+                    className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 focus:outline-none"
                   >
                     {showPassword ? (
                       <EyeSlashIcon className="w-5 h-5" />
@@ -254,16 +296,16 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
       className={`group cursor-pointer relative w-full flex items-center p-5 border-2 rounded-2xl transition-all duration-200 text-left
         ${
           active
-            ? "border-yellow-600 bg-yellow-50/50 shadow-md"
-            : "border-gray-200 bg-white hover:border-yellow-200 hover:shadow-sm"
+            ? "border-hub-primary bg-hub-light-primary/10 shadow-md"
+            : "border-gray-200 bg-white hover:border-hub-light-primary hover:shadow-sm"
         }
       `}
     >
       <div
         className={`p-3 rounded-xl mr-4 transition-colors ${
           active
-            ? "bg-yellow-600 text-white"
-            : "bg-gray-100 text-gray-500 group-hover:bg-yellow-100 group-hover:text-yellow-600"
+            ? "bg-hub-primary text-white"
+            : "bg-gray-100 text-gray-500 group-hover:bg-hub-light-primary group-hover:text-hub-secondary"
         }`}
       >
         {icon}
@@ -272,12 +314,14 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
         <h3 className="font-bold text-gray-900">{title}</h3>
         <p className="text-sm text-gray-500 leading-tight">{description}</p>
       </div>
-      {active && <CheckCircleIcon className="w-6 h-6 text-yellow-600 ml-2" />}
+      {active && (
+        <CheckCircleIcon className="w-6 h-6 text-hub-secondary ml-2" />
+      )}
     </button>
   );
 }
 
-function Input({ label, type = "text", value, onChange, placeholder }: any) {
+export function Input({ label, type = "text", value, onChange, placeholder }: any) {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -288,7 +332,7 @@ function Input({ label, type = "text", value, onChange, placeholder }: any) {
         required
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full px-4 py-2.5 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-600/20 focus:border-yellow-600 outline-none transition-all"
+        className="input"
         placeholder={placeholder}
       />
     </div>

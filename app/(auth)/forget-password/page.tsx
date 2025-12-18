@@ -86,15 +86,19 @@ export default function ForgetPassword() {
           >
             <div>
               <label className="block text-sm font-medium mb-1">
-                Email Address
+                Enter your email address
               </label>
               <input
+                id="email-address"
                 type="email"
+                name="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                className="input"
-                required
+                autoComplete="email"
+                inputMode="email"
+                placeholder="mary.j@example.ca"
+                className="input appearance-none"
               />
             </div>
 

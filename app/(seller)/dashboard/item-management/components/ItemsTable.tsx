@@ -19,7 +19,6 @@ import { deleteItem, listSellerItems, updateItemStatus } from "@/lib/api/items";
 
 import { getStockBadgeClass } from "@/utils/StockBadge";
 
-
 import ItemForm from "./ItemForm";
 import { formatAmount } from "@/utils/formatCurrency";
 import ConfirmationModal from "../../components/commons/ConfirmationModal";
@@ -94,7 +93,7 @@ function ProductActionCell({
         />
 
         <button
-          className="bg-yellow-800 text-white p-1.5 rounded-md hover:bg-yellow-600 flex items-center gap-1 cursor-pointer"
+          className="bg-yellow-800 text-white p-1.5 rounded-md hover:bg-hub-secondary flex items-center gap-1 cursor-pointer"
           onClick={() => onEdit(productId)}
         >
           <PencilSquareIcon className="w-4 h-4" /> Update

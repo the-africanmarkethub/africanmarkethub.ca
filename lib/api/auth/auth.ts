@@ -64,3 +64,4 @@ export async function resetPassword(payload: {
   const response = await api.post("/reset-password", payload);
   return response.data;
 }
+ 
