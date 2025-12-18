@@ -248,6 +248,14 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("zip", zip || "");
       form.append("category_id", String(selectedCategory.id));
 
+      // NEW: Append Latitude and Longitude to FormData
+      if (lat !== undefined && lat !== null) {
+        form.append("lat", String(lat));
+      }
+      if (lng !== undefined && lng !== null) {
+        form.append("lng", String(lng));
+      }
+
       // If your backend expects logo/banner URLs, send them
       if (logoUrl) form.append("logo_url", logoUrl);
       if (bannerUrl) form.append("banner_url", bannerUrl);
@@ -264,8 +272,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
       }
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err?.response?.data?.message || "Unknown error");
-      toast.error(err?.response?.data?.message || "Unknown error");
+      const msg = err?.response?.data?.message || "Unknown error occurred";
+      setErrorMsg(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -416,7 +425,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
               </div>
               <div>
                 <TextInput
-                  label="State"
+                  label="Provience"
                   value={stateCode}
                   onChange={setStateCode}
                   disabled={!!stateCode}

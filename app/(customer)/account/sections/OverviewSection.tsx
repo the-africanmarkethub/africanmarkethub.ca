@@ -73,6 +73,10 @@ export default function OverviewSection() {
     if (!payload.name.trim()) {
       return toast.error("First name is required");
     }
+    
+    if (!payload.last_name.trim()) {
+      return toast.error("Last name is required");
+    }
 
     if (!payload.phone.trim()) {
       return toast.error("Phone number is required");

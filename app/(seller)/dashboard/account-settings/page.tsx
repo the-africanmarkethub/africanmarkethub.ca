@@ -1,5 +1,5 @@
 import OverviewSection from "@/app/(customer)/account/sections/OverviewSection";
 
-export default function AccountSetting() {
+export default function AccountSettings() {
   return <OverviewSection />;
 }
