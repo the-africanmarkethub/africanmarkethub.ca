@@ -17,7 +17,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function OnboardingSuccessContent() {
   const router = useRouter();
-  const { clearAuth } = useAuthStore(); // Access the clearAuth method
+  const { clearAuth } = useAuthStore();
   // States
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
@@ -33,7 +33,7 @@ export default function OnboardingSuccessContent() {
       setStatus("loading");
       const response = await verifyOnboardingStatus();
 
-      if (response.data.completed) {
+      if (response.completed) {
         setStatus("success");
         triggerConfetti();
         clearAuth();

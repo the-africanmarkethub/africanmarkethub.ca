@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const OnboardingSuccessContent = dynamic(
-  () => import("../components/SetupSuccessContent"),
+  () => import("../components/OnboardingSuccessContent"),
   { ssr: false }
 );
 
