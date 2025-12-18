@@ -125,7 +125,7 @@ export default function RegisterPage() {
                 />
                 <RoleCard
                   title="I'm a Seller"
-                  description="I want to list my products and grow my business."
+                  description="I want to list my items and grow my business."
                   icon={<ShoppingBagIcon className="w-8 h-8" />}
                   active={role === "vendor"}
                   onClick={() => {
