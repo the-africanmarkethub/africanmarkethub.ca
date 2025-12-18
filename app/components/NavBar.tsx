@@ -132,35 +132,48 @@ function MobileNavLinks() {
 
   return (
     <motion.div
-      className="md:hidden flex items-center gap-4 text-sm font-medium"
+      className="md:hidden flex items-center gap-3 text-sm font-medium"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      {MOBILE_MENU_LINK.map((link, idx) => (
-        <motion.div
-          key={idx}
-          whileHover={{ y: -2, scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        >
-          <Link
-            href={link.href}
-            title={link.label}
-            className="flex items-center gap-1.5 text-xs text-gray-100 hover:text-hub-light-primary transition-all duration-200"
+      {MOBILE_MENU_LINK.map((link, idx) => {
+        const isCTA = link.label === "Start Selling";
+
+        return (
+          <motion.div
+            key={idx}
+            whileHover={{ y: -1, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <span>{link.label}</span>
-          </Link>
-        </motion.div>
-      ))}
+            <Link
+              href={link.href}
+              title={link.label}
+              className={`
+                flex items-center gap-1.5 text-[11px] transition-all duration-200
+                ${
+                  isCTA
+                    ? "bg-white text-hub-primary px-3 py-1.5 rounded-full font-bold shadow-sm"
+                    : "text-gray-100 hover:text-hub-light-primary"
+                }
+              `}
+            >
+              {isCTA && link.icon}
+              <span>{link.label}</span>
+            </Link>
+          </motion.div>
+        );
+      })}
     </motion.div>
   );
 }
+
 function DesktopNavLinks() {
   const pathname = usePathname();
   const { user } = useAuthStore();
 
-  const DESKOPT_MENU_LINK = [
+  const DESKTOP_MENU_LINK = [
     { label: "Home", href: "/", icon: <HomeIcon className="w-4 h-4" /> },
     {
       label: "Shop Products",
@@ -195,35 +208,41 @@ function DesktopNavLinks() {
 
   return (
     <ul className="hidden md:flex items-center gap-8 text-[15px] font-medium">
-      {DESKOPT_MENU_LINK.map((link, idx) => {
+      {DESKTOP_MENU_LINK.map((link, idx) => {
         const isActive = pathname === link.href;
+        const isCTA = link.label === "Start Selling";
 
         return (
           <motion.li
             key={idx}
-            whileHover={{ y: -2 }}
+            whileHover={isCTA ? { scale: 1.05 } : { y: -2 }}
             whileTap={{ scale: 0.97 }}
             className="relative group cursor-pointer"
           >
             <Link
               href={link.href}
               title={link.label}
-              className={`flex items-center gap-1.5 transition-colors duration-200 ${
-                isActive
+              className={`flex items-center gap-2 transition-all duration-200 ${
+                isCTA
+                  ? "bg-white text-hub-primary px-4 py-1.5 rounded-full font-bold shadow-md hover:shadow-lg hover:bg-gray-50"
+                  : isActive
                   ? "text-hub-primary"
                   : "text-gray-100 hover:text-hub-light-primary"
               }`}
             >
-              {link.label}
+              {isCTA && link.icon}
+              <span>{link.label}</span>
             </Link>
 
-            {/* Animated underline */}
-            <motion.span
-              layoutId="underline"
-              className={`absolute left-0 -bottom-1 h-0.5 rounded-full ${
-                isActive ? "bg-hub-primary w-full" : "bg-hub-primary w-0"
-              } group-hover:w-full transition-all duration-300`}
-            />
+            {/* Animated underline - Disabled for CTA */}
+            {!isCTA && (
+              <motion.span
+                layoutId="underline"
+                className={`absolute left-0 -bottom-1 h-0.5 rounded-full ${
+                  isActive ? "bg-hub-primary w-full" : "bg-hub-primary w-0"
+                } group-hover:w-full transition-all duration-300`}
+              />
+            )}
           </motion.li>
         );
       })}
