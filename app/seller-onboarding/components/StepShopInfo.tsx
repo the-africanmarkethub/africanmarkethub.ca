@@ -423,7 +423,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
                   disabled={!!zip}
                 />
               </div>
-              
+
               <div>
                 <TextInput
                   label="Province"
@@ -434,10 +434,10 @@ export default function StepShopInfo({ onNext }: StepProps) {
               </div>
               <div>
                 <TextInput
-                  label="Address (street / building)"
+                  label="Street Address"
                   value={addressLine}
                   onChange={setAddressLine}
-                  placeholder="Street address"
+                  placeholder="street / building no"
                   required
                 />
               </div>
