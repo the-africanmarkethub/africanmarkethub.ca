@@ -155,7 +155,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
         <ItemDetail
           product={product}
           reviews={reviews}
-          star_rating={star_rating} // <-- add this line
+          star_rating={star_rating}
           recommended={recommended}
           frequentlyBoughtTogether={frequentlyBoughtTogether}
           otherViews={otherViews}
