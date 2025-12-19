@@ -93,7 +93,6 @@ export default function GoogleAddressAutocomplete({
 
     if (!placesLib.current) return;
 
-    // Fix: Null check before toPlace()
     const place = suggestion.placePrediction?.toPlace();
     if (!place) return;
 
@@ -132,7 +131,6 @@ export default function GoogleAddressAutocomplete({
       : "";
 
     onSelect({
-      // Fix: Ensure strings are never null via ?? operator
       street_address: components.street || place.formattedAddress || "",
       city: components.city || "",
       state: components.state || "",

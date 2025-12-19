@@ -1,0 +1,480 @@
+"use client";
+
+import React, { useEffect, useMemo, useState, useCallback } from "react";
+import { listCategories } from "@/lib/api/category";
+import {
+  saveShop,
+  updateShopLogo,
+  updateShopBanner,
+} from "@/lib/api/seller/shop";
+import { numverifyValidatePhone } from "@/lib/api/ip/route";
+import toast from "react-hot-toast";
+import { BeatLoader } from "react-spinners";
+import { StepProps } from "@/interfaces/StepProps";
+import { FaPencil } from "react-icons/fa6";
+import { DefaultOption } from "@/app/components/common/SelectField";
+import CategorySelector from "@/app/(seller)/dashboard/shop-management/components/CategorySelector";
+import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
+import GoogleAddressAutocomplete from "@/app/(seller)/dashboard/shop-management/components/GoogleAddressAutocomplete";
+import PhoneInput from "@/app/(seller)/dashboard/shop-management/components/PhoneInput";
+import ShopHeaderCard from "@/app/(seller)/dashboard/shop-management/components/ShopHeaderCard";
+import TextareaField from "@/app/(seller)/dashboard/shop-management/components/TextareaField";
+import TextInput from "@/app/(seller)/dashboard/shop-management/components/TextInput";
+import { countryCodeToFlag } from "@/utils/countryFlag";
+
+export interface Option extends DefaultOption {}
+
+interface SelectOption {
+  id: number;
+  name: string;
+  code?: string;
+  flag?: string;
+  dial_code?: string;
+}
+
+export default function StepShopInfo({ onNext }: StepProps) {
+  // form state
+  const [name, setName] = useState<string>("");
+  const [shopId, setShopId] = useState<number | null>(null);
+
+  const [addressLine, setAddressLine] = useState("");
+  const [city, setCity] = useState("");
+  const [stateCode, setStateCode] = useState("");
+  const [zip, setZip] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [lat, setLat] = useState<number | undefined>(undefined);
+  const [lng, setLng] = useState<number | undefined>(undefined);
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [dialCode, setDialCode] = useState("");
+  const [description, setDescription] = useState("");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // types + categories
+  const types: SelectOption[] = [
+    { id: 2, name: "Products" },
+    { id: 1, name: "Services" },
+  ];
+  const [selectedType, setSelectedType] = useState<SelectOption>(types[0]);
+  const [categories, setCategories] = useState<SelectOption[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [categoriesError, setCategoriesError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<SelectOption | null>(
+    null
+  );
+
+  // phone validation
+  const [isValidatingPhone, setIsValidatingPhone] = useState(false);
+  const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  const LIMIT = 5000;
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadCats = async () => {
+      setCategoriesLoading(true);
+      setCategoriesError("");
+      try {
+        const r = await listCategories(
+          50,
+          0,
+          undefined,
+          selectedType.name.toLowerCase()
+        );
+        if (cancelled) return;
+        const formatted = (r?.categories ?? []).map((c: any) => ({
+          id: c.id,
+          name: c.name,
+        }));
+        setCategories(formatted);
+        setSelectedCategory((prev) => {
+          if (!prev) return formatted[0] ?? null;
+          const keep = formatted.find((f: Option) => f.id === prev.id);
+          return keep ?? formatted[0] ?? null;
+        });
+      } catch (err) {
+        console.error(err);
+        setCategoriesError("Failed to load categories.");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    loadCats();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedType]);
+
+  // phone validation
+  const validatePhoneNumber = useCallback(async () => {
+    if (!phoneNumber || phoneNumber.length < 7) {
+      setIsPhoneValid(null);
+      return;
+    }
+    setIsValidatingPhone(true);
+    try {
+      const fullNumber = `${phoneNumber}`;
+      const data = await numverifyValidatePhone({
+        number: fullNumber,
+        countryCode: countryCode ?? "",
+      });
+      setIsPhoneValid(data.valid === true);
+    } catch (err) {
+      setIsPhoneValid(false);
+    } finally {
+      setIsValidatingPhone(false);
+    }
+  }, [phoneNumber, countryCode]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => validatePhoneNumber(), 600);
+    return () => clearTimeout(timer);
+  }, [phoneNumber, validatePhoneNumber]);
+
+ 
+
+  // Google address selection handler
+  const handleAddressSelect = (addr: {
+    street_address: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    country: string;
+    lat?: number;
+    lng?: number;
+    dialCode?: string;
+  }) => {
+    setAddressLine(addr.street_address);
+    setCity(addr.city);
+    setStateCode(addr.state);
+    setZip(addr.zip_code);
+    setCountryCode(addr.country);
+    setLat(addr.lat);
+    setLng(addr.lng);
+    setDialCode(addr.dialCode ?? "");
+  };
+
+  const handleBannerFile = async (file?: File) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File too large. Max 5 MB.");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setBannerUrl(previewUrl);
+    setBannerFile(file);
+
+    // CREATE MODE → STOP HERE
+    if (!shopId) {
+      return; // Do NOT call API
+    }
+
+    // UPDATE MODE → upload
+    try {
+      const resp = await updateShopBanner(file);
+      if (resp?.status === "success") {
+        toast.success(resp?.message ?? "Banner uploaded successfully");
+      } else {
+        toast.error(resp?.message ?? "Banner upload failed");
+      }
+    } catch (err) {
+      console.error("Banner upload failed", err);
+      toast.error("Banner upload failed. Try again.");
+      setBannerUrl(null);
+    }
+  };
+
+  const handleLogoFile = async (file?: File) => {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File too large. Max 5 MB.");
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(file);
+    setLogoUrl(previewUrl);
+    setLogoFile(file);
+
+    // CREATE MODE → only preview
+    if (!shopId) {
+      return;
+    }
+
+    // UPDATE MODE → upload
+    try {
+      const resp = await updateShopLogo(file);
+      if (resp?.status === "success") {
+        toast.success(resp?.message ?? "Logo uploaded successfully");
+      } else {
+        toast.error(resp?.message ?? "Logo upload failed");
+      }
+    } catch (err) {
+      console.error("Logo upload failed", err);
+      toast.error("Logo upload failed. Try again.");
+      setLogoUrl(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCategory) return setErrorMsg("Please pick a category.");
+    setLoading(true);
+    setErrorMsg("");
+    try {
+      const form = new FormData();
+      form.append("name", name || "");
+      form.append("address", addressLine || "");
+      form.append("description", description || "");
+      form.append("phone", phoneNumber || "");
+      form.append("type", selectedType.name.toLowerCase());
+      form.append("country", countryCode || "");
+      form.append("state", stateCode || "");
+      form.append("city", city || "");
+      form.append("zip", zip || "");
+      form.append("category_id", String(selectedCategory.id));
+
+      // NEW: Append Latitude and Longitude to FormData
+      if (lat !== undefined && lat !== null) {
+        form.append("lat", String(lat));
+      }
+      if (lng !== undefined && lng !== null) {
+        form.append("lng", String(lng));
+      }
+
+      // If your backend expects logo/banner URLs, send them
+      if (logoUrl) form.append("logo_url", logoUrl);
+      if (bannerUrl) form.append("banner_url", bannerUrl);
+
+      const response = await saveShop(form);
+
+      console.log("Save shop response:", response);
+      if (response.status === "success") {
+        toast.success("Shop updated successfully");
+        onNext?.({ shopId: response.data.id });
+      } else {
+        setErrorMsg(response.message || "Could not save shop.");
+        toast.error(response.message || "Could not save shop.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      const msg = err?.response?.data?.message || "Unknown error occurred";
+      setErrorMsg(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isFormDisabled =
+    loading || categoriesLoading || !selectedCategory || isPhoneValid === false;
+
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  useEffect(() => {
+    if ((window.google as any)?.maps?.places) {
+      setGoogleLoaded(true);
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
+
+  return (
+    <div className="mx-auto">
+      <ShopHeaderCard subtitle="Update your shop details — use autocomplete for fast address entry." />
+      <div className="relative w-full">
+        {/* Banner */}
+        <div className="w-full h-40 sm:h-56 bg-gray-100 rounded-md overflow-hidden relative">
+          {bannerUrl ? (
+            <img
+              src={bannerUrl}
+              alt="Banner"
+              className="w-full h-full object-cover rounded-t-xl"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center sm:text-xs text-gray-400">
+              Click on the pencil to add a new one
+            </div>
+          )}
+
+          {/* Pencil Icon for Banner */}
+          <label className="absolute top-2 right-2 p-2 bg-white rounded-full cursor-pointer shadow hover:bg-gray-100">
+            <FaPencil className="text-red-700" />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) =>
+                e.target.files && handleBannerFile(e.target.files[0])
+              }
+            />
+          </label>
+        </div>
+
+        {/* Logo - overlaps banner */}
+        <div className="absolute left-4 -translate-y-1/2 top-full w-24 h-24 sm:w-32 sm:h-32 border-2 border-red-900 rounded-full overflow-hidden bg-gray-50 shadow-xl">
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt="Logo"
+              className="w-full h-full object-cover rounded-full"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-400">
+              No logo
+            </div>
+          )}
+
+          {/* Pencil Icon for Logo */}
+          <label className="absolute bottom-1 right-1 p-2 bg-white rounded-full cursor-pointer shadow hover:bg-gray-100">
+            <FaPencil className="text-red-700 text-sm sm:text-base" />
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) =>
+                e.target.files && handleLogoFile(e.target.files[0])
+              }
+            />
+          </label>
+        </div>
+      </div>
+
+      {/* Spacer so content below doesn't overlap logo */}
+      <div className="h-16 sm:h-20" />
+
+      {initialLoading ? (
+        <div className="space-y-4">
+          <div className="h-12 bg-gray-100 rounded w-1/3 animate-pulse" />
+          <div className="h-40 bg-gray-100 rounded animate-pulse" />
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6 ">
+          {errorMsg && (
+            <div className="p-3 text-red-700 bg-red-100 rounded text-sm">
+              {errorMsg}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 gap-4">
+            <TextInput
+              label="Shop name"
+              value={name}
+              onChange={setName}
+              placeholder="Shop name"
+              required
+              maxLength={50}
+            />
+
+            <CategorySelector
+              types={types}
+              selectedType={selectedType}
+              onTypeChange={setSelectedType}
+              categories={categories}
+              categoriesLoading={categoriesLoading}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              categoriesError={categoriesError}
+            />
+
+            <FadeSlide keyId="address">
+              {googleLoaded && (
+                <GoogleAddressAutocomplete onSelect={handleAddressSelect} />
+              )}
+            </FadeSlide>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+              <div>
+                <TextInput
+                  label="City"
+                  value={city}
+                  onChange={setCity}
+                  disabled={!!city}
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Postal Code"
+                  value={zip}
+                  onChange={setZip}
+                  disabled={!!zip}
+                />
+              </div>
+
+              <div>
+                <TextInput
+                  label="Province"
+                  value={stateCode}
+                  onChange={setStateCode}
+                  disabled={!!stateCode}
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Street Address"
+                  value={addressLine}
+                  onChange={setAddressLine}
+                  placeholder="street / building no"
+                  required
+                />
+              </div>
+            </div>
+
+            <PhoneInput
+              countryFlag={countryCodeToFlag(countryCode)}
+              dialCode={dialCode ?? ""}
+              value={phoneNumber}
+              onChange={setPhoneNumber}
+              validating={isValidatingPhone}
+              valid={isPhoneValid}
+            />
+
+            <TextareaField
+              label="Description"
+              value={description}
+              onChange={setDescription}
+              rows={5}
+              limit={LIMIT}
+            />
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={isFormDisabled}
+              className={`btn btn-primary w-full ${
+                isFormDisabled
+                  ? "opacity-60 cursor-not-allowed"
+                  : "hover:bg-red-700"
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <BeatLoader size={6} color="white" /> Saving...
+                </span>
+              ) : (
+                "Update Shop"
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
