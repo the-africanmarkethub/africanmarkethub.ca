@@ -89,9 +89,9 @@ async function fetchWithdrawals(loadMore = false) {
           ))}
         </>
       ) : withdrawals.length === 0 ? (
-        <p className="text-orange-800! card text-center text-sm">
+        <div className="card text-center text-black py-10">
           No withdrawals yet.
-        </p>
+        </div>
       ) : (
         withdrawals.map((w) => (
           <div

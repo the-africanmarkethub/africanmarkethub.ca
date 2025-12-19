@@ -48,7 +48,6 @@ const DashboardPage: React.FC = () => {
             <RecentReviews />
           </div>
         </div>
-        {/* <RecentOrdersTable limit={10} /> */}
       </div>
     </>
   );

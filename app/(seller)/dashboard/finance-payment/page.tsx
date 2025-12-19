@@ -25,7 +25,7 @@ export default function FinancePaymentPage() {
     try {
       setLoading(true);
       const earnings = await getVendorEarnings();
-      setWallet(earnings?.data || null);
+      setWallet(earnings?.data.data || null);
     } catch (err) {
       console.error("Error loading finance data:", err);
     } finally {

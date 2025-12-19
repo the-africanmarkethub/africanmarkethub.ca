@@ -286,6 +286,7 @@ export default function CheckoutPage() {
                           }
                           placeholder="712 345 678"
                           required
+                          maxLength={10}
                         />
                       </div>
                     </div>

@@ -255,6 +255,7 @@ function ProfileCard({
               onChange={onChange}
               placeholder="Phone Number"
               disabled={loading}
+              maxLength={10}
             />
           </div>
           <div className="flex flex-col gap-2 mt-2">
@@ -265,10 +266,7 @@ function ProfileCard({
             >
               {loading ? "Saving..." : "Save Changes"}
             </button>
-            <button
-              className="btn btn-gray"
-              onClick={onCancel}
-            >
+            <button className="btn btn-gray" onClick={onCancel}>
               Cancel
             </button>
           </div>
