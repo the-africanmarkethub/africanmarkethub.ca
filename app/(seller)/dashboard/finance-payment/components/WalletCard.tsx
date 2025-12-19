@@ -6,7 +6,7 @@ import { withdrawRequest } from "@/lib/api/seller/earnings";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../../components/commons/ConfirmationModal";
 
-interface Wallet {
+export interface Wallet {
   total_earning: string | number;
   available_to_withdraw: string | number;
   pending: string | number;

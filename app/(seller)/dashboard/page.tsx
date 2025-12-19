@@ -37,7 +37,7 @@ const DashboardPage: React.FC = () => {
           <span className="text-orange-800"> selling platform</span>
         </p>
       </div>
-      <div className="space-y-4 text-gray-700 p-4 md:p-0">
+      <div className="space-y-4 text-gray-700 p-0 md:p-0">
         <Overview period={selectedPeriod.value} />
         <div className="flex flex-wrap gap-4">
           <div className="w-full md:w-[calc(70%-0.5rem)]">
