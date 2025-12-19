@@ -324,7 +324,7 @@ export function useItemForm(item: any) {
       }
       onClose();
       // prefer to update UI without reloading if possible
-      window.location.reload();
+      // window.location.reload();
     } catch (e) {
       let message = "An error occurred while saving the item";
       if (axios.isAxiosError(e)) {

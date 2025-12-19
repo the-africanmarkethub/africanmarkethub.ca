@@ -23,19 +23,24 @@ export default function CategoryFields(props: any) {
         />
       </div>
 
-      {selectedCategory?.children && selectedCategory.children.length > 0 && (
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Subcategory <span className="text-yellow-500">(required)</span>
-          </label>
-          <SelectDropdown
-            options={selectedCategory.children}
-            value={selectedChildCategory}
-            onChange={(v: any) => setSelectedChildCategory(v)}
-            placeholder="Select subcategory"
-          />
-        </div>
-      )}
+      {categories &&
+        (selectedCategory.children?.length > 0 ? (
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Subcategory <span className="text-yellow-500">(required)</span>
+            </label>
+            <SelectDropdown
+              options={selectedCategory.children}
+              value={selectedChildCategory}
+              onChange={(v: any) => setSelectedChildCategory(v)}
+              placeholder="Select subcategory"
+            />
+          </div>
+        ) : (
+          <p className="mt-2 text-xs text-gray-500 italic">
+            No subcategories available
+          </p>
+        ))}
     </>
   );
 }
