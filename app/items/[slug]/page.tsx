@@ -126,21 +126,29 @@ export default async function ItemDetailPage({ params }: PageParams) {
               </span>
             </li>
 
-            <li className="flex items-center">
+            <li className="flex items-center min-w-0"> 
               <Link
                 href={`/items?category=${product.category.slug}&type=${product.type}`}
-                className="text-hub-primary hover:text-hub-secondary"
+                className="text-hub-primary hover:text-hub-secondary min-w-0"
               >
-                <span className="truncate">{product.category.name}</span>
+                <span className="truncate block max-w-25 sm:max-w-50">
+                  {product.category.name}
+                </span>
               </Link>
-              <span className="mx-2">
+              <span className="mx-2 shrink-0">
+                {" "}
                 <IoChevronForward />
               </span>
             </li>
 
             {/* Current Product (Active) */}
-            <li className="text-gray-700 font-semibold" aria-current="page">
-              <span className="truncate">{product.title}</span>
+            <li
+              className="text-gray-700 font-semibold min-w-0"
+              aria-current="page"
+            >
+              <span className="truncate block max-w-37.5 sm:max-w-full">
+                {product.title}
+              </span>
             </li>
           </ol>
         </nav>
