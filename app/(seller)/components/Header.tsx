@@ -29,7 +29,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const userName = user?.name || user?.email || "Seller";
 
   return (
-    <header className="sticky top-0 z-30 flex items-center h-16 bg-white border-b border-gray-200 px-8">
+    <header className="sticky top-0 z-30 flex items-center h-16 bg-white border-b border-gray-200 px-3">
       <button
         onClick={toggleSidebar}
         className="md:hidden text-gray-700 mr-3 focus:outline-none"
@@ -41,7 +41,15 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
       <div className="flex-1 flex justify-center md:hidden">
         <Link href="/dashboard">
-          <img src="/logo.svg" className="h-10 w-auto" alt="logo" />
+          <Image 
+            src="/logo.svg"
+            alt="African Market Hub"
+            className="cursor-pointer"
+            width={140}
+            height={30}
+            priority
+            unoptimized
+          />
         </Link>
       </div>
 
