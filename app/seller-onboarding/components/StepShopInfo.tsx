@@ -380,6 +380,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
             value={phoneNumber}
             onChange={setPhoneNumber}
             valid={isPhoneValid}
+            
           />
         </section>
 
@@ -393,7 +394,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-xl disabled:bg-slate-300 flex items-center justify-center gap-3"
+          className="btn btn-primary gap-3 w-full"
         >
           {loading ? (
             <BeatLoader size={8} color="white" />

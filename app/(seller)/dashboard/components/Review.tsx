@@ -7,7 +7,6 @@ import Link from "next/link";
 import { formatHumanReadableDate } from "@/utils/formatDate";
 import { listReviews } from "@/lib/api/seller/overview";
 import ReviewType from "@/interfaces/reviews";
-import { FaExternalLinkAlt } from "react-icons/fa";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -86,29 +85,27 @@ export function RecentReviews() {
 
   return (
     <>
-      <div className="card flex justify-between items-center mb-6">
-        <h2 className="text-lg font-medium">Recent Reviews</h2>
-        <Link
-          href="/customer-feedback"
-          className="btn btn-gray flex items-center text-xs!"
-        >
-          See all  
-        </Link>
-      </div>
-      <div className="mb-6 card">
+      <div className="card">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-medium">Recent Reviews</h2>
+          <Link
+            href="/customer-feedback"
+            className="btn btn-gray flex items-center text-xs!"
+          >
+            See all
+          </Link>
+        </div>
+
         <div className="divide-y divide-white/10">
           {loading ? (
             <RecentReviewsSkeleton />
           ) : reviews.length === 0 ? (
             <div className="py-6 text-center text-gray-400 text-sm">
-              No reviews yet.
+              No reviews found yet.
             </div>
           ) : (
             reviews.map((review) => (
-              <div
-                key={review.id}
-                className="border-b border-orange-50"
-              >
+              <div key={review.id} className="border-b border-orange-50">
                 <ReviewCard review={review} />
               </div>
             ))

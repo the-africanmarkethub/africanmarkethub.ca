@@ -38,6 +38,7 @@ export default function PhoneInput({
           onChange={(e) => onChange(e.target.value.replace(/\D/g, ""))}
           placeholder="712 345 678"
           maxLength={10}
+          required
         />
         <div className="ml-3 w-8">
           {validating ? (
