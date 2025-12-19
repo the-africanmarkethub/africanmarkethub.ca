@@ -2,35 +2,35 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import OnboardingLayout from "./components/OnboardingLayout"; 
+import OnboardingLayout from "./components/OnboardingLayout";
 import StepShopInfo from "./components/StepShopInfo";
 import StepSubscription from "./components/StepSubscription";
 import { getMyShop } from "@/lib/api/seller/shop";
 
 const STEPS = [
-  { id: 1, label: "Shop Info" }, 
-  { id: 2, label: "Shop Sub" }, 
+  { id: 1, label: "Shop Info" },
+  { id: 2, label: "Shop Sub" },
 ];
 
 function OnboardingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
- 
+
   const initialStep = Number(searchParams.get("step")) || 1;
- 
+
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [shopId, setShopId] = useState<number | null>(null);
   const [isLoadingShop, setIsLoadingShop] = useState(false);
- 
+
   useEffect(() => {
     const fetchShopOnReturn = async () => {
       if (currentStep > 1 && !shopId) {
         setIsLoadingShop(true);
         try {
           const res = await getMyShop();
-          if (res?.data?.id) {
+          if (res?.data?.stripe_connect_id) {
             setShopId(res.data.id);
-            router.replace("/shop-management");
+            router.replace("/dashboard/shop-management");
           }
         } catch (error) {
           console.error("Could not recover shop ID", error);
@@ -65,13 +65,12 @@ function OnboardingContent() {
       case 1:
         return <StepShopInfo onNext={handleNextStep} />;
       case 2:
-        return <StepSubscription onNext={handleNextStep} />; 
+        return <StepSubscription onNext={handleNextStep} />;
       default:
         return null;
     }
   };
 
-  
   return (
     <OnboardingLayout steps={STEPS} currentStep={currentStep}>
       {renderStepComponent()}

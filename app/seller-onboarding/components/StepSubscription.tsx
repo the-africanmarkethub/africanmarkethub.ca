@@ -48,7 +48,6 @@ export default function StepSubscription({ onNext }: StepProps) {
   const router = useRouter();
 
   // 1. Check for Cancelation on Mount
-  // 1. Check for Cancelation on Mount
   useEffect(() => {
     if (searchParams.get("canceled") === "true") {
       toast.error(

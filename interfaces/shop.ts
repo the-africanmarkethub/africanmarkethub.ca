@@ -17,8 +17,10 @@ export interface Shop {
   phone?: string | null;
   vendor_id: number;
   category_id: number;
-  category: Category
+  category: Category;
   status: string;
+  stripe_connect_id?: string;
+  stripe_onboarding_completed?: boolean;
 
   created_at: string;
   updated_at: string;

@@ -351,7 +351,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
             )}
           </FadeSlide>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-4 opacity-80">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-80">
             <TextInput label="City" value={city} onChange={setCity} disabled />
 
             <TextInput
