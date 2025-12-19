@@ -25,6 +25,7 @@ import ConfirmationModal from "../../components/commons/ConfirmationModal";
 import Drawer from "../../components/commons/Drawer";
 import SelectDropdown from "../../components/commons/Fields/SelectDropdown";
 import TanStackTable from "../../components/commons/TanStackTable";
+import { ProductVariation } from "./ProductVariation";
 
 interface ProductTableProps {
   limit: number;
@@ -39,11 +40,13 @@ const statusOptions: Option[] = [
 ];
 
 function ProductActionCell({
+  product,
   productId,
   initialStatus,
   onStatusUpdate,
   onEdit,
 }: {
+  product: any;
   productId: number;
   initialStatus: string;
   onStatusUpdate: (newStatus: string) => void;
@@ -86,11 +89,16 @@ function ProductActionCell({
   return (
     <>
       <div className="flex gap-2">
-        <SelectDropdown
-          value={status}
-          options={statusOptions}
-          onChange={handleStatusChange}
-        />
+        <div className="w-32">
+          <SelectDropdown
+            value={status}
+            options={statusOptions}
+            onChange={handleStatusChange}
+          />
+        </div>
+
+        {/* NEW COMPONENT ADDED HERE */}
+        <ProductVariation product={product} />
 
         <button
           className="bg-yellow-800 text-white p-1.5 rounded-md hover:bg-hub-secondary flex items-center gap-1 cursor-pointer"
@@ -179,11 +187,11 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
                 className="w-10 h-10 object-cover rounded shrink-0"
               />
               <div className="flex flex-col min-w-0">
-                <span className="font-medium text-gray-800 truncate block max-w-[120px] sm:max-w-[200px]">
+                <span className="font-medium text-gray-800 truncate block max-w-30 sm:max-w-50">
                   {title}
                 </span>
                 {category && (
-                  <span className="text-xs text-gray-500 truncate block max-w-[100px] sm:max-w-[150px]">
+                  <span className="text-xs text-gray-500 truncate block max-w-25 sm:max-w-37.5">
                     {category}
                   </span>
                 )}
@@ -291,6 +299,7 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
         accessorKey: "id",
         cell: ({ row }) => (
           <ProductActionCell
+            product={row.original} // Pass the full product object here
             productId={row.original.id}
             initialStatus={row.original.status}
             onStatusUpdate={(newStatus) =>

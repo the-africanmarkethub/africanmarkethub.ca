@@ -12,7 +12,6 @@ interface ListItemsParams {
 }
 
 export async function listItems(params: ListItemsParams) {
-  // Remove undefined values automatically
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(
       ([_, value]) => value !== undefined && value !== ""
@@ -40,6 +39,7 @@ export async function listSellerItems(
   });
   return response.data;
 }
+
 export async function getItemDetail(slug: string) {
   const response = await api.get(`/product/${slug}`);
   return response.data;
@@ -47,12 +47,12 @@ export async function getItemDetail(slug: string) {
 
 export async function listRecommendedItems(type?: string) {
   const response = await api.get(`/products/recommended`, {
-    params: { type },  
+    params: { type },
   });
   return response.data;
 }
 
-
+// Vendor Specific
 export async function getItemStatictics() {
   const { data } = await api.get(`/vendor/items/statistics`);
   return data.data;
@@ -97,3 +97,31 @@ export async function deleteItemPhoto(productId: number, imageId: string) {
 
   return data.data;
 }
+
+export async function listSizes() {
+  const response = await api.get("/vendor/list-sizes");
+  return response.data.data;
+}
+
+export async function listColors() {
+  const response = await api.get("/vendor/list-colors");
+  return response.data.data;
+}
+
+export const upsertProductVariations = async (
+  productId: number,
+  variations: any[]
+) => {
+  const response = await api.post("/vendor/product/variation/upsert", {
+    product_id: productId,
+    variations: variations.map((v) => ({
+      id: v.id || null,
+      size_id: v.size_id || null,
+      color_id: v.color_id || null,
+      price: v.price,
+      quantity: v.quantity,
+      sku: v.sku || null,
+    })),
+  });
+  return response.data;
+};
