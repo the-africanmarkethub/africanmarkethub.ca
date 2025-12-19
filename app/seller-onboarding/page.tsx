@@ -2,17 +2,14 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import OnboardingLayout from "./components/OnboardingLayout";
-import StepBankInfo from "./components/StepBankInfo";
-import StepImages from "./components/StepImages";
+import OnboardingLayout from "./components/OnboardingLayout"; 
 import StepShopInfo from "./components/StepShopInfo";
 import StepSubscription from "./components/StepSubscription";
 import { getMyShop } from "@/lib/api/seller/shop";
 
 const STEPS = [
   { id: 1, label: "Shop Info" }, 
-  { id: 2, label: "Shop Sub" },
-  { id: 3, label: "Payout Info" },
+  { id: 2, label: "Shop Sub" }, 
 ];
 
 function OnboardingContent() {
@@ -68,9 +65,7 @@ function OnboardingContent() {
       case 1:
         return <StepShopInfo onNext={handleNextStep} />;
       case 2:
-        return <StepSubscription onNext={handleNextStep} />;
-      case 3:
-        return <StepBankInfo onNext={handleNextStep} />;
+        return <StepSubscription onNext={handleNextStep} />; 
       default:
         return null;
     }
