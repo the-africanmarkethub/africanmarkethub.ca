@@ -18,23 +18,76 @@ export default function BasicInfoFields(props: any) {
         />
       </div>
 
-      <div>
+      {/* <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Description <span className="text-red-500">*</span>
         </label>
         <TinyMCEEditor
-          apiKey={process.env.NEXT_TINYMCE_API_KEY}
+          apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
           value={description}
           init={{
             height: 200,
             menubar: false,
             plugins: "link lists",
+            branding: false, // This removes the "Powered by Tiny" text
+            elementpath: false, // This removes the "p » span" path in the footer
             toolbar:
               "undo redo | formatselect | bold italic underline | bullist numlist | link",
             content_style:
               "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#374151 }",
           }}
           onEditorChange={(c) => setDescription(c)}
+        />
+      </div> */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Description <span className="text-red-500">*</span>
+          <span
+            className={`ml-2 text-xs ${
+              description.length > 4000
+                ? "text-red-500 font-bold"
+                : "text-gray-400"
+            }`}
+          >
+            ({description.length}/4000)
+          </span>
+        </label>
+        <TinyMCEEditor
+          apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+          value={description}
+          init={{
+            height: 200,
+            menubar: false,
+            branding: false,
+            elementpath: false,
+            plugins: "link lists wordcount", 
+            toolbar:
+              "undo redo | formatselect | bold italic underline | bullist numlist | link",
+            content_style:
+              "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#374151 }",
+
+            // 2. Configure wordcount to show characters instead of words
+            wordcount_cleanregex: /[0-9.(),;:!?%#$'"_+=\-\[\]\/\\{}|~@<>*&^`]/g,
+            setup: (editor: any) => {
+              editor.on("KeyDown", (e: any) => {
+                const content = editor.getContent({ format: "text" });
+                if (
+                  content.length >= 1900 &&
+                  e.keyCode !== 8 &&
+                  e.keyCode !== 46
+                ) {
+                  e.preventDefault();
+                }
+              });
+            },
+          }}
+          onEditorChange={(content) => {
+            // 4. Double check limit during change
+            if (content.length <= 2500) {
+              // Slight buffer for HTML tags
+              setDescription(content);
+            }
+          }}
         />
       </div>
     </>
