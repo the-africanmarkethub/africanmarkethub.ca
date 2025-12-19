@@ -129,36 +129,47 @@ function CustomerSummary({
           <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
             Lifetime Order Summary
           </p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg text-center">
+
+          <div className="flex flex-col gap-3">
+            {/* Row 1: Total Spent (Full Width) */}
+            <div className="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg text-center shadow-sm">
               <p className="text-sm text-gray-600">Total Spent</p>
-              <p className="font-extrabold text-xl text-orange-800 mt-1">
+              <p className="font-extrabold text-2xl text-orange-800 mt-1">
                 {formatAmount(parseFloat(stats?.total_amount || "0"))}
               </p>
             </div>
 
-            {/* Total Orders */}
-            <div className="p-4 bg-gray-50 border-l-4 border-gray-300 rounded-lg text-center">
-              <p className="text-sm text-gray-600">Total Orders</p>
-              <p className="font-bold text-xl text-gray-800 mt-1">
-                {stats?.total_orders || 0}
-              </p>
-            </div>
+            {/* Row 2: Three items on the same line */}
+            <div className="grid grid-cols-3 gap-3">
+              {/* Total Orders */}
+              <div className="p-3 bg-gray-50 border-l-4 border-gray-300 rounded-lg text-center">
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase">
+                  Orders
+                </p>
+                <p className="font-bold text-lg text-gray-800">
+                  {stats?.total_orders || 0}
+                </p>
+              </div>
 
-            {/* Delivered Orders */}
-            <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg text-center">
-              <p className="text-sm text-gray-600">Delivered</p>
-              <p className="font-bold text-xl text-green-700 mt-1">
-                {stats?.total_delivered || 0}
-              </p>
-            </div>
+              {/* Delivered Orders */}
+              <div className="p-3 bg-green-50 border-l-4 border-green-500 rounded-lg text-center">
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase">
+                  Delivered
+                </p>
+                <p className="font-bold text-lg text-green-700">
+                  {stats?.total_delivered || 0}
+                </p>
+              </div>
 
-            {/* Cancelled Orders */}
-            <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg text-center">
-              <p className="text-sm text-gray-600">Cancelled</p>
-              <p className="font-bold text-xl text-red-700 mt-1">
-                {stats?.total_cancelled || 0}
-              </p>
+              {/* Cancelled Orders */}
+              <div className="p-3 bg-red-50 border-l-4 border-red-500 rounded-lg text-center">
+                <p className="text-[10px] md:text-xs text-gray-600 uppercase">
+                  Cancelled
+                </p>
+                <p className="font-bold text-lg text-red-700">
+                  {stats?.total_cancelled || 0}
+                </p>
+              </div>
             </div>
           </div>
         </div>

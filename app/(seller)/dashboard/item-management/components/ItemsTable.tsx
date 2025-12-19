@@ -170,18 +170,22 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
           const category = row.original.category?.name;
 
           return (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 min-w-0">
               <Image
                 src={image || "/placeholder.png"}
                 alt={title}
                 width={40}
                 height={40}
-                className="w-10 h-10 object-cover rounded"
+                className="w-10 h-10 object-cover rounded shrink-0"
               />
-              <div className="flex flex-col">
-                <span className="font-medium text-gray-800">{title}</span>
+              <div className="flex flex-col min-w-0">
+                <span className="font-medium text-gray-800 truncate block max-w-[120px] sm:max-w-[200px]">
+                  {title}
+                </span>
                 {category && (
-                  <span className="text-xs text-gray-500">{category}</span>
+                  <span className="text-xs text-gray-500 truncate block max-w-[100px] sm:max-w-[150px]">
+                    {category}
+                  </span>
                 )}
               </div>
             </div>
