@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ALLOWED_COUNTRIES } from "@/setting";
 import { getDialCode } from "@/lib/api/ip/countries";
+import toast from "react-hot-toast";
 
 type Address = {
   street_address: string;
@@ -121,7 +122,16 @@ export default function GoogleAddressAutocomplete({
       if (types.includes("locality")) components.city = comp.longText ?? "";
       if (types.includes("administrative_area_level_1"))
         components.state = comp.shortText ?? comp.longText ?? "";
-      if (types.includes("postal_code")) components.zip = comp.longText ?? "";
+      // if (types.includes("postal_code")) components.zip = comp.longText ?? "";
+      if (types.includes("postal_code")) {
+        const code = comp.longText ?? "";
+        components.zip = code;
+        if (code.replace(/\s/g, "").length < 6) {
+          toast.error(
+            "Please complete your postal code for accurate shipping rates."
+          );
+        }
+      }
       if (types.includes("country"))
         components.country = comp.shortText ?? comp.longText ?? "";
     });

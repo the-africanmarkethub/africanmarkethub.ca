@@ -247,12 +247,14 @@ export default function CheckoutPage() {
                       disabled={!!address.state}
                     />
                     <TextInput
-                      placeholder="Postal code"
+                      placeholder="Enter your full postal code (e.g. M5T 2L7)"
                       label="Postal Code"
                       value={address.zip_code}
                       onChange={(e) => handleAddressChange("zip_code", e)}
-                      required
-                      disabled={!!address.zip_code}
+                      required 
+                      disabled={
+                        address.zip_code?.replace(/\s/g, "").length >= 6
+                      } 
                     />
                     <TextInput
                       placeholder="Country"
@@ -267,7 +269,7 @@ export default function CheckoutPage() {
                       <label className="text-sm font-medium text-gray-700">
                         Phone Number
                       </label>
-                      <div className="flex items-stretch h-12"> 
+                      <div className="flex items-stretch h-12">
                         <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-20">
                           <span className="mr-2">
                             {countryCodeToFlag(address.country)}
