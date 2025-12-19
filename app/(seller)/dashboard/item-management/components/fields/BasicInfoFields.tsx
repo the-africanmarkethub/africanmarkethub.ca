@@ -17,30 +17,9 @@ export default function BasicInfoFields(props: any) {
           maxLength={50}
         />
       </div>
-
-      {/* <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Description <span className="text-red-500">*</span>
-        </label>
-        <TinyMCEEditor
-          apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-          value={description}
-          init={{
-            height: 200,
-            menubar: false,
-            plugins: "link lists",
-            branding: false, // This removes the "Powered by Tiny" text
-            elementpath: false, // This removes the "p » span" path in the footer
-            toolbar:
-              "undo redo | formatselect | bold italic underline | bullist numlist | link",
-            content_style:
-              "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#374151 }",
-          }}
-          onEditorChange={(c) => setDescription(c)}
-        />
-      </div> */}
+ 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700">
           Description <span className="text-red-500">*</span>
           <span
             className={`ml-2 text-xs ${
@@ -66,7 +45,6 @@ export default function BasicInfoFields(props: any) {
             content_style:
               "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#374151 }",
 
-            // 2. Configure wordcount to show characters instead of words
             wordcount_cleanregex: /[0-9.(),;:!?%#$'"_+=\-\[\]\/\\{}|~@<>*&^`]/g,
             setup: (editor: any) => {
               editor.on("KeyDown", (e: any) => {
@@ -82,9 +60,7 @@ export default function BasicInfoFields(props: any) {
             },
           }}
           onEditorChange={(content) => {
-            // 4. Double check limit during change
-            if (content.length <= 2500) {
-              // Slight buffer for HTML tags
+            if (content.length <= 4000) {
               setDescription(content);
             }
           }}
