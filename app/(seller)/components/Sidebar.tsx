@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LuLogOut, LuChevronDown } from "react-icons/lu";
 import { useAuthStore } from "@/store/useAuthStore";
 import { VENDOR_MENU } from "@/setting";
 import Image from "next/image";
+import { getMyShop } from "@/lib/api/seller/shop";
 
 export function Sidebar({
   isOpen,
@@ -21,7 +22,7 @@ export function Sidebar({
 
   // Track which parent menu is open
   const [expandedItem, setExpandedItem] = useState<number | null>(null);
-
+  const [shopType, setShopType] = useState<string | null>(null);
   const handleLogout = () => {
     clearAuth();
     router.push("/login");
@@ -30,6 +31,34 @@ export function Sidebar({
   const toggleExpand = (id: number) => {
     setExpandedItem(expandedItem === id ? null : id);
   };
+  useEffect(() => {
+    async function fetchShopData() {
+      try {
+        const res = await getMyShop();
+        setShopType(res.data.type);
+      } catch (error) {
+        console.error("Failed to fetch shop type", error);
+      }
+    }
+    fetchShopData();
+  }, []);
+
+  const filteredMenu = useMemo(() => {
+    return VENDOR_MENU.map((item) => {
+      if (item.id === 2 && item.children) {
+        return {
+          ...item,
+          children: item.children.filter((child) => {
+            if (shopType === "services" && child.id === 22) {
+              return false;
+            }
+            return true;
+          }),
+        };
+      }
+      return item;
+    });
+  }, [shopType]);
 
   return (
     <>
@@ -56,7 +85,7 @@ export function Sidebar({
         </div>
 
         <nav className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
-          {VENDOR_MENU.map((item) => {
+          {filteredMenu.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isActive =
               currentPath === item.href ||
@@ -67,7 +96,6 @@ export function Sidebar({
             return (
               <div key={item.id} className="space-y-1">
                 {hasChildren ? (
-                  // PARENT ITEM WITH CHILDREN
                   <button
                     onClick={() => toggleExpand(item.id)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${

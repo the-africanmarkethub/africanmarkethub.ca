@@ -74,7 +74,7 @@ export const VENDOR_MENU: NavItem[] = [
       },
       {
         id: 32,
-        label: "Pending Shipments",
+        label: "Pending Delivery",
         href: "/dashboard/order-management/pending",
         icon: LuTruck,
       },

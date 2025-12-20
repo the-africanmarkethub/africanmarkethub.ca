@@ -97,8 +97,8 @@ function ProductActionCell({
           />
         </div>
 
-        {/* NEW COMPONENT ADDED HERE */}
-        <ProductVariation product={product} />
+        {/* 1. Only show physical variations for non-service types */}
+        {product.type !== "services" && <ProductVariation product={product} />}
 
         <button
           className="bg-yellow-800 text-white p-1.5 rounded-md hover:bg-hub-secondary flex items-center gap-1 cursor-pointer"
@@ -252,10 +252,21 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
       {
         header: "Stock",
         accessorKey: "quantity",
-        cell: ({ getValue }) => {
+        cell: ({ row, getValue }) => {
+          const isService = row.original.type === "services";
           const quantity = getValue() as number;
+
+          if (isService) {
+            return (
+              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-blue-50 text-blue-700 border border-blue-100">
+                Unlimited • Available
+              </span>
+            );
+          }
+
           const max = 100;
           const stock = getStockBadgeClass(quantity, max);
+
           return (
             <span
               className={`px-2 py-0.5 text-xs font-medium rounded-full ${stock.class}`}
@@ -299,7 +310,7 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
         accessorKey: "id",
         cell: ({ row }) => (
           <ProductActionCell
-            product={row.original} // Pass the full product object here
+            product={row.original}
             productId={row.original.id}
             initialStatus={row.original.status}
             onStatusUpdate={(newStatus) =>
@@ -369,7 +380,7 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
       <div className="mb-4 mt-8">
         <input
           type="text"
-          placeholder="Search by product name..."
+          placeholder="Search by item name..."
           value={search}
           onChange={handleSearchChange}
           className="w-full px-3 py-2 border rounded-md border-amber-600 text-gray-900 focus:outline-none"
