@@ -243,9 +243,6 @@ export function useItemForm(item: any) {
     if (shopType === "services") {
       if (!pricingModel) return "Pricing model is required for services";
       if (!deliveryMethod) return "Delivery method is required for services";
-      // if (!estimatedDeliveryTime || estimatedDeliveryTime.length > 255)
-      //   return "Estimated delivery time is required (max 255 chars)";
-      // --- New Smart Validation for estimatedDeliveryTime ---
       const deliveryRegex =
         /^(?:[1-9][0-9]?\s*(?:second|minute|hour)s?\s*){1,2}$/i;
 
@@ -314,7 +311,10 @@ export function useItemForm(item: any) {
       fd.append("pricing_model", pricingModel.value);
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
-      fd.append("available_days", JSON.stringify(availableDays));
+      // fd.append("available_days", JSON.stringify(availableDays));
+      fd.forEach((day) => {
+        fd.append("available_days[]", day);
+      });
       fd.append("available_from", availableFrom);
       fd.append("available_to", availableTo);
     }
