@@ -311,10 +311,10 @@ export function useItemForm(item: any) {
       fd.append("pricing_model", pricingModel.value);
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
-      // fd.append("available_days", JSON.stringify(availableDays));
-      fd.forEach((day) => {
-        fd.append("available_days[]", day);
-      });
+      fd.append("available_days", JSON.stringify(availableDays));
+      // fd.forEach((day) => {
+      //   fd.append("available_days[]", day);
+      // });
       fd.append("available_from", availableFrom);
       fd.append("available_to", availableTo);
     }
