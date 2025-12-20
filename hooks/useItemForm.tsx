@@ -311,10 +311,7 @@ export function useItemForm(item: any) {
       fd.append("pricing_model", pricingModel.value);
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
-      fd.append("available_days", JSON.stringify(availableDays));
-      // fd.forEach((day) => {
-      //   fd.append("available_days[]", day);
-      // });
+      fd.append("available_days", JSON.stringify(availableDays)); 
       fd.append("available_from", availableFrom);
       fd.append("available_to", availableTo);
     }
@@ -335,8 +332,7 @@ export function useItemForm(item: any) {
         toast.success("Item added successfully");
       }
       onClose();
-      // prefer to update UI without reloading if possible
-      // window.location.reload();
+      window.location.reload();
     } catch (e) {
       let message = "An error occurred while saving the item";
       if (axios.isAxiosError(e)) {
