@@ -1,119 +1,143 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import ChatSidebar from "./components/ChatSidebar";
-import ChatHeader from "./components/ChatHeader";
-import ChatInput from "./components/ChatInput";
-import ChatMessages from "./components/ChatMessage";
-import toast from "react-hot-toast";
+import { useState, useEffect, use, useRef } from "react";
 import {
   listServiceChats,
   getServiceChat,
   replyServiceChat,
 } from "@/lib/api/customer/services";
-import { LuSend } from "react-icons/lu";
-import { Ticket, Message, Participant } from "@/interfaces/ticket";
+import ChatClientWrapper from "./components/ChatClientWrapper";
 
-interface ChatDataState {
-  messages: Message[];
-  participant: Participant | null;
+const DEFAULT_INQUIRY =
+  "Hello! I'm interested in your services and would like to discuss some details...";
+
+interface ServiceChatPageProps {
+  searchParams: Promise<{ item?: string }>;
 }
 
-export default function ServiceChatPage() {
-  const [chats, setChats] = useState<Ticket[]>([]);
-  const [activeChat, setActiveChat] = useState<Ticket | null>(null);
-  const [chatData, setChatData] = useState<ChatDataState>({
-    messages: [],
-    participant: null,
-  });
-  const [loading, setLoading] = useState<boolean>(false);
+export default function ServiceChatPage({
+  searchParams,
+}: ServiceChatPageProps) {
+  const resolvedParams = use(searchParams);
+  const itemId = resolvedParams.item;
+
+  // Ref to prevent API race conditions/double calls in Strict Mode
+  const isInitializing = useRef(false);
+
+  const [data, setData] = useState<{
+    chats: any[];
+    activeChat: any | null;
+    messages: any[];
+    participant: any;
+  } | null>(null);
 
   useEffect(() => {
-    fetchInitialChats();
-  }, []);
+    if (isInitializing.current) return;
 
-  const fetchInitialChats = async () => {
-    try {
-      const res = await listServiceChats();
-      const ticketList = res.data.data || res.data;
-      setChats(ticketList);
+    const initFetch = async () => {
+      isInitializing.current = true;
+      try {
+        // 1. Fetch List
+        const res = await listServiceChats();
+        let chats = Array.isArray(res.data) ? res.data : res.data?.data || [];
 
-      if (ticketList.length > 0) {
-        handleSelectChat(ticketList[0]);
+        // 2. Find/Create Active Ticket
+        let activeTicket =
+          chats.find(
+            (t: any) => t.service_id?.toString() === itemId?.toString()
+          ) || null;
+
+        if (itemId && !activeTicket) {
+          const formData = new FormData();
+          formData.append("service_id", itemId);
+          formData.append("description", DEFAULT_INQUIRY);
+          const createRes = await replyServiceChat(formData);
+
+          if (
+            createRes.status === "success" ||
+            createRes.data?.status === "success"
+          ) {
+            const refresh = await listServiceChats();
+            chats = Array.isArray(refresh.data)
+              ? refresh.data
+              : refresh.data?.data || [];
+            activeTicket =
+              chats.find(
+                (t: any) => t.service_id?.toString() === itemId.toString()
+              ) || null;
+          }
+        }
+
+        if (!activeTicket && chats.length > 0) activeTicket = chats[0];
+
+        // 3. Fetch Details (Wrapped in nested try/catch so sidebar survives error)
+        let initialMessages = [];
+        let initialParticipant = null;
+
+        if (activeTicket) {
+          try {
+            const detail = await getServiceChat(activeTicket.ticket_id);
+            if (
+              detail.status === "success" ||
+              detail.data?.status === "success"
+            ) {
+              const payload = detail.data?.data || detail.data;
+              initialMessages = payload?.messages || [];
+              initialParticipant = payload?.participant || null;
+            }
+          } catch (detailErr) {
+            console.error("Detail fetch failed:", detailErr);
+          }
+
+          if (!initialParticipant) {
+            initialParticipant = {
+              full_name: activeTicket.full_name,
+              profile_photo: activeTicket.profile_photo,
+              is_online: activeTicket.online_status === "online",
+            };
+          }
+        }
+
+        setData({
+          chats,
+          activeChat: activeTicket,
+          messages: initialMessages,
+          participant: initialParticipant,
+        });
+      } catch (err) {
+        console.error("Main Fetch Error:", err);
+        setData({
+          chats: [],
+          activeChat: null,
+          messages: [],
+          participant: null,
+        });
+      } finally {
+        isInitializing.current = false;
       }
-    } catch (err) {
-      toast.error("Failed to load chats");
-    }
-  };
+    };
 
-  const handleSelectChat = async (chat: Ticket) => {
-    setActiveChat(chat);
-    try {
-      const res = await getServiceChat(chat.ticket_id);
-      setChatData({
-        messages: res.data.messages || [],
-        participant: res.data.participant || null,
-      });
-    } catch (err) {
-      toast.error("Failed to load messages");
-    }
-  };
+    initFetch();
+  }, [itemId]);
 
-  const handleSendMessage = async (text: string, file?: File) => {
-    if (!activeChat) {
-      toast.error("No active chat selected");
-      return;
-    }
-
-    setLoading(true);
-    const formData = new FormData();
-
-    formData.append("service_id", activeChat.service_id.toString());
-    formData.append("description", text);
-
-    if (file) {
-      formData.append("file", file);
-    }
-
-    try {
-      const res = await replyServiceChat(formData);
-      setChatData((prev) => ({
-        ...prev,
-        messages: res.data.messages,
-      }));
-    } catch (err) {
-      toast.error("Message failed to send");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Loading State
+  if (!data) {
+    return (
+      <div className="h-[80vh] w-full flex flex-col items-center justify-center gap-4">
+        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-500 font-medium animate-pulse">
+          Loading conversations...
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex h-[calc(100vh-80px)] bg-gray-50 overflow-hidden border rounded-2xl m-4 shadow-sm">
-      <ChatSidebar
-        chats={chats}
-        activeChatId={activeChat?.ticket_id}
-        onSelectChat={handleSelectChat}
-      />
-
-      <main className="hidden md:flex flex-1 flex-col bg-white">
-        {activeChat ? (
-          <>
-            <ChatHeader participant={chatData.participant} />
-            <ChatMessages messages={chatData.messages} />
-            <ChatInput onSendMessage={handleSendMessage} loading={loading} />
-          </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
-            <div className="p-6 bg-gray-50 rounded-full">
-              <LuSend size={40} className="text-gray-300" />
-            </div>
-            <p className="font-medium">
-              Select a ticket to view conversation details
-            </p>
-          </div>
-        )}
-      </main>
-    </div>
+    <ChatClientWrapper
+      initialChats={data.chats}
+      initialActiveChat={data.activeChat}
+      initialMessages={data.messages}
+      initialParticipant={data.participant}
+    />
   );
 }

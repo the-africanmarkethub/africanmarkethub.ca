@@ -4,6 +4,7 @@ import { LuCheck, LuCheckCheck } from "react-icons/lu"; // Fixed icon name
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { Message } from "@/interfaces/ticket";
+import { formatHumanReadableDate } from "@/utils/formatDate";
 
 // 1. Define Props interface
 interface ChatMessagesProps {
@@ -13,13 +14,14 @@ interface ChatMessagesProps {
 export default function ChatMessages({ messages }: ChatMessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom whenever messages update
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
-
+ useEffect(() => {
+   if (scrollRef.current) {
+     scrollRef.current.scrollIntoView({
+       behavior: "smooth",
+       block: "nearest",
+     });
+   }
+ }, [messages]);
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-white custom-scrollbar">
       {messages.length > 0 ? (
@@ -29,10 +31,10 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
             className={`flex ${msg.is_me ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm shadow-sm transition-all ${
+              className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm shadow-sm transition-all   ${
                 msg.is_me
-                  ? "bg-orange-500 text-white rounded-tr-none"
-                  : "bg-gray-100 text-gray-800 rounded-tl-none border border-gray-200"
+                  ? "bg-hub-light-primary rounded-tr-none"
+                  : "bg-gray-100 text-gray-900 rounded-tl-none border border-gray-200"
               }`}
             >
               {/* Image Attachment Rendering */}
@@ -50,17 +52,19 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
               )}
 
               {/* Message Text */}
-              <p className="whitespace-pre-wrap wrap-break-words">{msg.text}</p>
+              <p className="whitespace-pre-wrap wrap-break-words text-gray-950!">
+                {msg.text}
+              </p>
 
               {/* Metadata: Time and Read Receipts */}
               <div
                 className={`flex items-center gap-1 mt-1 text-[10px] ${
                   msg.is_me
-                    ? "justify-end text-orange-100"
-                    : "justify-start text-gray-400"
+                    ? "justify-end text-hub-secondary"
+                    : "justify-start text-hub-secondary"
                 }`}
               >
-                <span>{msg.timestamp}</span>
+                <span>{formatHumanReadableDate(msg.timestamp)}</span>
                 {msg.is_me && (
                   <span className="flex items-center">
                     {msg.is_read ? (
@@ -81,7 +85,7 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
       )}
 
       {/* Anchor for auto-scrolling */}
-      <div ref={scrollRef} className="h-2" />
+      <div ref={scrollRef} className="h-0.5" />
     </div>
   );
 }

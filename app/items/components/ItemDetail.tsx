@@ -1,18 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image";
-import {
-  MinusIcon,
-  PlusIcon,
-  CheckIcon,
-  ShareIcon,
-} from "@heroicons/react/24/outline";
-import ItemTabs, { StarRating } from "./ItemTabs";
-import { useCart } from "@/context/CartContext";
-import { formatAmount } from "@/utils/formatCurrency";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import Image from "next/image"; 
+import ItemTabs, { StarRating } from "./ItemTabs"; 
+import { formatAmount } from "@/utils/formatCurrency";  
 import Link from "next/link";
 import WishlistButton from "@/app/(customer)/account/wishlists/components/WishlistButton";
 import parse from "html-react-parser";
@@ -124,7 +115,7 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0 line-clamp-2 ">
+              <h1 className="sm:text-2xl text-sm font-semibold m-0 line-clamp-2">
                 {product.title}
               </h1>
 

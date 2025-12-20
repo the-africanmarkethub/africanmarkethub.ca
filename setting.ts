@@ -11,6 +11,7 @@ import {
   FiLifeBuoy,
   FiBell,
   FiTruck,
+  FiMail,
 } from "react-icons/fi";
 
 import {
@@ -93,6 +94,12 @@ export const VENDOR_MENU: NavItem[] = [
     icon: LuMessageCircle,
   },
   {
+    id: 4,
+    label: "Chat Messages",
+    href: "/dashboard/chats",
+    icon: FiMail,
+  },
+  {
     id: 5,
     label: "Earnings & Payouts",
     href: "/dashboard/finance-payment",
@@ -118,7 +125,7 @@ export const CUSTOMER_MENU = [
   { name: "Track Shipments", href: "/account/tracking", icon: FiTruck },
   { name: "Wishlist", href: "/account/wishlists", icon: FiHeart },
   { name: "Saved Addresses", href: "/account/address", icon: FiMapPin },
-  // { name: "Inbox", href: "/account/messages", icon: FiMail },
+  { name: "Inbox", href: "/account/chat", icon: FiMail },
   { name: "Notifications", href: "/account/notifications", icon: FiBell },
   { name: "Support & Returns", href: "/account/support", icon: FiLifeBuoy },
   { name: "Security & Settings", href: "/account/settings", icon: FiSettings },

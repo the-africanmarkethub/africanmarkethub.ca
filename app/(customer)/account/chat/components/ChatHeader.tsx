@@ -1,22 +1,29 @@
 "use client";
 
-import { LuVideo, LuInfo } from "react-icons/lu";
+import { LuChevronLeft } from "react-icons/lu";
 import Image from "next/image";
 import { Participant } from "@/interfaces/ticket";
 
-// Define the Props interface for the header
 interface ChatHeaderProps {
   participant: Participant | null;
+  onBack?: () => void;
 }
 
-export default function ChatHeader({ participant }: ChatHeaderProps) {
-  // If no participant is selected or loaded, return null (or a skeleton loader)
+export default function ChatHeader({ participant, onBack }: ChatHeaderProps) {
   if (!participant) return null;
 
   return (
-    <header className="p-4 border-b flex items-center justify-between bg-white">
+    <header className="p-3 md:p-4 border-b flex items-center justify-between bg-white sticky top-0 z-10">
       <div className="flex items-center gap-3">
-        <div className="relative">
+        <button
+          onClick={onBack}
+          aria-label="back"
+          className="md:hidden p-1 -ml-1 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <LuChevronLeft size={24} />
+        </button>
+
+        <div className="relative shrink-0">
           <Image
             src={participant.profile_photo || "/placeholder.png"}
             alt={participant.full_name}
@@ -28,6 +35,7 @@ export default function ChatHeader({ participant }: ChatHeaderProps) {
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
           )}
         </div>
+
         <div>
           <h2 className="text-sm font-bold leading-tight">
             {participant.full_name}
@@ -44,11 +52,8 @@ export default function ChatHeader({ participant }: ChatHeaderProps) {
 
       <div className="flex items-center gap-4 text-gray-400">
         <button className="hover:text-orange-600 transition-all active:scale-95">
-          <LuVideo size={20} />
-        </button>
-        <button className="hover:text-orange-600 transition-all active:scale-95">
-          <LuInfo size={20} />
-        </button>
+         Book now
+        </button> 
       </div>
     </header>
   );

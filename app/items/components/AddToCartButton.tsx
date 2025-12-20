@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CalendarIcon,
   CheckIcon,
   ChatBubbleLeftRightIcon,
   ShoppingCartIcon,
@@ -36,7 +35,6 @@ export default function AddToCartButton({
   );
 
   const handleAction = async () => {
-    // --- SERVICE LOGIC: Redirect to Chat ---
     if (isService) {
       setLoading(true);
       toast("Starting chat to engage service provider...", {
@@ -44,22 +42,18 @@ export default function AddToCartButton({
         className: "text-sm font-medium",
       });
 
-      // Artificial delay for UX feel or to sync with backend chat initialization
       setTimeout(() => {
-        router.push(
-          `/account/chat?vendor=${product.shop_id}&item=${product.id}`
-        );
+        router.push(`/account/chat?item=${product.id}`);
         setLoading(false);
       }, 800);
       return;
     }
 
-    // --- PRODUCT LOGIC: Cart Management ---
     if (cart.length > 0) {
       const isFirstItemService = cart[0].type === "services";
 
       if (isFirstItemService) {
-        toast.error("Cart contains services. Clear it to add products.", {
+        toast.error("Book the service, you can not add service to cart", {
           duration: 4000,
           icon: "⚠️",
         });
