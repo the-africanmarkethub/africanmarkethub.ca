@@ -191,22 +191,32 @@ export function useItemForm(item: any) {
 
   const removeExistingImage = async (idx: number) => {
     const publicId = existingImages.publicIds[idx];
+
     if (!publicId) {
-      toast.error("Image not found");
+      toast.error("Image identifier not found");
       return;
     }
+
+    const previousState = { ...existingImages };
+
     try {
-      // item might not have id when creating new
       if (!item?.id) throw new Error("Product ID missing");
+
+      const payload = new FormData();
+      payload.append("delete_public_ids[]", publicId);
+
       await deleteItemPhoto(item.id, publicId);
+
       setExistingImages((prev) => ({
         urls: prev.urls.filter((_, i) => i !== idx),
         publicIds: prev.publicIds.filter((_, i) => i !== idx),
       }));
-      toast.success("Image removed");
+
+      toast.success("Image removed successfully");
     } catch (e) {
-      console.error(e);
-      toast.error("Failed to delete image");
+      console.error("Deletion Error:", e);
+      setExistingImages(previousState);
+      toast.error("Failed to delete image. Please try again.");
     }
   };
 
@@ -311,7 +321,7 @@ export function useItemForm(item: any) {
       fd.append("pricing_model", pricingModel.value);
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
-      fd.append("available_days", JSON.stringify(availableDays)); 
+      fd.append("available_days", JSON.stringify(availableDays));
       fd.append("available_from", availableFrom);
       fd.append("available_to", availableTo);
     }
@@ -359,7 +369,6 @@ export function useItemForm(item: any) {
   );
 
   return {
-    // state
     loading,
     shopType,
     categories,

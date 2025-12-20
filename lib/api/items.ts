@@ -90,9 +90,14 @@ export async function deleteItem(productId: number) {
   return data.data;
 }
 
-export async function deleteItemPhoto(productId: number, imageId: string) {
-  const { data } = await api.delete(`/vendor/item/image/delete/${productId}`, {
-    data: { imageId },
+export async function deleteItemPhoto(
+  productId: number | string,
+  publicId: string
+) {
+  const { data } = await api.delete(`/vendor/items/image/delete/${productId}`, {
+    data: {
+      delete_public_ids: [publicId],
+    },
   });
 
   return data.data;
