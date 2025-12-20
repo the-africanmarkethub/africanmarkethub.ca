@@ -85,6 +85,7 @@ export default function ItemDetail({
     `${shareText} ${productUrl}`
   )}`;
 
+  console.log(product);
   return (
     <>
       <div className="bg-white">
@@ -326,6 +327,7 @@ export default function ItemDetail({
 
       {/* TABS SECTION — NOW USING REAL BACKEND REVIEWS */}
       <ItemTabs
+        product={product}
         description={product.description}
         reviews={reviews}
         star_rating={star_rating}

@@ -24,6 +24,12 @@ export default interface Item {
   reviews: [];
   average_rating: number;
   variations: Variation[];
+  available_days?: [];
+  available_from?: string;
+  available_to?: string;
+  estimated_delivery_time?: string;
+  delivery_method?: string;
+  pricing_model?: string;
 }
 
 export interface Category {
