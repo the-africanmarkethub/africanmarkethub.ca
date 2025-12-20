@@ -126,7 +126,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
               </span>
             </li>
 
-            <li className="flex items-center min-w-0"> 
+            <li className="flex items-center min-w-0">
               <Link
                 href={`/items?category=${product.category.slug}&type=${product.type}`}
                 className="text-hub-primary hover:text-hub-secondary min-w-0"

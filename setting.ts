@@ -157,8 +157,8 @@ export const PRICING_MODEL_OPTIONS = [
 ];
 
 export const DELIVERY_METHOD_OPTIONS = [
-  { value: "online", label: "Online" },
-  { value: "offline", label: "Offline" },
+  { value: "remote", label: "Remote" },
+  { value: "onsite", label: "Onsite" },
   { value: "hybrid", label: "Hybrid" },
 ];
 

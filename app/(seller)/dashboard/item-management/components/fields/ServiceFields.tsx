@@ -54,7 +54,7 @@ export default function ServiceFields(props: any) {
             value={estimatedDeliveryTime}
             onChange={(e) => setEstimatedDeliveryTime(e.target.value)}
             className="input"
-            placeholder="e.g. 2 hours"
+            placeholder="e.g., 2 hours or 45 minutes"
           />
         </div>
         <div>
@@ -97,13 +97,13 @@ export default function ServiceFields(props: any) {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Available To (e.g. 05:00pm)
+            Available To (e.g. 18:00pm)
           </label>
           <input
             value={availableTo}
             onChange={(e) => setAvailableTo(e.target.value)}
             className="input"
-            placeholder="05:00pm"
+            placeholder="18:00pm"
           />
         </div>
       </div>

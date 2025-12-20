@@ -243,8 +243,20 @@ export function useItemForm(item: any) {
     if (shopType === "services") {
       if (!pricingModel) return "Pricing model is required for services";
       if (!deliveryMethod) return "Delivery method is required for services";
-      if (!estimatedDeliveryTime || estimatedDeliveryTime.length > 255)
-        return "Estimated delivery time is required (max 255 chars)";
+      // if (!estimatedDeliveryTime || estimatedDeliveryTime.length > 255)
+      //   return "Estimated delivery time is required (max 255 chars)";
+      // --- New Smart Validation for estimatedDeliveryTime ---
+      const deliveryRegex =
+        /^(?:[1-9][0-9]?\s*(?:second|minute|hour)s?\s*){1,2}$/i;
+
+      if (!estimatedDeliveryTime) {
+        return "Estimated delivery time is required";
+      }
+
+      if (!deliveryRegex.test(estimatedDeliveryTime.trim())) {
+        return "Format must be like '2 hours', '30 minutes', or '1 hour 15 minutes' (1-99)";
+      }
+      // ------------------------------------------------------
       if (!availableDays || availableDays.length === 0)
         return "Please choose at least one available day for services";
       if (!availableFrom || !availableTo)
