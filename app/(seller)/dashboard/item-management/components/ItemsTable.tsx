@@ -86,61 +86,109 @@ function ProductActionCell({
     }
   };
 
-  return (
-    <>
-      <div className="flex gap-2">
-        <div className="w-32">
-          <SelectDropdown
-            value={status}
-            options={statusOptions}
-            onChange={handleStatusChange}
-          />
-        </div>
+ return (
+   <>
+     {/* Container: 
+      - Mobile: Stacked or multi-row (flex-wrap) to prevent layout breaking
+      - Desktop: Single horizontal row
+    */}
+     <div className="flex flex-wrap md:flex-nowrap items-center gap-2 min-w-fit">
+       {/* Status Dropdown - Wider on mobile for touch targets */}
+       <div className="w-full md:w-32 order-1">
+         <SelectDropdown
+           value={status}
+           options={statusOptions}
+           onChange={handleStatusChange}
+         />
+       </div>
 
-        {/* 1. Only show physical variations for non-service types */}
-        {product.type !== "services" && <ProductVariation product={product} />}
+       {/* Variations - Only for Products */}
+       {product.type !== "services" && (
+         <div className="order-2">
+           <ProductVariation product={product} />
+         </div>
+       )}
 
-        <button
-          className="bg-yellow-800 text-white p-1.5 rounded-md hover:bg-hub-secondary flex items-center gap-1 cursor-pointer"
-          onClick={() => onEdit(productId)}
-        >
-          <PencilSquareIcon className="w-4 h-4" /> Update
-        </button>
+       {/* Action Buttons Group */}
+       <div className="flex items-center gap-2 w-full md:w-auto justify-end md:justify-start order-3">
+         {/* Update Button */}
+         <button
+           className="flex-1 md:flex-none bg-yellow-800 text-white px-3 py-2 md:p-1.5 rounded-md hover:bg-yellow-900 flex items-center justify-center gap-1 cursor-pointer transition-colors text-sm font-medium"
+           onClick={() => onEdit(productId)}
+           title="Update Item"
+         >
+           <PencilSquareIcon className="w-4 h-4" />
+           <span>Update</span>
+         </button>
 
-        <button
-          className="bg-red-500 text-white p-1.5 rounded-md hover:bg-red-600 flex items-center gap-1 cursor-pointer"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <TrashIcon className="w-4 h-4" /> Delete
-        </button>
-      </div>
+         {/* Delete Button */}
+         <button
+           className="flex-1 md:flex-none bg-red-500 text-white px-3 py-2 md:p-1.5 rounded-md hover:bg-red-600 flex items-center justify-center gap-1 cursor-pointer transition-colors text-sm font-medium"
+           onClick={() => setIsModalOpen(true)}
+           title="Delete Item"
+         >
+           <TrashIcon className="w-4 h-4" />
+           <span>Delete</span>
+         </button>
+       </div>
+     </div>
 
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Confirm Deletion"
-      >
-        <p className="mt-2 text-sm text-gray-500">
-          Are you sure you want to delete this item? This action cannot be
-          undone.
-        </p>
-        <div className="mt-4 flex justify-end gap-3">
-          <button
-            className="rounded-md border px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-            onClick={() => setIsModalOpen(false)}
-          >
-            Cancel
-          </button>
-          <button
-            className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700 cursor-pointer"
-            onClick={handleDelete}
-          >
-            {loading ? "Deleting..." : "Delete"}
-          </button>
-        </div>
-      </ConfirmationModal>
-    </>
-  );
+     {/* Confirmation Modal - Mobile Friendly by default */}
+     <ConfirmationModal
+       isOpen={isModalOpen}
+       onClose={() => setIsModalOpen(false)}
+       title="Confirm Deletion"
+     >
+       <div className="p-1">
+         <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+           Are you sure you want to delete{" "}
+           <span className="font-semibold text-gray-900">{product.title}</span>?
+           This action cannot be undone and will remove all associated data.
+         </p>
+         <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
+           <button
+             className="w-full sm:w-auto rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+             onClick={() => setIsModalOpen(false)}
+           >
+             Cancel
+           </button>
+           <button
+             className="w-full sm:w-auto rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition-colors cursor-pointer shadow-sm"
+             onClick={handleDelete}
+             disabled={loading}
+           >
+             {loading ? (
+               <span className="flex items-center gap-2 justify-center">
+                 <svg
+                   className="animate-spin h-4 w-4 text-white"
+                   viewBox="0 0 24 24"
+                 >
+                   <circle
+                     className="opacity-25"
+                     cx="12"
+                     cy="12"
+                     r="10"
+                     stroke="currentColor"
+                     strokeWidth="4"
+                     fill="none"
+                   />
+                   <path
+                     className="opacity-75"
+                     fill="currentColor"
+                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                   />
+                 </svg>
+                 Deleting...
+               </span>
+             ) : (
+               "Delete Item"
+             )}
+           </button>
+         </div>
+       </div>
+     </ConfirmationModal>
+   </>
+ );
 }
 
 const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
