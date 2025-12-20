@@ -169,7 +169,7 @@ export function useItemForm(item: any) {
 
     for (const file of files) {
       if (!VALID_IMAGE_TYPES.includes(file.type)) {
-        toast.error("Only JPG, PNG, WebP, GIF or SVG images are allowed");
+        toast.error("Only JPG, PNG, WebP, or JPEG images are allowed");
         return;
       }
       if (file.size > MAX_IMAGE_SIZE) {
@@ -342,7 +342,7 @@ export function useItemForm(item: any) {
         toast.success("Item added successfully");
       }
       onClose();
-      window.location.reload();
+      // window.location.reload();
     } catch (e) {
       let message = "An error occurred while saving the item";
       if (axios.isAxiosError(e)) {
