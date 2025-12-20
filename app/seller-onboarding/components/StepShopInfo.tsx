@@ -71,7 +71,34 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
+   const [isValidatingPhone, setIsValidatingPhone] = useState(false);
   const [dialCode, setDialCode] = useState("");
+
+   // phone validation
+  const validatePhoneNumber = useCallback(async () => {
+    if (!phoneNumber || phoneNumber.length < 7) {
+      setIsPhoneValid(null);
+      return;
+    }
+    setIsValidatingPhone(true);
+    try {
+      const fullNumber = `${phoneNumber}`;
+      const data = await numverifyValidatePhone({
+        number: fullNumber,
+        countryCode: countryCode ?? "",
+      });
+      setIsPhoneValid(data.valid === true);
+    } catch (err) {
+      setIsPhoneValid(false);
+    } finally {
+      setIsValidatingPhone(false);
+    }
+  }, [phoneNumber, countryCode]);
+
+    useEffect(() => {
+      const timer = setTimeout(() => validatePhoneNumber(), 600);
+      return () => clearTimeout(timer);
+    }, [phoneNumber, validatePhoneNumber]);
 
   useEffect(() => {
     let isMounted = true;
@@ -377,10 +404,11 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
           <PhoneInput
             countryFlag={countryCodeToFlag(countryCode)}
+            dialCode={dialCode ?? ""}
             value={phoneNumber}
             onChange={setPhoneNumber}
+            validating={isValidatingPhone}
             valid={isPhoneValid}
-            
           />
         </section>
 

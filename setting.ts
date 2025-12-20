@@ -11,8 +11,6 @@ import {
   FiLifeBuoy,
   FiBell,
   FiTruck,
-  FiCreditCard,
-  FiMail,
 } from "react-icons/fi";
 
 import {
@@ -22,10 +20,11 @@ import {
   LuMessageCircle,
   LuWallet,
   LuSettings,
-  LuUsers,
   LuShoppingBag,
-  LuMegaphone,
+  LuLayers,
   LuList,
+  LuRotateCcw,
+  LuTruck,
 } from "react-icons/lu";
 
 export const APP_NAME = "African Market Hub";
@@ -36,31 +35,66 @@ interface NavItem {
   href: string;
   icon: React.ElementType;
   children?: NavItem[];
+  onlyFor?: "products" | "services";
 }
- 
+
 export const VENDOR_MENU: NavItem[] = [
   { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
   {
     id: 2,
-    label: "Products & Inventory", // More descriptive
+    label: "Items & Inventory",
     href: "/dashboard/item-management",
     icon: LuPackage,
+    children: [
+      {
+        id: 21,
+        label: "All Items",
+        href: "/dashboard/item-management",
+        icon: LuPackage,
+      },
+      {
+        id: 22,
+        label: "Item Variations",
+        href: "/dashboard/item-management/variations",
+        icon: LuLayers,
+      },
+    ],
   },
   {
     id: 3,
-    label: "Orders & Fulfillment", // "Fulfillment" is a huge buzzword in CA/US
+    label: "Orders & Fulfillment",
     href: "/dashboard/order-management",
     icon: LuShoppingCart,
+    children: [
+      {
+        id: 31,
+        label: "All Orders",
+        href: "/dashboard/order-management",
+        icon: LuList,
+      },
+      {
+        id: 32,
+        label: "Pending Shipments",
+        href: "/dashboard/order-management/pending",
+        icon: LuTruck,
+      },
+      {
+        id: 33,
+        label: "Returns & Refunds",
+        href: "/dashboard/order-management/returns",
+        icon: LuRotateCcw,
+      },
+    ],
   },
   {
     id: 4,
-    label: "Reviews", // Simple and direct
+    label: "Reviews",
     href: "/dashboard/customer-feedback",
     icon: LuMessageCircle,
   },
   {
     id: 5,
-    label: "Earnings & Payouts", // "Earnings" is more motivating than "Finance"
+    label: "Earnings & Payouts",
     href: "/dashboard/finance-payment",
     icon: LuWallet,
   },
@@ -68,7 +102,7 @@ export const VENDOR_MENU: NavItem[] = [
     id: 9,
     label: "Storefront",
     href: "/dashboard/shop-management",
-    icon: LuShoppingBag, 
+    icon: LuShoppingBag,
   },
   {
     id: 7,
@@ -77,13 +111,14 @@ export const VENDOR_MENU: NavItem[] = [
     icon: LuSettings,
   },
 ];
+
 export const CUSTOMER_MENU = [
   { name: "Overview", href: "/account", icon: FiUser },
   { name: "My Orders", href: "/account/orders", icon: FiPackage },
   { name: "Track Shipments", href: "/account/tracking", icon: FiTruck },
   { name: "Wishlist", href: "/account/wishlists", icon: FiHeart },
   { name: "Saved Addresses", href: "/account/address", icon: FiMapPin },
-  // { name: "Inbox", href: "/account/messages", icon: FiMail }, 
+  // { name: "Inbox", href: "/account/messages", icon: FiMail },
   { name: "Notifications", href: "/account/notifications", icon: FiBell },
   { name: "Support & Returns", href: "/account/support", icon: FiLifeBuoy },
   { name: "Security & Settings", href: "/account/settings", icon: FiSettings },
@@ -129,6 +164,7 @@ export const DELIVERY_METHOD_OPTIONS = [
 
 export const MAX_IMAGES = 7;
 export const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+
 export const VALID_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -152,7 +188,7 @@ export const CARRIER_ICONS: Record<
 export const CANADA_TIMEZONE = "America/Toronto";
 
 export const ALLOWED_COUNTRIES = [
-  "CA", // Canada 
+  "CA", // Canada
 ];
 
 export interface CountryOption {

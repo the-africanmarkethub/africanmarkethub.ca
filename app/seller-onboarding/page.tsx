@@ -8,8 +8,8 @@ import StepSubscription from "./components/StepSubscription";
 import { getMyShop } from "@/lib/api/seller/shop";
 
 const STEPS = [
-  { id: 1, label: "Shop Info" },
-  { id: 2, label: "Shop Sub" },
+  { id: 1, label: "Shop Information" },
+  { id: 2, label: "Shop Subscription" },
 ];
 
 function OnboardingContent() {

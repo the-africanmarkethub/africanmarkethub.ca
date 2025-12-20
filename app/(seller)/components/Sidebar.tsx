@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LuLogOut } from "react-icons/lu";
+import { LuLogOut, LuChevronDown } from "react-icons/lu";
 import { useAuthStore } from "@/store/useAuthStore";
 import { VENDOR_MENU } from "@/setting";
 import Image from "next/image";
@@ -18,31 +19,32 @@ export function Sidebar({
   const currentPath = usePathname();
   const { clearAuth } = useAuthStore();
 
+  // Track which parent menu is open
+  const [expandedItem, setExpandedItem] = useState<number | null>(null);
+
   const handleLogout = () => {
     clearAuth();
     router.push("/login");
   };
 
+  const toggleExpand = (id: number) => {
+    setExpandedItem(expandedItem === id ? null : id);
+  };
+
   return (
     <>
-      {/* 1. Mobile Backdrop (Overlay) */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/10 blur-2xl md:hidden transition-opacity"
+          className="fixed inset-0 z-40 bg-black/10 blur-2xl md:hidden"
           onClick={toggleSidebar}
         />
       )}
 
-      {/* 2. Sidebar */}
       <aside
-        className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col
-        transform transition-transform duration-300 ease-in-out 
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}
-        md:translate-x-0 md:static md:h-screen
-      `}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:translate-x-0 md:static md:h-screen ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        {/* Logo Area */}
         <div className="flex items-center px-6 h-20 border-b border-gray-50">
           <Image
             width={120}
@@ -53,39 +55,92 @@ export function Sidebar({
           />
         </div>
 
-        {/* Navigation - flex-1 and overflow-y-auto ensures footer stays at bottom */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
           {VENDOR_MENU.map((item) => {
-            const isActive = currentPath.startsWith(item.href);
+            const hasChildren = item.children && item.children.length > 0;
+            const isActive =
+              currentPath === item.href ||
+              (hasChildren && currentPath.startsWith(item.href));
+            const isExpanded =
+              expandedItem === item.id || (isActive && expandedItem === null);
+
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                prefetch={true}
-                onClick={() => {
-                  if (window.innerWidth < 768) toggleSidebar();
-                }}
-                className={`
-                flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all
-                ${
-                  isActive
-                    ? "bg-orange-50 text-orange-800 shadow-sm shadow-orange-100/50"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                }
-              `}
-              >
-                <item.icon
-                  className={`w-5 h-5 mr-3 ${
-                    isActive ? "text-orange-800" : "text-gray-400"
-                  }`}
-                />
-                {item.label}
-              </Link>
+              <div key={item.id} className="space-y-1">
+                {hasChildren ? (
+                  // PARENT ITEM WITH CHILDREN
+                  <button
+                    onClick={() => toggleExpand(item.id)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-orange-50 text-orange-800"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <item.icon
+                        className={`w-5 h-5 mr-3 ${
+                          isActive ? "text-orange-800" : "text-gray-400"
+                        }`}
+                      />
+                      {item.label}
+                    </div>
+                    <LuChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                ) : (
+                  // STANDARD LINK
+                  <Link
+                    href={item.href}
+                    onClick={() => window.innerWidth < 768 && toggleSidebar()}
+                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                      currentPath === item.href
+                        ? "bg-orange-50 text-orange-800 shadow-sm"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
+                  >
+                    <item.icon
+                      className={`w-5 h-5 mr-3 ${
+                        currentPath === item.href
+                          ? "text-orange-800"
+                          : "text-gray-400"
+                      }`}
+                    />
+                    {item.label}
+                  </Link>
+                )}
+
+                {/* CHILDREN LIST */}
+                {hasChildren && isExpanded && (
+                  <div className="ml-9 space-y-1 mt-1 border-l-2 border-gray-50 pl-2">
+                    {item.children?.map((child) => {
+                      const isChildActive = currentPath === child.href;
+                      return (
+                        <Link
+                          key={child.id}
+                          href={child.href}
+                          onClick={() =>
+                            window.innerWidth < 768 && toggleSidebar()
+                          }
+                          className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+                            isChildActive
+                              ? "text-orange-700 bg-orange-50/50"
+                              : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
 
-        {/* Footer / Logout */}
         <div className="p-4 bg-gray-50/50 border-t border-gray-100">
           <button
             onClick={handleLogout}

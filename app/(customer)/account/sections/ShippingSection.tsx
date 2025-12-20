@@ -86,6 +86,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
     }
   };
 
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Script
@@ -111,13 +112,13 @@ export default function ShippingSection({ user }: { user: User | null }) {
       <div className="p-6">
         {isEditing ? (
           <div className="space-y-4">
-            {googleLoaded && (
+            
               <GoogleAddressAutocomplete
                 onSelect={(addr) =>
                   setFormData((prev) => ({ ...prev, ...addr }))
                 }
               />
-            )}
+            
 
             <TextInput
               label="Street"
