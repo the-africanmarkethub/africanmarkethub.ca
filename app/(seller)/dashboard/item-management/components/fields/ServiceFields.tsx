@@ -86,24 +86,24 @@ export default function ServiceFields(props: any) {
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Available From (e.g. 08:30am)
+            Available From (e.g. 08:30)
           </label>
           <input
             value={availableFrom}
             onChange={(e) => setAvailableFrom(e.target.value)}
             className="input"
-            placeholder="08:30am"
+            placeholder="e.g. 08:30"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Available To (e.g. 18:00pm)
+            Available To (e.g. 18:00)
           </label>
           <input
             value={availableTo}
             onChange={(e) => setAvailableTo(e.target.value)}
             className="input"
-            placeholder="18:00pm"
+            placeholder="e.g. 18:00"
           />
         </div>
       </div>
