@@ -68,7 +68,6 @@ export default function ServiceChatPage() {
     setLoading(true);
     const formData = new FormData();
 
-    // Convert numbers to string for FormData compatibility
     formData.append("service_id", activeChat.service_id.toString());
     formData.append("description", text);
 
@@ -78,7 +77,6 @@ export default function ServiceChatPage() {
 
     try {
       const res = await replyServiceChat(formData);
-      // Backend returns the updated messages array
       setChatData((prev) => ({
         ...prev,
         messages: res.data.messages,
