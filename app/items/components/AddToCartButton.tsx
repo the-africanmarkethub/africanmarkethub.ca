@@ -1,9 +1,9 @@
-// AddToCartButton.tsx
 "use client";
 
 import {
   CalendarIcon,
   CheckIcon,
+  ChatBubbleLeftRightIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
 import { useCart } from "@/context/CartContext";
@@ -26,30 +26,43 @@ export default function AddToCartButton({
 }: AddToCartButtonProps) {
   const { cart, addToCart } = useCart();
   const router = useRouter();
-  const [added, setAdded] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const isService = product.type === "services";
 
   const isInCart = useMemo(
     () => cart?.some((item) => item.id === product.id),
     [cart, product.id]
   );
 
-  const isService = product.type !== "products";
+  const handleAction = async () => {
+    // --- SERVICE LOGIC: Redirect to Chat ---
+    if (isService) {
+      setLoading(true);
+      toast("Starting chat to engage service provider...", {
+        icon: "💬",
+        className: "text-sm font-medium",
+      });
 
-  const handleAddToCart = () => {
-    if (cart.length > 0) {
-      const firstItemType = cart[0].type;
-      const isFirstItemService = firstItemType !== "products";
-
-      if (isService !== isFirstItemService) {
-        toast.error(
-          `Cart already contains ${
-            isFirstItemService ? "services" : "products"
-          }. Clear it to switch types.`,
-          {
-            duration: 9000,
-            icon: "⚠️",
-          }
+      // Artificial delay for UX feel or to sync with backend chat initialization
+      setTimeout(() => {
+        router.push(
+          `/account/chat?vendor=${product.shop_id}&item=${product.id}`
         );
+        setLoading(false);
+      }, 800);
+      return;
+    }
+
+    // --- PRODUCT LOGIC: Cart Management ---
+    if (cart.length > 0) {
+      const isFirstItemService = cart[0].type === "services";
+
+      if (isFirstItemService) {
+        toast.error("Cart contains services. Clear it to add products.", {
+          duration: 4000,
+          icon: "⚠️",
+        });
         return;
       }
     }
@@ -68,46 +81,62 @@ export default function AddToCartButton({
         qty: quantity,
         stock: stockQty > 0,
       });
-      toast.success("Item added to cart!");
-      setAdded(true);
-      setTimeout(() => setAdded(false), 1000);
+      toast.success("Added to cart!");
     } else {
       router.push("/carts");
     }
   };
 
+  // Button Visual Config
+  const getButtonStyles = () => {
+    if (isService)
+      return "bg-red-800 text-white hover:bg-red-900 shadow-lg active:scale-95";
+    if (stockQty <= 0) return "bg-gray-200 text-gray-400 cursor-not-allowed";
+    if (isInCart)
+      return "bg-hub-secondary text-white hover:opacity-90 shadow-md";
+    return "bg-hub-primary text-white hover:bg-hub-secondary shadow-md active:scale-95";
+  };
+
   return (
     <button
-      onClick={handleAddToCart}
-      disabled={stockQty <= 0 && !isService}
-      className={`btn rounded-full! text-xs! transition-all duration-300 flex items-center gap-2 px-6 py-2 font-bold ${
-        added
-          ? "bg-hub-secondary text-white scale-105 shadow-inner"
-          : isInCart
-          ? "bg-hub-secondary text-white hover:opacity-90 shadow-md"
-          : stockQty > 0 || isService
-          ? "bg-hub-primary text-white hover:bg-hub-secondary shadow-md active:scale-95"
-          : "bg-gray-300 text-gray-500 cursor-not-allowed"
-      }`}
+      onClick={handleAction}
+      disabled={(stockQty <= 0 && !isService) || loading}
+      className={`relative overflow-hidden min-w-40 rounded-full text-sm transition-all duration-300 flex items-center justify-center gap-2 px-6 py-1.5 font-bold cursor-pointer ${getButtonStyles()}`}
     >
-      {added ? (
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+          Connecting...
+        </span>
+      ) : isService ? (
         <>
-          <CheckIcon className="h-4 w-4 text-white animate-pulse" />
-          {isService ? "Booked!" : "Added!"}
+          <ChatBubbleLeftRightIcon className="h-5 w-5" />
+          Book & Chat
         </>
       ) : isInCart ? (
         <>
-          <ShoppingCartIcon className="h-4 w-4" />
-          View Cart
+          <CheckIcon className="h-5 w-5" />
+          View in Cart
         </>
-      ) : stockQty > 0 || isService ? (
+      ) : stockQty > 0 ? (
         <>
-          {isService ? (
-            <CalendarIcon className="h-4 w-4" />
-          ) : (
-            <ShoppingCartIcon className="h-4 w-4" />
-          )}
-          {isService ? "Book Now" : "Add to Cart"}
+          <ShoppingCartIcon className="h-5 w-5" />
+          Add to Cart
         </>
       ) : (
         "Out of Stock"

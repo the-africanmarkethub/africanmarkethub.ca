@@ -124,13 +124,13 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0 ">
+              <h1 className="sm:text-2xl text-sm font-semibold m-0 line-clamp-2 ">
                 {product.title}
               </h1>
 
               {product.type === "products" && (
                 <span
-                  className={`text-white text-[9px] font-semibold px-2 py-1 rounded-full ${
+                  className={`text-white text-[8px] font-semibold px-2 py-1 rounded-full ${
                     getStockStatus(product.quantity).bgClass
                   }`}
                 >
