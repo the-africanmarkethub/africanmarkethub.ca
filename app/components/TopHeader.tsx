@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link"; 
+import Link from "next/link";
 import CartDropdown from "./common/CartDropdown";
 import DesktopSearch from "./common/DesktopSearch";
 import HeaderActions from "./common/HeaderActions";
@@ -15,7 +15,7 @@ export default function TopHeader() {
         <Link href="/">
           <Image
             src="/logo.svg"
-            alt="African Market Hub"
+            alt="Ayokah Foods and Services"
             width={150}
             height={40}
             priority

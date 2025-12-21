@@ -28,8 +28,8 @@ const TermsContent: React.FC = () => {
               your credentials secure.
             </li>
             <li>
-              Changes to Terms: African Market Hub may update these Terms at any
-              time. Continued use constitutes acceptance.
+              Changes to Terms: Ayokah Foods and Services may update these Terms
+              at any time. Continued use constitutes acceptance.
             </li>
           </ul>
         </section>
@@ -38,8 +38,8 @@ const TermsContent: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">2. Services</h2>
           <ul className="list-disc list-inside text-gray-700 space-y-1">
             <li>
-              Products & Services: African Market Hub offers groceries, meals,
-              household items, event catering, and service bookings.
+              Products & Services: Ayokah Foods and Services offers groceries,
+              meals, household items, event catering, and service bookings.
               Availability and pricing may change without notice.
             </li>
             <li>
@@ -47,9 +47,9 @@ const TermsContent: React.FC = () => {
               confirmation via email or account dashboard.
             </li>
             <li>
-              Shipping: African Market Hub uses EasyPost to manage shipping,
-              generate labels, and track deliveries. Customers are responsible
-              for accurate addresses.
+              Shipping: Ayokah Foods and Services uses EasyPost to manage
+              shipping, generate labels, and track deliveries. Customers are
+              responsible for accurate addresses.
             </li>
           </ul>
         </section>
@@ -109,7 +109,7 @@ const TermsContent: React.FC = () => {
           </h2>
           <p className="text-gray-700">
             All content, branding, logos, designs, and materials are owned by
-            African Market Hub. You may access content only for personal,
+            Ayokah Foods and Services. You may access content only for personal,
             non-commercial purposes.
           </p>
         </section>
@@ -119,9 +119,9 @@ const TermsContent: React.FC = () => {
             7. Disclaimers & Limitations
           </h2>
           <p className="text-gray-700">
-            Services are provided “as is.” African Market Hub is not liable for
-            delays, damages, or losses from shipping or third-party errors.
-            Liability is limited to the amount paid for the Services.
+            Services are provided “as is.” Ayokah Foods and Services is not
+            liable for delays, damages, or losses from shipping or third-party
+            errors. Liability is limited to the amount paid for the Services.
           </p>
         </section>
 

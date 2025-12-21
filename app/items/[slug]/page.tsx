@@ -18,7 +18,7 @@ export async function generateMetadata({
       ?.replace(/<\/?[^>]+(>|$)/g, "") // strip HTML
       .slice(0, 155);
     return {
-      title: `${product.title} | African Market Hub`,
+      title: `${product.title} | Ayokah Foods and Services`,
       description: description,
 
       openGraph: {
@@ -78,7 +78,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
       sku: product.sku || product.id,
       brand: {
         "@type": "Brand",
-        name: "African Market Hub",
+        name: "Ayokah Foods and Services",
       },
       offers: {
         "@type": "Offer",

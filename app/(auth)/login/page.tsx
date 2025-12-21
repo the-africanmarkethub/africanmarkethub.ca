@@ -78,7 +78,7 @@ export default function LoginPage() {
         <Image
           fill
           src="/account-header.jpg"
-          alt="African Market Hub Branding"
+          alt="Ayokah Foods and Services Branding"
           className="object-cover"
           priority
           unoptimized

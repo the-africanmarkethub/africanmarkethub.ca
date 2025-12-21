@@ -86,7 +86,7 @@ export default function ResetPassword() {
             <Link href="/">
               <Image
                 src="/logo.svg"
-                alt="African Market Hub"
+                alt="Ayokah Foods and Services"
                 width={180}
                 height={40}
                 style={{ height: "40px" }}

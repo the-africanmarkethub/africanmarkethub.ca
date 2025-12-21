@@ -57,14 +57,14 @@ export async function generateMetadata({
     const seoImage = parent.image ? [parent.image] : [];
 
     return {
-      title: `${parent.name} | African Market Hub`,
+      title: `${parent.name} | Ayokah Foods and Services`,
       description:
-        description || `Explore ${parent.name} on African Market Hub`,
+        description || `Explore ${parent.name} on Ayokah Foods and Services`,
 
       openGraph: {
         title: parent.name,
         description:
-          description || `Explore ${parent.name} on African Market Hub`,
+          description || `Explore ${parent.name} on Ayokah Foods and Services`,
         type: "website",
         images: seoImage.map((img) => ({
           url: img,
@@ -77,7 +77,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: parent.name,
         description:
-          description || `Explore ${parent.name} on African Market Hub`,
+          description || `Explore ${parent.name} on Ayokah Foods and Services`,
         images: seoImage,
       },
     };
@@ -140,7 +140,9 @@ export default async function CategoriesSlugPage({
             {parent.name}
           </h1>
           {parent.description && (
-            <p className="sm:text-lg text-xs text-white/80! mb-4 line-clamp-2">{parent.description}</p>
+            <p className="sm:text-lg text-xs text-white/80! mb-4 line-clamp-2">
+              {parent.description}
+            </p>
           )}
           <Link
             href={parentLink}

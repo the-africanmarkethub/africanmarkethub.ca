@@ -18,7 +18,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         <div className="relative animate-pulse">
           <Image
             src="/logo.svg"
-            alt="African Market Hub"
+            alt="Ayokah Foods and Services"
             width={180}
             height={60}
             priority

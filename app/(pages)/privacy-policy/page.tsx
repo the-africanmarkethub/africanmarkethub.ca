@@ -19,7 +19,7 @@ const PrivacyPolicyContent: React.FC = () => {
             1. Introduction
           </h2>
           <p className="text-gray-700">
-            African Market Hub values your privacy and is committed to
+            Ayokah Foods and Services values your privacy and is committed to
             protecting your personal information. This Privacy Policy explains
             how we collect, use, and safeguard your data when you use our
             website, services, and platform integrations, including Stripe,
@@ -144,9 +144,9 @@ const PrivacyPolicyContent: React.FC = () => {
             7. Data Security
           </h2>
           <p className="text-gray-700">
-            African Market Hub implements industry-standard security measures
-            including encryption, secure authentication, access control,
-            monitoring, and audits to safeguard personal information.
+            Ayokah Foods and Services implements industry-standard security
+            measures including encryption, secure authentication, access
+            control, monitoring, and audits to safeguard personal information.
           </p>
         </section>
 

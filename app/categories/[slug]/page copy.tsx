@@ -60,14 +60,14 @@ export async function generateMetadata({
     const seoImage = parent.image ? [parent.image] : [];
 
     return {
-      title: `${parent.name} | African Market Hub`,
+      title: `${parent.name} | Ayokah Foods and Services`,
       description:
-        description || `Explore ${parent.name} on African Market Hub`,
+        description || `Explore ${parent.name} on Ayokah Foods and Services`,
 
       openGraph: {
         title: parent.name,
         description:
-          description || `Explore ${parent.name} on African Market Hub`,
+          description || `Explore ${parent.name} on Ayokah Foods and Services`,
         type: "website",
         images: seoImage.map((img) => ({
           url: img,
@@ -80,7 +80,7 @@ export async function generateMetadata({
         card: "summary_large_image",
         title: parent.name,
         description:
-          description || `Explore ${parent.name} on African Market Hub`,
+          description || `Explore ${parent.name} on Ayokah Foods and Services`,
         images: seoImage,
       },
     };

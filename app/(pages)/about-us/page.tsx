@@ -1,16 +1,12 @@
 import React, { Suspense } from "react";
 import {
-  FaBuilding,
-  FaShoppingCart,
-  FaCalendarAlt,
-  FaTint,
+  FaShoppingCart, 
   FaUtensils,
   FaBullseye,
   FaPaperPlane,
   FaHandshake,
   FaShieldAlt,
   FaLightbulb,
-  FaLeaf,
 } from "react-icons/fa";
 
 type IconComponent = React.FC<React.SVGProps<SVGSVGElement>>;
@@ -39,10 +35,10 @@ interface CompanyData {
   strategicEdge: string[];
 }
 const COMPANY_DATA: CompanyData = {
-  name: "African Market Hub",
+  name: "Ayokah Foods and Services",
   tagline: "Your Everyday Convenience Partner.",
   about:
-    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, African Market Hub is redefining modern food accessibility with trust and excellence.",
+    "Ayokah Foods and Services is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, Ayokah Foods and Services is redefining modern food accessibility with trust and excellence.",
   mission:
     "To deliver high-quality food products and services with unmatched convenience, ensuring every household has access to safe, affordable, and reliable essentials.",
   vision:
@@ -65,23 +61,11 @@ const COMPANY_DATA: CompanyData = {
       title: "Innovation",
       description:
         "Using technology and creative solutions to simplify how people access food and services.",
-    },
-    // {
-    //   icon: FaLeaf,
-    //   title: "Sustainability",
-    //   description:
-    //     "Promoting eco-friendly practices and supporting community well-being.",
-    // },
-    // {
-    //   icon: FaBullseye,
-    //   title: "Quality",
-    //   description:
-    //     "Premium products, hygienic handling, and exceptional customer service.",
-    // },
+    }, 
   ],
   businesses: [
     {
-      name: "African Market HubSUPERMARKET",
+      name: "Ayokah Foods",
       icon: FaShoppingCart,
       description:
         "A modern and affordable supermarket providing groceries, beverages, home essentials, organic produce, and FMCG products. Our supermarket supports local suppliers and guarantees fresh, verified, and quality-assured items.",
@@ -90,23 +74,12 @@ const COMPANY_DATA: CompanyData = {
         "Fast delivery within major towns",
         "Secure payment and customer-friendly shopping experience",
       ],
-    },
+    }, 
     {
-      name: "African Market Hub EVENTS & CATERING",
-      icon: FaCalendarAlt,
-      description:
-        "Premium catering services for weddings, birthdays, corporate events, house parties, private dining, and large outdoor celebrations. We combine African and continental cuisines to create memorable experiences.",
-      features: [
-        "Professional chefs and trained serving team",
-        "Customized menus for all events",
-        "On-site and off-site catering options",
-      ],
-    },
-    {
-      name: "African Market Hub SERVICES",
+      name: "Ayokah Services",
       icon: FaUtensils,
       description:
-        "African Market Hub Services offers lifestyle support solutions including home cleaning, laundry, private chef, and event support. Our professional team ensures convenience, reliability, and quality service for homes and businesses alike.",
+        "Ayokah Foods and Services Services offers lifestyle support solutions including home cleaning, laundry, private chef, and event support. Our professional team ensures convenience, reliability, and quality service for homes and businesses alike.",
       features: [
         "Trained and verified service professionals",
         "Flexible packages for homes and events",
@@ -177,8 +150,8 @@ const AboutPageContent: React.FC = () => {
           </p>
           <div className="max-w-4xl mx-auto p-4 bg-orange-50 rounded-lg border-l-4 border-orange-600">
             <p className="text-md text-gray-800 italic">
-              &quot;African Market Hub is a modern, people-focused food and
-              service marketplace created to make everyday living simpler,
+              &quot;Ayokah Foods and Services is a modern, people-focused food
+              and service marketplace created to make everyday living simpler,
               faster, and more convenient.&quot;
             </p>
           </div>
@@ -224,7 +197,7 @@ const AboutPageContent: React.FC = () => {
             Your all in one easy-to-use platform
           </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
             {COMPANY_DATA.businesses.map((business, index) => (
               <BusinessCard key={index} business={business} />
             ))}
@@ -254,7 +227,7 @@ const AboutPageContent: React.FC = () => {
               <ul className="space-y-4 text-gray-700">
                 {COMPANY_DATA.strategicEdge.map((edge, index) => (
                   <li key={index} className="flex items-start">
-                    <FaShieldAlt className="w-5 h-5 text-yellow-800 mr-3 mt-1 flex-shrink-0" />
+                    <FaShieldAlt className="w-5 h-5 text-yellow-800 mr-3 mt-1 shrink-0" />
                     <span className="text-sm sm:text-base">{edge}</span>
                   </li>
                 ))}

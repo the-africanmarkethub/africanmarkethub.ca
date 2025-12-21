@@ -14,11 +14,11 @@ const ShippingPage: React.FC = () => {
             Shipping & Delivery
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-            At African Market Hub, we take pride in ensuring that your orders,
-            whether groceries, food, or services, are delivered safely, on time,
-            and transparently. Our shipping and tracking system, powered by
-            EasyPost, guarantees accurate and efficient delivery to your
-            doorstep.
+            At Ayokah Foods and Services, we take pride in ensuring that your
+            orders, whether groceries, food, or services, are delivered safely,
+            on time, and transparently. Our shipping and tracking system,
+            powered by EasyPost, guarantees accurate and efficient delivery to
+            your doorstep.
           </p>
         </header>
 
@@ -30,9 +30,9 @@ const ShippingPage: React.FC = () => {
               <h2 className="text-2xl font-bold">Reliable Shipping</h2>
             </div>
             <p className="text-gray-700">
-              Every product from African Market Hub is carefully packed and
-              shipped with trusted carriers through EasyPost. We monitor every
-              shipment to ensure it reaches you securely and promptly.
+              Every product from Ayokah Foods and Services is carefully packed
+              and shipped with trusted carriers through EasyPost. We monitor
+              every shipment to ensure it reaches you securely and promptly.
             </p>
           </div>
 
@@ -68,10 +68,10 @@ const ShippingPage: React.FC = () => {
               <h2 className="text-2xl font-bold">Efficient & Timely</h2>
             </div>
             <p className="text-gray-700">
-              African Market Hub values your time. Our logistics and service
-              delivery system is optimized for efficiency, minimizing delays,
-              and ensuring that groceries, food orders, or service bookings are
-              delivered on schedule.
+              Ayokah Foods and Services values your time. Our logistics and
+              service delivery system is optimized for efficiency, minimizing
+              delays, and ensuring that groceries, food orders, or service
+              bookings are delivered on schedule.
             </p>
           </div>
         </section>
@@ -93,8 +93,8 @@ const ShippingPage: React.FC = () => {
             </li>
             <li>
               <strong>Real-Time Tracking:</strong> Receive your tracking number
-              to monitor your delivery in real-time on the African Market Hub
-              platform.
+              to monitor your delivery in real-time on the Ayokah Foods and
+              Services platform.
             </li>
             <li>
               <strong>Delivery Verification:</strong> Our system confirms

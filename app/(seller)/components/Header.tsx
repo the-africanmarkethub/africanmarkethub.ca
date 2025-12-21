@@ -43,7 +43,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
         <Link href="/dashboard">
           <Image
             src="/logo.svg"
-            alt="African Market Hub"
+            alt="Ayokah Foods and Services"
             className="cursor-pointer"
             width={140}
             height={30}
