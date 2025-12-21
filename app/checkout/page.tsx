@@ -53,86 +53,56 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!firstname.trim()) {
-      return toast.error("First name is required");
-    }
-    if (!lastname.trim()) {
-      return toast.error("Last name is required");
-    }
-    if (!email.trim()) {
-      return toast.error("Email is required");
-    }
-    if (!phone.trim()) {
-      return toast.error("Phone number is required");
-    }
+    // 1. Basic User Validation
+    if (!firstname.trim()) return toast.error("First name is required");
+    if (!lastname.trim()) return toast.error("Last name is required");
+    if (!email.trim()) return toast.error("Email is required");
+    if (!phone.trim()) return toast.error("Phone number is required");
 
-    if (!isServiceOrder) {
-      if (!address.street_address.trim()) {
-        return toast.error("Street address is required");
-      }
-      if (!address.city.trim()) {
-        return toast.error("City is required");
-      }
-      if (!address.state.trim()) {
-        return toast.error("State is required");
-      }
-      if (!address.zip_code.trim()) {
-        return toast.error("Postal code is required");
-      }
-      if (!address.country.trim()) {
-        return toast.error("Country is required");
-      }
-    } else {
-      if (!serviceNote.trim()) {
-        return toast.error("Service note is required");
-      }
-      if (!preferredDate.trim()) {
-        return toast.error("Preferred date is required");
-      }
-    }
+    // 2. Physical Address Validation (Services removed)
+    if (!address.street_address.trim())
+      return toast.error("Street address is required");
+    if (!address.city.trim()) return toast.error("City is required");
+    if (!address.state.trim()) return toast.error("State is required");
+    if (!address.zip_code.trim()) return toast.error("Postal code is required");
+    if (!address.country.trim()) return toast.error("Country is required");
 
-    const basePayload = {
+    const payload = {
       firstname,
       lastname,
       email,
       phone,
       country: address.country || "CA",
+      street: address.street_address,
+      city: address.city,
+      state: address.state,
+      zip: address.zip_code,
+      type: "products", 
       products: cart.map((item) => ({
         id: item.id,
+        variation_id: item.variation_id || null,
         quantity: item.qty,
+        price: item.price,
+        color: item.color || null,
+        size: item.size || null,
       })),
     };
-
-    const payload = isServiceOrder
-      ? {
-          ...basePayload,
-          note: serviceNote,
-          preferred_date: preferredDate,
-          type: "services",
-        }
-      : {
-          ...basePayload,
-          street: address.street_address,
-          city: address.city,
-          state: address.state,
-          zip: address.zip_code,
-          type: "products",
-        };
 
     try {
       setLoading(true);
       const response = await shippingRate(payload);
-      // Save email to sessionStorage ONLY if different
+
+      // Save email to sessionStorage for persistence during checkout
       const existingEmail = sessionStorage.getItem("checkout_email");
       if (!existingEmail || existingEmail !== email) {
         sessionStorage.setItem("checkout_email", email);
       }
+
       if (response?.rate) {
         setShippingRates(response.rate);
       }
     } catch (err) {
-      let message = "An error occurred while saving the item";
+      let message = "An error occurred while calculating shipping";
       if (axios.isAxiosError(err)) {
         const axiosErr = err as AxiosError<{ message: string }>;
         message = axiosErr.response?.data?.message ?? axiosErr.message;
@@ -251,10 +221,10 @@ export default function CheckoutPage() {
                       label="Postal Code"
                       value={address.zip_code}
                       onChange={(e) => handleAddressChange("zip_code", e)}
-                      required 
+                      required
                       disabled={
                         address.zip_code?.replace(/\s/g, "").length >= 6
-                      } 
+                      }
                     />
                     <TextInput
                       placeholder="Country"

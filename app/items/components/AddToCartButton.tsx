@@ -16,7 +16,7 @@ interface AddToCartButtonProps {
   selectedImage: string;
   quantity: number;
   stockQty: number;
-  selectedVariation?: any | null; // New Prop
+  selectedVariation?: any | null; 
 }
 
 export default function AddToCartButton({
@@ -24,7 +24,7 @@ export default function AddToCartButton({
   selectedImage,
   quantity,
   stockQty,
-  selectedVariation, // New Prop
+  selectedVariation,
 }: AddToCartButtonProps) {
   const { cart, addToCart } = useCart();
   const router = useRouter();

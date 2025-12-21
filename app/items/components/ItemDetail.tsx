@@ -76,7 +76,6 @@ export default function ItemDetail({
     `${shareText} ${productUrl}`
   )}`;
 
-  console.log(product);
   return (
     <>
       <div className="bg-white">
@@ -162,6 +161,28 @@ export default function ItemDetail({
 
             {/* Variations Section */}
 
+            {/* QUANTITY + ADD TO CART */}
+            <div className="flex items-center gap-2 mt-5">
+              {product.type === "products" && (
+                <QuantityControl
+                  quantity={quantity}
+                  stockQty={product.quantity}
+                  increase={() => setQuantity((q) => q + 1)}
+                  decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
+                />
+              )}
+
+              <AddToCartButton
+                product={product}
+                selectedImage={selectedImage}
+                quantity={quantity}
+                stockQty={product.quantity}
+                selectedVariation={selectedVariation}
+              />
+
+              <WishlistButton product={product} />
+            </div>
+
             {/* Variations Section */}
             {product.variations && product.variations.length > 0 && (
               <div
@@ -177,7 +198,7 @@ export default function ItemDetail({
                       <button
                         key={variant.id}
                         onClick={() => setSelectedVariation(variant)}
-                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all border cursor-pointer ${
                           isSelected
                             ? "border-hub-primary bg-hub-primary/10 text-hub-primary ring-2 ring-hub-primary/20"
                             : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-400"
@@ -204,27 +225,6 @@ export default function ItemDetail({
                 </div>
               </div>
             )}
-            {/* QUANTITY + ADD TO CART */}
-            <div className="flex items-center gap-2 mt-5">
-              {product.type === "products" && (
-                <QuantityControl
-                  quantity={quantity}
-                  stockQty={product.quantity}
-                  increase={() => setQuantity((q) => q + 1)}
-                  decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
-                />
-              )}
-
-              <AddToCartButton
-                product={product}
-                selectedImage={selectedImage}
-                quantity={quantity}
-                stockQty={product.quantity}
-                selectedVariation={selectedVariation} // Pass it here
-              />
-
-              <WishlistButton product={product} />
-            </div>
 
             <div className="text-sm text-gray-500 space-y-1">
               <p>

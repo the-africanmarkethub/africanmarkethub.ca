@@ -6,6 +6,7 @@ import { CartItem } from "@/context/CartContext";
 import { getStockStatus } from "@/utils/ItemUtils";
 import { formatAmount } from "@/utils/formatCurrency";
 import WishlistButton from "@/app/(customer)/account/wishlists/components/WishlistButton";
+import Link from "next/link";
 
 type Props = {
   item: CartItem;
@@ -21,24 +22,28 @@ export default function CartItemRow({
   return (
     <div className="bg-white rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-4">
       <div className="flex items-center gap-4 w-full">
-        <div className="relative shrink-0">
-          <Image
-            src={item.image}
-            alt={item.title}
-            width={100}
-            height={100}
-            className="rounded-md object-cover w-20 h-20 sm:w-24 sm:h-24"
-          />
-        </div>
+        <Link href={`/items/${item.slug}`} prefetch>
+          <div className="relative shrink-0">
+            <Image
+              src={item.image}
+              alt={item.title}
+              width={100}
+              height={100}
+              className="rounded-md object-cover w-20 h-20 sm:w-24 sm:h-24"
+            />
+          </div>
+        </Link>
 
         <div className="flex-1 min-w-0">
-          <h3
-            title={item.title}
-            className="text-sm sm:text-lg font-medium text-gray-800 line-clamp-1 sm:line-clamp-2"
-          >
-            {item.title}
-          </h3>
-
+          <Link href={`/items/${item.slug}`} prefetch>
+            {" "}
+            <h3
+              title={item.title}
+              className="text-sm sm:text-lg font-medium text-gray-800 line-clamp-1 sm:line-clamp-2"
+            >
+              {item.title}
+            </h3>
+          </Link>
           {/* VARIATION DISPLAY */}
           {(item.color || item.size) && (
             <div className="flex flex-wrap gap-2 mt-1">
@@ -104,7 +109,7 @@ export default function CartItemRow({
     </div>
   );
 }
- 
+
 function QuantityButtons({
   item,
   updateQty,
