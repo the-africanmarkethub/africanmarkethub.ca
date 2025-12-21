@@ -16,7 +16,7 @@ interface AddToCartButtonProps {
   selectedImage: string;
   quantity: number;
   stockQty: number;
-  selectedVariation?: any | null; 
+  selectedVariation?: any | null;
 }
 
 export default function AddToCartButton({
@@ -31,9 +31,6 @@ export default function AddToCartButton({
   const [loading, setLoading] = useState(false);
   const selectedColor = selectedVariation?.color?.name;
   const selectedSize = selectedVariation?.size?.name;
-  const variationLabel = [selectedColor, selectedSize]
-    .filter(Boolean)
-    .join(" / ");
 
   const isService = product.type === "services";
 
@@ -109,15 +106,7 @@ export default function AddToCartButton({
         color: selectedColor || undefined,
         size: selectedSize || undefined,
       });
-      toast.success(
-        <div>
-          <p className="font-bold">Added to cart!</p>
-          {variationLabel && (
-            <p className="text-xs opacity-90">{variationLabel}</p>
-          )}
-        </div>,
-        { duration: 3000 }
-      );
+      toast.success("Added to cart!");
     } else {
       router.push("/carts");
     }
