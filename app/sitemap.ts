@@ -1,23 +1,35 @@
 // app/sitemap.ts
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://ayokah.co.uk'
+  const siteUrl = "https://ayokah.co.uk"; 
+  const apiUrl =
+    process.env.NEXT_PUBLIC_API_URL || "https://api.ayokah.co.uk/api/v1";
 
-  // 1. Fetch your dynamic data (e.g., from your Laravel API or DB)
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/items`)
-  const products = await response.json()
+  try {
+    const response = await fetch(`${apiUrl}/items`, {
+      cache: "no-store", 
+    });
 
-  // 2. Map products to the sitemap format
-  const productUrls = products.map((product: any) => ({
-    url: `${baseUrl}/product/${product.slug}`,
-    lastModified: new Date(product.updated_at),
-  }))
+    const result = await response.json(); 
+    const items = result.data || [];
 
-  // 3. Return static pages + dynamic product pages
-  return [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/about-us`, lastModified: new Date() },
-    ...productUrls,
-  ]
+    const productUrls = items.map((product: any) => ({
+      url: `${siteUrl}/product/${product.slug}`,
+      lastModified: product.updated_at
+        ? new Date(product.updated_at)
+        : new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    }));
+
+    return [
+      { url: siteUrl, lastModified: new Date(), priority: 1.0 },
+      { url: `${siteUrl}/about-us`, lastModified: new Date(), priority: 0.5 },
+      ...productUrls,
+    ];
+  } catch (error) {
+    console.error("Sitemap generation failed:", error);
+    return [{ url: siteUrl, lastModified: new Date() }];
+  }
 }
