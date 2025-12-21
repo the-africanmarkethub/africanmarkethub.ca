@@ -27,6 +27,7 @@ import {
   LuRotateCcw,
   LuTruck,
 } from "react-icons/lu";
+import { HiOutlineTicket, HiOutlineClipboardList } from "react-icons/hi";
 
 export const APP_NAME = "African Market Hub";
 
@@ -92,6 +93,26 @@ export const VENDOR_MENU: NavItem[] = [
     label: "Reviews",
     href: "/dashboard/customer-feedback",
     icon: LuMessageCircle,
+  },
+  {
+    id: 4,
+    label: "Marketing",
+    href: "/dashboard/marketing",
+    icon: HiOutlineTicket,
+    children: [
+      {
+        id: 41,
+        label: "Coupon Management",
+        href: "/dashboard/item-coupon",
+        icon: HiOutlineTicket,
+      },
+      {
+        id: 42,
+        label: "Discounted Orders",
+        href: "/dashboard/discount-usage",
+        icon: HiOutlineClipboardList,
+      },
+    ],
   },
   {
     id: 4,
