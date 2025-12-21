@@ -41,7 +41,7 @@ interface NavItem {
 }
 
 export const VENDOR_MENU: NavItem[] = [
-  { id: 1, label: "Dashboard", href: "/dashboard", icon: LuLayoutDashboard },
+  { id: 1, label: "Overview", href: "/dashboard", icon: LuLayoutDashboard },
   {
     id: 2,
     label: "Items & Inventory",
@@ -188,6 +188,22 @@ export const DELIVERY_METHOD_OPTIONS = [
   { value: "remote", label: "Remote" },
   { value: "onsite", label: "Onsite" },
   { value: "hybrid", label: "Hybrid" },
+];
+
+export const STATUS_OPTIONS = [
+  { label: "All Status", value: "" },
+  { label: "Processing", value: "processing" },
+  { label: "Ongoing", value: "ongoing" },
+  { label: "Returned", value: "returned" },
+  { label: "Delivered", value: "delivered" },
+  { label: "Cancelled", value: "cancelled" },
+];
+
+export const PAYMENT_STATUS_OPTIONS = [
+  { label: "Pending", value: "pending" },
+  { label: "Cancel", value: "cancelled" },
+  { label: "Completed", value: "completed" },
+  { label: "Refund", value: "refunded" },
 ];
 
 export const MAX_IMAGES = 7;

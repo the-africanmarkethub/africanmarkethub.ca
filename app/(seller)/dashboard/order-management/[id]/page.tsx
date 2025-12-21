@@ -11,6 +11,7 @@ import { Order, OrderItem as OrderItemType } from "@/interfaces/orders";
 import Address from "@/interfaces/address";
 import { getOrderDetail } from "@/lib/api/orders";
 import { formatHumanReadableDate } from "@/utils/formatDate";
+import { STATUS_OPTIONS, PAYMENT_STATUS_OPTIONS } from "@/setting";
 interface OrderStats {
   total_orders: number;
   total_amount: string;
@@ -32,22 +33,6 @@ interface OrderDetailResponse {
 }
 
 // --- OPTIONS (Kept the same) ---
-
-export const statusOptions = [
-  { label: "All Status", value: "" },
-  { label: "Processing", value: "processing" },
-  { label: "Ongoing", value: "ongoing" },
-  { label: "Returned", value: "returned" },
-  { label: "Delivered", value: "delivered" },
-  { label: "Cancelled", value: "cancelled" },
-];
-
-const paymentStatusOptions = [
-  { label: "Pending", value: "pending" },
-  { label: "Cancel", value: "cancelled" },
-  { label: "Completed", value: "completed" },
-  { label: "Refund", value: "refunded" },
-];
 
 function CustomerSummary({
   customer,
@@ -268,18 +253,19 @@ export default function OrderDetail() {
   const [updating, setUpdating] = useState(false);
 
   const initialShippingStatus = useMemo(() => {
-    const statusValue = orderDetail?.shipping_status || statusOptions[0].value;
+    const statusValue = orderDetail?.shipping_status || STATUS_OPTIONS[0].value;
     return (
-      statusOptions.find((opt) => opt.value === statusValue) || statusOptions[0]
+      STATUS_OPTIONS.find((opt) => opt.value === statusValue) ||
+      STATUS_OPTIONS[0]
     );
   }, [orderDetail]);
 
   const initialPaymentStatus = useMemo(() => {
     const statusValue =
-      orderDetail?.payment_status || paymentStatusOptions[0].value;
+      orderDetail?.payment_status || PAYMENT_STATUS_OPTIONS[0].value;
     return (
-      paymentStatusOptions.find((opt) => opt.value === statusValue) ||
-      paymentStatusOptions[0]
+      PAYMENT_STATUS_OPTIONS.find((opt) => opt.value === statusValue) ||
+      PAYMENT_STATUS_OPTIONS[0]
     );
   }, [orderDetail]);
 

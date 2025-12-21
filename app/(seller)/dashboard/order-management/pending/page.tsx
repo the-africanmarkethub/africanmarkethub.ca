@@ -1,19 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import OrdersTable from "./components/OrdersTable";
 import { LuShoppingCart } from "react-icons/lu";
-import SelectDropdown from "../components/commons/Fields/SelectDropdown";
+import SelectDropdown from "../../components/commons/Fields/SelectDropdown";
+import OrdersTable from "../components/OrdersTable";
 import { STATUS_OPTIONS } from "@/setting";
-
 export default function Orders() {
-  const [selectedStatus, setSelectedStatus] = useState(STATUS_OPTIONS[0]);
+  const [selectedStatus, setSelectedStatus] = useState(STATUS_OPTIONS[2]);
   return (
     <div>
       <div className="card mb-6 hover:shadow-lg transition-all duration-300 rounded-xl bg-white cursor-default">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold flex items-center gap-2 text-orange-800!">
-            <LuShoppingCart />Returns & Refunds Orders
+            <LuShoppingCart />Pending Orders
           </h2>
           <SelectDropdown
             options={STATUS_OPTIONS}
@@ -26,9 +25,9 @@ export default function Orders() {
           <span className="text-orange-800"> customer orders</span>
         </p>
       </div>
-        <div className="space-y-6 mt-6">
-          <OrdersTable limit={10} status={selectedStatus.value} />{" "}
-        </div>
+      <div className="space-y-6 mt-6">
+        <OrdersTable limit={10} status={selectedStatus.value} />{" "}
+      </div>
     </div>
   );
 }
