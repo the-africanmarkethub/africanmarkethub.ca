@@ -12,7 +12,7 @@ export default function Orders() {
       <div className="card mb-6 hover:shadow-lg transition-all duration-300 rounded-xl bg-white cursor-default">
         <div className="flex justify-between items-center">
           <h2 className="text-lg font-semibold flex items-center gap-2 text-orange-800!">
-            <LuShoppingCart />Pending Orders
+            <LuShoppingCart />Ongoing Orders
           </h2>
           <SelectDropdown
             options={STATUS_OPTIONS}
