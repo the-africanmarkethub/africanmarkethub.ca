@@ -9,6 +9,7 @@ import { useCart } from "@/context/CartContext";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useAuthStore } from "@/store/useAuthStore";
 
 interface AddToCartButtonProps {
   product: any;
@@ -35,7 +36,20 @@ export default function AddToCartButton({
   );
 
   const handleAction = async () => {
+    const { token } = useAuthStore.getState();
+
     if (isService) {
+      if (!token) {
+        toast.error("Please login to chat with the service provider", {
+          icon: "🔒",
+        });
+
+        router.push(
+          `/login?redirect=${encodeURIComponent(window.location.pathname)}`
+        );
+        return;
+      }
+
       setLoading(true);
       toast("Starting chat to engage service provider...", {
         icon: "💬",
@@ -48,7 +62,6 @@ export default function AddToCartButton({
       }, 800);
       return;
     }
-
     if (cart.length > 0) {
       const isFirstItemService = cart[0].type === "services";
 
