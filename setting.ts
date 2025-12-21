@@ -229,10 +229,29 @@ export const CARRIER_ICONS: Record<
   default: { icon: MdLocalShipping, color: "#FF9920" },
 };
 
-export const CANADA_TIMEZONE = "America/Toronto";
+export const UK_TIMEZONE = "Europe/London";
 
 export const ALLOWED_COUNTRIES = [
-  "CA", // Canada
+  "NG", // Nigeria
+  "ZA", // South Africa
+  "KE", // Kenya
+  "GH", // Ghana
+  "EG", // Egypt
+  "MA", // Morocco
+  "ET", // Ethiopia
+  "CI", // Côte d'Ivoire
+  "RW", // Rwanda
+  "SN", // Senegal
+  "US", // United States (Largest market for African fashion & tech)
+  "GB", // United Kingdom (Major hub for West African food & products)
+  "CA", // Canada (Fastest growing Nigerian & East African diaspora)
+  "FR", // France (Primary hub for Francophone African goods)
+  "BR", // Brazil (Largest historical African diaspora; strong cultural trade)
+  "DE", // Germany (Growing hub for Ethiopian and Ghanaian businesses)
+  "IT", // Italy (Rising market for African textiles and design)
+  "ES", // Spain (Key entry point for North African trade)
+  "AE", // United Arab Emirates (Major logistics hub for African entrepreneurs)
+  "BE", // Belgium (Central hub for Central African/DRC products)
 ];
 
 export interface CountryOption {
@@ -243,11 +262,127 @@ export interface CountryOption {
 }
 
 export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
+  // --- African Exporting Countries ---
+  {
+    code: "NG",
+    dial_code: "+234",
+    flag: "🇳🇬",
+    name: "Nigeria",
+  },
+  {
+    code: "ZA",
+    dial_code: "+27",
+    flag: "🇿🇦",
+    name: "South Africa",
+  },
+  {
+    code: "KE",
+    dial_code: "+254",
+    flag: "🇰🇪",
+    name: "Kenya",
+  },
+  {
+    code: "GH",
+    dial_code: "+233",
+    flag: "🇬🇭",
+    name: "Ghana",
+  },
+  {
+    code: "EG",
+    dial_code: "+20",
+    flag: "🇪🇬",
+    name: "Egypt",
+  },
+  {
+    code: "MA",
+    dial_code: "+212",
+    flag: "🇲🇦",
+    name: "Morocco",
+  },
+  {
+    code: "ET",
+    dial_code: "+251",
+    flag: "🇪🇹",
+    name: "Ethiopia",
+  },
+  {
+    code: "CI",
+    dial_code: "+225",
+    flag: "🇨🇮",
+    name: "Côte d'Ivoire",
+  },
+  {
+    code: "RW",
+    dial_code: "+250",
+    flag: "🇷🇼",
+    name: "Rwanda",
+  },
+  {
+    code: "SN",
+    dial_code: "+221",
+    flag: "🇸🇳",
+    name: "Senegal",
+  },
+  // --- Diaspora Destination Countries ---
+  {
+    code: "US",
+    dial_code: "+1",
+    flag: "🇺🇸",
+    name: "United States",
+  },
+  {
+    code: "GB",
+    dial_code: "+44",
+    flag: "🇬🇧",
+    name: "United Kingdom",
+  },
   {
     code: "CA",
     dial_code: "+1",
     flag: "🇨🇦",
     name: "Canada",
+  },
+  {
+    code: "FR",
+    dial_code: "+33",
+    flag: "🇫🇷",
+    name: "France",
+  },
+  {
+    code: "AE",
+    dial_code: "+971",
+    flag: "🇦🇪",
+    name: "United Arab Emirates",
+  },
+  {
+    code: "BR",
+    dial_code: "+55",
+    flag: "🇧🇷",
+    name: "Brazil",
+  },
+  {
+    code: "DE",
+    dial_code: "+49",
+    flag: "🇩🇪",
+    name: "Germany",
+  },
+  {
+    code: "IT",
+    dial_code: "+39",
+    flag: "🇮🇹",
+    name: "Italy",
+  },
+  {
+    code: "ES",
+    dial_code: "+34",
+    flag: "🇪🇸",
+    name: "Spain",
+  },
+  {
+    code: "BE",
+    dial_code: "+32",
+    flag: "🇧🇪",
+    name: "Belgium",
   },
 ];
 export const COMPANY_CONTACT_INFO = {

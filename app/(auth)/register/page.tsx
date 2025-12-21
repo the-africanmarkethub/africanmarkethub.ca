@@ -70,6 +70,13 @@ export default function RegisterPage() {
     }
   };
 
+  const handleCountryChange = (e: any) => {
+    const country = REGISTRATION_COUNTRY_LIST.find(
+      (c) => c.code === e.target.value
+    );
+    if (country) setSelectedCountry(country);
+  };
+
   return (
     <div className="flex min-h-screen">
       {/* Left Column - Image */}
@@ -219,14 +226,46 @@ export default function RegisterPage() {
                   <label className="text-sm font-medium text-gray-700">
                     Phone Number
                   </label>
-                  <div className="flex  bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-hub-primary focus-within:border-hub-primary transition-all">
-                    {/* Country Selector Prefix */}
-                    <div className="flex items-center gap-1 bg-gray-50 px-3 border-r border-gray-300">
-                      <span className="text-lg">{selectedCountry.flag}</span>
-                      <span className="text-sm font-medium text-gray-600">
-                        {selectedCountry.dial_code}
-                      </span>
-                      {/* If you eventually have multiple countries, you'd add a ChevronDownIcon here */}
+
+                  <div className="flex bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-hub-primary focus-within:border-hub-primary transition-all">
+                    {/* Country Selector Dropdown */}
+                    <div className="relative flex items-center bg-gray-50 border-r border-gray-300">
+                      <div className="flex items-center gap-1 px-3 pointer-events-none">
+                        <span className="text-lg">{selectedCountry.flag}</span>
+                        <span className="text-sm font-medium text-gray-600">
+                          {selectedCountry.dial_code}
+                        </span>
+                      </div>
+
+                      {/* Hidden Select Overlay for Functionality */}
+                      <select
+                        value={selectedCountry.code}
+                        onChange={handleCountryChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                      >
+                        {REGISTRATION_COUNTRY_LIST.map((country) => (
+                          <option key={country.code} value={country.code}>
+                            {country.flag} {country.name} ({country.dial_code})
+                          </option>
+                        ))}
+                      </select>
+
+                      {/* Small Chevron to indicate it's a dropdown */}
+                      <div className="pr-2 pointer-events-none">
+                        <svg
+                          className="w-4 h-4 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
                     </div>
 
                     {/* Phone Input Field */}
@@ -235,14 +274,16 @@ export default function RegisterPage() {
                       value={phone}
                       onChange={(e) =>
                         setPhone(e.target.value.replace(/\D/g, ""))
-                      } // Only allow digits
+                      }
                       className="flex-1 py-2.5 px-3 focus:outline-none text-gray-700 placeholder:text-gray-400"
-                      placeholder="6470000000"
-                      maxLength={10}
+                      placeholder="Enter number"
+                      maxLength={15} // Increased as different countries have different lengths
                     />
                   </div>
+
                   <p className="text-[10px] text-gray-500 mt-1">
-                    Currently accepting Canada-based numbers only.
+                    Currently accepting registrations from Africa and major
+                    Diaspora hubs.
                   </p>
                 </div>
 
@@ -321,7 +362,13 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
   );
 }
 
-export function Input({ label, type = "text", value, onChange, placeholder }: any) {
+export function Input({
+  label,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+}: any) {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">
