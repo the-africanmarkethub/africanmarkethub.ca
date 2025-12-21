@@ -232,26 +232,26 @@ export const CARRIER_ICONS: Record<
 export const UK_TIMEZONE = "Europe/London";
 
 export const ALLOWED_COUNTRIES = [
-  "NG", // Nigeria
-  "ZA", // South Africa
-  "KE", // Kenya
-  "GH", // Ghana
-  "EG", // Egypt
-  "MA", // Morocco
-  "ET", // Ethiopia
-  "CI", // Côte d'Ivoire
-  "RW", // Rwanda
-  "SN", // Senegal
-  "US", // United States (Largest market for African fashion & tech)
-  "GB", // United Kingdom (Major hub for West African food & products)
-  "CA", // Canada (Fastest growing Nigerian & East African diaspora)
-  "FR", // France (Primary hub for Francophone African goods)
-  "BR", // Brazil (Largest historical African diaspora; strong cultural trade)
-  "DE", // Germany (Growing hub for Ethiopian and Ghanaian businesses)
-  "IT", // Italy (Rising market for African textiles and design)
-  "ES", // Spain (Key entry point for North African trade)
-  "AE", // United Arab Emirates (Major logistics hub for African entrepreneurs)
-  "BE", // Belgium (Central hub for Central African/DRC products)
+  // --- TOP 5 AFRICAN ECONOMIC POWERS (Local Sellers & Buyers) ---
+  "NG", // Nigeria: Largest market, tech-savvy, huge fashion/food export.
+  "ZA", // South Africa: Most advanced e-commerce & logistics hub.
+  "KE", // Kenya: East Africa's leader in mobile money & artisan exports.
+  "EG", // Egypt: North Africa’s massive market for food & textiles.
+  "GH", // Ghana: High demand for kente, food, and strong diaspora links.
+
+  // --- KEY DIASPORA MARKETS (High Purchase Power) ---
+  "US", // United States: Largest and wealthiest African diaspora.
+  "GB", // United Kingdom: Massive hub for West African food & products.
+  "CA", // Canada: Fastest-growing African immigrant population.
+  "FR", // France: The primary market for Francophone Africa (Senegal, Ivory Coast).
+  "DE", // Germany: Major hub for Ethiopian and West African businesses.
+
+  // --- REGIONAL HUBS & EMERGING ART MARKETS ---
+  "MA", // Morocco: Leader in artisanal craft, home decor, and fashion.
+  "ET", // Ethiopia: World-renowned for coffee, textiles, and art.
+  "CI", // Côte d'Ivoire: Cultural heart of Francophone West Africa.
+  "AE", // UAE (Dubai): The logistics bridge between Africa and Asia.
+  "SN", // Senegal: High-growth market for fashion and art (Dakar).
 ];
 
 export interface CountryOption {
@@ -262,7 +262,7 @@ export interface CountryOption {
 }
 
 export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
-  // --- African Exporting Countries ---
+  // --- African Exporting & Economic Hubs ---
   {
     code: "NG",
     dial_code: "+234",
@@ -312,18 +312,12 @@ export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
     name: "Côte d'Ivoire",
   },
   {
-    code: "RW",
-    dial_code: "+250",
-    flag: "🇷🇼",
-    name: "Rwanda",
-  },
-  {
     code: "SN",
     dial_code: "+221",
     flag: "🇸🇳",
     name: "Senegal",
   },
-  // --- Diaspora Destination Countries ---
+  // --- High-Value Diaspora & Logistics Hubs ---
   {
     code: "US",
     dial_code: "+1",
@@ -349,42 +343,19 @@ export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
     name: "France",
   },
   {
-    code: "AE",
-    dial_code: "+971",
-    flag: "🇦🇪",
-    name: "United Arab Emirates",
-  },
-  {
-    code: "BR",
-    dial_code: "+55",
-    flag: "🇧🇷",
-    name: "Brazil",
-  },
-  {
     code: "DE",
     dial_code: "+49",
     flag: "🇩🇪",
     name: "Germany",
   },
   {
-    code: "IT",
-    dial_code: "+39",
-    flag: "🇮🇹",
-    name: "Italy",
-  },
-  {
-    code: "ES",
-    dial_code: "+34",
-    flag: "🇪🇸",
-    name: "Spain",
-  },
-  {
-    code: "BE",
-    dial_code: "+32",
-    flag: "🇧🇪",
-    name: "Belgium",
+    code: "AE",
+    dial_code: "+971",
+    flag: "🇦🇪",
+    name: "United Arab Emirates",
   },
 ];
+
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
   phone: "+44 7930 173135",
