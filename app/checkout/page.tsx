@@ -79,8 +79,10 @@ export default function CheckoutPage() {
           calculatedDiscount = (subtotal * Number(discount_rate)) / 100;
 
         setDiscount(calculatedDiscount);
+        toast.success('Coupon applied successfully');
         setShowCouponModal(false);
       } else {
+        toast.error("Invalid or expired coupon code");
         setError("Invalid or expired coupon code");
       }
     } catch {
