@@ -9,7 +9,7 @@ import WishlistButton from "@/app/(customer)/account/wishlists/components/Wishli
 
 type Props = {
   item: CartItem;
-  updateQty: (id: number, qty: number) => void;
+  updateQty: (id: number, qty: number, variation_id?: number | null) => void;
   openRemoveModal: (item: CartItem) => void;
 };
 
@@ -19,76 +19,120 @@ export default function CartItemRow({
   openRemoveModal,
 }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow-sm flex items-center justify-between p-4">
-      <div className="flex items-center gap-4">
-        <Image
-          src={item.image}
-          alt={item.title}
-          width={100}
-          height={100}
-          className="rounded-md object-cover"
-        />
-        <div>
+    <div className="bg-white rounded-lg shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-4">
+      <div className="flex items-center gap-4 w-full">
+        <div className="relative shrink-0">
+          <Image
+            src={item.image}
+            alt={item.title}
+            width={100}
+            height={100}
+            className="rounded-md object-cover w-20 h-20 sm:w-24 sm:h-24"
+          />
+        </div>
+
+        <div className="flex-1 min-w-0">
           <h3
             title={item.title}
-            className="text-xs sm:text-lg font-medium text-gray-800 line-clamp-2"
+            className="text-sm sm:text-lg font-medium text-gray-800 line-clamp-1 sm:line-clamp-2"
           >
             {item.title}
           </h3>
-          <span
-            className={`text-white text-xs font-semibold px-2 py-1 rounded-full ${
-              getStockStatus(item.stockQty ?? 0).bgClass
-            }`}
-          >
-            {getStockStatus(item.stockQty ?? 0).text}
-          </span>
 
-          <div className="flex items-center gap-2 mt-2 text-orange-800">
-            <button
-              aria-label="quantity reduce"
-              onClick={() => updateQty(item.id, item.qty - 1)}
-              disabled={item.qty <= 1}
-              className="w-5 h-5 flex items-center justify-center rounded-full bg-orange-100 text-orange-800 disabled:opacity-50 disabled:cursor-not-allowed"
+          {/* VARIATION DISPLAY */}
+          {(item.color || item.size) && (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {item.color && (
+                <span className="text-[10px] sm:text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md border border-gray-200">
+                  Color:{" "}
+                  <span className="font-bold text-gray-900">{item.color}</span>
+                </span>
+              )}
+              {item.size && (
+                <span className="text-[10px] sm:text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md border border-gray-200">
+                  Size:{" "}
+                  <span className="font-bold text-gray-900">{item.size}</span>
+                </span>
+              )}
+            </div>
+          )}
+
+          <div className="mt-2 flex items-center gap-3">
+            <span
+              className={`text-white text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded-full ${
+                getStockStatus(item.stockQty ?? 0).bgClass
+              }`}
             >
-              <MinusIcon className="w-3 h-3" />
-            </button>
+              {getStockStatus(item.stockQty ?? 0).text}
+            </span>
+          </div>
 
-            <span className="text-sm font-medium">{item.qty}</span>
-
-            <button
-              aria-label="quantity increase"
-              onClick={() => {
-                if (item.stockQty !== undefined && item.qty >= item.stockQty)
-                  return;
-                updateQty(item.id, item.qty + 1);
-              }}
-              disabled={
-                item.stockQty !== undefined && item.qty >= item.stockQty
-              }
-              className="w-5 h-5 flex items-center justify-center rounded-full bg-orange-100 text-orange-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <PlusIcon className="w-3 h-3" />
-            </button>
+          {/* MOBILE ONLY QUANTITY (Hidden on Desktop) */}
+          <div className="flex sm:hidden items-center gap-3 mt-3">
+            <QuantityButtons item={item} updateQty={updateQty} />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col items-end justify-between h-full">
-        <span className="text-xs sm:text-lg font-semibold text-gray-800">
-          {formatAmount(Number(item.price) * Number(item.qty))}
-        </span>
-        <div className="flex items-center gap-2 mt-4">
+      <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto sm:h-full gap-2">
+        <div className="hidden sm:flex items-center gap-3">
+          <QuantityButtons item={item} updateQty={updateQty} />
+        </div>
+
+        <div className="flex flex-col items-end">
+          <span className="text-sm sm:text-xl font-bold text-hub-primary">
+            {formatAmount(Number(item.price) * Number(item.qty))}
+          </span>
+          {item.qty > 1 && (
+            <span className="text-[10px] text-gray-400">
+              {formatAmount(Number(item.price))} each
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
           <button
             onClick={() => openRemoveModal(item)}
-            title="Remove"
-            className="p-2 sm:px-3 sm:py-1.5 hover:text-red-800 flex items-center gap-1 bg-red-50 text-red-700 rounded-full text-sm font-medium transition cursor-pointer"
+            className="p-2 hover:text-red-800 flex items-center gap-1 bg-red-50 text-red-700 rounded-full text-xs font-medium transition cursor-pointer"
           >
-            <TrashIcon className="h-5 w-5 text-red-700 hover:text-red-500" />
-            <span className="hidden sm:inline">Remove</span>
+            <TrashIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden lg:inline">Remove</span>
           </button>
           <WishlistButton product={item} />
         </div>
       </div>
+    </div>
+  );
+}
+ 
+function QuantityButtons({
+  item,
+  updateQty,
+}: {
+  item: CartItem;
+  updateQty: any;
+}) {
+  return (
+    <div className="flex items-center gap-2 bg-orange-50 px-2 py-1 rounded-full border border-orange-100">
+      <button
+        onClick={() => updateQty(item.id, item.qty - 1, item.variation_id)}
+        disabled={item.qty <= 1}
+        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-orange-800 disabled:opacity-50"
+      >
+        <MinusIcon className="w-3 h-3 stroke-[3px]" />
+      </button>
+
+      <span className="text-xs sm:text-sm font-bold text-orange-900 w-4 text-center">
+        {item.qty}
+      </span>
+
+      <button
+        onClick={() => updateQty(item.id, item.qty + 1, item.variation_id)}
+        disabled={item.stockQty !== undefined && item.qty >= item.stockQty}
+        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-orange-800 disabled:opacity-50"
+      >
+        <PlusIcon className="w-3 h-3 stroke-[3px]" />
+      </button>
     </div>
   );
 }

@@ -16,6 +16,7 @@ interface AddToCartButtonProps {
   selectedImage: string;
   quantity: number;
   stockQty: number;
+  selectedVariation?: any | null; // New Prop
 }
 
 export default function AddToCartButton({
@@ -23,10 +24,16 @@ export default function AddToCartButton({
   selectedImage,
   quantity,
   stockQty,
+  selectedVariation, // New Prop
 }: AddToCartButtonProps) {
   const { cart, addToCart } = useCart();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const selectedColor = selectedVariation?.color?.name;
+  const selectedSize = selectedVariation?.size?.name;
+  const variationLabel = [selectedColor, selectedSize]
+    .filter(Boolean)
+    .join(" / ");
 
   const isService = product.type === "services";
 
@@ -36,6 +43,17 @@ export default function AddToCartButton({
   );
 
   const handleAction = async () => {
+    if (product.variations?.length > 0 && !selectedVariation) {
+      toast.error("Please select a size or color first!", {
+        icon: "🎨",
+        duration: 3000,
+      });
+      document
+        .getElementById("variations-section")
+        ?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+
     const { token } = useAuthStore.getState();
 
     if (isService) {
@@ -79,16 +97,27 @@ export default function AddToCartButton({
     if (!isInCart) {
       addToCart({
         id: product.id,
+        variation_id: selectedVariation?.id || null,
         title: product.title,
         slug: product.slug,
         type: product.type,
-        stockQty,
+        stockQty: selectedVariation ? selectedVariation.quantity : stockQty,
         price: parseFloat(product.sales_price),
         image: selectedImage,
         qty: quantity,
         stock: stockQty > 0,
+        color: selectedColor || undefined,
+        size: selectedSize || undefined,
       });
-      toast.success("Added to cart!");
+      toast.success(
+        <div>
+          <p className="font-bold">Added to cart!</p>
+          {variationLabel && (
+            <p className="text-xs opacity-90">{variationLabel}</p>
+          )}
+        </div>,
+        { duration: 3000 }
+      );
     } else {
       router.push("/carts");
     }

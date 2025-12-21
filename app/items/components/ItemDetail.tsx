@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Image from "next/image"; 
-import ItemTabs, { StarRating } from "./ItemTabs"; 
-import { formatAmount } from "@/utils/formatCurrency";  
+import Image from "next/image";
+import ItemTabs, { StarRating } from "./ItemTabs";
+import { formatAmount } from "@/utils/formatCurrency";
 import Link from "next/link";
 import WishlistButton from "@/app/(customer)/account/wishlists/components/WishlistButton";
 import parse from "html-react-parser";
@@ -41,7 +41,7 @@ export default function ItemDetail({
 
   const salesPrice = parseFloat(product.sales_price);
   const regularPrice = parseFloat(product.regular_price);
-
+  const [selectedVariation, setSelectedVariation] = useState<any | null>(null);
   const discount =
     regularPrice > salesPrice
       ? Math.round(((regularPrice - salesPrice) / regularPrice) * 100)
@@ -162,40 +162,48 @@ export default function ItemDetail({
 
             {/* Variations Section */}
 
+            {/* Variations Section */}
             {product.variations && product.variations.length > 0 && (
-              <div className="text-sm text-gray-700 space-y-2 pt-2">
+              <div
+                id="variations-section"
+                className="text-sm text-gray-700 space-y-2 pt-2"
+              >
                 <p className="font-semibold">Available Variations:</p>
                 <div className="flex flex-wrap gap-3">
-                  {product.variations.map((variant) => (
-                    <div
-                      key={variant.id}
-                      className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-full text-xs font-medium text-gray-800"
-                    >
-                      {/* Display Color Name (if available) */}
-                      {variant.color?.name && (
-                        <span className="flex items-center gap-1">
-                          <span
-                            className="w-3 h-3 rounded-full "
-                            style={{
-                              backgroundColor:
-                                variant.color.hexcode || "#ffffff",
-                            }}
-                            title={`Color: ${variant.color.name}`}
-                          />
-                          {variant.color.name}
-                        </span>
-                      )}
+                  {product.variations.map((variant) => {
+                    const isSelected = selectedVariation?.id === variant.id;
 
-                      {/* Display Size Name (if available) */}
-                      {variant.size?.name && (
-                        <span>Size: {variant.size.name}</span>
-                      )}
-                    </div>
-                  ))}
+                    return (
+                      <button
+                        key={variant.id}
+                        onClick={() => setSelectedVariation(variant)}
+                        className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all border ${
+                          isSelected
+                            ? "border-hub-primary bg-hub-primary/10 text-hub-primary ring-2 ring-hub-primary/20"
+                            : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-400"
+                        }`}
+                      >
+                        {variant.color?.name && (
+                          <span className="flex items-center gap-1">
+                            <span
+                              className="w-3 h-3 rounded-full border border-gray-300"
+                              style={{
+                                backgroundColor:
+                                  variant.color.hexcode || "#ffffff",
+                              }}
+                            />
+                            {variant.color.name}
+                          </span>
+                        )}
+                        {variant.size?.name && (
+                          <span>Size: {variant.size.name}</span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
-
             {/* QUANTITY + ADD TO CART */}
             <div className="flex items-center gap-2 mt-5">
               {product.type === "products" && (
@@ -212,6 +220,7 @@ export default function ItemDetail({
                 selectedImage={selectedImage}
                 quantity={quantity}
                 stockQty={product.quantity}
+                selectedVariation={selectedVariation} // Pass it here
               />
 
               <WishlistButton product={product} />

@@ -10,6 +10,7 @@ import {
 
 export type CartItem = {
   id: number;
+  variation_id?: number | null; // Crucial for unique identification
   title: string;
   price: number;
   sales_prices?: number;
@@ -46,26 +47,46 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
  
+  // const addToCart = (item: CartItem) => {
+  //   setCart((prev) => {
+  //     const existing = prev.find((c) => c.id === item.id);
+
+  //     if (existing) {
+  //       const newQty = Math.min(
+  //         existing.qty + item.qty,
+  //         item.stockQty ?? Infinity
+  //       );
+
+  //       return prev.map((c) => (c.id === item.id ? { ...c, qty: newQty } : c));
+  //     }
+
+  //     return [
+  //       ...prev,
+  //       {
+  //         ...item,
+  //         qty: Math.min(item.qty, item.stockQty ?? item.qty),
+  //       },
+  //     ];
+  //   });
+  // };
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
-      const existing = prev.find((c) => c.id === item.id);
+      const existingIndex = prev.findIndex(
+        (c) => c.id === item.id && c.variation_id === item.variation_id
+      );
 
-      if (existing) {
-        const newQty = Math.min(
-          existing.qty + item.qty,
-          item.stockQty ?? Infinity
-        );
+      if (existingIndex !== -1) {
+        const newCart = [...prev];
+        const existing = newCart[existingIndex];
 
-        return prev.map((c) => (c.id === item.id ? { ...c, qty: newQty } : c));
+        newCart[existingIndex] = {
+          ...existing,
+          qty: Math.min(existing.qty + item.qty, item.stockQty ?? Infinity),
+        };
+        return newCart;
       }
 
-      return [
-        ...prev,
-        {
-          ...item,
-          qty: Math.min(item.qty, item.stockQty ?? item.qty),
-        },
-      ];
+      return [...prev, { ...item }];
     });
   };
 
