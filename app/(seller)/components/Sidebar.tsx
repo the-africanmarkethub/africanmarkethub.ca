@@ -44,27 +44,30 @@ export function Sidebar({
     fetchShopData();
   }, []);
 
-  const filteredMenu = useMemo(() => {
-    return VENDOR_MENU.filter((item) => {
-      if (shopType === "services" && [6, 7].includes(item.id)) {
-        return false;
-      }
-      return true;
-    }).map((item) => {
-      if (item.id === 2 && item.children) {
-        return {
-          ...item,
-          children: item.children.filter((child) => {
-            if (shopType === "services" && child.id === 22) {
-              return false;
-            }
-            return true;
-          }),
-        };
-      }
-      return item;
-    });
-  }, [shopType]);
+ const filteredMenu = useMemo(() => {
+   return VENDOR_MENU.filter((item) => {
+     // Logic: If Service shop, hide these IDs. If Product shop, hide these IDs.
+     const hiddenForServices = [5];
+     const hiddenForProducts = [6];
+
+     if (shopType === "services" && hiddenForServices.includes(item.id))
+       return false;
+     if (shopType === "products" && hiddenForProducts.includes(item.id))
+       return false;
+
+     return true;
+   }).map((item) => {
+     if (item.id === 2 && item.children) {
+       return {
+         ...item,
+         children: item.children.filter(
+           (child) => !(shopType === "services" && child.id === 22)
+         ),
+       };
+     }
+     return item;
+   });
+ }, [shopType]);
 
   return (
     <>

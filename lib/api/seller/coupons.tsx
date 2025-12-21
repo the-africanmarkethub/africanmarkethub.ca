@@ -1,3 +1,4 @@
+import Coupon from "@/interfaces/coupon";
 import api from "../axios";
 
 export async function listCoupons(
@@ -13,4 +14,9 @@ export async function listCoupons(
     },
   });
   return response.data;
+}
+ 
+export async function upsertCoupon(data: any){
+    const response = await api.post("/vendor/discounts/upsert", data);
+    return response.data;
 }

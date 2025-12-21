@@ -9,7 +9,6 @@ import { formatHumanReadableDate } from "@/utils/formatDate";
 import TanStackTable from "@/app/(seller)/dashboard/components/commons/TanStackTable";
 import { listCoupons } from "@/lib/api/seller/coupons";
 
-// Define the interface based on your fillables
 interface Discount {
   id: number;
   discount_code: string;
@@ -26,9 +25,10 @@ interface Discount {
 
 interface CouponTableProps {
   limit: number;
+  onEdit: (coupon: Discount) => void; // Add this line
 }
 
-const CouponTable: React.FC<CouponTableProps> = ({ limit }) => {
+const CouponTable: React.FC<CouponTableProps> = ({ limit, onEdit }) => {
   const [coupons, setCoupons] = useState<Discount[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -103,24 +103,18 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit }) => {
           return <StatusBadge status={value} />;
         },
       },
+      // Inside CouponTable columns definition
       {
         header: "Action",
         accessorKey: "id",
-        cell: ({ getValue }) => {
-          const couponId = getValue() as number;
-          return (
-            <div className="flex space-x-2">
-              <button
-                className="px-3 py-1 bg-hub-primary text-white text-xs rounded hover:bg-hub-secondary cursor-pointer"
-                onClick={() => {
-                  window.location.href = `/dashboard/item-coupon/edit/${couponId}`;
-                }}
-              >
-                Edit
-              </button>
-            </div>
-          );
-        },
+        cell: ({ row }) => (
+          <button
+            className="text-orange-800 font-semibold hover:underline cursor-pointer"
+            onClick={() => onEdit(row.original)} // Trigger Parent's drawer
+          >
+            Edit
+          </button>
+        ),
       },
     ],
     []
@@ -131,7 +125,6 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit }) => {
       try {
         setLoading(true);
         const offset = pageIndex * pagination.pageSize;
-        // Adjusting API call based on your backend structure
         const response = await listCoupons(pagination.pageSize, offset, search);
 
         if (response.status === "success" && Array.isArray(response.data)) {
@@ -178,15 +171,7 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit }) => {
           value={search}
           onChange={handleSearchChange}
           className="w-full max-w-md px-3 py-2 border rounded-md border-amber-600 text-gray-900 focus:outline-hub-primary-400"
-        />
-        <button
-          onClick={() =>
-            (window.location.href = "/dashboard/item-coupon/create")
-          }
-          className="bg-orange-800 text-white px-4 py-2 rounded-md text-sm font-semibold whitespace-nowrap"
-        >
-          + Create Coupon
-        </button>
+        /> 
       </div>
 
       <TanStackTable

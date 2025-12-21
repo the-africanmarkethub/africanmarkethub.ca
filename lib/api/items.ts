@@ -26,8 +26,8 @@ export async function listItems(params: ListItemsParams) {
 }
 
 export async function listSellerItems(
-  limit: number,
-  offset: number,
+  limit?: number,
+  offset?: number,
   search?: string
 ) {
   const response = await api.get("/vendor/items", {

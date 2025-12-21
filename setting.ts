@@ -95,19 +95,19 @@ export const VENDOR_MENU: NavItem[] = [
     icon: LuMessageCircle,
   },
   {
-    id: 5,
+    id: 50,
     label: "Marketing",
     href: "/dashboard/marketing",
     icon: HiOutlineTicket,
     children: [
       {
-        id: 41,
+        id: 51,
         label: "Coupon Management",
         href: "/dashboard/marketing/item-coupon",
         icon: HiOutlineTicket,
       },
       {
-        id: 42,
+        id: 52,
         label: "Discounted Orders",
         href: "/dashboard/marketing/discount-usage",
         icon: HiOutlineClipboardList,
