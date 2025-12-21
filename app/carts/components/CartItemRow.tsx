@@ -1,12 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { PlusIcon, MinusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { CartItem } from "@/context/CartContext";
 import { getStockStatus } from "@/utils/ItemUtils";
 import { formatAmount } from "@/utils/formatCurrency";
 import WishlistButton from "@/app/(customer)/account/wishlists/components/WishlistButton";
 import Link from "next/link";
+import QuantityControl from "@/app/items/components/QuantityControl";
 
 type Props = {
   item: CartItem;
@@ -74,14 +75,32 @@ export default function CartItemRow({
 
           {/* MOBILE ONLY QUANTITY (Hidden on Desktop) */}
           <div className="flex sm:hidden items-center gap-3 mt-3">
-            <QuantityButtons item={item} updateQty={updateQty} />
+            <QuantityControl
+              quantity={item.qty}
+              stockQty={item.stockQty ?? 99} // Use actual stock if available
+              onIncrease={() =>
+                updateQty(item.id, item.qty + 1, item.variation_id)
+              }
+              onDecrease={() =>
+                updateQty(item.id, item.qty - 1, item.variation_id)
+              }
+            />
           </div>
         </div>
       </div>
 
       <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto sm:h-full gap-2">
         <div className="hidden sm:flex items-center gap-3">
-          <QuantityButtons item={item} updateQty={updateQty} />
+          <QuantityControl
+            quantity={item.qty}
+            stockQty={item.stockQty ?? 99} // Use actual stock if available
+            onIncrease={() =>
+              updateQty(item.id, item.qty + 1, item.variation_id)
+            }
+            onDecrease={() =>
+              updateQty(item.id, item.qty - 1, item.variation_id)
+            }
+          />{" "}
         </div>
 
         <div className="flex flex-col items-end">
@@ -109,35 +128,4 @@ export default function CartItemRow({
     </div>
   );
 }
-
-function QuantityButtons({
-  item,
-  updateQty,
-}: {
-  item: CartItem;
-  updateQty: any;
-}) {
-  return (
-    <div className="flex items-center gap-2 bg-orange-50 px-2 py-1 rounded-full border border-orange-100">
-      <button
-        onClick={() => updateQty(item.id, item.qty - 1, item.variation_id)}
-        disabled={item.qty <= 1}
-        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-orange-800 disabled:opacity-50"
-      >
-        <MinusIcon className="w-3 h-3 stroke-[3px]" />
-      </button>
-
-      <span className="text-xs sm:text-sm font-bold text-orange-900 w-4 text-center">
-        {item.qty}
-      </span>
-
-      <button
-        onClick={() => updateQty(item.id, item.qty + 1, item.variation_id)}
-        disabled={item.stockQty !== undefined && item.qty >= item.stockQty}
-        className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow-sm text-orange-800 disabled:opacity-50"
-      >
-        <PlusIcon className="w-3 h-3 stroke-[3px]" />
-      </button>
-    </div>
-  );
-}
+ 

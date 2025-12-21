@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/(customer)/account/layout.sx",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "app/carts/components/OrderSummary.note"
   ],
   "exclude": ["node_modules"]
 }

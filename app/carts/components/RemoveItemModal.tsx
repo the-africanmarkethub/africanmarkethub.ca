@@ -22,7 +22,7 @@ export default function RemoveItemModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Remove from cart"
-      description="Do you really want to remove this item from your cart?"
+      description="Do you really want to remove this item from your cart or add to wishlist?"
     >
       
       <div className="flex justify-end gap-2 mt-6">

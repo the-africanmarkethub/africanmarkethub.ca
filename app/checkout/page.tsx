@@ -10,9 +10,11 @@ import axios, { AxiosError } from "axios";
 import { ShippingRateResponse } from "@/interfaces/shippingRate";
 import { useAuthStore } from "@/store/useAuthStore";
 import TextInput from "../(seller)/dashboard/shop-management/components/TextInput";
-import AppointmentPicker from "./components/AppointmentPicker";
 import GoogleAddressAutocomplete from "../(seller)/dashboard/shop-management/components/GoogleAddressAutocomplete";
 import { countryCodeToFlag } from "@/utils/countryFlag";
+import Coupon from "@/interfaces/coupon";
+import verifyCoupon from "@/lib/api/customer/coupon";
+import Modal from "../components/common/Modal";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -22,6 +24,10 @@ export default function CheckoutPage() {
   const [shippingRates, setShippingRates] =
     useState<ShippingRateResponse | null>(null);
   const [shippingFee, setShippingFee] = useState(0);
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon>();
 
   const [address, setAddress] = useState<Address>({
     street_address: "",
@@ -38,7 +44,7 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
   const [serviceNote, setServiceNote] = useState("");
-  const [preferredDate, setPreferredDate] = useState("");
+  const [error, setError] = useState("");
 
   const isServiceOrder = useMemo(() => {
     return cart.some((item) => item.type === "services");
@@ -48,6 +54,40 @@ export default function CheckoutPage() {
 
   const handleAddressChange = (field: keyof Address, value: string) => {
     setAddress((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // === Coupon functions ===
+  const handleApplyCoupon = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await verifyCoupon(couponCode);
+
+      if (res?.status === "error") {
+        setError(res.message || "Invalid or expired coupon code");
+        toast.error(res.message || "Invalid or expired coupon code");
+        return;
+      }
+
+      if (res?.is_active && res.discount) {
+        const { discount_rate, discount_type } = res.discount;
+
+        let calculatedDiscount = 0;
+        if (discount_type === "fixed")
+          calculatedDiscount = Number(discount_rate);
+        else if (discount_type === "percentage")
+          calculatedDiscount = (subtotal * Number(discount_rate)) / 100;
+
+        setDiscount(calculatedDiscount);
+        setShowCouponModal(false);
+      } else {
+        setError("Invalid or expired coupon code");
+      }
+    } catch {
+      setError("Failed to apply coupon. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +117,7 @@ export default function CheckoutPage() {
       city: address.city,
       state: address.state,
       zip: address.zip_code,
-      type: "products", 
+      type: "products",
       products: cart.map((item) => ({
         id: item.id,
         variation_id: item.variation_id || null,
@@ -283,21 +323,6 @@ export default function CheckoutPage() {
                         maxLength={250}
                       />
                     </div>
-                    {/* 
-                    <div className="flex flex-col gap-2 md:col-span-2">
-                      <label htmlFor="preferredDate" className="text-sm font-medium text-gray-700 block">
-                        Preferred Date & Time
-                      </label>
-                      <input
-                        id="preferredDate"
-                        type="datetime-local"
-                        value={preferredDate}
-                        onChange={(e) => setPreferredDate(e.target.value)}
-                        className="input w-full!"
-                        required
-                      />
-                    </div> */}
-                    <AppointmentPicker />
                   </>
                 )}
 
@@ -325,8 +350,42 @@ export default function CheckoutPage() {
               subtotal={subtotal}
               shippingRates={shippingRates}
               onSelectRate={(fee) => setShippingFee(fee)}
+              discount={discount}
+              appliedCoupon={appliedCoupon}
               shippingFee={shippingFee}
+              setShowCouponModal={setShowCouponModal}
             />
+            {/* Coupon Modal */}
+            <Modal
+              isOpen={showCouponModal}
+              onClose={() => setShowCouponModal(false)}
+              title="Apply Coupon"
+              description="Enter the coupon code to apply"
+            >
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value)}
+                className="input text-gray-500!"
+                placeholder="Enter coupon code"
+              />
+              {error && <p className="text-orange-800 text-sm mb-2">{error}</p>}
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => setShowCouponModal(false)}
+                  className="btn btn-gray w-full"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleApplyCoupon}
+                  disabled={loading || !couponCode}
+                  className="btn btn-primary w-full"
+                >
+                  {loading ? "Applying..." : "Apply"}
+                </button>
+              </div>
+            </Modal>
           </>
         ) : (
           // SHOW this message if cart is empty (from previous fix)

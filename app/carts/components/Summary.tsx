@@ -14,21 +14,28 @@ import { CartItem, useCart } from "@/context/CartContext";
 import { CheckoutPayload, checkoutStripe } from "@/lib/api/customer/checkout";
 import axios from "axios";
 import { ShippingRateResponse, RateOption } from "@/interfaces/shippingRate";
- 
+import Coupon from "@/interfaces/coupon";
+
 interface OrderSummaryProps {
   cart: CartItem[];
   subtotal: number;
+  discount: number;
+  appliedCoupon?: Coupon;
   shippingRates: ShippingRateResponse | null;
   onSelectRate: (fee: number) => void;
   shippingFee: number;
+  setShowCouponModal: (show: boolean) => void;
 }
 
 export default function OrderSummary({
   cart,
   subtotal,
+  discount,
+  appliedCoupon,
   shippingRates,
   onSelectRate,
   shippingFee,
+  setShowCouponModal,
 }: OrderSummaryProps) {
   const [selected, setSelected] = useState<"cheapest" | "fastest" | null>(null);
   const [selectedShipping, setSelectedShipping] = useState<RateOption | null>(
@@ -110,7 +117,7 @@ export default function OrderSummary({
       email: user?.email || sessionEmail!,
       products: cart.map((item) => ({
         id: item.id,
-        variation_id: item.variation_id || null, 
+        variation_id: item.variation_id || null,
         quantity: item.qty,
         price: item.price,
         color: item.color || null,
@@ -180,6 +187,23 @@ export default function OrderSummary({
       <div className="flex justify-between py-3 text-gray-600">
         <span>Subtotal</span>
         <span>{formatAmount(subtotal)}</span>
+      </div>
+      {discount > 0 && appliedCoupon && (
+        <div className="flex justify-between text-orange-800 font-medium bg-orange-50 p-2 rounded-md">
+          <span className="text-xs italic">
+            Discount ({appliedCoupon.discount_code})
+          </span>
+          <span>-{formatAmount(discount)}</span>
+        </div>
+      )}
+      <div className="flex justify-between items-center">
+        <span className="text-hub-secondary">Coupon</span>
+        <button
+          className="text-orange-800 font-semibold text-xs hover:underline cursor-pointer"
+          onClick={() => setShowCouponModal(true)}
+        >
+          {discount > 0 ? "Change" : "Add Coupon"}
+        </button>
       </div>
 
       {/* Shipping Options */}

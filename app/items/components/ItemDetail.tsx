@@ -167,8 +167,8 @@ export default function ItemDetail({
                 <QuantityControl
                   quantity={quantity}
                   stockQty={product.quantity}
-                  increase={() => setQuantity((q) => q + 1)}
-                  decrease={() => setQuantity((q) => Math.max(q - 1, 1))}
+                  onIncrease={() => setQuantity((q) => q + 1)}
+                  onDecrease={() => setQuantity((q) => Math.max(q - 1, 1))}
                 />
               )}
 

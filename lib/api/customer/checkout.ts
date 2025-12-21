@@ -6,6 +6,8 @@ export interface CheckoutPayload {
   shipping_fee: number;
   shipping_carrier: string;
   estimated_delivery: string | null;
+  discount_code?: string;
+  discount_amount?: number;
   shipping_service_code: {
     vendor_id: number;
     total: number;

@@ -7,11 +7,13 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import confetti from "canvas-confetti";
 import { verifyStripeSession } from "@/lib/api/customer/checkout";
+import { useCart } from "@/context/CartContext";
 
 function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const { clearCart } = useCart();
 
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
@@ -26,11 +28,10 @@ function SuccessContent() {
 
     const verifyPayment = async () => {
       try {
-        // Call backend to verify session
         const data = await verifyStripeSession(sessionId);
-
         if (data.status === "paid") {
           setStatus("success");
+          clearCart();
           triggerConfetti();
         } else {
           setStatus("error");
@@ -50,7 +51,7 @@ function SuccessContent() {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (status === "success" && countdown === 0) {
-      router.push("/account");
+      router.push("/login?redirect=/account");
     }
   }, [status, countdown, router]);
 

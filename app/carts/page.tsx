@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast"; 
-import { CartItem, useCart } from "@/context/CartContext"; 
+import { toast } from "react-hot-toast";
+import { CartItem, useCart } from "@/context/CartContext";
 import Modal from "../components/common/Modal";
 import verifyCoupon from "@/lib/api/customer/coupon";
 import Coupon from "@/interfaces/coupon";
@@ -21,7 +21,6 @@ export default function CartPage() {
   const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<Coupon>();
 
   // Remove item modal
   const [showRemoveModal, setShowRemoveModal] = useState(false);
@@ -60,7 +59,6 @@ export default function CartPage() {
           calculatedDiscount = (subtotal * Number(discount_rate)) / 100;
 
         setDiscount(calculatedDiscount);
-        setAppliedCoupon(res.discount);
         setShowCouponModal(false);
       } else {
         setError("Invalid or expired coupon code");
@@ -155,8 +153,6 @@ export default function CartPage() {
           <CartSummary
             subtotal={subtotal}
             total={total}
-            discount={discount}
-            appliedCoupon={appliedCoupon}
             loading={loading}
             hasOutOfStock={hasOutOfStock}
             setShowCouponModal={setShowCouponModal}

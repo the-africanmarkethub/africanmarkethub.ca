@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { loginUser } from "@/lib/api/auth/auth";
-import { Input } from "../register/page";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

@@ -6,9 +6,7 @@ import { useCart } from "@/context/CartContext"; // Import your cart hook
 
 type Props = {
   subtotal: number;
-  total: number;
-  discount: number;
-  appliedCoupon?: Coupon;
+  total: number; 
   loading: boolean;
   hasOutOfStock: boolean;
   setShowCouponModal: (show: boolean) => void;
@@ -17,9 +15,7 @@ type Props = {
 
 export default function CartSummary({
   subtotal,
-  total,
-  discount,
-  appliedCoupon,
+  total, 
   loading,
   hasOutOfStock,
   setShowCouponModal,
@@ -62,26 +58,7 @@ export default function CartSummary({
           <span className="font-medium text-gray-800">
             {formatAmount(subtotal)}
           </span>
-        </div>
-
-        {discount > 0 && appliedCoupon && (
-          <div className="flex justify-between text-orange-800 font-medium bg-orange-50 p-2 rounded-md">
-            <span className="text-xs italic">
-              Discount ({appliedCoupon.discount_code})
-            </span>
-            <span>-{formatAmount(discount)}</span>
-          </div>
-        )}
-
-        <div className="flex justify-between items-center">
-          <span>Coupon</span>
-          <button
-            className="text-orange-800 font-semibold text-xs hover:underline cursor-pointer"
-            onClick={() => setShowCouponModal(true)}
-          >
-            {discount > 0 ? "Change" : "Add Coupon"}
-          </button>
-        </div>
+        </div> 
 
         <div className="border-t border-gray-300 pt-3 flex justify-between items-center">
           <span className="text-base font-bold text-gray-900">Total</span>
