@@ -4,22 +4,17 @@ import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { formatAmount } from "@/utils/formatCurrency";
-import { formatHumanReadable, formatHumanReadableDate } from "@/utils/formatDate";
+import {
+  formatHumanReadable,
+  formatHumanReadableDate,
+} from "@/utils/formatDate";
 import { CARRIER_ICONS } from "@/setting";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useCart } from "@/context/CartContext";
+import { CartItem, useCart } from "@/context/CartContext";
 import { CheckoutPayload, checkoutStripe } from "@/lib/api/customer/checkout";
 import axios from "axios";
 import { ShippingRateResponse, RateOption } from "@/interfaces/shippingRate";
-
-interface CartItem {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-  qty: number;
-}
-
+ 
 interface OrderSummaryProps {
   cart: CartItem[];
   subtotal: number;
@@ -55,7 +50,7 @@ export default function OrderSummary({
 
     const estimatedDelivery =
       deliveryDays.length > 0
-        ? vendors.find( 
+        ? vendors.find(
             (v) => Number(v.delivery_days) === Math.min(...deliveryDays)
           )?.estimated_delivery
         : vendors
@@ -113,7 +108,14 @@ export default function OrderSummary({
 
     const payload: CheckoutPayload = {
       email: user?.email || sessionEmail!,
-      products: cart.map((item) => ({ id: item.id, quantity: item.qty })),
+      products: cart.map((item) => ({
+        id: item.id,
+        variation_id: item.variation_id || null, 
+        quantity: item.qty,
+        price: item.price,
+        color: item.color || null,
+        size: item.size || null,
+      })),
       shipping_fee: shippingFee,
       shipping_carrier: vendorCarriers,
       estimated_delivery: estimatedDelivery!,
@@ -158,7 +160,13 @@ export default function OrderSummary({
               />
               <div>
                 <p className="text-sm text-gray-700">{item.title}</p>
-                <p className="text-xs text-gray-400">x{item.qty}</p>
+                {/* VARIATION DISPLAY */}
+                {(item.color || item.size) && (
+                  <p className="text-[10px] text-hub-secondary! font-medium italic">
+                    {[item.color, item.size].filter(Boolean).join(" / ")}
+                  </p>
+                )}
+                <p className="text-xs text-gray-400!">x{item.qty}</p>
               </div>
             </div>
             <span className="text-sm font-medium text-gray-800">
