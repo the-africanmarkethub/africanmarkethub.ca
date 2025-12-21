@@ -41,7 +41,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
       <div className="flex-1 flex justify-center md:hidden">
         <Link href="/dashboard">
-          <Image 
+          <Image
             src="/logo.svg"
             alt="African Market Hub"
             className="cursor-pointer"
@@ -89,7 +89,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                 <MenuItem>
                   {({ active }) => (
                     <Link
-                      href="/accounts-settings/profile"
+                      href="/dashboard/account-settings"
                       className={`flex items-center px-4 py-2 text-sm ${
                         active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                       }`}

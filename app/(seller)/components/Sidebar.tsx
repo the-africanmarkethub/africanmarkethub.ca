@@ -20,17 +20,18 @@ export function Sidebar({
   const currentPath = usePathname();
   const { clearAuth } = useAuthStore();
 
-  // Track which parent menu is open
   const [expandedItem, setExpandedItem] = useState<number | null>(null);
   const [shopType, setShopType] = useState<string | null>(null);
+
   const handleLogout = () => {
     clearAuth();
-    router.push("/login");
+    router.replace("/");
   };
 
   const toggleExpand = (id: number) => {
     setExpandedItem(expandedItem === id ? null : id);
   };
+
   useEffect(() => {
     async function fetchShopData() {
       try {
@@ -44,7 +45,12 @@ export function Sidebar({
   }, []);
 
   const filteredMenu = useMemo(() => {
-    return VENDOR_MENU.map((item) => {
+    return VENDOR_MENU.filter((item) => {
+      if (shopType === "services" && [6, 7].includes(item.id)) {
+        return false;
+      }
+      return true;
+    }).map((item) => {
       if (item.id === 2 && item.children) {
         return {
           ...item,
