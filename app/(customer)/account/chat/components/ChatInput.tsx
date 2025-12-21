@@ -33,16 +33,16 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
   };
 
   return (
-    <footer className="p-4 border-t bg-white">
+    <footer className="p-4 border-t border-hub-secondary bg-white">
       <form
         onSubmit={handleSubmit}
-        className="flex items-center gap-3 bg-gray-100 rounded-2xl px-4 py-2 focus-within:ring-1 focus-within:ring-orange-500 transition-all"
+        className="flex items-center gap-3 bg-gray-100 rounded-2xl px-4 py-2   transition-all"
       >
         {/* Hidden File Input */}
         <input
           type="file"
           ref={fileInputRef}
-          className="hidden"
+          className="hidden "
           accept="image/*,.pdf,.doc,.docx"
           onChange={handleFileChange}
         />
@@ -50,7 +50,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="text-gray-400 hover:text-orange-500 transition-colors p-1"
+          className="text-gray-400 hover:text-orange-500 transition-colors p-1 cursor-pointer hover:p-1.5"
           title="Attach file"
         >
           <LuPaperclip size={20} />
@@ -63,7 +63,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
             setText(e.target.value)
           }
           placeholder={loading ? "Sending..." : "Type a message..."}
-          className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-1"
+          className="input "
           disabled={loading}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {

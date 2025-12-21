@@ -21,7 +21,6 @@ export default function ServiceChatPage({
   const resolvedParams = use(searchParams);
   const itemId = resolvedParams.item;
 
-  // Ref to prevent API race conditions/double calls in Strict Mode
   const isInitializing = useRef(false);
 
   const [data, setData] = useState<{

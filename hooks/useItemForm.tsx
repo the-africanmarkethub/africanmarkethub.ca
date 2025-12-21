@@ -342,7 +342,7 @@ export function useItemForm(item: any) {
         toast.success("Item added successfully");
       }
       onClose();
-      // window.location.reload();
+      window.location.reload();
     } catch (e) {
       let message = "An error occurred while saving the item";
       if (axios.isAxiosError(e)) {

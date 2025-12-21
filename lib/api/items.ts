@@ -86,7 +86,7 @@ export async function updateItem(ItemId: number, formData: FormData) {
 }
 
 export async function deleteItem(productId: number) {
-  const { data } = await api.delete(`/vendor/item/delete/${productId}`);
+  const { data } = await api.delete(`/vendor/items/delete/${productId}`);
   return data.data;
 }
 

@@ -4,14 +4,13 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { getServiceChat, replyServiceChat } from "@/lib/api/customer/services";
 import { Ticket, Message, Participant } from "@/interfaces/ticket";
-import { LuSend, LuChevronLeft } from "react-icons/lu";
+import { LuSend } from "react-icons/lu";
 import ChatMessages from "./ChatMessage";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import ChatSidebar from "./ChatSidebar";
 
 interface ChatClientWrapperProps {
-  // Renamed from Props to be explicit
   initialChats: Ticket[];
   initialActiveChat: Ticket | null;
   initialMessages: Message[];
@@ -39,14 +38,12 @@ export default function ChatClientWrapper({
   }, [initialChats, initialActiveChat, initialMessages, initialParticipant]);
   
   const [loading, setLoading] = useState(false);
-
-  // Mobile UI Toggle: If we have an active chat, we show messages on mobile.
-  // If not, we show the list.
+ 
   const [showMobileChat, setShowMobileChat] = useState(!!initialActiveChat);
 
   const handleSelectChat = async (chat: Ticket) => {
     setActiveChat(chat);
-    setShowMobileChat(true); // Toggle view on mobile
+    setShowMobileChat(true);
     try {
       const res = await getServiceChat(chat.ticket_id);
       setMessages(res.data.messages || []);
@@ -72,7 +69,6 @@ export default function ChatClientWrapper({
       if (res.status === "success") {
         setMessages(res.data.messages);
 
-        // 🟢 FIX: Update the sidebar list so the "Last Message" updates in real-time
         setChats((prev) =>
           prev.map((c) =>
             c.ticket_id === activeChat.ticket_id
@@ -93,12 +89,11 @@ export default function ChatClientWrapper({
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-white overflow-hidden md:border md:rounded-2xl md:m-4 shadow-sm">
-      {/* Sidebar: Hidden on mobile when a chat is open */}
+    <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-white overflow-hidden md:rounded-2xl md:m-4 shadow-sm">
       <div
         className={`${
           showMobileChat ? "hidden" : "block"
-        } w-full md:block md:w-80 border-r`}
+        } w-full md:block md:w-80 border-hub-secondary border-r`}
       >
         <ChatSidebar
           chats={chats}
@@ -107,7 +102,6 @@ export default function ChatClientWrapper({
         />
       </div>
 
-      {/* Chat Area: Full screen on mobile when showMobileChat is true */}
       <main
         className={`${
           showMobileChat ? "flex" : "hidden"
@@ -117,7 +111,7 @@ export default function ChatClientWrapper({
           <>
             <ChatHeader
               participant={participant}
-              onBack={() => setShowMobileChat(false)} // Pass a back button function
+              onBack={() => setShowMobileChat(false)} 
             />
             <ChatMessages messages={messages} />
             <ChatInput onSendMessage={handleUpsertMessage} loading={loading} />
