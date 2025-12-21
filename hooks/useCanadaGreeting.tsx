@@ -6,12 +6,12 @@ export default function useCanadaGreeting() {
   useEffect(() => {
     const updateGreeting = () => {
       const now = new Date();
- 
+
       const canadaHour = Number(
-        new Intl.DateTimeFormat("en-CA", {
+        new Intl.DateTimeFormat("en-GB", {
           hour: "numeric",
           hourCycle: "h23",
-          timeZone: "America/Toronto",
+          timeZone: "Europe/London",
         }).format(now)
       );
 

@@ -1,12 +1,13 @@
 export const formatAmount = (
   value: string | number = 0,
-  currency: string = "CAD"
+  currency: string = "GBP"
 ) => {
   const numericValue = Number(value);
-  const amount = isNaN(numericValue) ? 0 : numericValue; 
-  return new Intl.NumberFormat("en-US", {
+  const amount = isNaN(numericValue) ? 0 : numericValue;
+
+  return new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "CAD",
+    currency: currency, 
     currencyDisplay: "symbol",
     minimumFractionDigits: 2,
   }).format(amount);
