@@ -126,7 +126,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 inputMode="email"
-                placeholder="mary.j@example.ca"
+                placeholder="mary.j@example.com"
                 className="input appearance-none"
               />
             </div>
@@ -153,7 +153,6 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  // Use tabIndex="-1" so the user doesn't accidentally tab onto the eye icon instead of the button
                   tabIndex={-1}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
                 >

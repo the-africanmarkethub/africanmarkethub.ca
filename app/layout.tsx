@@ -9,6 +9,7 @@ import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
 import "react-loading-skeleton/dist/skeleton.css";
 import { APP_NAME } from "@/setting";
+import CookieBanner from "./components/common/CookieBanner";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -76,8 +77,8 @@ export default function RootLayout({
             </WishlistProvider>
           </CartProvider>
         </Providers>
-
         <Toaster />
+        <CookieBanner />
       </body>
     </html>
   );

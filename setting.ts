@@ -262,7 +262,6 @@ export interface CountryOption {
 }
 
 export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
-  // --- African Exporting & Economic Hubs ---
   {
     code: "NG",
     dial_code: "+234",
