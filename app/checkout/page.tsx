@@ -15,6 +15,7 @@ import { countryCodeToFlag } from "@/utils/countryFlag";
 import Coupon from "@/interfaces/coupon";
 import verifyCoupon from "@/lib/api/customer/coupon";
 import Modal from "../components/common/Modal";
+import Script from "next/script";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -152,23 +153,28 @@ export default function CheckoutPage() {
   };
 
   // === Google Maps Script Loader ===
-  useEffect(() => {
-    if ((window as any).google?.maps?.places) {
-      setGoogleLoaded(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.onload = () => setGoogleLoaded(true);
-    document.head.appendChild(script);
-    return () => {
-      script.remove();
-    };
-  }, []);
+  // useEffect(() => {
+  //   if ((window as any).google?.maps?.places) {
+  //     setGoogleLoaded(true);
+  //     return;
+  //   }
+  //   const script = document.createElement("script");
+  //   script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+  //   script.async = true;
+  //   script.onload = () => setGoogleLoaded(true);
+  //   document.head.appendChild(script);
+  //   return () => {
+  //     script.remove();
+  //   };
+  // }, []);
 
   return (
     <div className="bg-gray-50 py-8 min-h-screen">
+      <Script
+        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+        onLoad={() => setGoogleLoaded(true)}
+      />
+
       <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
         {cart && cart.length > 0 ? (
           <>

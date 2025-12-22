@@ -59,10 +59,10 @@ export default function CategorySelector({
         ) : (
           <SelectField
             label="Category"
-            value={selectedCategory ?? categories[0]} // fallback to first category if null
+            value={selectedCategory || { id: 0, name: "Select Category" }}
+            // value={selectedCategory ?? categories[0]} // fallback to first category if null
             onChange={onCategoryChange}
             options={categories}
-            
           />
         )}
       </div>
