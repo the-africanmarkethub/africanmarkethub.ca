@@ -10,6 +10,7 @@ import { WishlistProvider } from "@/context/WishlistContext";
 import "react-loading-skeleton/dist/skeleton.css";
 import { APP_NAME } from "@/setting";
 import CookieBanner from "./components/common/CookieBanner";
+import WhatsAppFloat from "./components/common/WhatsAppFloat";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -79,6 +80,7 @@ export default function RootLayout({
         </Providers>
         <Toaster />
         <CookieBanner />
+        <WhatsAppFloat />
       </body>
     </html>
   );

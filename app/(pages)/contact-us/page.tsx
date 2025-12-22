@@ -2,9 +2,15 @@
 
 import contactUs from "@/lib/api/contact";
 import { COMPANY_CONTACT_INFO } from "@/setting";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaBuilding, FaPhoneAlt, FaPaperPlane } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaPhoneAlt,
+  FaPaperPlane,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 
 interface FormData {
@@ -14,7 +20,6 @@ interface FormData {
   subject: string;
   message: string;
 }
-
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -316,25 +321,19 @@ const ContactUsPage: React.FC = () => {
 
               {/* Phone */}
               <div className="flex items-start mb-4">
-                <FaPhoneAlt className="w-6 h-6 text-orange-600 mt-1 shrink-0" />
+                <FaWhatsapp className="w-6 h-6 text-green-500 mt-1 shrink-0" />
                 <div className="ml-3">
                   <p className="text-sm font-semibold text-gray-900">
-                    Contact Number
+                    WhatsApp Us
                   </p>
-                  <p className="text-gray-700">{COMPANY_CONTACT_INFO.phone}</p>
+                  <p className="text-gray-700 hover:text-green-600 transition-colors">
+                    <Link href="https://wa.me/447389199608">
+                      Send us a message
+                    </Link>
+                  </p>
                 </div>
               </div>
-
-              {/* Email (Derived) */}
-              <div className="flex items-start">
-                <FaPaperPlane className="w-6 h-6 text-orange-600 mt-1 shrink-0" />
-                <div className="ml-3">
-                  <p className="text-sm font-semibold text-gray-900">
-                    Email Address
-                  </p>
-                  <p className="text-gray-700">{COMPANY_CONTACT_INFO.email}</p>
-                </div>
-              </div>
+ 
             </div>
 
             {/* Map Placeholder */}
