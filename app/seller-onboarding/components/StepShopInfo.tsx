@@ -379,19 +379,19 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </FadeSlide>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-80">
-            <TextInput label="City" value={city} onChange={setCity} disabled />
+            <TextInput label="City" value={city} onChange={setCity}  />
 
             <TextInput
               label="Postal Code"
               value={zip}
               onChange={setZip}
-              disabled
+              // disabled
             />
             <TextInput
               label="Province"
               value={stateCode}
               onChange={setStateCode}
-              disabled
+              // disabled
             />
             <TextInput
               label="Street Address"
