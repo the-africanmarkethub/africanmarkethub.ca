@@ -51,7 +51,7 @@ export default function CustomerSupportPage() {
           </p>
 
           <div className="space-y-1">
-            <SupportItem label="Order Tracking" href="/tracking" />
+            <SupportItem label="Order Tracking" href="/account/tracking" />
             {/* <SupportItem label="Return Instructions" href="#" /> */}
           </div>
         </section>
