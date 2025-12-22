@@ -244,7 +244,7 @@ export default function CheckoutPage() {
                   required
                 />
                 <TextInput
-                  label="Province/State/Town/County (2 letters)"
+                  label="Province/State/Town"
                   value={address.state}
                   onChange={(v) => handleAddressChange("state", v)}
                   required
