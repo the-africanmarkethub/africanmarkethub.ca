@@ -18,7 +18,7 @@ export default function CustomerSupportPage() {
           <span className="text-orange-800"> Orders or other inquiries </span>
         </p>
       </div>
-      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm"> 
+      <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
         <section className="mb-10">
           <h2 className="text-lg font-semibold">Contact Support</h2>
           <p className="text-sm text-gray-500 mb-4">
@@ -26,9 +26,20 @@ export default function CustomerSupportPage() {
           </p>
 
           <div className="space-y-1">
-            <SupportItem label="Live Chat" href="#" />
-            <SupportItem label="Email Support" href="#" />
-            <SupportItem label="Help Center" href="#" />
+            {/* WhatsApp Link - Use international format without + (e.g., 447123456789) */}
+            <SupportItem
+              label="Live Chat"
+              href="https://wa.me/447389199608"
+            />
+
+            {/* Email Link */}
+            <SupportItem
+              label="Email Support"
+              href="mailto:ayokahfoods@gmail.com"
+            />
+
+            {/* FAQ Link */}
+            <SupportItem label="Help Center" href="https://ayokah.co.uk/faqs" />
           </div>
         </section>
 
@@ -40,8 +51,8 @@ export default function CustomerSupportPage() {
           </p>
 
           <div className="space-y-1">
-            <SupportItem label="Order Tracking" href="#" />
-            <SupportItem label="Return Instructions" href="#" />
+            <SupportItem label="Order Tracking" href="/tracking" />
+            {/* <SupportItem label="Return Instructions" href="#" /> */}
           </div>
         </section>
       </div>
