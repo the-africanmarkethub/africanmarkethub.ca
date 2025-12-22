@@ -79,7 +79,7 @@ export default function CheckoutPage() {
           calculatedDiscount = (subtotal * Number(discount_rate)) / 100;
 
         setDiscount(calculatedDiscount);
-        toast.success('Coupon applied successfully');
+        toast.success("Coupon applied successfully");
         setShowCouponModal(false);
       } else {
         toast.error("Invalid or expired coupon code");
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
     }
 
     // Validation: Zip code must be exactly 6 characters
-    if (address.zip_code.trim().length !== 6) {
+    if (address.zip_code.length < 6 || address.zip_code.length > 7) {
       return toast.error("Postal code must be exactly 6 characters");
     }
 
@@ -210,7 +210,7 @@ export default function CheckoutPage() {
                 {!user?.name && (
                   <TextInput
                     placeholder="First name"
-                    label="First Name" 
+                    label="First Name"
                     value={firstname}
                     onChange={(e) => setFirstname(e)}
                     required
@@ -220,7 +220,7 @@ export default function CheckoutPage() {
                 {!user?.last_name && (
                   <TextInput
                     placeholder="Last name"
-                    label="Last Name" 
+                    label="Last Name"
                     value={lastname}
                     onChange={(e) => setLastname(e)}
                     required
@@ -230,7 +230,7 @@ export default function CheckoutPage() {
                 {!user?.email && (
                   <TextInput
                     placeholder="Email address"
-                    label="Email Address" 
+                    label="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e)}
                     required

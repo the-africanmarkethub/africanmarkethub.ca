@@ -71,10 +71,10 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
-   const [isValidatingPhone, setIsValidatingPhone] = useState(false);
+  const [isValidatingPhone, setIsValidatingPhone] = useState(false);
   const [dialCode, setDialCode] = useState("");
 
-   // phone validation
+  // phone validation
   const validatePhoneNumber = useCallback(async () => {
     if (!phoneNumber || phoneNumber.length < 7) {
       setIsPhoneValid(null);
@@ -95,10 +95,10 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
   }, [phoneNumber, countryCode]);
 
-    useEffect(() => {
-      const timer = setTimeout(() => validatePhoneNumber(), 600);
-      return () => clearTimeout(timer);
-    }, [phoneNumber, validatePhoneNumber]);
+  useEffect(() => {
+    const timer = setTimeout(() => validatePhoneNumber(), 600);
+    return () => clearTimeout(timer);
+  }, [phoneNumber, validatePhoneNumber]);
 
   useEffect(() => {
     let isMounted = true;
@@ -204,10 +204,30 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setErrorMsg("");
+    // 1. Basic Field Validation
+    if (!name.trim()) return toast.error("Shop name is required");
+    if (!description.trim()) return toast.error("Description is required");
+    if (!phoneNumber.trim()) return toast.error("Phone number is required");
+    if (!selectedCategory?.id) return toast.error("Please select a category");
 
+    // 2. Address Logic Validation
+    if (!addressLine.trim()) return toast.error("Address is required");
+    if (!city.trim()) return toast.error("City is required");
+    if (!countryCode.trim()) return toast.error("Country is required");
+
+    // 3. Strict Formatting (State & Zip)
+    // Ensures state is exactly 2 characters (e.g., 'NY', 'Lagos' -> 'LA')
+    if (stateCode.trim().length !== 2) {
+      return toast.error("State must be a 2-letter code (e.g., NY, LA)");
+    }
+
+    // Ensures zip is exactly 6 digits (stripping spaces)
+    if (zip.length < 6 || zip.length > 7) {
+      return toast.error("Zip code must be between 6 and 7 characters");
+    }
     try {
+      setLoading(true);
       const form = new FormData();
       // Required Fields
       form.append("name", name);
@@ -379,7 +399,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </FadeSlide>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-80">
-            <TextInput label="City" value={city} onChange={setCity}  />
+            <TextInput label="City" value={city} onChange={setCity} />
 
             <TextInput
               label="Postal Code"
