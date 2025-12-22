@@ -326,11 +326,11 @@ export default function OrderDetail() {
       <OrderItemsTable order={orderDetail} />
 
       <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-        <div className="flex justiy-between items-center">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-semibold text-gray-800">
             📦 Shipping & Payment Details
           </h3>
-          <Link href={orderMeta.tracking_url || ""}>
+          <Link href={orderMeta.tracking_url || "#"}>
             <span className="btn btn-primary">Print Label</span>
           </Link>
         </div>
