@@ -223,8 +223,8 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
 
     // Ensures zip is exactly 6 digits (stripping spaces)
-    if (zip.length < 6 || zip.length > 7) {
-      return toast.error("Zip code must be between 6 and 7 characters");
+    if (zip.length < 6 || zip.length > 8) {
+     return toast.error("Postal code must be between 6 and 8 characters");
     }
     try {
       setLoading(true);

@@ -116,8 +116,8 @@ export default function CheckoutPage() {
     }
 
     // Validation: Zip code must be exactly 6 characters
-    if (address.zip_code.length < 6 || address.zip_code.length > 7) {
-      return toast.error("Postal code must be exactly 6 characters");
+    if (address.zip_code.length < 6 || address.zip_code.length > 8) {
+     return toast.error("Postal code must be between 6 and 8 characters");
     }
 
     // Validation: Country must be selected

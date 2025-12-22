@@ -83,8 +83,8 @@ export default function ShippingSection({ user }: { user: User | null }) {
       return;
     }
 
-    if (zip_code.length < 6 || zip_code.length > 7) {
-     return toast.error("Postal code must be between 6 and 7 characters");
+    if (zip_code.length < 6 || zip_code.length > 8) {
+     return toast.error("Postal code must be between 6 and 8 characters");
     }
 
     if (phone.length < 10) {
