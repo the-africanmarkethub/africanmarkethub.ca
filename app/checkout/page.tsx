@@ -117,7 +117,9 @@ export default function CheckoutPage() {
 
     const zipLength = address.zip_code.length;
     if (zipLength < 5 || zipLength > 10) {
-      return toast.error("Postal/Code code must be between 5 and 10 characters");
+      return toast.error(
+        "Postal/Code code must be between 5 and 10 characters"
+      );
     }
 
     if (!address.country.trim()) return toast.error("Country is required");
@@ -331,14 +333,14 @@ export default function CheckoutPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowCouponModal(false)}
-                    className="btn bg-gray-200 w-full py-2 rounded"
+                    className="btn bg-gray w-full"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApplyCoupon}
                     disabled={loading || !couponCode}
-                    className="btn bg-hub-primary text-white w-full py-2 rounded"
+                    className="btn bg-hub-primary text-white w-full "
                   >
                     {loading ? "Checking..." : "Apply"}
                   </button>
