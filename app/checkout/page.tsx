@@ -115,9 +115,9 @@ export default function CheckoutPage() {
       }
     }
 
-    // Zip code 6-7 character validation
-    if (address.zip_code.length < 6 || address.zip_code.length > 8) {
-      return toast.error("Zip code must be between 6 and 8 characters");
+    const zipLength = address.zip_code.length;
+    if (zipLength < 5 || zipLength > 8) {
+      return toast.error("Postal/Code code must be between 5 and 8 characters");
     }
 
     if (!address.country.trim()) return toast.error("Country is required");
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
                   required
                 />
                 <TextInput
-                  label="Postal Code"
+                  label="Postal/Zip Code"
                   value={address.zip_code}
                   onChange={(v) => handleAddressChange("zip_code", v)}
                   required
