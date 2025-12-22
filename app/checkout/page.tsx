@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import OrderSummary from "../carts/components/Summary";
 import Address from "@/interfaces/address";
@@ -17,8 +17,8 @@ import verifyCoupon from "@/lib/api/customer/coupon";
 import Modal from "../components/common/Modal";
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart();
-  const { user } = useAuthStore(); // get logged-in user
+  const { cart } = useCart();
+  const { user } = useAuthStore();
 
   const [loading, setLoading] = useState(false);
   const [shippingRates, setShippingRates] =
@@ -28,6 +28,8 @@ export default function CheckoutPage() {
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon>();
+  const [error, setError] = useState("");
+  const [googleLoaded, setGoogleLoaded] = useState(false);
 
   const [address, setAddress] = useState<Address>({
     street_address: "",
@@ -43,12 +45,6 @@ export default function CheckoutPage() {
   const [lastname, setLastname] = useState(user?.last_name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
-  const [serviceNote, setServiceNote] = useState("");
-  const [error, setError] = useState("");
-
-  const isServiceOrder = useMemo(() => {
-    return cart.some((item) => item.type === "services");
-  }, [cart]);
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
@@ -56,81 +52,69 @@ export default function CheckoutPage() {
     setAddress((prev) => ({ ...prev, [field]: value }));
   };
 
-  // === Coupon functions ===
+  // === Coupon Logic ===
   const handleApplyCoupon = async () => {
     setLoading(true);
     setError("");
     try {
       const res = await verifyCoupon(couponCode);
-
       if (res?.status === "error") {
-        setError(res.message || "Invalid or expired coupon code");
-        toast.error(res.message || "Invalid or expired coupon code");
-        return;
+        setError(res.message || "Invalid coupon");
+        return toast.error(res.message || "Invalid coupon");
       }
 
       if (res?.is_active && res.discount) {
         const { discount_rate, discount_type } = res.discount;
-
-        let calculatedDiscount = 0;
-        if (discount_type === "fixed")
-          calculatedDiscount = Number(discount_rate);
-        else if (discount_type === "percentage")
-          calculatedDiscount = (subtotal * Number(discount_rate)) / 100;
+        const calculatedDiscount =
+          discount_type === "fixed"
+            ? Number(discount_rate)
+            : (subtotal * Number(discount_rate)) / 100;
 
         setDiscount(calculatedDiscount);
-        toast.success("Coupon applied successfully");
+        setAppliedCoupon(res);
+        toast.success("Coupon applied!");
         setShowCouponModal(false);
-      } else {
-        toast.error("Invalid or expired coupon code");
-        setError("Invalid or expired coupon code");
       }
     } catch {
-      setError("Failed to apply coupon. Please try again.");
+      setError("Failed to apply coupon.");
     } finally {
       setLoading(false);
     }
   };
 
+  // === Submission & Validation ===
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1. Basic User Validation
+    // 1. Basic Validation
     if (!firstname.trim()) return toast.error("First name is required");
     if (!lastname.trim()) return toast.error("Last name is required");
     if (!email.trim()) return toast.error("Email is required");
     if (!phone.trim()) return toast.error("Phone number is required");
 
-    // 2. Physical Address Validation
-    if (!address.street_address.trim()) {
+    // 2. Address Validation
+    if (!address.street_address.trim())
       return toast.error("Street address is required");
-    }
+    if (!address.city.trim()) return toast.error("City is required");
 
-    if (!address.city.trim()) {
-      return toast.error("City is required");
-    }
-
-    // Validation: State must be exactly 2 characters (e.g., NY, ON, LA)
+    // State 2-letter validation
     if (address.state.trim().length !== 2) {
       return toast.error("State must be a 2-letter code (e.g., NY)");
     }
 
-    // Validation: Zip code must be exactly 6 characters
+    // Zip code 6-7 character validation
     if (address.zip_code.length < 6 || address.zip_code.length > 8) {
-     return toast.error("Postal code must be between 6 and 8 characters");
+      return toast.error("Zip code must be between 6 and 8 characters");
     }
 
-    // Validation: Country must be selected
-    if (!address.country.trim()) {
-      return toast.error("Country is required");
-    }
+    if (!address.country.trim()) return toast.error("Country is required");
 
     const payload = {
       firstname,
       lastname,
       email,
       phone,
-      country: address.country || "CA",
+      country: address.country,
       street: address.street_address,
       city: address.city,
       state: address.state,
@@ -150,20 +134,16 @@ export default function CheckoutPage() {
       setLoading(true);
       const response = await shippingRate(payload);
 
-      // Save email to sessionStorage for persistence during checkout
-      const existingEmail = sessionStorage.getItem("checkout_email");
-      if (!existingEmail || existingEmail !== email) {
-        sessionStorage.setItem("checkout_email", email);
-      }
+      sessionStorage.setItem("checkout_email", email);
 
       if (response?.rate) {
         setShippingRates(response.rate);
+        toast.success("Shipping rates updated");
       }
     } catch (err) {
       let message = "An error occurred while calculating shipping";
       if (axios.isAxiosError(err)) {
-        const axiosErr = err as AxiosError<{ message: string }>;
-        message = axiosErr.response?.data?.message ?? axiosErr.message;
+        message = err.response?.data?.message ?? err.message;
       }
       toast.error(message);
     } finally {
@@ -171,194 +151,136 @@ export default function CheckoutPage() {
     }
   };
 
-  const [googleLoaded, setGoogleLoaded] = useState(false);
-
+  // === Google Maps Script Loader ===
   useEffect(() => {
-    if ((window.google as any)?.maps?.places) {
+    if ((window as any).google?.maps?.places) {
       setGoogleLoaded(true);
       return;
     }
-
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
     script.async = true;
     script.onload = () => setGoogleLoaded(true);
     document.head.appendChild(script);
-
     return () => {
       script.remove();
     };
   }, []);
 
   return (
-    <div className="bg-gray-50 py-8">
-      <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8">
-        {/* Check if the cart has items */}
+    <div className="bg-gray-50 py-8 min-h-screen">
+      <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
         {cart && cart.length > 0 ? (
           <>
             <div className="flex-1">
-              <h2 className="card text-xl font-semibold text-gray-800 mb-8">
-                {isServiceOrder
-                  ? "Service Booking Information"
-                  : "Shipping Information"}
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                Shipping Information
               </h2>
               <form
-                className="grid grid-cols-1 bg-white p-6 rounded-lg shadow-md md:grid-cols-2 gap-4 text-gray-500!"
+                className="grid grid-cols-1 bg-white p-6 rounded-lg shadow-sm md:grid-cols-2 gap-4"
                 onSubmit={handleSubmit}
               >
-                {/* Customer Info using TextInput */}
-                {!user?.name && (
+                {/* Identity Fields */}
+                <TextInput
+                  label="First Name"
+                  value={firstname}
+                  onChange={setFirstname}
+                  required
+                />
+                <TextInput
+                  label="Last Name"
+                  value={lastname}
+                  onChange={setLastname}
+                  required
+                />
+                <div className="md:col-span-2">
                   <TextInput
-                    placeholder="First name"
-                    label="First Name"
-                    value={firstname}
-                    onChange={(e) => setFirstname(e)}
-                    required
-                  />
-                )}
-
-                {!user?.last_name && (
-                  <TextInput
-                    placeholder="Last name"
-                    label="Last Name"
-                    value={lastname}
-                    onChange={(e) => setLastname(e)}
-                    required
-                  />
-                )}
-
-                {!user?.email && (
-                  <TextInput
-                    placeholder="Email address"
                     label="Email Address"
                     value={email}
-                    onChange={(e) => setEmail(e)}
+                    onChange={setEmail}
                     required
                   />
-                )}
+                </div>
 
-                {/* 👇 Conditional Fields */}
-                {!isServiceOrder ? (
-                  <>
-                    {/* Only render AddressAutocomplete after script loaded */}
-                    <div className="md:col-span-2">
-                      {googleLoaded && (
-                        <GoogleAddressAutocomplete
-                          onSelect={(addr) =>
-                            setAddress((prev) => ({ ...prev, ...addr }))
-                          }
-                        />
-                      )}
-                    </div>
-                    <TextInput
-                      placeholder="Street address"
-                      label="Street Address"
-                      value={address.street_address}
-                      onChange={(e) => handleAddressChange("street_address", e)}
-                      required
-                      // disabled={!!address.street_address}
+                {/* Address Section */}
+                <div className="md:col-span-2">
+                  {googleLoaded && (
+                    <GoogleAddressAutocomplete
+                      onSelect={(addr) =>
+                        setAddress((prev) => ({ ...prev, ...addr }))
+                      }
                     />
-                    <TextInput
-                      placeholder="City"
-                      label="City"
-                      value={address.city}
-                      onChange={(e) => handleAddressChange("city", e)}
-                      required
-                      disabled={!!address.city}
-                    />
-                    <TextInput
-                      placeholder="Province"
-                      label="Province"
-                      value={address.state}
-                      onChange={(e) => handleAddressChange("state", e)}
-                      required
-                      // disabled={!!address.state}
-                    />
-                    <TextInput
-                      placeholder="Enter your full postal code (e.g. M5T 2L7)"
-                      label="Postal Code"
-                      value={address.zip_code}
-                      onChange={(e) => handleAddressChange("zip_code", e)}
-                      required
-                      // disabled={
-                      //   address.zip_code?.replace(/\s/g, "").length >= 6
-                      // }
-                    />
-                    <TextInput
-                      placeholder="Country"
-                      label="Country"
-                      value={address.country}
-                      onChange={(e) => handleAddressChange("country", e)}
-                      required
-                      // disabled={!!address.country}
-                    />
-                    {/* Phone input wrapper with label to match other grid items */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm font-medium text-gray-700">
-                        Phone Number
-                      </label>
-                      <div className="flex items-stretch h-12">
-                        <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-20">
-                          <span className="mr-2">
-                            {countryCodeToFlag(address.country)}
-                          </span>
-                          <span className="font-medium">
-                            {address.dialCode || "+1"}
-                          </span>
-                        </div>
-                        {/* Phone input */}
-                        <input
-                          type="tel"
-                          className="input rounded-l-none! flex-1"
-                          value={phone}
-                          onChange={(e) =>
-                            setPhone(e.target.value.replace(/\D/g, ""))
-                          }
-                          placeholder="712 345 678"
-                          required
-                          minLength={10}
-                        />
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex flex-col gap-2 md:col-span-2">
-                      <label
-                        htmlFor="serviceNote"
-                        className="text-sm font-medium text-gray-700 block mb"
-                      >
-                        Service Notes
-                      </label>
-                      <textarea
-                        id="serviceNote"
-                        placeholder="Describe your service needs or special instructions..."
-                        value={serviceNote}
-                        onChange={(e) => setServiceNote(e.target.value)}
-                        rows={4}
-                        className="input w-full!"
-                        required
-                        maxLength={250}
-                      />
-                    </div>
-                  </>
-                )}
+                  )}
+                </div>
 
-                {/* Submit */}
+                <TextInput
+                  label="Street Address"
+                  value={address.street_address}
+                  onChange={(v) => handleAddressChange("street_address", v)}
+                  required
+                />
+                <TextInput
+                  label="City"
+                  value={address.city}
+                  onChange={(v) => handleAddressChange("city", v)}
+                  required
+                />
+                <TextInput
+                  label="Province/State (2 letters)"
+                  value={address.state}
+                  onChange={(v) => handleAddressChange("state", v)}
+                  required
+                />
+                <TextInput
+                  label="Postal Code"
+                  value={address.zip_code}
+                  onChange={(v) => handleAddressChange("zip_code", v)}
+                  required
+                />
+                <TextInput
+                  label="Country"
+                  value={address.country}
+                  onChange={(v) => handleAddressChange("country", v)}
+                  required
+                />
+
+                {/* Phone Section */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-gray-700">
+                    Phone Number
+                  </label>
+                  <div className="flex items-stretch h-12">
+                    <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-[80px]">
+                      <span className="mr-2">
+                        {countryCodeToFlag(address.country)}
+                      </span>
+                      <span className="font-medium">
+                        {address.dialCode || "+1"}
+                      </span>
+                    </div>
+                    <input
+                      type="tel"
+                      className="input rounded-l-none flex-1 border border-gray-300 px-3 outline-none focus:ring-1 focus:ring-hub-primary"
+                      value={phone}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, ""))
+                      }
+                      placeholder="712 345 678"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <button
                   type="submit"
-                  disabled={loading || !!shippingFee} // disable if shippingFee exists
-                  className={`mt-2 w-full py-3 rounded-full font-medium md:col-span-2 transition ${
+                  disabled={loading || !!shippingFee}
+                  className={`mt-4 w-full py-3 rounded-full font-medium md:col-span-2 transition ${
                     loading || !!shippingFee
-                      ? "btn btn-gray"
-                      : "btn btn-primary"
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-hub-primary text-white hover:bg-opacity-90"
                   }`}
                 >
-                  {loading
-                    ? "Processing..."
-                    : isServiceOrder
-                    ? "Book Service"
-                    : "Get Shipping Rate"}
+                  {loading ? "Calculating..." : "Get Shipping Rate"}
                 </button>
               </form>
             </div>
@@ -367,52 +289,52 @@ export default function CheckoutPage() {
               cart={cart}
               subtotal={subtotal}
               shippingRates={shippingRates}
-              onSelectRate={(fee) => setShippingFee(fee)}
+              onSelectRate={setShippingFee}
               discount={discount}
               appliedCoupon={appliedCoupon}
               shippingFee={shippingFee}
               setShowCouponModal={setShowCouponModal}
             />
-            {/* Coupon Modal */}
+
             <Modal
               isOpen={showCouponModal}
               onClose={() => setShowCouponModal(false)}
               title="Apply Coupon"
-              description="Enter the coupon code to apply"
             >
-              <input
-                type="text"
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                className="input text-gray-500!"
-                placeholder="Enter coupon code"
-              />
-              {error && <p className="text-orange-800 text-sm mb-2">{error}</p>}
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  onClick={() => setShowCouponModal(false)}
-                  className="btn btn-gray w-full"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleApplyCoupon}
-                  disabled={loading || !couponCode}
-                  className="btn btn-primary w-full"
-                >
-                  {loading ? "Applying..." : "Apply"}
-                </button>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="input w-full border border-gray-300 p-2 rounded"
+                  placeholder="Enter coupon code"
+                />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowCouponModal(false)}
+                    className="btn bg-gray-200 w-full py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={loading || !couponCode}
+                    className="btn bg-hub-primary text-white w-full py-2 rounded"
+                  >
+                    {loading ? "Checking..." : "Apply"}
+                  </button>
+                </div>
               </div>
             </Modal>
           </>
         ) : (
-          // SHOW this message if cart is empty (from previous fix)
-          <div className="w-full text-center py-12 bg-white rounded-lg shadow-md">
+          <div className="w-full text-center py-20 bg-white rounded-lg shadow-sm">
             <h2 className="text-2xl font-semibold text-gray-700">
-              No items to checkout
+              Your cart is empty
             </h2>
-            <p className="mt-2 text-gray-500">
-              Please add items to your cart to proceed with checkout.
+            <p className="mt-2 text-gray-500 text-lg">
+              Add products to your cart to proceed with checkout.
             </p>
           </div>
         )}
