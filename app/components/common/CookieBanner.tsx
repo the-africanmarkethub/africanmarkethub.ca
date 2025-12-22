@@ -24,7 +24,7 @@ export default function CookieBanner() {
     <div className="fixed bottom-4 left-4 right-4 z-50 animate-in slide-in-from-bottom-10 duration-500">
       <div className="max-w-2xl mx-auto bg-white/70 backdrop-blur-md border border-white/20 shadow-xl rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
         <div className="flex-1">
-          <p className="text-gray-800 text-xs font-medium">
+          <p className="text-gray-800 text-sm font-medium">
             We use cookies to improve your experience.{" "}
             <Link href="/privacy-policy" className="text-orange-800 underline">
               Learn more
