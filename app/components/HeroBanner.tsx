@@ -112,7 +112,7 @@ export default function HeroBanner() {
             {banners.map((banner) => (
               <div key={banner.id} className="relative w-full shrink-0">
                 <Image
-                  src={optimizeImage(banner.banner)}
+                  src={optimizeImage(banner.banner, 1920)}
                   alt={banner.type}
                   fill
                   priority
