@@ -76,14 +76,14 @@ export default function ShippingSection({ user }: { user: User | null }) {
       return;
     }
 
-    if (state.length !== 2) {
+    if (state.length < 2 || state.length > 50) {
       toast.error(
         "State/Province must be exactly 2 letters (e.g., NY, ON, Lagos -> LA)"
       );
       return;
     }
 
-    if (zip_code.length < 6 || zip_code.length > 8) {
+    if (zip_code.length < 5 || zip_code.length > 10) {
      return toast.error("Postal code must be between 6 and 8 characters");
     }
 
@@ -158,7 +158,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
                 disabled={!!formData.city}
               />
               <TextInput
-                label="Province"
+                label="Province/State/Town"
                 value={formData.state}
                 onChange={(v) => setFormData((p) => ({ ...p, state: v }))}
                 // disabled={!!formData.state}
@@ -167,7 +167,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
 
             <div className="grid grid-cols-2 gap-4">
               <TextInput
-                label="Postal Code"
+                label="Postal/Zip Code"
                 value={formData.zip_code}
                 onChange={(v) => setFormData((p) => ({ ...p, zip_code: v }))}
                 // disabled={!!formData.zip_code}
