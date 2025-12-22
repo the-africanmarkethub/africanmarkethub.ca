@@ -230,29 +230,7 @@ export const CARRIER_ICONS: Record<
 };
 
 export const UK_TIMEZONE = "Europe/London";
-
-export const ALLOWED_COUNTRIES = [
-  // --- TOP 5 AFRICAN ECONOMIC POWERS (Local Sellers & Buyers) ---
-  "NG", // Nigeria: Largest market, tech-savvy, huge fashion/food export.
-  "ZA", // South Africa: Most advanced e-commerce & logistics hub.
-  "KE", // Kenya: East Africa's leader in mobile money & artisan exports.
-  "EG", // Egypt: North Africa’s massive market for food & textiles.
-  "GH", // Ghana: High demand for kente, food, and strong diaspora links.
-
-  // --- KEY DIASPORA MARKETS (High Purchase Power) ---
-  "US", // United States: Largest and wealthiest African diaspora.
-  "GB", // United Kingdom: Massive hub for West African food & products.
-  "CA", // Canada: Fastest-growing African immigrant population.
-  "FR", // France: The primary market for Francophone Africa (Senegal, Ivory Coast).
-  "DE", // Germany: Major hub for Ethiopian and West African businesses.
-
-  // --- REGIONAL HUBS & EMERGING ART MARKETS ---
-  "MA", // Morocco: Leader in artisanal craft, home decor, and fashion.
-  "ET", // Ethiopia: World-renowned for coffee, textiles, and art.
-  "CI", // Côte d'Ivoire: Cultural heart of Francophone West Africa.
-  "AE", // UAE (Dubai): The logistics bridge between Africa and Asia.
-  "SN", // Senegal: High-growth market for fashion and art (Dakar).
-];
+ 
 
 export interface CountryOption {
   code: string; // ISO 3166-1 alpha-2
@@ -260,100 +238,7 @@ export interface CountryOption {
   flag: string; // Emoji or URL
   name: string;
 }
-
-export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
-  {
-    code: "NG",
-    dial_code: "+234",
-    flag: "🇳🇬",
-    name: "Nigeria",
-  },
-  {
-    code: "ZA",
-    dial_code: "+27",
-    flag: "🇿🇦",
-    name: "South Africa",
-  },
-  {
-    code: "KE",
-    dial_code: "+254",
-    flag: "🇰🇪",
-    name: "Kenya",
-  },
-  {
-    code: "GH",
-    dial_code: "+233",
-    flag: "🇬🇭",
-    name: "Ghana",
-  },
-  {
-    code: "EG",
-    dial_code: "+20",
-    flag: "🇪🇬",
-    name: "Egypt",
-  },
-  {
-    code: "MA",
-    dial_code: "+212",
-    flag: "🇲🇦",
-    name: "Morocco",
-  },
-  {
-    code: "ET",
-    dial_code: "+251",
-    flag: "🇪🇹",
-    name: "Ethiopia",
-  },
-  {
-    code: "CI",
-    dial_code: "+225",
-    flag: "🇨🇮",
-    name: "Côte d'Ivoire",
-  },
-  {
-    code: "SN",
-    dial_code: "+221",
-    flag: "🇸🇳",
-    name: "Senegal",
-  },
-  // --- High-Value Diaspora & Logistics Hubs ---
-  {
-    code: "US",
-    dial_code: "+1",
-    flag: "🇺🇸",
-    name: "United States",
-  },
-  {
-    code: "GB",
-    dial_code: "+44",
-    flag: "🇬🇧",
-    name: "United Kingdom",
-  },
-  {
-    code: "CA",
-    dial_code: "+1",
-    flag: "🇨🇦",
-    name: "Canada",
-  },
-  {
-    code: "FR",
-    dial_code: "+33",
-    flag: "🇫🇷",
-    name: "France",
-  },
-  {
-    code: "DE",
-    dial_code: "+49",
-    flag: "🇩🇪",
-    name: "Germany",
-  },
-  {
-    code: "AE",
-    dial_code: "+971",
-    flag: "🇦🇪",
-    name: "United Arab Emirates",
-  },
-];
+ 
 
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",

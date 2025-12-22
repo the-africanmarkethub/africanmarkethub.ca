@@ -101,13 +101,29 @@ export default function CheckoutPage() {
     if (!email.trim()) return toast.error("Email is required");
     if (!phone.trim()) return toast.error("Phone number is required");
 
-    // 2. Physical Address Validation (Services removed)
-    if (!address.street_address.trim())
+    // 2. Physical Address Validation
+    if (!address.street_address.trim()) {
       return toast.error("Street address is required");
-    if (!address.city.trim()) return toast.error("City is required");
-    if (!address.state.trim()) return toast.error("State is required");
-    if (!address.zip_code.trim()) return toast.error("Postal code is required");
-    if (!address.country.trim()) return toast.error("Country is required");
+    }
+
+    if (!address.city.trim()) {
+      return toast.error("City is required");
+    }
+
+    // Validation: State must be exactly 2 characters (e.g., NY, ON, LA)
+    if (address.state.trim().length !== 2) {
+      return toast.error("State must be a 2-letter code (e.g., NY)");
+    }
+
+    // Validation: Zip code must be exactly 6 characters
+    if (address.zip_code.trim().length !== 6) {
+      return toast.error("Postal code must be exactly 6 characters");
+    }
+
+    // Validation: Country must be selected
+    if (!address.country.trim()) {
+      return toast.error("Country is required");
+    }
 
     const payload = {
       firstname,
@@ -194,7 +210,7 @@ export default function CheckoutPage() {
                 {!user?.name && (
                   <TextInput
                     placeholder="First name"
-                    label="First Name" // Added a label for better accessibility
+                    label="First Name" 
                     value={firstname}
                     onChange={(e) => setFirstname(e)}
                     required
@@ -204,7 +220,7 @@ export default function CheckoutPage() {
                 {!user?.last_name && (
                   <TextInput
                     placeholder="Last name"
-                    label="Last Name" // Added a label
+                    label="Last Name" 
                     value={lastname}
                     onChange={(e) => setLastname(e)}
                     required
@@ -214,7 +230,7 @@ export default function CheckoutPage() {
                 {!user?.email && (
                   <TextInput
                     placeholder="Email address"
-                    label="Email Address" // Added a label
+                    label="Email Address" 
                     value={email}
                     onChange={(e) => setEmail(e)}
                     required
@@ -256,7 +272,7 @@ export default function CheckoutPage() {
                       value={address.state}
                       onChange={(e) => handleAddressChange("state", e)}
                       required
-                      disabled={!!address.state}
+                      // disabled={!!address.state}
                     />
                     <TextInput
                       placeholder="Enter your full postal code (e.g. M5T 2L7)"
@@ -264,9 +280,9 @@ export default function CheckoutPage() {
                       value={address.zip_code}
                       onChange={(e) => handleAddressChange("zip_code", e)}
                       required
-                      disabled={
-                        address.zip_code?.replace(/\s/g, "").length >= 6
-                      }
+                      // disabled={
+                      //   address.zip_code?.replace(/\s/g, "").length >= 6
+                      // }
                     />
                     <TextInput
                       placeholder="Country"
@@ -274,7 +290,7 @@ export default function CheckoutPage() {
                       value={address.country}
                       onChange={(e) => handleAddressChange("country", e)}
                       required
-                      disabled={!!address.country}
+                      // disabled={!!address.country}
                     />
                     {/* Phone input wrapper with label to match other grid items */}
                     <div className="flex flex-col gap-1">
@@ -300,7 +316,7 @@ export default function CheckoutPage() {
                           }
                           placeholder="712 345 678"
                           required
-                          maxLength={10}
+                          minLength={10}
                         />
                       </div>
                     </div>

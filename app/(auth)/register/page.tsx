@@ -15,7 +15,6 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { registerUser } from "@/lib/api/auth/auth";
-import { REGISTRATION_COUNTRY_LIST } from "@/setting";
 import SelectDropdown from "@/app/(seller)/dashboard/components/commons/Fields/SelectDropdown";
 import { listAllowedCountries } from "@/lib/api/ip/countries";
 
@@ -267,7 +266,8 @@ export default function RegisterPage() {
                         options={countryOptions}
                         value={currentSelectedOption}
                         onChange={(newOption) => {
-                          const country = REGISTRATION_COUNTRY_LIST.find(
+                          // FIX: Look inside the 'countries' state (the API data), not the settings file
+                          const country = countries.find(
                             (c) => c.code === newOption.value
                           );
                           if (country) setSelectedCountry(country);

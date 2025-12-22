@@ -69,6 +69,29 @@ export default function ShippingSection({ user }: { user: User | null }) {
   }, [loadData]);
 
   const handleSave = async () => {
+    const { street_address, city, state, zip_code, phone } = formData;
+
+    if (!street_address || !city) {
+      toast.error("Please fill in the full address");
+      return;
+    }
+
+    if (state.length !== 2) {
+      toast.error(
+        "State/Province must be exactly 2 letters (e.g., NY, ON, Lagos -> LA)"
+      );
+      return;
+    }
+
+    if (zip_code.length < 6) {
+      toast.error("Zip/Postal code must be at least 6 characters");
+      return;
+    }
+
+    if (phone.length < 10) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
     setLoading(true);
     try {
       const updated = await updateAddress(formData);
@@ -139,7 +162,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
                 label="Province"
                 value={formData.state}
                 onChange={(v) => setFormData((p) => ({ ...p, state: v }))}
-                disabled={!!formData.state}
+                // disabled={!!formData.state}
               />
             </div>
 
@@ -148,7 +171,7 @@ export default function ShippingSection({ user }: { user: User | null }) {
                 label="Postal Code"
                 value={formData.zip_code}
                 onChange={(v) => setFormData((p) => ({ ...p, zip_code: v }))}
-                disabled={!!formData.zip_code}
+                // disabled={!!formData.zip_code}
               />
               <TextInput
                 label="Country (2-letter)"
