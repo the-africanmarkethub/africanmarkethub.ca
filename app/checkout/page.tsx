@@ -116,8 +116,8 @@ export default function CheckoutPage() {
     }
 
     const zipLength = address.zip_code.length;
-    if (zipLength < 5 || zipLength > 8) {
-      return toast.error("Postal/Code code must be between 5 and 8 characters");
+    if (zipLength < 5 || zipLength > 10) {
+      return toast.error("Postal/Code code must be between 5 and 10 characters");
     }
 
     if (!address.country.trim()) return toast.error("Country is required");
