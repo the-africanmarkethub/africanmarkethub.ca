@@ -99,8 +99,20 @@ export default function CheckoutPage() {
     if (!address.city.trim()) return toast.error("City is required");
 
     // State 2-letter validation
-    if (address.state.trim().length !== 2) {
-      return toast.error("State must be a 2-letter code (e.g., NY)");
+    const stateTrimmed = address.state.trim();
+
+    if (address.country === "GB") {
+      // For UK: Must be more than 2 letters (e.g., "London", not "LD")
+      if (stateTrimmed.length <= 2) {
+        return toast.error(
+          "Please enter the full County/State name for UK (e.g., London)"
+        );
+      }
+    } else {
+      // For others (US/CA): Must be exactly 2 letters (e.g., "NY", "ON")
+      if (stateTrimmed.length !== 2) {
+        return toast.error("State must be a 2-letter code (e.g., NY or ON)");
+      }
     }
 
     // Zip code 6-7 character validation
@@ -232,7 +244,7 @@ export default function CheckoutPage() {
                   required
                 />
                 <TextInput
-                  label="Province/State (2 letters)"
+                  label="Province/State/Town/County (2 letters)"
                   value={address.state}
                   onChange={(v) => handleAddressChange("state", v)}
                   required
