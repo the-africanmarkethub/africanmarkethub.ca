@@ -190,27 +190,7 @@ export default function OrderDetail() {
           Order Details - #{orderMeta.id}
         </h1>
 
-        {/* Right: buttons — stays on one line on md+ */}
-        <div className="flex items-center flex-nowrap space-x-3">
-          {/* 1: Buy Again (only when payment completed) */}
-          {orderMeta.payment_status === "completed" && (
-            <button className="btn btn-primary min-w-[100px] text-xs!">
-              Buy Again
-            </button>
-          )}
-
-          {/* 2 & 3: Cancel / Track (only when shipping ongoing) */}
-          {orderMeta.shipping_status === "ongoing" && (
-            <>
-              <button className="btn btn-gray min-w-[100px] text-xs!">
-                Cancel Order
-              </button>
-              <button className="btn btn-primary min-w-[90px] text-xs!">
-                Track Order
-              </button>
-            </>
-          )}
-        </div>
+      
       </div>
 
       <CustomerSummary customer={customer} address={address} />

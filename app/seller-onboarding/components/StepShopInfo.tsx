@@ -226,6 +226,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     if (zip.length < 5 || zip.length > 10) {
      return toast.error("Postal code must be between 6 and 8 characters");
     }
+    
     try {
       setLoading(true);
       const form = new FormData();

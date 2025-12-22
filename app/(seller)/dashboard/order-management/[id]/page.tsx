@@ -12,6 +12,7 @@ import Address from "@/interfaces/address";
 import { getOrderDetail } from "@/lib/api/orders";
 import { formatHumanReadableDate } from "@/utils/formatDate";
 import { STATUS_OPTIONS, PAYMENT_STATUS_OPTIONS } from "@/setting";
+import Link from "next/link";
 interface OrderStats {
   total_orders: number;
   total_amount: string;
@@ -325,9 +326,14 @@ export default function OrderDetail() {
       <OrderItemsTable order={orderDetail} />
 
       <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
-          📦 Shipping & Payment Details
-        </h3>
+        <div className="flex justiy-between items-center">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+            📦 Shipping & Payment Details
+          </h3>
+          <Link href={orderMeta.tracking_url || ""}>
+            <span className="btn btn-primary">Print Label</span>
+          </Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
           {/* 1. Shipping Details Group */}
