@@ -2,6 +2,7 @@
 
 import React, { Suspense } from "react";
 import { COMPANY_CONTACT_INFO } from "@/setting";
+import Link from "next/link";
 
 const PrivacyPolicyContent: React.FC = () => {
   return (
@@ -165,11 +166,8 @@ const PrivacyPolicyContent: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             9. Contact Us
           </h2>
-          <p className="text-gray-700">
-            If you have questions about this Privacy Policy or wish to exercise
-            your rights, please contact us:
-            <br /> Email: {COMPANY_CONTACT_INFO.email}
-            <br /> Phone: {COMPANY_CONTACT_INFO.phone}
+          <p className="text-gray-700 hover:text-green-600 transition-colors">
+            <Link href="https://wa.me/447389199608">Send us a message</Link>
           </p>
         </section>
 

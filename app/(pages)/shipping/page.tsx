@@ -3,6 +3,7 @@
 import React from "react";
 import { FaTruck, FaMapMarkerAlt, FaShieldAlt, FaClock } from "react-icons/fa";
 import { COMPANY_CONTACT_INFO } from "@/setting";
+import Link from "next/link";
 
 const ShippingPage: React.FC = () => {
   return (
@@ -119,10 +120,9 @@ const ShippingPage: React.FC = () => {
           </p>
           <ul className="space-y-2 text-gray-700">
             <li>
-              <strong>Email:</strong> {COMPANY_CONTACT_INFO.email}
-            </li>
-            <li>
-              <strong>Phone:</strong> {COMPANY_CONTACT_INFO.phone}
+              <p className="text-gray-700 hover:text-green-600 transition-colors">
+                <Link href="https://wa.me/447389199608">Send us a message</Link>
+              </p>
             </li> 
           </ul>
         </section>
