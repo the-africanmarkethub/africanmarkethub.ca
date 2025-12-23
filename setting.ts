@@ -230,7 +230,6 @@ export const CARRIER_ICONS: Record<
 };
 
 export const UK_TIMEZONE = "Europe/London";
- 
 
 export interface CountryOption {
   code: string; // ISO 3166-1 alpha-2
@@ -238,11 +237,10 @@ export interface CountryOption {
   flag: string; // Emoji or URL
   name: string;
 }
- 
 
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
-  phone: "+44 7930 173135",
+  phone: "+44 7389 199608",
   email: "info@africanmarkethub.ca",
   companyName: APP_NAME,
   about: `

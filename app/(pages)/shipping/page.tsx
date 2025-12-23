@@ -123,10 +123,7 @@ const ShippingPage: React.FC = () => {
             </li>
             <li>
               <strong>Phone:</strong> {COMPANY_CONTACT_INFO.phone}
-            </li>
-            <li>
-              <strong>Warehouse Address:</strong> {COMPANY_CONTACT_INFO.address}
-            </li>
+            </li> 
           </ul>
         </section>
       </div>
