@@ -304,7 +304,20 @@ const ContactUsPage: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 Connect with our team directly via phone or email for specific
                 inquiries.
-              </p> 
+              </p>
+
+              {/* Address */}
+              <div className="flex items-start mb-4">
+                <FaBuilding className="w-6 h-6 text-orange-600 mt-1 shrink-0" />
+                <div className="ml-3">
+                  <p className="text-sm font-semibold text-gray-900">
+                    Physical Address
+                  </p>
+                  <p className="text-gray-700">
+                    {COMPANY_CONTACT_INFO.address}
+                  </p>
+                </div>
+              </div>
 
               {/* Phone */}
               <div className="flex items-start mb-4">

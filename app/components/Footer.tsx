@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FaFacebookF, FaEnvelope } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 
 import Image from "next/image";
 import { COMPANY_CONTACT_INFO } from "@/setting";
@@ -59,7 +59,7 @@ export default function Footer() {
 
         <div className="mt-8 flex gap-4 justify-end text-xl">
           <Link
-            href="https://www.facebook.com/africanmarkethub"
+            href="https://www.facebook.com/ayokahfoods"
             rel="noopener noreferrer"
             className="hover:text-hub-secondary transition duration-150 cursor-pointer"
             aria-label="Facebook link"
@@ -68,12 +68,20 @@ export default function Footer() {
           </Link>
 
           <Link
-            href="https://www.twitter.com/africanmarkethub"
+            href="https://www.twitter.com/ayokahfoods"
             rel="noopener noreferrer"
             className="hover:text-gray-900 transition duration-150 cursor-pointer"
             aria-label="Twitter link"
           >
             <FaXTwitter className="w-6 h-6" />
+          </Link>
+          <Link
+            href="https://www.twitter.com/ayokahfoods"
+            rel="noopener noreferrer"
+            className="hover:text-gray-900 transition duration-150 cursor-pointer"
+            aria-label="Twitter link"
+          >
+            <FaLinkedinIn className="w-6 h-6" />
           </Link>
 
           <Link
@@ -81,7 +89,7 @@ export default function Footer() {
             onClick={(e) => {
               e.preventDefault();
               window.location.href = `mailto:${
-                "support" + "@" + "africanmarkethub.ca/"
+                "ayokahfoods" + "@" + "gmail.com/"
               }`;
             }}
             className="hover:text-red-500 transition duration-150 cursor-pointer"
