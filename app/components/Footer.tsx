@@ -76,7 +76,7 @@ export default function Footer() {
             <FaXTwitter className="w-6 h-6" />
           </Link>
           <Link
-            href="https://www.twitter.com/ayokahfoods"
+            href="https://www.linkedin.com/ayokah-foods-services"
             rel="noopener noreferrer"
             className="hover:text-gray-900 transition duration-150 cursor-pointer"
             aria-label="Twitter link"
