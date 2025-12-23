@@ -170,7 +170,6 @@ const PrivacyPolicyContent: React.FC = () => {
             your rights, please contact us:
             <br /> Email: {COMPANY_CONTACT_INFO.email}
             <br /> Phone: {COMPANY_CONTACT_INFO.phone}
-            <br /> Address: {COMPANY_CONTACT_INFO.address}
           </p>
         </section>
 

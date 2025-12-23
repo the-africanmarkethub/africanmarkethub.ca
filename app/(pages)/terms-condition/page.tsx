@@ -152,7 +152,6 @@ const TermsContent: React.FC = () => {
           <p className="text-gray-700">
             Email: {COMPANY_CONTACT_INFO.email} <br />
             Phone: {COMPANY_CONTACT_INFO.phone} <br />
-            Address: {COMPANY_CONTACT_INFO.address}
           </p>
         </section>
 
