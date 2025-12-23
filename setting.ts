@@ -241,7 +241,7 @@ export interface CountryOption {
 export const COMPANY_CONTACT_INFO = {
   address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
   phone: "+44 7389 199608",
-  email: "info@africanmarkethub.ca",
+  email: "ayokahfoods@gmail.com",
   companyName: APP_NAME,
   about: `
 Ayokah Foods and Services is a modern, people-focused food and service marketplace created to make everyday living simpler, faster, and more convenient. Built with the needs of today’s consumers in mind, Ayokah Foods and Services connects individuals, families, and communities with high-quality foods, trusted sellers, essential products, and reliable home services — all through one easy-to-use digital platform.
