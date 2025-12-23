@@ -249,6 +249,8 @@ export function useItemForm(item: any) {
       return "Width must be a number between 0.1 and 10000 or left empty";
     if (!floatOK(heightVal))
       return "Height must be a number between 0.1 and 10000 or left empty";
+    if (!weightUnit) return "Weight unit is required for dimension";
+    if (!sizeUnit) return "Size unit is required for dimension";
 
     if (shopType === "services") {
       if (!pricingModel) return "Pricing model is required for services";

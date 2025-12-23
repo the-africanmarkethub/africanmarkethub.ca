@@ -14,7 +14,7 @@ export default function BasicInfoFields(props: any) {
           onChange={(e) => setTitle(e.target.value)}
           className="input"
           placeholder="Enter item title"
-          maxLength={50}
+          maxLength={250}
         />
       </div>
  
