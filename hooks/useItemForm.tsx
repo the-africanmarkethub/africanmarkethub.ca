@@ -223,7 +223,7 @@ export function useItemForm(item: any) {
   function validateForm(): string | null {
     if (!title || title.trim().length < 5)
       return "Title is required and must be at least 5 characters";
-    if (title.length > 100) return "Title must be at most 100 characters";
+    if (title.length > 250) return "Title must be at most 250 characters";
     if (!description || description.trim().length < 100)
       return "Description is required and must be at least 100 characters";
 
