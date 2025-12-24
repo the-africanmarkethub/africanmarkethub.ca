@@ -57,6 +57,14 @@ export const metadata: Metadata = {
       "Shop authentic African groceries, clothes & foods online. Ayokah Foods and Services delivers Africa’s best directly to your home.",
     images: ["https://ayokah.co.uk/Twitter.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
