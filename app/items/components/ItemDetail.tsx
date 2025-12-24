@@ -114,7 +114,7 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0 line-clamp-2">
+              <h1 className="sm:text-2xl text-sm font-semibold m-0">
                 {product.title}
               </h1>
 
