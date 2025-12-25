@@ -97,7 +97,7 @@ return (
             <LuTruck size={12} className="text-hub-primary" /> Delivery
           </label>
           <div className="flex gap-1">
-            {["on-site", "pickup", "remote"].map((method) => (
+            {["onsite", "pickup", "remote"].map((method) => (
               <button
                 key={method}
                 type="button"

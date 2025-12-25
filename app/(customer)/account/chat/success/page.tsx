@@ -64,12 +64,12 @@ function SuccessContent() {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
     } else if (status === "success" && countdown === 0) {
-      router.push("/login?redirect=/account/chat");
+      router.push(`/login?redirect=${encodeURIComponent("/account/chat")}`);
     }
   }, [status, countdown, router]);
 
   const triggerConfetti = () => {
-    const duration = 3000;
+    const duration = 2000;
     const end = Date.now() + duration;
 
     (function frame() {
