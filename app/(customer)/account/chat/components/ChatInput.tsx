@@ -46,7 +46,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
                 src={URL.createObjectURL(selectedFile)}
                 alt="Preview"
                 className="h-20 w-20 object-cover"
-                onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} // Clean up memory
+                onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} 
               />
             ) : (
               <div className="h-20 w-20 flex flex-col items-center justify-center bg-orange-50 text-orange-600">
@@ -81,9 +81,9 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
         onSubmit={handleSubmit}
         className="flex items-center gap-3 bg-gray-100 rounded-2xl px-4 py-2 transition-all focus-within:bg-gray-200/50"
       >
-        {/* ... rest of your form (input, paperclip button, etc.) remains exactly as you had it ... */}
         <input
           type="file"
+          name="file" 
           ref={fileInputRef}
           className="hidden"
           accept="image/*,.pdf,.doc,.docx"

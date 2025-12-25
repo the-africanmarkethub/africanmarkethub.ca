@@ -83,8 +83,10 @@ export default function ChatClientWrapper({
     const formData = new FormData();
     formData.append("service_id", activeChat.service_id.toString());
     formData.append("description", text.trim());
-    if (file) formData.append("file", file);
-
+    if (file) {
+      formData.append("file", file);
+    }
+    console.log("File in FormData:", formData.get("file"));
     try {
       const res = await replyServiceChat(formData);
       if (res.status === "success") {
@@ -149,6 +151,7 @@ export default function ChatClientWrapper({
             <ChatHeader
               participant={participant}
               onBack={() => setShowMobileChat(false)}
+              ticketId={activeChat?.ticket_id}
             />
             <ChatMessages messages={messages} currentUserRole={userRole} />
             <ChatInput onSendMessage={handleUpsertMessage} loading={loading} />

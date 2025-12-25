@@ -3,13 +3,28 @@
 import { LuChevronLeft } from "react-icons/lu";
 import Image from "next/image";
 import { Participant } from "@/interfaces/ticket";
+import BookingModal from "./BookingModal";
+import { useState } from "react";
 
 interface ChatHeaderProps {
   participant: Participant | null;
   onBack?: () => void;
+  ticketId?: string;
 }
 
-export default function ChatHeader({ participant, onBack }: ChatHeaderProps) {
+export default function ChatHeader({
+  participant,
+  onBack,
+  ticketId,
+}: ChatHeaderProps & { ticketId: string }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleBookingSubmit = async (data: any) => {
+    // Call your booking API here
+    console.log("Booking Data:", data);
+    // After successful API call:
+    // setIsModalOpen(false);
+  };
+
   if (!participant) return null;
 
   return (
@@ -56,10 +71,19 @@ export default function ChatHeader({ participant, onBack }: ChatHeaderProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-orange-600 transition-all active:scale-95 shadow-sm shadow-orange-200">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-orange-600 transition-all active:scale-95 shadow-sm shadow-orange-200"
+        >
           Book Now
         </button>
       </div>
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ticketId={ticketId}
+        onSubmit={handleBookingSubmit}
+      />
     </header>
   );
 }
