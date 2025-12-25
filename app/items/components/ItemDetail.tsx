@@ -300,11 +300,11 @@ export default function ItemDetail({
                       className="flex items-start gap-3 hover:bg-gray-50 p-2 rounded-md transition"
                     >
                       <Image
-                        width={20}
-                        height={20}
+                        width={300}
+                        height={300}
                         src={item.images?.[1] || "/placeholder.png"}
                         alt={item.title}
-                        className="w-20 h-20 object-cover rounded-md border"
+                        className="w-18.75 h-18.75 object-cover rounded-md border"
                       />
 
                       <div className="flex flex-col">

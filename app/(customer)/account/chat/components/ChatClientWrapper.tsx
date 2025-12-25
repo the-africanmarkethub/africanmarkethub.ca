@@ -15,12 +15,15 @@ interface ChatClientWrapperProps {
   initialActiveChat: Ticket | null;
   initialMessages: Message[];
   initialParticipant: Participant | null;
+  userRole?: "customer" | "vendor"; // New Prop
 }
+
 export default function ChatClientWrapper({
   initialChats,
   initialActiveChat,
   initialMessages,
   initialParticipant,
+  userRole = "customer", // Default to customer
 }: ChatClientWrapperProps) {
   const [chats, setChats] = useState<Ticket[]>(initialChats);
   const [activeChat, setActiveChat] = useState<Ticket | null>(
@@ -30,75 +33,109 @@ export default function ChatClientWrapper({
   const [participant, setParticipant] = useState<Participant | null>(
     initialParticipant
   );
+  const [loading, setLoading] = useState(false);
+  const [showMobileChat, setShowMobileChat] = useState(!!initialActiveChat);
+
+  // Sync state with props
   useEffect(() => {
     setChats(initialChats);
     setActiveChat(initialActiveChat);
     setMessages(initialMessages);
     setParticipant(initialParticipant);
   }, [initialChats, initialActiveChat, initialMessages, initialParticipant]);
-  
-  const [loading, setLoading] = useState(false);
- 
-  const [showMobileChat, setShowMobileChat] = useState(!!initialActiveChat);
 
-  const handleSelectChat = async (chat: Ticket) => {
-    setActiveChat(chat);
-    setShowMobileChat(true);
-    try {
-      const res = await getServiceChat(chat.ticket_id);
-      setMessages(res.data.messages || []);
-      setParticipant(res.data.participant || null);
-    } catch (err) {
-      toast.error("Failed to load conversation");
-    }
-  };
+  // Polling Logic
+  useEffect(() => {
+    if (!activeChat) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await getServiceChat(activeChat.ticket_id);
+        const serverData = res.data?.data || res.data;
+        const newMessages = serverData.messages || [];
+
+        if (newMessages.length !== messages.length) {
+          setMessages(newMessages);
+        }
+      } catch (err) {
+        console.error("Polling failed", err);
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [activeChat, messages.length]);
 
   const handleUpsertMessage = async (text: string, file?: File) => {
     if (!activeChat) return;
+
+    // 1. OPTIMISTIC UPDATE
+    const tempId = Date.now().toString();
+    const optimisticMessage: any = {
+      id: tempId,
+      text: text,
+      sender: userRole, // Use the actual role instead of 'is_me'
+      timestamp: new Date().toISOString(),
+      is_read: false,
+      file: file ? URL.createObjectURL(file) : null,
+    };
+
+    setMessages((prev) => [...prev, optimisticMessage]);
     setLoading(true);
+
     const formData = new FormData();
     formData.append("service_id", activeChat.service_id.toString());
-    formData.append(
-      "description",
-      text.trim() || (file ? "Attached a file." : "Inquiry")
-    );
+    formData.append("description", text.trim());
     if (file) formData.append("file", file);
 
     try {
       const res = await replyServiceChat(formData);
       if (res.status === "success") {
-        setMessages(res.data.messages);
+        const serverData = res.data?.data || res.data;
+        const serverMessages = serverData.messages;
 
+        if (serverMessages && Array.isArray(serverMessages)) {
+          setMessages(serverMessages);
+        }
+
+        // Update sidebar sorting and preview
         setChats((prev) =>
-          prev.map((c) =>
-            c.ticket_id === activeChat.ticket_id
-              ? {
-                  ...c,
-                  last_message: text || "📎 Attachment",
-                  last_message_time: new Date().toISOString(),
-                }
-              : c
-          )
+          prev
+            .map((c) =>
+              c.ticket_id === activeChat.ticket_id
+                ? {
+                    ...c,
+                    last_message: text || "📎 Attachment",
+                    last_message_time: new Date().toISOString(),
+                  }
+                : c
+            )
+            .sort(
+              (a, b) =>
+                new Date(b.last_message_time || 0).getTime() -
+                new Date(a.last_message_time || 0).getTime()
+            )
         );
       }
     } catch (err: any) {
       toast.error("Failed to send");
+      setMessages((prev) => prev.filter((m) => m.id !== tempId));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-white overflow-hidden md:rounded-2xl md:m-4 shadow-sm">
+    <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-white overflow-hidden md:rounded-2xl md:m-4 shadow-sm border border-gray-100">
       <div
         className={`${
           showMobileChat ? "hidden" : "block"
-        } w-full md:block md:w-80 border-hub-secondary border-r`}
+        } w-full md:block md:w-80 border-r border-gray-100`}
       >
         <ChatSidebar
           chats={chats}
           activeChatId={activeChat?.ticket_id}
-          onSelectChat={handleSelectChat}
+          onSelectChat={(chat) => {
+            setActiveChat(chat);
+            setShowMobileChat(true);
+          }}
         />
       </div>
 
@@ -111,15 +148,19 @@ export default function ChatClientWrapper({
           <>
             <ChatHeader
               participant={participant}
-              onBack={() => setShowMobileChat(false)} 
+              onBack={() => setShowMobileChat(false)}
             />
-            <ChatMessages messages={messages} />
+            <ChatMessages messages={messages} currentUserRole={userRole} />
             <ChatInput onSendMessage={handleUpsertMessage} loading={loading} />
           </>
         ) : (
-          <div className="flex-1 hidden md:flex flex-col items-center justify-center text-gray-400 gap-4">
-            <LuSend size={48} className="text-gray-200" />
-            <p>Select a conversation to start messaging</p>
+          <div className="flex-1 hidden md:flex flex-col items-center justify-center text-gray-400 gap-4 bg-gray-50/30">
+            <div className="p-6 bg-white rounded-full shadow-sm">
+              <LuSend size={48} className="text-orange-200" />
+            </div>
+            <p className="font-medium text-gray-500">
+              Select a conversation to start messaging
+            </p>
           </div>
         )}
       </main>
