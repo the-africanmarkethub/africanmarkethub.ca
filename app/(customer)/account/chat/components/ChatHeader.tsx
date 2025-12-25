@@ -11,7 +11,7 @@ import { createBookingProposal } from "@/lib/api/customer/services";
 interface ChatHeaderProps {
   participant: Participant | null;
   onBack?: () => void;
-  ticketId: string; // Made required since booking needs it
+  ticketId: string;
 }
 
 export default function ChatHeader({
@@ -22,23 +22,25 @@ export default function ChatHeader({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // This function now receives the CLEANED data from the Modal
   const handleBookingSubmit = async (bookingData: any) => {
     setIsSubmitting(true);
     try {
       const response = await createBookingProposal(bookingData);
 
-      if (response.status === "success") {
+      if (response.url) {
         toast.success("Booking proposal sent!", {
           style: { background: "#000", color: "#fff", borderRadius: "12px" },
         });
-        setIsModalOpen(false); // Close modal on success
+        setIsModalOpen(false);
+        // window.open(response.url, '_blank');
+        window.location.href = response.url;
       }
     } catch (error: any) {
       const message =
         error.response?.data?.message || "Failed to create booking";
+      setIsModalOpen(false);
       toast.error(message);
-      console.error("Booking Error:", error);
+      console.error("Booking Error:", message);
     } finally {
       setIsSubmitting(false);
     }
