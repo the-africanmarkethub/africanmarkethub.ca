@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react"; // Added useRef
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
@@ -12,24 +12,38 @@ import { verifyBookingStripeSession } from "@/lib/api/customer/services";
 function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
   const { clearCart } = useCart();
+
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const isVerifying = useRef(false); 
 
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
   const [countdown, setCountdown] = useState(5);
 
+  // 1. Capture Session ID accurately
   useEffect(() => {
-    if (!sessionId) {
-      setStatus("error");
-      return;
+    const sId = searchParams.get("session_id");
+    if (sId) {
+      setSessionId(sId);
+    } else if (typeof window !== "undefined") {
+      // Direct browser fallback if hook is slow
+      const params = new URLSearchParams(window.location.search);
+      setSessionId(params.get("session_id"));
     }
+  }, [searchParams]);
+
+  // 2. Verify Payment
+  useEffect(() => {
+    if (!sessionId || isVerifying.current) return;
 
     const verifyPayment = async () => {
+      isVerifying.current = true;
       try {
         const data = await verifyBookingStripeSession(sessionId);
-        if (data.status === "paid") {
+        // FIXED: Use a loose check or normalize the status string
+        if (data.status === "paid" || data.data?.status === "paid") {
           setStatus("success");
           clearCart();
           triggerConfetti();
@@ -43,9 +57,9 @@ function SuccessContent() {
     };
 
     verifyPayment();
-  }, [sessionId]);
+  }, [sessionId, clearCart]);
 
-  // Countdown effect for auto-redirect
+  // 3. Countdown effect logic remains same
   useEffect(() => {
     if (status === "success" && countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -107,10 +121,10 @@ function SuccessContent() {
           receipt or contact support.
         </p>
         <Link
-          href="/items"
+          href="/items?type='services'"
           className="text-orange-600 font-medium hover:text-orange-700 underline"
         >
-          Return to shop
+          Return to services listing
         </Link>
       </div>
     );
