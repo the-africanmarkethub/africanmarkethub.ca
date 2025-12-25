@@ -2,6 +2,7 @@
 
 import { LuPaperclip, LuSmile, LuSend, LuX } from "react-icons/lu";
 import { useState, useRef, FormEvent, ChangeEvent } from "react";
+import toast from "react-hot-toast";
 
 interface ChatInputProps {
   onSendMessage: (text: string, file?: File) => void;
@@ -46,7 +47,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
                 src={URL.createObjectURL(selectedFile)}
                 alt="Preview"
                 className="h-20 w-20 object-cover"
-                onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)} 
+                onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)}
               />
             ) : (
               <div className="h-20 w-20 flex flex-col items-center justify-center bg-orange-50 text-orange-600">
@@ -83,7 +84,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
       >
         <input
           type="file"
-          name="file" 
+          name="file"
           ref={fileInputRef}
           className="hidden"
           accept="image/*,.pdf,.doc,.docx"
@@ -116,7 +117,20 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="text-gray-400 hover:text-orange-500 transition-colors p-1 hidden sm:block"
+            onClick={() => {
+              toast("Use your keyboard emojis for now! 😉", {
+                icon: "⌨️",
+                style: {
+                  borderRadius: "12px",
+                  background: "#000",
+                  color: "#fff", 
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                },
+                duration: 3000,
+              });
+            }}
+            className="text-gray-400 hover:text-orange-500 transition-colors p-1 hidden sm:block active:scale-90"
           >
             <LuSmile size={20} />
           </button>

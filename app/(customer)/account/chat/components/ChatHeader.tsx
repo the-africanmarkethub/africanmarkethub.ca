@@ -5,30 +5,49 @@ import Image from "next/image";
 import { Participant } from "@/interfaces/ticket";
 import BookingModal from "./BookingModal";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { createBookingProposal } from "@/lib/api/customer/services";
 
 interface ChatHeaderProps {
   participant: Participant | null;
   onBack?: () => void;
-  ticketId?: string;
+  ticketId: string; // Made required since booking needs it
 }
 
 export default function ChatHeader({
   participant,
   onBack,
   ticketId,
-}: ChatHeaderProps & { ticketId: string }) {
+}: ChatHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const handleBookingSubmit = async (data: any) => {
-    // Call your booking API here
-    console.log("Booking Data:", data);
-    // After successful API call:
-    // setIsModalOpen(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // This function now receives the CLEANED data from the Modal
+  const handleBookingSubmit = async (bookingData: any) => {
+    setIsSubmitting(true);
+    try {
+      const response = await createBookingProposal(bookingData);
+
+      if (response.status === "success") {
+        toast.success("Booking proposal sent!", {
+          style: { background: "#000", color: "#fff", borderRadius: "12px" },
+        });
+        setIsModalOpen(false); // Close modal on success
+      }
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Failed to create booking";
+      toast.error(message);
+      console.error("Booking Error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!participant) return null;
 
   return (
-    <header className="p-3 md:p-4 border-b border-hub-secondary flex items-center justify-between bg-white sticky top-0 z-10 h-[70px]">
+    <header className="p-3 md:p-4 border-b border-hub-secondary flex items-center justify-between bg-white sticky top-0 z-10 h-17.5">
       <div className="flex items-center gap-3 overflow-hidden">
         <button
           onClick={onBack}
@@ -45,7 +64,7 @@ export default function ChatHeader({
               alt={participant.full_name || "User"}
               width={40}
               height={40}
-              unoptimized // Required for Base64 or external dynamic images
+              unoptimized
               className="h-full w-full object-cover"
             />
           </div>
@@ -73,16 +92,18 @@ export default function ChatHeader({
       <div className="flex items-center gap-2">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-orange-500 text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-orange-600 transition-all active:scale-95 shadow-sm shadow-orange-200"
+          className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-orange-100"
         >
-          Book Now
+          Book now
         </button>
       </div>
+
       <BookingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         ticketId={ticketId}
         onSubmit={handleBookingSubmit}
+        loading={isSubmitting}
       />
     </header>
   );

@@ -152,7 +152,7 @@ return (
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-hub-primary text-white font-bold py-2.5 rounded-xl hover:brightness-110 transition-all text-[12px] shadow-md shadow-hub-primary/20 disabled:opacity-50"
+          className="w-full btn btn-primary"
         >
           {loading ? "Processing..." : "Send Proposal"}
         </button>
