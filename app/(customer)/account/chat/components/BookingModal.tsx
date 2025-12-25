@@ -31,7 +31,7 @@ export default function BookingModal({
   const today = startOfToday();
   const [selectedDate, setSelectedDate] = useState<Date>(today);
   const [selectedTime, setSelectedTime] = useState("09:00");
-  const [deliveryMethod, setDeliveryMethod] = useState("on-site");
+  const [deliveryMethod, setDeliveryMethod] = useState("onsite");
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
