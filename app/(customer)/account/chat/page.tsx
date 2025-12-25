@@ -37,6 +37,7 @@ export default function ServiceChatPage({ searchParams }: ServiceChatPageProps) 
           ? chats.find((t: any) => String(t.service_id) === String(itemId)) 
           : null;
 
+          console.log(itemId);
         if (itemId && !activeTicket) {
           const formData = new FormData();
           formData.append("service_id", itemId);
