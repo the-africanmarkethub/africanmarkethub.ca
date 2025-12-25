@@ -15,7 +15,7 @@ function SuccessContent() {
   const { clearCart } = useCart();
 
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const isVerifying = useRef(false); 
+  const isVerifying = useRef(false);
 
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
@@ -42,7 +42,6 @@ function SuccessContent() {
       isVerifying.current = true;
       try {
         const data = await verifyBookingStripeSession(sessionId);
-        // FIXED: Use a loose check or normalize the status string
         if (data.status === "paid" || data.data?.status === "paid") {
           setStatus("success");
           clearCart();
@@ -121,7 +120,7 @@ function SuccessContent() {
           receipt or contact support.
         </p>
         <Link
-          href="/items?type='services'"
+          href="/items?type=services"
           className="text-orange-600 font-medium hover:text-orange-700 underline"
         >
           Return to services listing
