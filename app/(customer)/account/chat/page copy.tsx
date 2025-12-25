@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, use, useRef } from "react";
-import { useSearchParams } from "next/navigation"; // 1. Added this hook
 import {
   listServiceChats,
   getServiceChat,
@@ -17,13 +16,15 @@ export default function ServiceChatPage({
   searchParams,
 }: ServiceChatPageProps) {
   const resolvedParams = use(searchParams);
-  const nextSearchParams = useSearchParams(); // 2. Added client-side hook fallback
-
-  // 3. FIXED: Capture itemId from either the promise OR the URL bar directly
-  const itemId = resolvedParams?.item || nextSearchParams.get("item");
-
+  const itemId = resolvedParams.item;
   const isInitializing = useRef(false);
-  const [data, setData] = useState<any>(null);
+
+  const [data, setData] = useState<{
+    chats: any[];
+    activeChat: any | null;
+    messages: any[];
+    participant: any;
+  } | null>(null);
 
   useEffect(() => {
     if (isInitializing.current) return;
@@ -34,29 +35,25 @@ export default function ServiceChatPage({
         const res = await listServiceChats();
         let chats = Array.isArray(res.data) ? res.data : res.data?.data || [];
 
-        const targetId = itemId ? String(itemId).trim() : null;
-
-        let activeTicket = targetId
-          ? chats.find((t: any) => String(t.service_id) === targetId)
+        let activeTicket = itemId
+          ? chats.find((t: any) => String(t.service_id) === String(itemId))
           : null;
 
-        if (targetId && !activeTicket) {
+        console.log(itemId);
+        if (itemId && !activeTicket) {
           const formData = new FormData();
-          formData.append("service_id", targetId);
+          formData.append("service_id", itemId);
           formData.append("description", "");
 
           const createRes = await replyServiceChat(formData);
 
-          if (
-            createRes.status === "success" ||
-            createRes.data?.status === "success"
-          ) {
+          if (createRes.status === "success") {
             const refresh = await listServiceChats();
             chats = Array.isArray(refresh.data)
               ? refresh.data
               : refresh.data?.data || [];
             activeTicket = chats.find(
-              (t: any) => String(t.service_id) === targetId
+              (t: any) => String(t.service_id) === String(itemId)
             );
           }
         }
@@ -106,7 +103,7 @@ export default function ServiceChatPage({
     };
 
     initFetch();
-  }, [itemId]); // 6. FIXED: Re-run when the URL itemId changes
+  }, [itemId]);
 
   if (!data) {
     return (
