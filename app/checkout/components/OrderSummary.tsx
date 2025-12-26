@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { formatAmount } from "@/utils/formatCurrency";
 import {
   formatHumanReadable,
-  formatHumanReadableDate,
 } from "@/utils/formatDate";
 import { CARRIER_ICONS } from "@/setting";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -78,6 +77,7 @@ export default function OrderSummary({
     onSelectRate(option.total);
   };
 
+  console.log(discount);
   const handleCheckout = async () => {
     if (!shippingFee || !selectedShipping) {
       return toast.error("Please select a shipping option before checkout");
@@ -183,11 +183,6 @@ export default function OrderSummary({
         ))}
       </div>
 
-      {/* Subtotal */}
-      <div className="flex justify-between py-3 text-gray-600">
-        <span>Subtotal</span>
-        <span>{formatAmount(subtotal)}</span>
-      </div>
       {discount > 0 && appliedCoupon && (
         <div className="flex justify-between text-orange-800 font-medium bg-orange-50 p-2 rounded-md">
           <span className="text-xs italic">
@@ -196,7 +191,7 @@ export default function OrderSummary({
           <span>-{formatAmount(discount)}</span>
         </div>
       )}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-2">
         <span className="text-hub-secondary">Coupon</span>
         <button
           className="text-orange-800 font-semibold text-xs hover:underline cursor-pointer"
@@ -205,6 +200,11 @@ export default function OrderSummary({
           {discount > 0 ? "Change" : "Add Coupon"}
         </button>
       </div>
+      {/* Subtotal */}
+      <div className="flex justify-between py-3 text-gray-600">
+        <span>Subtotal</span>
+        <span>{formatAmount(subtotal)}</span>
+      </div>  
 
       {/* Shipping Options */}
       {shippingRates && (
@@ -262,7 +262,7 @@ export default function OrderSummary({
         <span>Total</span>
         <span>
           {shippingFee > 0
-            ? formatAmount(subtotal + shippingFee)
+            ? formatAmount(subtotal + shippingFee - discount) // FIXED: Added "- discount"
             : "Select a shipping option"}
         </span>
       </div>

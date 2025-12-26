@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import ItemTabs, { StarRating } from "./ItemTabs";
 import { formatAmount } from "@/utils/formatCurrency";
@@ -114,7 +114,7 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0 line-clamp-2">
+              <h1 className="sm:text-2xl text-sm font-semibold m-0">
                 {product.title}
               </h1>
 
@@ -300,11 +300,11 @@ export default function ItemDetail({
                       className="flex items-start gap-3 hover:bg-gray-50 p-2 rounded-md transition"
                     >
                       <Image
-                        width={300}
-                        height={300}
+                        width={20}
+                        height={20}
                         src={item.images?.[1] || "/placeholder.png"}
                         alt={item.title}
-                        className="w-18.75 h-18.75 object-cover rounded-md border"
+                        className="w-20 h-20 object-cover rounded-md border"
                       />
 
                       <div className="flex flex-col">

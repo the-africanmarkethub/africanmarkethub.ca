@@ -10,6 +10,7 @@ import debounce from "lodash.debounce";
 import ProductGrid from "./components/ProductGrid";
 import Link from "next/link";
 import FilterDrawer from "./components/FilterDrawer";
+import RequestLocation from "../components/common/RequestLocation";
 
 interface ItemsProps {
   params: { slug: string };
@@ -230,6 +231,7 @@ const Items: FC<ItemsProps> = ({}) => {
           )}
         </main>
       </div>
+      <RequestLocation />
     </>
   );
 };
