@@ -1,10 +1,5 @@
-import api from "../axios";
+import api from "../axios"; 
 
-/**
- * Fetch list of chats with manual pagination
- * @param offset - The starting point for the data fetch
- * @param limit - How many records to return
- */
 export async function listServiceChats(offset: number = 0, limit: number = 10) {
   const { data } = await api.get(`tickets`, {
     params: { offset, limit },

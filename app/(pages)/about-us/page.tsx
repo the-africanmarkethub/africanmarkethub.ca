@@ -59,29 +59,11 @@ const COMPANY_DATA: CompanyData = {
       title: "Integrity",
       description:
         "We uphold transparency, honesty, and strong ethical standards in all operations.",
-    },
-    {
-      icon: FaLightbulb,
-      title: "Innovation",
-      description:
-        "Using technology and creative solutions to simplify how people access food and services.",
-    },
-    // {
-    //   icon: FaLeaf,
-    //   title: "Sustainability",
-    //   description:
-    //     "Promoting eco-friendly practices and supporting community well-being.",
-    // },
-    // {
-    //   icon: FaBullseye,
-    //   title: "Quality",
-    //   description:
-    //     "Premium products, hygienic handling, and exceptional customer service.",
-    // },
+    }, 
   ],
   businesses: [
     {
-      name: "African Market HubSUPERMARKET",
+      name: "African Market Hub",
       icon: FaShoppingCart,
       description:
         "A modern and affordable supermarket providing groceries, beverages, home essentials, organic produce, and FMCG products. Our supermarket supports local suppliers and guarantees fresh, verified, and quality-assured items.",
@@ -90,18 +72,7 @@ const COMPANY_DATA: CompanyData = {
         "Fast delivery within major towns",
         "Secure payment and customer-friendly shopping experience",
       ],
-    },
-    {
-      name: "African Market Hub EVENTS & CATERING",
-      icon: FaCalendarAlt,
-      description:
-        "Premium catering services for weddings, birthdays, corporate events, house parties, private dining, and large outdoor celebrations. We combine African and continental cuisines to create memorable experiences.",
-      features: [
-        "Professional chefs and trained serving team",
-        "Customized menus for all events",
-        "On-site and off-site catering options",
-      ],
-    },
+    }, 
     {
       name: "African Market Hub SERVICES",
       icon: FaUtensils,
