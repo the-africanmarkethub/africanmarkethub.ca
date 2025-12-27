@@ -45,3 +45,14 @@ export async function getFaq(type: string) {
   });
   return response.data.data;
 }
+export async function listTutorials(offset: number, limit: number) {
+  const response = await api.get(`/tutorials`, {
+    params: { offset, limit },
+  });
+  return response.data;
+}
+
+export async function getTutorialBySlug(slug: string) {
+  const response = await api.get(`/tutorials/${slug}`);
+  return response.data; 
+}
