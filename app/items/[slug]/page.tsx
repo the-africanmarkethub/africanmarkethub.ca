@@ -7,24 +7,29 @@ import Link from "next/link";
 export async function generateMetadata({
   params,
 }: PageParams): Promise<Metadata> {
-  // const { slug } = params;
   const awaitedParams = await params;
   const slug = awaitedParams.slug;
 
   try {
     const response = await getItemDetail(slug);
     const product = response.data.product;
+
     const description = product.description
-      ?.replace(/<\/?[^>]+(>|$)/g, "") // strip HTML
+      ?.replace(/<\/?[^>]+(>|$)/g, "")
       .slice(0, 155);
+
+    const seoKeywords = Array.isArray(product.keywords)
+      ? product.keywords
+      : product.keywords?.split(",").map((k: any) => k.trim()) || [];
+
     return {
       title: `${product.title} | Ayokah Foods and Services`,
       description: description,
+      keywords: seoKeywords,
 
       openGraph: {
         title: product.title,
-        description:
-          product.meta_description || product.description?.slice(0, 155),
+        description: product.meta_description || description,
         type: "website",
         images: product.images?.map((img: string) => ({
           url: img,
@@ -36,8 +41,7 @@ export async function generateMetadata({
       twitter: {
         card: "summary_large_image",
         title: product.title,
-        description:
-          product.meta_description || product.description?.slice(0, 155),
+        description: product.meta_description || description,
         images: product.images?.[0] ? [product.images[0]] : [],
       },
     };
