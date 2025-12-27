@@ -91,7 +91,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
       },
       offers: {
         "@type": "Offer",
-        url: `https://ayokah.co.uk/items/${product.slug}`,
+        url: `https://africanmarkethub.ca/items/${product.slug}`,
         priceCurrency: "GBP", // Use your actual currency
         price: product.sales_price,
         itemCondition: "https://schema.org/NewCondition",
@@ -119,13 +119,13 @@ export default async function ItemDetailPage({ params }: PageParams) {
           "@type": "ListItem",
           position: 1,
           name: "Home",
-          item: "https://ayokah.co.uk",
+          item: "https://africanmarkethub.ca",
         },
         {
           "@type": "ListItem",
           position: 2,
           name: product.category.name,
-          item: `https://ayokah.co.uk/items?category=${product.category.slug}`,
+          item: `https://africanmarkethub.ca/items?category=${product.category.slug}`,
         },
         { "@type": "ListItem", position: 3, name: product.title },
       ],
