@@ -31,7 +31,17 @@ export function useItemForm(item: any) {
   // basic
   const [title, setTitle] = useState(item?.title ?? "");
   const [description, setDescription] = useState(item?.description ?? "");
-
+  const [keywords, setKeywords] = useState<string[]>(() => {
+    if (!item?.keywords) return [];
+    if (typeof item.keywords === "string") {
+      try {
+        return JSON.parse(item.keywords);
+      } catch (e) {
+        return item.keywords.split(",").map((k: string) => k.trim());
+      }
+    }
+    return Array.isArray(item.keywords) ? item.keywords : [];
+  });
   // pricing
   const [salesPrice, setSalesPrice] = useState<string>(
     item?.sales_price ? String(item.sales_price) : ""
@@ -223,7 +233,7 @@ export function useItemForm(item: any) {
   function validateForm(): string | null {
     if (!title || title.trim().length < 5)
       return "Title is required and must be at least 5 characters";
-    if (title.length > 100) return "Title must be at most 100 characters";
+    if (title.length > 250) return "Title must be at most 250 characters";
     if (!description || description.trim().length < 100)
       return "Description is required and must be at least 100 characters";
 
@@ -249,6 +259,8 @@ export function useItemForm(item: any) {
       return "Width must be a number between 0.1 and 10000 or left empty";
     if (!floatOK(heightVal))
       return "Height must be a number between 0.1 and 10000 or left empty";
+    if (!weightUnit) return "Weight unit is required for dimension";
+    if (!sizeUnit) return "Size unit is required for dimension";
 
     if (shopType === "services") {
       if (!pricingModel) return "Pricing model is required for services";
@@ -307,6 +319,7 @@ export function useItemForm(item: any) {
     const fd = new FormData();
     fd.append("title", title);
     fd.append("description", description);
+    fd.append("keywords", JSON.stringify(keywords));
     const categoryId = selectedChildCategory.value || selectedCategory.value;
     if (categoryId) fd.append("category_id", categoryId);
 
@@ -376,6 +389,8 @@ export function useItemForm(item: any) {
     setTitle,
     description,
     setDescription,
+    keywords,
+    setKeywords,
     salesPrice,
     setSalesPrice,
     regularPrice,

@@ -42,11 +42,11 @@ const COMPANY_DATA: CompanyData = {
   name: "African Market Hub",
   tagline: "Your Everyday Convenience Partner.",
   about:
-    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across United Kingdom. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, African Market Hub is redefining modern food accessibility with trust and excellence.",
+    "African Market Hub is a fast-growing consumer-focused brand providing essential food products, beverages, groceries, and lifestyle services across Canada. Built on quality, affordability, and convenience, we make everyday living easier for families, individuals, and businesses. From doorstep delivery to premium catering services, African Market Hub is redefining modern food accessibility with trust and excellence.",
   mission:
     "To deliver high-quality food products and services with unmatched convenience, ensuring every household has access to safe, affordable, and reliable essentials.",
   vision:
-    "To become United Kingdom most trusted food and lifestyle service provider through innovation, sustainability, and exceptional customer experience.",
+    "To become Canada most trusted food and lifestyle service provider through innovation, sustainability, and exceptional customer experience.",
   coreValues: [
     {
       icon: FaHandshake,
@@ -74,7 +74,7 @@ const COMPANY_DATA: CompanyData = {
       ],
     }, 
     {
-      name: "African Market Hub SERVICES",
+      name: "African Market Hub Services",
       icon: FaUtensils,
       description:
         "African Market Hub Services offers lifestyle support solutions including home cleaning, laundry, private chef, and event support. Our professional team ensures convenience, reliability, and quality service for homes and businesses alike.",
@@ -195,7 +195,7 @@ const AboutPageContent: React.FC = () => {
             Your all in one easy-to-use platform
           </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {COMPANY_DATA.businesses.map((business, index) => (
               <BusinessCard key={index} business={business} />
             ))}
@@ -210,7 +210,7 @@ const AboutPageContent: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">
                 Our Core Values
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                 {COMPANY_DATA.coreValues.map((value, index) => (
                   <ValueCard key={index} value={value} />
                 ))}
