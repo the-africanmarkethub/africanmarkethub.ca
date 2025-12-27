@@ -31,6 +31,7 @@ export function useItemForm(item: any) {
   // basic
   const [title, setTitle] = useState(item?.title ?? "");
   const [description, setDescription] = useState(item?.description ?? "");
+  const [keywords, setKeywords] = useState<string[]>(item?.keywords ?? []);
 
   // pricing
   const [salesPrice, setSalesPrice] = useState<string>(
@@ -98,6 +99,7 @@ export function useItemForm(item: any) {
   const [availableTo, setAvailableTo] = useState<string>(
     item?.available_to ?? ""
   );
+
 
   function findCategory(
     categories: DropdownOption[],
@@ -309,6 +311,7 @@ export function useItemForm(item: any) {
     const fd = new FormData();
     fd.append("title", title);
     fd.append("description", description);
+fd.append("keywords", JSON.stringify(keywords));
     const categoryId = selectedChildCategory.value || selectedCategory.value;
     if (categoryId) fd.append("category_id", categoryId);
 
@@ -378,6 +381,8 @@ export function useItemForm(item: any) {
     setTitle,
     description,
     setDescription,
+    keywords,
+    setKeywords,
     salesPrice,
     setSalesPrice,
     regularPrice,

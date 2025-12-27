@@ -29,6 +29,8 @@ export default function ItemForm({ onClose, item }: Props) {
         setTitle={form.setTitle}
         description={form.description}
         setDescription={form.setDescription}
+        keywords={form.keywords}
+        setKeywords={form.setKeywords}
       />
 
       <CategoryFields

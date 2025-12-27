@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
-import OrderSummary from "../carts/components/Summary";
 import Address from "@/interfaces/address";
 import { shippingRate } from "@/lib/api/customer/shippingRate";
 import toast from "react-hot-toast";
-import axios, { AxiosError } from "axios";
 import { ShippingRateResponse } from "@/interfaces/shippingRate";
 import { useAuthStore } from "@/store/useAuthStore";
 import TextInput from "../(seller)/dashboard/shop-management/components/TextInput";
@@ -16,6 +15,7 @@ import Coupon from "@/interfaces/coupon";
 import verifyCoupon from "@/lib/api/customer/coupon";
 import Modal from "../components/common/Modal";
 import Script from "next/script";
+import OrderSummary from "./components/OrderSummary";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -59,30 +59,33 @@ export default function CheckoutPage() {
     setError("");
     try {
       const res = await verifyCoupon(couponCode);
-      if (res?.status === "error") {
-        setError(res.message || "Invalid coupon");
-        return toast.error(res.message || "Invalid coupon");
-      }
 
-      if (res?.is_active && res.discount) {
+      // Match your API structure: status === "success" and top-level is_active
+      if (res?.status === "success" && res?.is_active && res.discount) {
         const { discount_rate, discount_type } = res.discount;
+
+        // Convert "10.9" string to Number
+        const rate = Number(discount_rate);
+
         const calculatedDiscount =
-          discount_type === "fixed"
-            ? Number(discount_rate)
-            : (subtotal * Number(discount_rate)) / 100;
+          discount_type === "fixed" ? rate : (subtotal * rate) / 100;
 
         setDiscount(calculatedDiscount);
-        setAppliedCoupon(res);
+        setAppliedCoupon(res.discount); // Set the discount object
         toast.success("Coupon applied!");
         setShowCouponModal(false);
+      } else {
+        const msg = res?.message || "Invalid or inactive coupon";
+        setError(msg);
+        toast.error(msg);
       }
-    } catch {
+    } catch (err) {
       setError("Failed to apply coupon.");
+      toast.error("Failed to apply coupon.");
     } finally {
       setLoading(false);
     }
   };
-
   // === Submission & Validation ===
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,29 +169,24 @@ export default function CheckoutPage() {
     }
   };
 
-  // === Google Maps Script Loader ===
-  // useEffect(() => {
-  //   if ((window as any).google?.maps?.places) {
-  //     setGoogleLoaded(true);
-  //     return;
-  //   }
-  //   const script = document.createElement("script");
-  //   script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-  //   script.async = true;
-  //   script.onload = () => setGoogleLoaded(true);
-  //   document.head.appendChild(script);
-  //   return () => {
-  //     script.remove();
-  //   };
-  // }, []);
+  useEffect(() => {
+    if ((window.google as any)?.maps?.places) {
+      setGoogleLoaded(true);
+      return;
+    }
 
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+
+    return () => {
+      script.remove();
+    };
+  }, []);
   return (
     <div className="bg-gray-50 py-8 min-h-screen">
-      <Script
-        src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
-        onLoad={() => setGoogleLoaded(true)}
-      />
-
       <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
         {cart && cart.length > 0 ? (
           <>
@@ -270,7 +268,7 @@ export default function CheckoutPage() {
                     Phone Number
                   </label>
                   <div className="flex items-stretch h-12">
-                    <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-[80px]">
+                    <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-20">
                       <span className="mr-2">
                         {countryCodeToFlag(address.country)}
                       </span>
@@ -296,8 +294,8 @@ export default function CheckoutPage() {
                   disabled={loading || !!shippingFee}
                   className={`mt-4 w-full py-3 rounded-full font-medium md:col-span-2 transition ${
                     loading || !!shippingFee
-                      ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-hub-primary text-white hover:bg-opacity-90"
+                      ? "btn btn-gray cursor-not-allowed"
+                      : "btn btn-primary text-white hover:bg-opacity-90"
                   }`}
                 >
                   {loading ? "Calculating..." : "Get Shipping Rate"}
@@ -333,14 +331,14 @@ export default function CheckoutPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowCouponModal(false)}
-                    className="btn bg-gray w-full"
+                    className="btn btn-gray w-full"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApplyCoupon}
                     disabled={loading || !couponCode}
-                    className="btn bg-hub-primary text-white w-full "
+                    className="btn btn-primary text-white w-full "
                   >
                     {loading ? "Checking..." : "Apply"}
                   </button>

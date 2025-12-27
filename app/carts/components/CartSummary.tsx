@@ -73,8 +73,8 @@ export default function CartSummary({
         disabled={loading || hasOutOfStock || cart.length === 0}
         className={`mt-6 w-full py-3.5 rounded-full font-bold text-sm shadow-lg transition-all active:scale-95 ${
           loading || hasOutOfStock || cart.length === 0
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "bg-orange-800 hover:bg-orange-900 text-white cursor-pointer shadow-orange-900/20"
+            ? "btn btn-gray cursor-not-allowed"
+            : "btn btn-primary cursor-pointer shadow-orange-900/20"
         }`}
       >
         {loading ? (
