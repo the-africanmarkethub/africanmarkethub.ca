@@ -29,7 +29,7 @@ export async function generateMetadata({
       : product.keywords?.split(",").map((k: any) => k.trim()) || [];
 
     return {
-      title: `${product.title} | Ayokah Foods and Services`,
+      title: `${product.title} | African Market Hub`,
       description: description,
       keywords: seoKeywords,
       alternates: {
@@ -87,7 +87,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
       sku: product.sku || `SKU-${product.id}`,
       brand: {
         "@type": "Brand",
-        name: "Ayokah Foods and Services",
+        name: "African Market Hub",
       },
       offers: {
         "@type": "Offer",
