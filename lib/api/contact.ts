@@ -34,3 +34,8 @@ export default async function contactUs(formData: Payload) {
     };
   }
 }
+
+export async function getPolicy(type: string) {
+  const response = await api.get(`/policy/${type}`);
+  return response.data.data;
+}
