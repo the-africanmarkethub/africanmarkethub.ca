@@ -33,7 +33,7 @@ export async function generateMetadata({
       description: description,
       keywords: seoKeywords,
       alternates: {
-        canonical: `https://ayokah.com/items/${slug}`,
+        canonical: `https://ayokah.co.uk/items/${slug}`,
       },
       openGraph: {
         title: product.title,
