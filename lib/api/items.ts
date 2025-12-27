@@ -130,3 +130,26 @@ export const upsertProductVariations = async (
   });
   return response.data;
 };
+
+export async function listSellerVariationItems(
+  limit: number,
+  offset: number,
+  search: string
+) {
+  const response = await api.get("/vendor/items/variations", {
+    params: {
+      limit,
+      offset,
+      search,
+    },
+  });
+  return response.data;
+}
+
+export async function deleteProductVariation(variationId: number) {
+  const response = await api.delete(
+    `/vendor/items/variations/delete/${variationId}`,
+    {}
+  );
+  return response.data;
+}
