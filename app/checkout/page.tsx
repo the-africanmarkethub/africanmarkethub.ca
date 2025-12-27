@@ -244,13 +244,13 @@ export default function CheckoutPage() {
                   required
                 />
                 <TextInput
-                  label="Province/State/Town"
+                  label="Province"
                   value={address.state}
                   onChange={(v) => handleAddressChange("state", v)}
                   required
                 />
                 <TextInput
-                  label="Postal/Zip Code"
+                  label="Postal Code"
                   value={address.zip_code}
                   onChange={(v) => handleAddressChange("zip_code", v)}
                   required
