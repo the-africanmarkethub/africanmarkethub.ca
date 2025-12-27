@@ -28,7 +28,7 @@ export default function Footer() {
               </Link>
             </div>
             <span
-              className="text-sm line-clamp-2"
+              className="text-sm line-clamp-4"
               title={COMPANY_CONTACT_INFO.companyDescription}
             >
               {COMPANY_CONTACT_INFO.companyDescription}
@@ -51,9 +51,10 @@ export default function Footer() {
 
           {/* FAQ */}
           <div className="flex flex-col gap-2">
-            <span className="font-extrabold mb-2 ">FAQ</span>
+            <span className="font-extrabold mb-2 ">Help Center</span>
             <Link href="/faqs">FAQs</Link>
             <Link href="/shipping">Shipping</Link>
+            <Link href="/blogs">Tutorials</Link>
           </div>
         </div>
 
