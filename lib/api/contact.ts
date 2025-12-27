@@ -39,3 +39,9 @@ export async function getPolicy(type: string) {
   const response = await api.get(`/policy/${type}`);
   return response.data.data;
 }
+export async function getFaq(type: string) {
+  const response = await api.get(`/faqs`, {
+    params: { type } 
+  });
+  return response.data.data;
+}
