@@ -87,13 +87,8 @@ function ProductActionCell({
   };
 
  return (
-   <>
-     {/* Container: 
-      - Mobile: Stacked or multi-row (flex-wrap) to prevent layout breaking
-      - Desktop: Single horizontal row
-    */}
+   <> 
      <div className="flex flex-wrap md:flex-nowrap items-center gap-2 min-w-fit">
-       {/* Status Dropdown - Wider on mobile for touch targets */}
        <div className="w-full md:w-32 order-1">
          <SelectDropdown
            value={status}
@@ -133,7 +128,6 @@ function ProductActionCell({
        </div>
      </div>
 
-     {/* Confirmation Modal - Mobile Friendly by default */}
      <ConfirmationModal
        isOpen={isModalOpen}
        onClose={() => setIsModalOpen(false)}

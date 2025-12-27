@@ -10,7 +10,6 @@ import { Product } from "@/interfaces/products";
 import { deleteItem, listSellerVariationItems } from "@/lib/api/items";
 import ConfirmationModal from "../../components/commons/ConfirmationModal";
 import TanStackTable from "../../components/commons/TanStackTable";
-import { ProductVariation } from "../components/ProductVariation";
 
 interface ProductTableProps {
   limit: number;
@@ -93,7 +92,6 @@ const ItemsVariationsTable: React.FC<ProductTableProps> = ({
   const [search, setSearch] = useState<string>("");
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // Ensure limit is a valid number to prevent NaN in TanStackTable
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: limit || 10,
@@ -119,7 +117,7 @@ const ItemsVariationsTable: React.FC<ProductTableProps> = ({
                 />
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="font-medium text-gray-800 truncate max-w-[200px]">
+                <span className="font-medium text-gray-800 truncate max-w-50">
                   {row.original.title}
                 </span>
                 <span className="text-xs text-gray-500 uppercase">
@@ -183,8 +181,6 @@ const ItemsVariationsTable: React.FC<ProductTableProps> = ({
           currentOffset,
           searchTerm
         );
-
-        // Safety check: ensure we are setting arrays and numbers
         setProducts(response.data || []);
         setTotalProducts(Number(response.total) || 0);
       } catch (err) {
