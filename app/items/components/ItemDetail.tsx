@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import ItemTabs, { StarRating } from "./ItemTabs";
 import { formatAmount } from "@/utils/formatCurrency";
@@ -118,15 +118,6 @@ export default function ItemDetail({
                 {product.title}
               </h1>
 
-              {product.type === "products" && (
-                <span
-                  className={`text-white text-[8px] font-semibold px-2 py-1 rounded-full ${
-                    getStockStatus(product.quantity).bgClass
-                  }`}
-                >
-                  {getStockStatus(product.quantity).text}
-                </span>
-              )}
             </div>
 
             <div className="flex items-center text-xs gap-1 -mt-2">
@@ -136,6 +127,16 @@ export default function ItemDetail({
                   {i < product.average_rating ? <StarFilled /> : <StarEmpty />}
                 </span>
               ))}
+              
+              {product.type === "products" && (
+                <span
+                  className={`text-white text-[8px] font-semibold px-2 py-1 rounded-full ${
+                    getStockStatus(product.quantity).bgClass
+                  }`}
+                >
+                  {getStockStatus(product.quantity).text}
+                </span>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -300,15 +301,15 @@ export default function ItemDetail({
                       className="flex items-start gap-3 hover:bg-gray-50 p-2 rounded-md transition"
                     >
                       <Image
-                        width={20}
-                        height={20}
+                        width={80}
+                        height={80}
                         src={item.images?.[1] || "/placeholder.png"}
                         alt={item.title}
                         className="w-20 h-20 object-cover rounded-md border"
                       />
 
-                      <div className="flex flex-col">
-                        <p className="text-sm font-medium text-gray-800 truncate">
+                      <div className="flex flex-col min-w-0">
+                        <p className="text-sm font-medium text-gray-800 truncate line-clamp-1">
                           {item.title}
                         </p>
 
