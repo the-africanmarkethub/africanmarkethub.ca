@@ -4,6 +4,12 @@ import { getItemDetail } from "@/lib/api/items";
 import { IoChevronForward } from "react-icons/io5";
 import Link from "next/link";
 
+type PageParams = {
+  params: {
+    slug: string;
+  };
+};
+
 export async function generateMetadata({
   params,
 }: PageParams): Promise<Metadata> {
@@ -26,7 +32,6 @@ export async function generateMetadata({
       title: `${product.title} | Ayokah Foods and Services`,
       description: description,
       keywords: seoKeywords,
-
       openGraph: {
         title: product.title,
         description: product.meta_description || description,
@@ -37,7 +42,6 @@ export async function generateMetadata({
           height: 630,
         })),
       },
-
       twitter: {
         card: "summary_large_image",
         title: product.title,
@@ -52,11 +56,6 @@ export async function generateMetadata({
     };
   }
 }
-type PageParams = {
-  params: {
-    slug: string;
-  };
-};
 
 export default async function ItemDetailPage({ params }: PageParams) {
   const awaitedParams = await params;
@@ -73,13 +72,16 @@ export default async function ItemDetailPage({ params }: PageParams) {
     const otherViews = response.data.otherViews ?? [];
     const customerAlsoViewed = response.data.customerAlsoViewed ?? [];
 
+    const star_rating = response.data.star_rating ?? { total: 0, reviews: [] };
+
+    // --- Unified Structured Data ---
     const productSchema = {
       "@context": "https://schema.org",
       "@type": "Product",
       name: product.title,
       image: product.images,
-      description: product.description,
-      sku: product.sku || product.id,
+      description: product.description?.replace(/<\/?[^>]+(>|$)/g, ""),
+      sku: product.sku || `SKU-${product.id}`,
       brand: {
         "@type": "Brand",
         name: "Ayokah Foods and Services",
@@ -87,37 +89,57 @@ export default async function ItemDetailPage({ params }: PageParams) {
       offers: {
         "@type": "Offer",
         url: `https://ayokah.co.uk/items/${product.slug}`,
-        priceCurrency: "GBP",
+        priceCurrency: "GBP", // Use your actual currency
         price: product.sales_price,
         itemCondition: "https://schema.org/NewCondition",
         availability:
-          product.stock > 0
+          product.quantity > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
       },
-      aggregateRating:
-        product.average_rating > 0
-          ? {
-              "@type": "AggregateRating",
-              ratingValue: product.average_rating,
-              reviewCount: product.reviews?.length || 0,
-            }
-          : undefined,
+      // Only include AggregateRating if there are actually ratings
+      ...(star_rating.total > 0 && {
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.average_rating || 0,
+          reviewCount: star_rating.total,
+        },
+      }),
     };
-    const star_rating = response.data.star_rating ?? { total: 0, reviews: [] };
+
+    // Breadcrumb Schema helps Google show the path in search results
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://ayokah.co.uk",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: product.category.name,
+          item: `https://ayokah.co.uk/items?category=${product.category.slug}`,
+        },
+        { "@type": "ListItem", position: 3, name: product.title },
+      ],
+    };
 
     return (
       <>
         <script
           type="application/ld+json"
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(productSchema),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
         <nav className="text-sm text-gray-500 my-4" aria-label="Breadcrumb">
           <ol className="list-none ml-4 inline-flex">
-            {/* Home Link */}
             <li className="flex items-center">
               <Link
                 href="/"
@@ -129,30 +151,22 @@ export default async function ItemDetailPage({ params }: PageParams) {
                 <IoChevronForward />
               </span>
             </li>
-
             <li className="flex items-center min-w-0">
               <Link
-                href={`/items?category=${product.category.slug}&type=${product.type}`}
-                className="text-hub-primary hover:text-hub-secondary min-w-0"
+                href={`/items?category=${product.category.slug}`}
+                className="text-hub-primary hover:text-hub-secondary truncate"
               >
-                <span className="truncate block max-w-25 sm:max-w-50">
-                  {product.category.name}
-                </span>
+                {product.category.name}
               </Link>
-              <span className="mx-2 shrink-0">
-                {" "}
+              <span className="mx-2">
                 <IoChevronForward />
               </span>
             </li>
-
-            {/* Current Product (Active) */}
             <li
-              className="text-gray-700 font-semibold min-w-0"
+              className="text-gray-700 font-semibold truncate"
               aria-current="page"
             >
-              <span className="truncate block max-w-37.5 sm:max-w-full">
-                {product.title}
-              </span>
+              {product.title}
             </li>
           </ol>
         </nav>

@@ -78,8 +78,8 @@ const ProductGrid: FC<ProductGridProps> = ({
                       400
                     )}
                     alt={product.title}
-                    width={400}
-                    height={400}
+                    width={500}
+                    height={500}
                     className="w-full h-40 object-cover"
                     placeholder="blur"
                     blurDataURL="/placeholder.png"
