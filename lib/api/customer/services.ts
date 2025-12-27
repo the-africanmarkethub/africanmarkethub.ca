@@ -1,10 +1,5 @@
 import api from "../axios";
 
-/**
- * Fetch list of chats with manual pagination
- * @param offset - The starting point for the data fetch
- * @param limit - How many records to return
- */
 export async function listServiceChats(offset: number = 0, limit: number = 10) {
   const { data } = await api.get(`tickets`, {
     params: { offset, limit },
@@ -25,6 +20,33 @@ export async function getServiceChat(ticketId: string) {
  * Expects FormData for file upload support
  */
 export const replyServiceChat = async (payload: FormData) => {
-  const { data } = await api.post("/tickets/upsert", payload);
+  const { data } = await api.post("/tickets/upsert", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
+};
+
+/**
+ * Sends the booking proposal to the backend
+ * @param payload { ticket_id, delivery_method, start_date, end_date, address, amount }
+ */
+export const createBookingProposal = async (payload: {
+  ticket_id: string;
+  delivery_method: string;
+  start_date: string;
+  end_date: string;
+  address?: string;
+  amount: number;
+}) => {
+  const { data } = await api.post("/customer/booking/upsert", payload);
+  return data;
+};
+
+export const verifyBookingStripeSession = async (sessionId: string) => {
+  const res = await api.get(
+    `/customer/booking/payment/verify?session_id=${sessionId}`
+  );
+  return res.data;
 };

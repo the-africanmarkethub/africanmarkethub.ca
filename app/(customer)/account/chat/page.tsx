@@ -1,15 +1,13 @@
 "use client";
 
 import { useState, useEffect, use, useRef } from "react";
+import { useSearchParams } from "next/navigation"; // 1. Added this hook
 import {
   listServiceChats,
   getServiceChat,
   replyServiceChat,
 } from "@/lib/api/customer/services";
 import ChatClientWrapper from "./components/ChatClientWrapper";
-
-const DEFAULT_INQUIRY =
-  "Hello! I'm interested in your services and would like to discuss some details...";
 
 interface ServiceChatPageProps {
   searchParams: Promise<{ item?: string }>;
@@ -19,16 +17,13 @@ export default function ServiceChatPage({
   searchParams,
 }: ServiceChatPageProps) {
   const resolvedParams = use(searchParams);
-  const itemId = resolvedParams.item;
+  const nextSearchParams = useSearchParams(); // 2. Added client-side hook fallback
+
+  // 3. FIXED: Capture itemId from either the promise OR the URL bar directly
+  const itemId = resolvedParams?.item || nextSearchParams.get("item");
 
   const isInitializing = useRef(false);
-
-  const [data, setData] = useState<{
-    chats: any[];
-    activeChat: any | null;
-    messages: any[];
-    participant: any;
-  } | null>(null);
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     if (isInitializing.current) return;
@@ -36,20 +31,20 @@ export default function ServiceChatPage({
     const initFetch = async () => {
       isInitializing.current = true;
       try {
-        // 1. Fetch List
         const res = await listServiceChats();
         let chats = Array.isArray(res.data) ? res.data : res.data?.data || [];
 
-        // 2. Find/Create Active Ticket
-        let activeTicket =
-          chats.find(
-            (t: any) => t.service_id?.toString() === itemId?.toString()
-          ) || null;
+        const targetId = itemId ? String(itemId).trim() : null;
 
-        if (itemId && !activeTicket) {
+        let activeTicket = targetId
+          ? chats.find((t: any) => String(t.service_id) === targetId)
+          : null;
+
+        if (targetId && !activeTicket) {
           const formData = new FormData();
-          formData.append("service_id", itemId);
-          formData.append("description", DEFAULT_INQUIRY);
+          formData.append("service_id", targetId);
+          formData.append("description", "");
+
           const createRes = await replyServiceChat(formData);
 
           if (
@@ -60,32 +55,32 @@ export default function ServiceChatPage({
             chats = Array.isArray(refresh.data)
               ? refresh.data
               : refresh.data?.data || [];
-            activeTicket =
-              chats.find(
-                (t: any) => t.service_id?.toString() === itemId.toString()
-              ) || null;
+            activeTicket = chats.find(
+              (t: any) => String(t.service_id) === targetId
+            );
           }
         }
 
-        if (!activeTicket && chats.length > 0) activeTicket = chats[0];
+        if (!activeTicket && chats.length > 0) {
+          activeTicket = chats[0];
+        }
 
-        // 3. Fetch Details (Wrapped in nested try/catch so sidebar survives error)
         let initialMessages = [];
         let initialParticipant = null;
 
         if (activeTicket) {
           try {
             const detail = await getServiceChat(activeTicket.ticket_id);
+            const payload = detail.data?.data || detail.data;
             if (
               detail.status === "success" ||
               detail.data?.status === "success"
             ) {
-              const payload = detail.data?.data || detail.data;
               initialMessages = payload?.messages || [];
               initialParticipant = payload?.participant || null;
             }
-          } catch (detailErr) {
-            console.error("Detail fetch failed:", detailErr);
+          } catch (err) {
+            console.error("Detail fetch failed", err);
           }
 
           if (!initialParticipant) {
@@ -105,21 +100,14 @@ export default function ServiceChatPage({
         });
       } catch (err) {
         console.error("Main Fetch Error:", err);
-        setData({
-          chats: [],
-          activeChat: null,
-          messages: [],
-          participant: null,
-        });
       } finally {
         isInitializing.current = false;
       }
     };
 
     initFetch();
-  }, [itemId]);
+  }, [itemId]); // 6. FIXED: Re-run when the URL itemId changes
 
-  // Loading State
   if (!data) {
     return (
       <div className="h-[80vh] w-full flex flex-col items-center justify-center gap-4">

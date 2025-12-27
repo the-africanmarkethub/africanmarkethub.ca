@@ -18,16 +18,20 @@ export default function ChatSidebar({
   onSelectChat,
 }: ChatSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter chats based on vendor name or last message
-  const filteredChats = chats.filter(
-    (chat) =>
-      chat.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      chat.last_message?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+ 
+  const filteredChats = chats
+    .filter(
+      (chat, index, self) =>
+        index === self.findIndex((t) => t.ticket_id === chat.ticket_id)
+    )
+    .filter(
+      (chat) =>
+        chat.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        chat.last_message?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   return (
-    <aside className="w-full md:w-80 bg-white border-r flex flex-col h-full overflow-hidden">
+    <aside className="w-full md:w-80 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
       {/* Search Header */}
       <div className="p-6 pb-4">
         <h1 className="text-2xl font-bold mb-4 text-gray-900">Chats</h1>
