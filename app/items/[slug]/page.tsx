@@ -32,6 +32,9 @@ export async function generateMetadata({
       title: `${product.title} | Ayokah Foods and Services`,
       description: description,
       keywords: seoKeywords,
+      alternates: {
+        canonical: `https://ayokah.com/items/${slug}`,
+      },
       openGraph: {
         title: product.title,
         description: product.meta_description || description,
