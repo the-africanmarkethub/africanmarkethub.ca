@@ -12,12 +12,14 @@ interface ChatHeaderProps {
   participant: Participant | null;
   onBack?: () => void;
   ticketId: string;
+  isLoading?: boolean;
 }
 
 export default function ChatHeader({
   participant,
   onBack,
   ticketId,
+  isLoading,
 }: ChatHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +34,6 @@ export default function ChatHeader({
           style: { background: "#000", color: "#fff", borderRadius: "12px" },
         });
         setIsModalOpen(false);
-        // window.open(response.url, '_blank');
         window.location.href = response.url;
       }
     } catch (error: any) {

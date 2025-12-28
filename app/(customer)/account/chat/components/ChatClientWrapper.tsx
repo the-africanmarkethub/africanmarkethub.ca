@@ -15,7 +15,6 @@ interface ChatClientWrapperProps {
   initialActiveChat: Ticket | null;
   initialMessages: Message[];
   initialParticipant: Participant | null;
-  userRole?: "customer" | "vendor"; // New Prop
 }
 
 export default function ChatClientWrapper({
@@ -23,7 +22,6 @@ export default function ChatClientWrapper({
   initialActiveChat,
   initialMessages,
   initialParticipant,
-  userRole = "customer", // Default to customer
 }: ChatClientWrapperProps) {
   const [chats, setChats] = useState<Ticket[]>(initialChats);
   const [activeChat, setActiveChat] = useState<Ticket | null>(
@@ -34,6 +32,7 @@ export default function ChatClientWrapper({
     initialParticipant
   );
   const [loading, setLoading] = useState(false);
+  const [isloadingChatMessage, setIsLoadingChatMessage] = useState(false);
   const [showMobileChat, setShowMobileChat] = useState(!!initialActiveChat);
 
   // Sync state with props
@@ -87,6 +86,7 @@ export default function ChatClientWrapper({
       formData.append("file", file);
     }
     try {
+      setIsLoadingChatMessage(true);
       const res = await replyServiceChat(formData);
       if (res.status === "success") {
         const serverData = res.data?.data || res.data;
@@ -120,6 +120,7 @@ export default function ChatClientWrapper({
       setMessages((prev) => prev.filter((m) => m.id !== tempId));
     } finally {
       setLoading(false);
+      setIsLoadingChatMessage(false);
     }
   };
 
@@ -151,9 +152,16 @@ export default function ChatClientWrapper({
               participant={participant}
               onBack={() => setShowMobileChat(false)}
               ticketId={activeChat?.ticket_id}
+              isLoading={isloadingChatMessage}
             />
-            <ChatMessages messages={messages} />
-            <ChatInput onSendMessage={handleUpsertMessage} loading={loading} />
+            <ChatMessages
+              messages={messages}
+              isloadingChatMessage={isloadingChatMessage}
+            />
+            <ChatInput
+              onSendMessage={handleUpsertMessage}
+              loading={loading || isloadingChatMessage}
+            />
           </>
         ) : (
           <div className="flex-1 hidden md:flex flex-col items-center justify-center text-gray-400 gap-4 bg-gray-50/30">
