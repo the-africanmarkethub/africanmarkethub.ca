@@ -17,9 +17,8 @@ export default function ServiceChatPage({
   searchParams,
 }: ServiceChatPageProps) {
   const resolvedParams = use(searchParams);
-  const nextSearchParams = useSearchParams(); // 2. Added client-side hook fallback
+  const nextSearchParams = useSearchParams();
 
-  // 3. FIXED: Capture itemId from either the promise OR the URL bar directly
   const itemId = resolvedParams?.item || nextSearchParams.get("item");
 
   const isInitializing = useRef(false);
