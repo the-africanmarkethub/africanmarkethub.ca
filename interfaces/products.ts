@@ -60,5 +60,6 @@ export interface Product {
     name: string;
   };
   average_rating: number;
+  variations?: any;
 }
 
