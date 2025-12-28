@@ -15,7 +15,7 @@ export default function SuccessContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
   );
-  const [countdown, setCountdown] = useState(5); 
+  const [countdown, setCountdown] = useState(5);
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
 
@@ -110,7 +110,7 @@ export default function SuccessContent() {
         <button
           onClick={() => sessionId && verifyPayment(sessionId)}
           disabled={isRetrying}
-          className="flex items-center justify-center space-x-2 mx-auto bg-orange-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-hub-secondary transition-all disabled:opacity-50"
+          className="flex items-center justify-center space-x-2 mx-auto bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-hub-secondary transition-all disabled:opacity-50"
         >
           {isRetrying ? (
             <ArrowPathIcon className="h-5 w-5 animate-spin" />
@@ -136,7 +136,7 @@ export default function SuccessContent() {
         Your subscription is active. Now, let's set up your payouts.
       </p>
 
-      <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 mb-8 text-left">
+      <div className="bg-green-50 border border-green-100 rounded-2xl p-6 mb-8 text-left">
         <h3 className="text-hub-secondary font-bold mb-1">
           Next Step: Seller Verification
         </h3>
@@ -145,7 +145,7 @@ export default function SuccessContent() {
           identity and link your bank account so you can receive payments.
         </p>
         <div className="flex items-center text-hub-secondary font-semibold text-sm">
-          <div className="h-2 w-full bg-orange-200 rounded-full overflow-hidden mr-3">
+          <div className="h-2 w-full bg-green-200 rounded-full overflow-hidden mr-3">
             <div
               className="h-full bg-hub-primary transition-all duration-1000 ease-linear"
               style={{ width: `${(countdown / 5) * 100}%` }}

@@ -117,9 +117,9 @@ function CustomerSummary({
 
           <div className="flex flex-col gap-3">
             {/* Row 1: Total Spent (Full Width) */}
-            <div className="p-4 bg-orange-50 border-l-4 border-orange-500 rounded-lg text-center shadow-sm">
+            <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg text-center shadow-sm">
               <p className="text-sm text-gray-600">Total Spent</p>
-              <p className="font-extrabold text-2xl text-orange-800 mt-1">
+              <p className="font-extrabold text-2xl text-green-800 mt-1">
                 {formatAmount(parseFloat(stats?.total_amount || "0"))}
               </p>
             </div>
@@ -230,7 +230,7 @@ function OrderItemsTable({ order }: { order: Order }) {
             <span>Shipping Fee ({order.shipping_method}):</span>
             <span>{formatAmount(parseFloat(order.shipping_fee))}</span>
           </div>
-          <div className="flex justify-between text-lg font-bold border-t pt-2 border-gray-300 text-orange-700">
+          <div className="flex justify-between text-lg font-bold border-t pt-2 border-gray-300 text-green-700">
             <span>Order Total:</span>
             <span>{formatAmount(parseFloat(order.total))}</span>
           </div>

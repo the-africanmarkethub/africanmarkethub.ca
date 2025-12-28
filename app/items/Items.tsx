@@ -217,7 +217,7 @@ const Items: FC<ItemsProps> = ({}) => {
               >
                 Previous
               </button>
-              <span className="text-yellow-800 font-medium">
+              <span className="text-green-800 font-medium">
                 Page {currentPage} of {totalPages}
               </span>
               <button

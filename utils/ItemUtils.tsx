@@ -2,7 +2,7 @@ export const StarFilled = () => (
   <svg
     width="12"
     height="14"
-    viewBox="0 0 19 18" 
+    viewBox="0 0 19 18"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -42,7 +42,7 @@ export const getStockStatus = (quantity: number) => {
   if (quantity > 0 && percentage <= 33.3) {
     return {
       text: "Few Stock",
-      bgClass: "bg-yellow-500",
+      bgClass: "bg-green-500",
     };
   } else {
     return {

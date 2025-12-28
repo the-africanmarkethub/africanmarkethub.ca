@@ -188,7 +188,7 @@ export default function ItemTabs({
                                 ) / star_rating.total
                               )
                             : 0)
-                            ? "text-yellow-500"
+                            ? "text-green-500"
                             : "text-gray-300"
                         }`}
                       />
@@ -204,7 +204,7 @@ export default function ItemTabs({
                       <span className="text-sm">{r.star} star</span>
                       <div className="bg-gray-200 h-2 flex-1 rounded overflow-hidden">
                         <div
-                          className="bg-yellow-500 h-2"
+                          className="bg-green-500 h-2"
                           style={{ width: `${r.percentage}%` }}
                         />
                       </div>
@@ -244,7 +244,7 @@ export default function ItemTabs({
                                 key={i}
                                 className={`w-4 h-4 ${
                                   i < review.rating
-                                    ? "text-yellow-500"
+                                    ? "text-green-500"
                                     : "text-gray-300"
                                 }`}
                               />

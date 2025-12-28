@@ -86,7 +86,6 @@ export default function ShippingSection({ user }: { user: User | null }) {
     }
   };
 
-
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <Script
@@ -96,13 +95,13 @@ export default function ShippingSection({ user }: { user: User | null }) {
 
       <div className="px-6 py-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
         <h3 className="font-bold text-gray-900 flex items-center gap-2">
-          <IoLocationOutline className="w-5 h-5 text-orange-800" />
+          <IoLocationOutline className="w-5 h-5 text-green-800" />
           Primary Shipping Address
         </h3>
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
-            className="text-xs font-bold text-orange-800 flex items-center gap-1 hover:underline"
+            className="text-xs font-bold text-green-800 flex items-center gap-1 hover:underline"
           >
             <PencilSquareIcon className="w-4 h-4" /> Edit
           </button>
@@ -112,13 +111,9 @@ export default function ShippingSection({ user }: { user: User | null }) {
       <div className="p-6">
         {isEditing ? (
           <div className="space-y-4">
-            
-              <GoogleAddressAutocomplete
-                onSelect={(addr) =>
-                  setFormData((prev) => ({ ...prev, ...addr }))
-                }
-              />
-            
+            <GoogleAddressAutocomplete
+              onSelect={(addr) => setFormData((prev) => ({ ...prev, ...addr }))}
+            />
 
             <TextInput
               label="Street"
@@ -222,8 +217,8 @@ export default function ShippingSection({ user }: { user: User | null }) {
 function AddressRow({ Icon, label, title, subtitle }: AddressRowProps) {
   return (
     <div className="flex gap-4 group">
-      <div className="bg-orange-50 p-2.5 rounded-xl h-fit shrink-0 group-hover:bg-orange-100 transition-colors">
-        <Icon size={20} className="text-orange-800" />
+      <div className="bg-green-50 p-2.5 rounded-xl h-fit shrink-0 group-hover:bg-green-100 transition-colors">
+        <Icon size={20} className="text-green-800" />
       </div>
 
       <div>

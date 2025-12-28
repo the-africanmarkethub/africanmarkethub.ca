@@ -44,30 +44,30 @@ export function Sidebar({
     fetchShopData();
   }, []);
 
- const filteredMenu = useMemo(() => {
-   return VENDOR_MENU.filter((item) => {
-     // Logic: If Service shop, hide these IDs. If Product shop, hide these IDs.
-     const hiddenForServices = [5];
-     const hiddenForProducts = [6];
+  const filteredMenu = useMemo(() => {
+    return VENDOR_MENU.filter((item) => {
+      // Logic: If Service shop, hide these IDs. If Product shop, hide these IDs.
+      const hiddenForServices = [5];
+      const hiddenForProducts = [6];
 
-     if (shopType === "services" && hiddenForServices.includes(item.id))
-       return false;
-     if (shopType === "products" && hiddenForProducts.includes(item.id))
-       return false;
+      if (shopType === "services" && hiddenForServices.includes(item.id))
+        return false;
+      if (shopType === "products" && hiddenForProducts.includes(item.id))
+        return false;
 
-     return true;
-   }).map((item) => {
-     if (item.id === 2 && item.children) {
-       return {
-         ...item,
-         children: item.children.filter(
-           (child) => !(shopType === "services" && child.id === 22)
-         ),
-       };
-     }
-     return item;
-   });
- }, [shopType]);
+      return true;
+    }).map((item) => {
+      if (item.id === 2 && item.children) {
+        return {
+          ...item,
+          children: item.children.filter(
+            (child) => !(shopType === "services" && child.id === 22)
+          ),
+        };
+      }
+      return item;
+    });
+  }, [shopType]);
 
   return (
     <>
@@ -109,14 +109,14 @@ export function Sidebar({
                     onClick={() => toggleExpand(item.id)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
                       isActive
-                        ? "bg-orange-50 text-orange-800"
+                        ? "bg-green-50 text-green-800"
                         : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <div className="flex items-center">
                       <item.icon
                         className={`w-5 h-5 mr-3 ${
-                          isActive ? "text-orange-800" : "text-gray-400"
+                          isActive ? "text-green-800" : "text-gray-400"
                         }`}
                       />
                       {item.label}
@@ -134,14 +134,14 @@ export function Sidebar({
                     onClick={() => window.innerWidth < 768 && toggleSidebar()}
                     className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                       currentPath === item.href
-                        ? "bg-orange-50 text-orange-800 shadow-sm"
+                        ? "bg-green-50 text-green-800 shadow-sm"
                         : "text-gray-600 hover:bg-gray-50"
                     }`}
                   >
                     <item.icon
                       className={`w-5 h-5 mr-3 ${
                         currentPath === item.href
-                          ? "text-orange-800"
+                          ? "text-green-800"
                           : "text-gray-400"
                       }`}
                     />
@@ -163,7 +163,7 @@ export function Sidebar({
                           }
                           className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${
                             isChildActive
-                              ? "text-orange-700 bg-orange-50/50"
+                              ? "text-green-700 bg-green-50/50"
                               : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                           }`}
                         >

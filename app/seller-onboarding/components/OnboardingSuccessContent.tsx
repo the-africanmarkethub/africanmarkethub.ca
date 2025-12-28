@@ -89,7 +89,7 @@ export default function OnboardingSuccessContent() {
   if (status === "loading") {
     return (
       <div className="text-center py-10">
-        <ArrowPathIcon className="h-12 w-12 text-orange-500 animate-spin mx-auto mb-4" />
+        <ArrowPathIcon className="h-12 w-12 text-green-500 animate-spin mx-auto mb-4" />
         <h2 className="text-xl font-bold text-gray-800">
           Verifying Payout Status...
         </h2>
@@ -115,7 +115,7 @@ export default function OnboardingSuccessContent() {
           onClick={handleRetryOnboarding}
           aria-label="retry button"
           disabled={isRetrying}
-          className="cursor-pointer w-full flex items-center justify-center bg-orange-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-orange-700 transition-all disabled:opacity-50"
+          className="cursor-pointer w-full flex items-center justify-center bg-green-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-green-700 transition-all disabled:opacity-50"
         >
           {isRetrying ? "Generating Link..." : "Complete Stripe Setup"}
         </button>

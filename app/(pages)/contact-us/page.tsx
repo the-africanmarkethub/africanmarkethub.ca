@@ -5,7 +5,12 @@ import { COMPANY_CONTACT_INFO } from "@/setting";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { FaBuilding, FaPhoneAlt, FaPaperPlane, FaWhatsapp } from "react-icons/fa";
+import {
+  FaBuilding,
+  FaPhoneAlt,
+  FaPaperPlane,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 
 interface FormData {
@@ -15,7 +20,6 @@ interface FormData {
   subject: string;
   message: string;
 }
-
 
 const ContactForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -280,7 +284,7 @@ const ContactUsPage: React.FC = () => {
         <header className="text-center py-16 bg-white rounded-xl shadow-lg mb-12">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
             Contact{" "}
-            <span className="text-orange-600">
+            <span className="text-green-600">
               {COMPANY_CONTACT_INFO.companyName}
             </span>
           </h1>
@@ -293,7 +297,7 @@ const ContactUsPage: React.FC = () => {
         <div className="grid lg:grid-cols-3 gap-10">
           {/* Contact Info Sidebar (2/3) */}
           <div className="lg:col-span-1 space-y-8 p-6 lg:p-0">
-            <div className="bg-orange-50 p-6 rounded-xl shadow-md border-l-4 border-orange-600">
+            <div className="bg-green-50 p-6 rounded-xl shadow-md border-l-4 border-green-600">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
                 Get in Touch
               </h2>

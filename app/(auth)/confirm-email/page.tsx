@@ -4,10 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import {
-  confirmEmail,
-  forgetPassword,
-} from "@/lib/api/auth/auth";
+import { confirmEmail, forgetPassword } from "@/lib/api/auth/auth";
 
 type ErrorResponse = {
   message?: string;
@@ -56,7 +53,7 @@ export default function ConfirmResetCode() {
 
     try {
       setResending(true);
-      await forgetPassword({ email }); 
+      await forgetPassword({ email });
       toast.success("OTP resent successfully.");
 
       // Reset timer
@@ -152,7 +149,8 @@ export default function ConfirmResetCode() {
             Confirm Email Address
           </h1>
           <p className="text-gray-600 mb-6 text-sm">
-            We sent a code to <span className="font-semibold">{email}</span> Enter or paste it here
+            We sent a code to <span className="font-semibold">{email}</span>{" "}
+            Enter or paste it here
           </p>
 
           <form
@@ -184,7 +182,7 @@ export default function ConfirmResetCode() {
                   <button
                     type="button"
                     onClick={handleResend}
-                    className="text-orange-800 font-bold hover:underline cursor-pointer disabled:opacity-50"
+                    className="text-green-800 font-bold hover:underline cursor-pointer disabled:opacity-50"
                     disabled={resending}
                   >
                     {resending ? "Resending..." : "Resend code"}

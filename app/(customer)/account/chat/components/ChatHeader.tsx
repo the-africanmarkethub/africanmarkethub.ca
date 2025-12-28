@@ -94,7 +94,7 @@ export default function ChatHeader({
       <div className="flex items-center gap-2">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-orange-100"
+          className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-green-100"
         >
           Book now
         </button>

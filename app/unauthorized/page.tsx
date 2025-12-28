@@ -8,8 +8,8 @@ export default function UnauthorizedPage() {
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-100 px-6">
       <div className="bg-white shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
         <div className="flex justify-center mb-6">
-          <div className="bg-orange-100 p-6 rounded-full">
-            <FaShieldAlt className="text-orange-600" size={60} />
+          <div className="bg-green-100 p-6 rounded-full">
+            <FaShieldAlt className="text-green-600" size={60} />
           </div>
         </div>
 
@@ -30,10 +30,7 @@ export default function UnauthorizedPage() {
             Go Back Home
           </Link>
 
-          <Link
-            href="/login"
-            className="btn btn-gray"
-          >
+          <Link href="/login" className="btn btn-gray">
             Login with another account
           </Link>
         </div>

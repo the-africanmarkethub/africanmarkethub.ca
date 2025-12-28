@@ -87,9 +87,9 @@ const FAQPage: React.FC = () => {
                     {item.question}
                   </span>
                   {activeIndex === index ? (
-                    <FaChevronUp className="w-5 h-5 text-orange-600" />
+                    <FaChevronUp className="w-5 h-5 text-green-600" />
                   ) : (
-                    <FaChevronDown className="w-5 h-5 text-orange-600" />
+                    <FaChevronDown className="w-5 h-5 text-green-600" />
                   )}
                 </button>
                 <div

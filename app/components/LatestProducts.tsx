@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState, FC } from "react";
-import { 
-  ArrowRightCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowRightCircleIcon } from "@heroicons/react/24/outline";
 import { listItems } from "@/lib/api/items";
 import Item from "@/interfaces/items";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import ProductGrid from "../items/components/ProductGrid";
 
 const LatestProducts: FC = () => {
@@ -36,21 +34,20 @@ const LatestProducts: FC = () => {
     };
 
     fetchItems();
-  }, []); 
+  }, []);
   return (
     <section className="mb-4">
       <div className="max-w-full mx-auto px-4 md:px-6 lg:px-8 pb-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl md:text-xl font-bold text-orange-800">
+          <h2 className="text-xl md:text-xl font-bold text-green-800">
             Latest products
           </h2>
           <ArrowRightCircleIcon
-            className="w-6 h-6 text-orange-800 cursor-pointer"
+            className="w-6 h-6 text-green-800 cursor-pointer"
             onClick={() => router.push("/items")}
           />
         </div>
 
-        
         <ProductGrid
           products={products}
           loading={loading}

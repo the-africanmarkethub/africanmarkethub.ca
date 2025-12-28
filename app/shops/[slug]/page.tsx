@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState, useMemo, FC } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
-import debounce from "lodash.debounce"; 
+import debounce from "lodash.debounce";
 import { listShopItems } from "@/lib/api/shops";
 import Product from "@/interfaces/items";
 import { Shop } from "@/interfaces/shop";
@@ -39,7 +39,7 @@ const ReadMore: FC<ReadMoreProps> = ({ text, lines = 2 }) => {
       {text.split(" ").length > 15 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-yellow-800 hover:underline mt-1 block cursor-pointer"
+          className="text-green-800 hover:underline mt-1 block cursor-pointer"
         >
           {expanded ? "Read Less" : "Read More"}
         </button>
@@ -130,7 +130,7 @@ const ShopItems: FC = () => {
                 className="object-cover"
               />
             ) : (
-              <div className="h-full w-full bg-linear-to-r from-orange-200 to-amber-300" />
+              <div className="h-full w-full bg-linear-to-r from-green-200 to-amber-300" />
             )}
             {shop.logo && (
               <div className="absolute left-1/2 sm:left-6 top-full -translate-x-1/2 sm:translate-x-0 -translate-y-2/3">
@@ -173,7 +173,7 @@ const ShopItems: FC = () => {
         </div>
       )}
 
-      {/* Items Grid */} 
+      {/* Items Grid */}
       <ProductGrid
         products={products}
         loading={loading}
@@ -191,7 +191,7 @@ const ShopItems: FC = () => {
           >
             Previous
           </button>
-          <span className="font-medium text-yellow-800">
+          <span className="font-medium text-green-800">
             Page {currentPage} of {totalPages}
           </span>
           <button

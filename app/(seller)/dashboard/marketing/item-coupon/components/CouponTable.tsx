@@ -109,7 +109,7 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit, onEdit }) => {
         accessorKey: "id",
         cell: ({ row }) => (
           <button
-            className="text-orange-800 font-semibold hover:underline cursor-pointer"
+            className="text-green-800 font-semibold hover:underline cursor-pointer"
             onClick={() => onEdit(row.original)} // Trigger Parent's drawer
           >
             Edit
@@ -171,7 +171,7 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit, onEdit }) => {
           value={search}
           onChange={handleSearchChange}
           className="w-full max-w-md px-3 py-2 border rounded-md border-amber-600 text-gray-900 focus:outline-hub-primary-400"
-        /> 
+        />
       </div>
 
       <TanStackTable

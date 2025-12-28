@@ -44,7 +44,7 @@ export default function ChatSidebar({
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-orange-500 placeholder:text-gray-400 transition-all"
+            className="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-green-500 placeholder:text-gray-400 transition-all"
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function ChatSidebar({
                 onClick={() => onSelectChat(chat)}
                 className={`flex items-center gap-3 p-4 cursor-pointer border-l-4 transition-all ${
                   isActive
-                    ? "bg-orange-50 border-orange-500 shadow-sm"
+                    ? "bg-green-50 border-green-500 shadow-sm"
                     : "hover:bg-gray-50 border-transparent"
                 }`}
               >
@@ -88,7 +88,7 @@ export default function ChatSidebar({
                     <span
                       className={`text-sm truncate pr-2 ${
                         isActive
-                          ? "font-bold text-orange-900"
+                          ? "font-bold text-green-900"
                           : "font-semibold text-gray-900"
                       }`}
                     >
@@ -102,7 +102,7 @@ export default function ChatSidebar({
                   </div>
                   <p
                     className={`text-xs truncate ${
-                      isActive ? "text-orange-700/80" : "text-gray-500"
+                      isActive ? "text-green-700/80" : "text-gray-500"
                     }`}
                   >
                     {chat.last_message || "No messages yet"}

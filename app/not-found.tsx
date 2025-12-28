@@ -1,17 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { FaExclamationTriangle, FaArrowLeft } from "react-icons/fa";
 
 export default function NotFound() {
-  const router = useRouter(); 
+  const router = useRouter();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-100 px-6">
       <div className="bg-white shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
         <div className="flex justify-center mb-6">
-          <div className="bg-orange-100 p-6 rounded-full">
-            <FaExclamationTriangle className="text-orange-600" size={60} />
+          <div className="bg-green-100 p-6 rounded-full">
+            <FaExclamationTriangle className="text-green-600" size={60} />
           </div>
         </div>
 
@@ -25,7 +25,7 @@ export default function NotFound() {
 
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => router.back()} 
+            onClick={() => router.back()}
             className="flex items-center justify-center gap-2 btn btn-primary cursor-pointer"
           >
             <FaArrowLeft size={16} />

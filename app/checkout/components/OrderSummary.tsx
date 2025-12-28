@@ -4,9 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { formatAmount } from "@/utils/formatCurrency";
-import {
-  formatHumanReadable,
-} from "@/utils/formatDate";
+import { formatHumanReadable } from "@/utils/formatDate";
 import { CARRIER_ICONS } from "@/setting";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CartItem, useCart } from "@/context/CartContext";
@@ -184,7 +182,7 @@ export default function OrderSummary({
       </div>
 
       {discount > 0 && appliedCoupon && (
-        <div className="flex justify-between text-orange-800 font-medium bg-orange-50 p-2 rounded-md">
+        <div className="flex justify-between text-green-800 font-medium bg-green-50 p-2 rounded-md">
           <span className="text-xs italic">
             Discount ({appliedCoupon.discount_code})
           </span>
@@ -194,7 +192,7 @@ export default function OrderSummary({
       <div className="flex justify-between items-center mt-2">
         <span className="text-hub-secondary">Coupon</span>
         <button
-          className="text-orange-800 font-semibold text-xs hover:underline cursor-pointer"
+          className="text-green-800 font-semibold text-xs hover:underline cursor-pointer"
           onClick={() => setShowCouponModal(true)}
         >
           {discount > 0 ? "Change" : "Add Coupon"}
@@ -204,7 +202,7 @@ export default function OrderSummary({
       <div className="flex justify-between py-3 text-gray-600">
         <span>Subtotal</span>
         <span>{formatAmount(subtotal)}</span>
-      </div>  
+      </div>
 
       {/* Shipping Options */}
       {shippingRates && (
@@ -227,7 +225,7 @@ export default function OrderSummary({
                 className={`flex gap-4 items-center p-4 rounded-lg border cursor-pointer transition
                   ${
                     active
-                      ? "border-red-800 bg-yellow-50 scale-[1.02]"
+                      ? "border-red-800 bg-green-50 scale-[1.02]"
                       : "border-gray-200 hover:border-gray-400 hover:scale-[1.01]"
                   }
                 `}

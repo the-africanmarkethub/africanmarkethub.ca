@@ -39,7 +39,7 @@ const TrackOrderPage: React.FC = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="bg-white rounded-2xl shadow-sm w-full max-w-lg p-8">
@@ -79,7 +79,7 @@ const TrackOrderPage: React.FC = () => {
           {order && <OrderStatusTracker order={order} />}
 
           {!order && !loading && (
-            <div className="text-center py-10 border-2 border-dashed border-yellow-200 rounded-lg">
+            <div className="text-center py-10 border-2 border-dashed border-green-200 rounded-lg">
               <p className="text-gray-500">
                 Your order status will appear here.
               </p>

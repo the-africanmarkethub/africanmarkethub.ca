@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  getVendorEarnings,
-} from "@/lib/api/seller/earnings";
+import { getVendorEarnings } from "@/lib/api/seller/earnings";
 import { LuMessageCircle } from "react-icons/lu";
 import WalletCard from "./components/WalletCard";
 import SalesGraph from "./components/SalesGraph";
@@ -42,7 +40,7 @@ export default function FinancePaymentPage() {
       {/* HEADER CARD */}
       <div className="card mb-6 hover:shadow-lg transition-all duration-300 rounded-xl bg-white cursor-default p-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold flex items-center gap-2 text-orange-800!">
+          <h2 className="text-lg font-semibold flex items-center gap-2 text-green-800!">
             <LuMessageCircle /> Finance & Payments
           </h2>
         </div>
