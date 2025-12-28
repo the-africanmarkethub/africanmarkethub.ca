@@ -114,7 +114,7 @@ export default function ItemDetail({
           {/* PRODUCT INFO */}
           <div className="flex flex-col space-y-4">
             <div className="flex items-center gap-4">
-              <h1 className="sm:text-2xl text-sm font-semibold m-0">
+              <h1 className="sm:text-2xl text-sm text-gray-800 font-semibold m-0">
                 {product.title}
               </h1>
 
@@ -156,11 +156,9 @@ export default function ItemDetail({
               )}
             </div>
 
-            <div className="text-gray-500 line-clamp-2">
+            <h2 className="text-gray-500 line-clamp-2">
               {parse(product.description)}
-            </div>
-
-            {/* Variations Section */}
+            </h2>
 
             {/* QUANTITY + ADD TO CART */}
             <div className="flex items-center gap-2 mt-5">
@@ -289,9 +287,9 @@ export default function ItemDetail({
           <div className="hidden lg:flex flex-col gap-4 lg:col-span-1">
             {otherViews && otherViews.length > 0 && (
               <div className="bg-white p-4 rounded-lg shadow-sm border">
-                <h3 className="text-lg font-semibold mb-3">
+                <h4 className="text-lg font-semibold text-gray-500 mb-3">
                   Customers Also Viewed
-                </h3>
+                </h4>
 
                 <div className="flex flex-col gap-4">
                   {otherViews.slice(0, 2).map((item) => (

@@ -33,7 +33,7 @@ export default function QuantityControl({
           onDecrease();
         }}
         disabled={disabled || quantity <= 1 || isOutOfStock}
-        className="w-7 h-7 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
+        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
         aria-label="Decrease quantity"
       >
         <MinusIcon className="w-4 h-4 stroke-[3px]" />
@@ -52,7 +52,7 @@ export default function QuantityControl({
           onIncrease();
         }}
         disabled={disabled || quantity >= stockQty || isOutOfStock}
-        className="w-7 h-7 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
+        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
         aria-label="Increase quantity"
       >
         <PlusIcon className="w-4 h-4 stroke-[3px]" />
