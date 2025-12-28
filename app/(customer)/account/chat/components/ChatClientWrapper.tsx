@@ -71,7 +71,7 @@ export default function ChatClientWrapper({
     const optimisticMessage: any = {
       id: tempId,
       text: text,
-      sender: userRole, // Use the actual role instead of 'is_me'
+      is_me: true,
       timestamp: new Date().toISOString(),
       is_read: false,
       file: file ? URL.createObjectURL(file) : null,
@@ -86,7 +86,6 @@ export default function ChatClientWrapper({
     if (file) {
       formData.append("file", file);
     }
-    console.log("File in FormData:", formData.get("file"));
     try {
       const res = await replyServiceChat(formData);
       if (res.status === "success") {
@@ -153,7 +152,7 @@ export default function ChatClientWrapper({
               onBack={() => setShowMobileChat(false)}
               ticketId={activeChat?.ticket_id}
             />
-            <ChatMessages messages={messages} currentUserRole={userRole} />
+            <ChatMessages messages={messages} />
             <ChatInput onSendMessage={handleUpsertMessage} loading={loading} />
           </>
         ) : (

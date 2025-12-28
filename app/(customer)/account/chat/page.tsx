@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use, useRef } from "react";
-import { useSearchParams } from "next/navigation"; // 1. Added this hook
+import { useSearchParams } from "next/navigation";
 import {
   listServiceChats,
   getServiceChat,
@@ -105,7 +105,7 @@ export default function ServiceChatPage({
     };
 
     initFetch();
-  }, [itemId]); // 6. FIXED: Re-run when the URL itemId changes
+  }, [itemId]);
 
   if (!data) {
     return (
@@ -117,7 +117,6 @@ export default function ServiceChatPage({
       </div>
     );
   }
-
   return (
     <ChatClientWrapper
       initialChats={data.chats}
