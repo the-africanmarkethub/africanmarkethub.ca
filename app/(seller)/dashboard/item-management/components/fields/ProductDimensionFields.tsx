@@ -17,23 +17,34 @@ export default function ProductDimensionFields(props: any) {
     sizeUnit,
     setSizeUnit,
   } = props;
+  const handleNumericChange = (
+    value: string,
+    setter: (val: string) => void
+  ) => {
+    // This regex allows only digits and a single optional decimal point
+    const regex = /^\d*\.?\d*$/;
+    if (regex.test(value)) {
+      setter(value);
+    }
+  };
   return (
     <>
       <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Weight
+            Weight <span className="text-red-500">*</span>
           </label>
           <input
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            inputMode="decimal"
+            onChange={(e) => handleNumericChange(e.target.value, setWeight)}
             className="input"
             placeholder="e.g. 0.5"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Weight Unit
+            Weight Unit <span className="text-red-500">*</span>
           </label>
           <SelectDropdown
             options={DIMENSION_OPTIONS as any}
@@ -44,7 +55,7 @@ export default function ProductDimensionFields(props: any) {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Size Unit
+            Size Unit <span className="text-red-500">*</span>
           </label>
           <SelectDropdown
             options={SIZE_UNIT_OPTIONS as any}
@@ -58,33 +69,39 @@ export default function ProductDimensionFields(props: any) {
       <div className="grid grid-cols-3 gap-4 mt-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Length
+            Length <span className="text-red-500">*</span>
           </label>
           <input
+            type="text"
+            inputMode="decimal"
             value={lengthVal}
-            onChange={(e) => setLengthVal(e.target.value)}
+            onChange={(e) => handleNumericChange(e.target.value, setLengthVal)}
             className="input"
             placeholder="Length"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Width
+            Width <span className="text-red-500">*</span>
           </label>
           <input
+            type="text"
+            inputMode="decimal"
             value={widthVal}
-            onChange={(e) => setWidthVal(e.target.value)}
+            onChange={(e) => handleNumericChange(e.target.value, setWidthVal)}
             className="input"
             placeholder="Width"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Height
+            Height <span className="text-red-500">*</span>
           </label>
           <input
+            type="text"
+            inputMode="decimal"
             value={heightVal}
-            onChange={(e) => setHeightVal(e.target.value)}
+            onChange={(e) => handleNumericChange(e.target.value, setHeightVal)}
             className="input"
             placeholder="Height"
           />
