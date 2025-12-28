@@ -1,9 +1,5 @@
 import React, { Suspense } from "react";
-import {
-  FaShoppingCart, 
-  FaUtensils,
-  FaBullseye,
-  FaPaperPlane,
+import { 
   FaHandshake,
   FaShieldAlt, 
 } from "react-icons/fa";
@@ -18,14 +14,12 @@ interface CoreValue {
  
 interface CompanyData {
   name: string;
-  tagline: string;
   about: string;
   marketplace: string;
   coreValues: CoreValue[];
 }
 const COMPANY_DATA: CompanyData = {
   name: "African Market Hub",
-  tagline: "Your Everyday Convenience Partner.",
   about:
     "At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada. Our platform brings together African vendors, service providers, and consumers, creating a vibrant digital space where authentic African products, services, and cultural goods are celebrated and made easily accessible. Whether you’re looking to reconnect with the flavors, styles, and traditions of Africa or discover new offerings from passionate African entrepreneurs, African Market Hub makes it simple, seamless, and enjoyable.",
   marketplace:
@@ -40,13 +34,13 @@ const COMPANY_DATA: CompanyData = {
     },
     {
       icon: FaShieldAlt,
-      title: "Integrity",
+      title: "Diaspora",
       description:
         " Serving the African diaspora by providing access to goods and services that reflect their heritage and identity.",
     },
     {
       icon: FaShieldAlt,
-      title: "Integrity",
+      title: "Cultural",
       description:
         "Promoting cultural exchange by making authentic African experiences available to both Africans in Canada and cultural enthusiasts who appreciate Africa's diversity and richness",
     },
