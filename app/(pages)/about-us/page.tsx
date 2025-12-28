@@ -82,7 +82,7 @@ const AboutPageContent: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">
                 Our Commitments
               </h2>
-              <div className="grid grid-cols-3 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {COMPANY_DATA.coreValues.map((value, index) => (
                   <ValueCard key={index} value={value} />
                 ))}
