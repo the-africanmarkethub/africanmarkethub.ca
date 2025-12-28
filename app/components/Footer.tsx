@@ -47,6 +47,7 @@ export default function Footer() {
             <span className="font-extrabold mb-2 ">Privacy</span>
             <Link href="/terms-condition">Terms of Privacy</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/return-policy">Return & Refund Policy</Link>
           </div>
 
           {/* FAQ */}
