@@ -7,6 +7,7 @@ import BookingModal from "./BookingModal";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { createBookingProposal } from "@/lib/api/customer/services";
+import Skeleton from "react-loading-skeleton";
 
 interface ChatHeaderProps {
   participant: Participant | null;
@@ -48,6 +49,7 @@ export default function ChatHeader({
   };
 
   if (!participant) return null;
+  const displayParticipant = participant && !isLoading;
 
   return (
     <header className="p-3 md:p-4 border-b border-hub-secondary flex items-center justify-between bg-white sticky top-0 z-10 h-17.5">
@@ -62,43 +64,85 @@ export default function ChatHeader({
 
         <div className="relative shrink-0">
           <div className="h-10 w-10 rounded-full overflow-hidden border border-gray-100">
-            <Image
-              src={participant.profile_photo || "/placeholder.png"}
-              alt={participant.full_name || "User"}
-              width={40}
-              height={40}
-              unoptimized
-              className="h-full w-full object-cover"
-            />
+            {isLoading ? (
+              <Skeleton
+                circle
+                height={40}
+                width={40}
+                className="leading-none"
+              />
+            ) : (
+              <Image
+                src={participant?.profile_photo || "/placeholder.png"}
+                alt={participant?.full_name || "User"}
+                width={40}
+                height={40}
+                unoptimized
+                className="h-full w-full object-cover"
+              />
+            )}
           </div>
-          {participant.is_online && (
+          {displayParticipant && participant.is_online && (
             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
           )}
         </div>
 
         <div className="min-w-0">
-          <h2 className="text-sm font-bold leading-tight truncate">
-            {participant.full_name || "Service Provider"}
-          </h2>
-          <div className="flex items-center gap-1.5">
-            <span
-              className={`text-[10px] font-semibold uppercase tracking-wider ${
-                participant.is_online ? "text-green-500" : "text-gray-400"
-              }`}
-            >
-              {participant.is_online ? "Active Now" : "Offline"}
-            </span>
-          </div>
+          {isLoading ? (
+            <div className="space-y-1">
+              {/* Name Skeleton */}
+              <Skeleton
+                height={16}
+                width={120}
+                className="leading-none"
+                baseColor="#f3f4f6"
+                highlightColor="#e5e7eb"
+              />
+              {/* Status Skeleton */}
+              <Skeleton
+                height={10}
+                width={60}
+                className="leading-none"
+                baseColor="#f9fafb"
+                highlightColor="#f3f4f6"
+              />
+            </div>
+          ) : (
+            <>
+              <h2 className="text-sm font-bold leading-tight truncate">
+                {participant?.full_name || "Service Provider"}
+              </h2>
+              <div className="flex items-center gap-1.5">
+                <span
+                  className={`text-[10px] font-semibold uppercase tracking-wider ${
+                    participant?.is_online ? "text-green-500" : "text-gray-400"
+                  }`}
+                >
+                  {participant?.is_online ? "Active Now" : "Offline"}
+                </span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-green-100"
-        >
-          Book now
-        </button>
+        {isLoading ? (
+          <Skeleton
+            height={32}
+            width={90}
+            borderRadius={999}
+            baseColor="#f3f4f6"
+            highlightColor="#e5e7eb"
+          />
+        ) : (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-green-100"
+          >
+            Book now
+          </button>
+        )}
       </div>
 
       <BookingModal
