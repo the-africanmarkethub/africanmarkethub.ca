@@ -1,4 +1,5 @@
 "use client";
+import { handleDecimalChange, handleIntegerChange } from "@/utils/inputMode";
 
 export default function PriceFields(props: any) {
   const {
@@ -10,24 +11,6 @@ export default function PriceFields(props: any) {
     setQuantity,
     shopType,
   } = props;
-
-  const handleDecimalChange = (
-    value: string,
-    setter: (val: string) => void
-  ) => {
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setter(value);
-    }
-  };
-
-  const handleIntegerChange = (
-    value: string,
-    setter: (val: string) => void
-  ) => {
-    if (value === "" || /^\d*$/.test(value)) {
-      setter(value);
-    }
-  };
 
   return (
     <div
@@ -42,6 +25,7 @@ export default function PriceFields(props: any) {
         </label>
         <input
           type="text"
+          inputMode="decimal"
           value={salesPrice}
           onChange={(e) => handleDecimalChange(e.target.value, setSalesPrice)}
           className="input w-full"
@@ -56,6 +40,7 @@ export default function PriceFields(props: any) {
         </label>
         <input
           type="text"
+          inputMode="decimal"
           value={regularPrice}
           onChange={(e) => handleDecimalChange(e.target.value, setRegularPrice)}
           className="input w-full"
@@ -71,6 +56,7 @@ export default function PriceFields(props: any) {
           </label>
           <input
             type="text"
+            inputMode="numeric"
             value={quantity}
             onChange={(e) => handleIntegerChange(e.target.value, setQuantity)}
             className="input w-full"

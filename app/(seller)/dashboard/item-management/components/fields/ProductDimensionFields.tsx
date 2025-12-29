@@ -1,6 +1,7 @@
 "use client";
 import SelectDropdown from "@/app/(seller)/dashboard/components/commons/Fields/SelectDropdown";
 import { DIMENSION_OPTIONS, SIZE_UNIT_OPTIONS } from "@/setting";
+import { handleNumericChange } from "@/utils/inputMode";
 
 export default function ProductDimensionFields(props: any) {
   const {
@@ -17,16 +18,7 @@ export default function ProductDimensionFields(props: any) {
     sizeUnit,
     setSizeUnit,
   } = props;
-  const handleNumericChange = (
-    value: string,
-    setter: (val: string) => void
-  ) => {
-    // This regex allows only digits and a single optional decimal point
-    const regex = /^\d*\.?\d*$/;
-    if (regex.test(value)) {
-      setter(value);
-    }
-  };
+
   return (
     <>
       <div className="grid grid-cols-3 gap-4">
