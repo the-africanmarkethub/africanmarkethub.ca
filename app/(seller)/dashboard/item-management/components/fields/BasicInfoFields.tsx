@@ -108,7 +108,7 @@ export default function BasicInfoFields({
       {/* Keywords Field */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          SEO Keywords{" "}
+          SEO Keywords <span className="text-red-500">*</span>
           <span className="text-gray-400 text-xs">
             (Press Enter or Comma to add)
           </span>

@@ -13,7 +13,7 @@ export default function CategoryFields(props: any) {
     <>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Category <span className="text-green-500">(required)</span>
+          Category <span className="text-red-500">*</span>
         </label>
         <SelectDropdown
           options={categories}
