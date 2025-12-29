@@ -166,7 +166,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
               </span>
             </li>
             <li
-              className="text-gray-700 font-semibold truncate"
+              className="text-hub-primary font-semibold truncate"
               aria-current="page"
             >
               {product.title}

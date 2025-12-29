@@ -43,16 +43,15 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} 
 
-/* Optional: define Tailwind theme variable linkage */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   /* === Theme Colors === */
-  --color-hub-primary: #03e502;
+  --color-hub-secondary: #03e500;
   --color-hub-light-primary: #71ff71;
-  --color-hub-secondary: #085f09;
+  --color-hub-primary: #085f09;
 }
 
 /* Typography defaults */
@@ -87,23 +86,18 @@ body,
   margin: 0;
   padding: 0;
 }
-
-/* 1. Remove the 'Eye' icon in Microsoft Edge */
+ 
 input::-ms-reveal {
   display: none;
 }
-
-/* 2. Remove the 'X' clear button in IE/Edge */
+ 
 input::-ms-clear {
   display: none;
 }
-
-/* 3. Ensure modern Webkit (Safari/Chrome) password managers 
-      don't overlap your custom icon */
+ 
 input::-webkit-contacts-auto-fill-button,
 input::-webkit-credentials-auto-fill-button {
-  margin-right: 24px;
-  /* Adjust if your icon overlaps auto-fill */
+  margin-right: 24px; 
 }
 
 .input {
@@ -125,7 +119,7 @@ input::-webkit-credentials-auto-fill-button {
    PRIMARY BUTTON (Orange)
 ------------------------------ */
 .btn-primary {
-  @apply bg-hub-primary text-gray-900 hover:bg-hub-secondary hover:text-white;
+  @apply bg-hub-primary text-white hover:bg-hub-secondary hover:text-gray-900;
 }
 
 /* ------------------------------
@@ -148,20 +142,16 @@ h2,
 h3,
 h4,
 h5,
-h6 {
-  /* Removed 'color: theme('colors.gray.700');' 
-     The text will now use 'var(--foreground)' from the body */
+h6 { 
   font-family: var(--font-heading);
   font-weight: 600;
+  color: rgb(44, 44, 44);
 }
 
-p {
-  /* Removed 'color: theme('colors.gray.500');' 
-     The text will now use 'var(--foreground)' from the body.
-     If you want a slightly lighter color for paragraphs, 
-     you must define a specific --text-p variable in :root. */
+p { 
   font-family: var(--font-sans);
   line-height: 1.6;
+  color: rgb(44, 44, 44);
 }
 
 @keyframes fadeIn {
