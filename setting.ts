@@ -256,16 +256,9 @@ export const COMPANY_CONTACT_INFO = {
   email: "info@africanmarkethub.ca",
   companyName: APP_NAME,
   about: `
-African Market Hub is a modern, people-focused food and service marketplace created to make everyday living simpler, faster, and more convenient. Built with the needs of today’s consumers in mind, African Market Hub connects individuals, families, and communities with high-quality foods, trusted sellers, essential products, and reliable home services — all through one easy-to-use digital platform.
-
-From freshly prepared meals to groceries, home essentials, and professional services, African Market Hub brings everything closer to you. Our platform empowers local vendors, supports small businesses, and ensures that customers enjoy competitive pricing, verified quality, and seamless delivery experiences.
-
-Whether you're shopping for daily essentials, placing a food order, booking a service professional, or exploring new offerings, African Market Hub is designed to save you time, reduce stress, and enhance convenience. We are committed to redefining lifestyle simplicity by merging technology, trust, and real human need into a single ecosystem that works for everyone.
-
-At African Market Hub, we don't just deliver products — we deliver comfort, reliability, and a better way to live every day.
-`,
+At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada. Our platform brings together African vendors, service providers, and consumers, creating a vibrant digital space where authentic African products, services, and cultural goods are celebrated and made easily accessible. Whether you’re looking to reconnect with the flavors, styles, and traditions of Africa or discover new offerings from passionate African entrepreneurs, African Market Hub makes it simple, seamless, and enjoyable.`,
   companyDescription: `
-Discover Africa's vibrant economy in one marketplace. We connect you directly with local entrepreneurs offering authentic African products—from stunning fashion and intricate crafts to farm-fresh produce and essential electronics. Buyers, find quality, heritage, and value. Sellers, access new markets and grow your business effortlessly. Your gateway to African excellence.`,
+At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada.`,
 };
 
 export const ROLE_OPTIONS = [

@@ -112,7 +112,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
             blurDataURL="/placeholder.png"
           />
           <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center">
-            <p className="sm:text-2xl text-sm font-bold text-hub-secondary text-center">
+            <p className="sm:text-lg text-xs font-bold text-white! text-center">
               {type === "services"
                 ? "Nearby Service Providers"
                 : "Essential Daily Needs"}

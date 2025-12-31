@@ -9,7 +9,7 @@ import { COMPANY_CONTACT_INFO } from "@/setting";
 
 export default function Footer() {
   return (
-    <footer className="bg-hub-primary/50 text-white py-5">
+    <footer className="bg-hub-secondary! text-white py-5">
       <div className="max-w-1xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           {/* Logo */}
