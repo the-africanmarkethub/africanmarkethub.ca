@@ -58,7 +58,8 @@ const TrackOrderPage: React.FC = () => {
               </label>
 
               <input
-                type="text"
+                type="email"
+                inputMode="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="TRA1238"
@@ -70,7 +71,7 @@ const TrackOrderPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full md:w-auto"
+              className="btn btn-primary w-full py-3.25! md:w-auto"
             >
               {loading ? "Searching..." : "Track"}
             </button>
@@ -79,7 +80,7 @@ const TrackOrderPage: React.FC = () => {
           {order && <OrderStatusTracker order={order} />}
 
           {!order && !loading && (
-            <div className="text-center py-10 border-2 border-dashed border-green-200 rounded-lg">
+            <div className="text-center text-xs py-10 border-2 border-dashed border-green-200 rounded-lg">
               <p className="text-gray-500">
                 Your order status will appear here.
               </p>

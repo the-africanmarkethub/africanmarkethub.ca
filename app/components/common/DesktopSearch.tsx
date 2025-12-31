@@ -26,33 +26,6 @@ export default function DesktopSearch() {
   }, []);
 
   const showResults = isFocused && (searchTerm.length > 0 || loading);
-
-  // return (
-  //   <div className="hidden md:flex flex-1 mx-6 relative " ref={searchRef}>
-  //     <div className="flex items-center w-full max-w-xl  border border-hub-primary rounded-md px-4 py-2">
-  //       <MagnifyingGlassIcon className="w-5 h-5 text-hub-primary" />
-  //       <input
-  //         type="text"
-  //         placeholder="Search for items..."
-  //         className="flex-1 px-3 py-1 bg-transparent outline-none text-gray-900 placeholder-gray-500"
-  //         value={searchTerm}
-  //         onChange={handleSearchChange}
-  //         onFocus={() => setIsFocused(true)}
-  //       />
-  //     </div>
-
-  //     {showResults && (
-  //       <div className="absolute top-full left-0 w-full max-w-xl mt-0.5 bg-white shadow-lg rounded-lg z-50 max-h-64 overflow-y-auto border-b border-hub-primary">
-  //         <SearchResultsList
-  //           loading={loading}
-  //           results={results}
-  //           isTouched={isTouched}
-  //           onItemClick={() => setIsFocused(false)}
-  //         />
-  //       </div>
-  //     )}
-  //   </div>
-  // );
  return (
    <div className="hidden md:flex flex-1 mx-6 relative" ref={searchRef}>
      <div className="relative w-full max-w-xl z-9999">
