@@ -14,11 +14,10 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={loading}
-      className={`w-full inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white  ${
-        loading
-          ? "bg-green-400 cursor-not-allowed"
-          : "bg-green-400 hover:bg-green-600 cursor-pointer"
-      }`}
+      className={`w-full inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-bold rounded-md text-white  ${loading
+        ? "bg-hub-primary cursor-not-allowed"
+        : "bg-hub-primary hover:bg-hub-secondary cursor-pointer"
+        }`}
     >
       {loading ? (
         <>

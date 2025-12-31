@@ -18,12 +18,12 @@ export default function WishlistPage() {
     <>
       <div className="card mb-6">
         <h2 className="text-lg font-semibold flex items-center">
-          <FiHeart className="text-green-800 text-xl mr-2" size={24} />
+          <FiHeart className="text-hub-secondary text-xl mr-2" size={24} />
           Wishlist ({wishlist.length})
         </h2>
         <p className="text-sm mt-1 text-gray-600">
           From your account dashboard, you can easily add your wishlist to your
-          <span className="text-green-800"> Cart </span>
+          <span className="text-hub-secondary"> Cart </span>
         </p>
       </div>
       {!wishlist || wishlist.length === 0 ? (
@@ -73,7 +73,7 @@ export default function WishlistPage() {
                       {item.title}
                     </div>
                     <div className="text-sm text-gray-500 mt-1">
-                      <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
+                      <span className="px-2 py-1 text-xs bg-green-100 text-hub-secondary rounded">
                         {item.stock ?? "In stock"}
                       </span>
                     </div>

@@ -51,115 +51,114 @@ export default function BookingModal({
     });
   };
 
-return (
-  <Modal isOpen={isOpen} onClose={onClose} title="Finalize Booking">
-    <style>{customCalendarStyles}</style>
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title="Finalize Booking">
+      <style>{customCalendarStyles}</style>
 
-    <form
-      onSubmit={handleBookingSubmit}
-      className="flex flex-col h-full overflow-hidden"
-    >
-      {/* Content Area */}
-      <div className="flex-1 overflow-y-auto px-0 py-2 space-y-3 scrollbar-hide">
-        {/* Date Selection - Compacted */}
-        <section className="space-y-1.5">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
-            <LuCalendar size={12} className="text-hub-primary" /> Appointment
-            Date
-          </label>
-          <div className="bg-black rounded-xl flex flex-col items-center">
-            <DayPicker
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => date && setSelectedDate(date)}
-              disabled={{ before: today }}
-              startMonth={today}
-              endMonth={addMonths(today, 3)}
-            />
-            <div className="w-full border-t border-hub-light-primary/10 flex items-center justify-between p-2">
-              <span className="text-sm  text-white font-semibold">
-                Time
-              </span>
+      <form
+        onSubmit={handleBookingSubmit}
+        className="flex flex-col h-full overflow-hidden"
+      >
+        {/* Content Area */}
+        <div className="flex-1 overflow-y-auto px-0 py-2 space-y-3 scrollbar-hide">
+          {/* Date Selection - Compacted */}
+          <section className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
+              <LuCalendar size={12} className="text-hub-primary" /> Appointment
+              Date
+            </label>
+            <div className="bg-black rounded-xl flex flex-col items-center">
+              <DayPicker
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => date && setSelectedDate(date)}
+                disabled={{ before: today }}
+                startMonth={today}
+                endMonth={addMonths(today, 3)}
+              />
+              <div className="w-full border-t border-hub-secondary/10 flex items-center justify-between p-2">
+                <span className="text-sm  text-white font-semibold">
+                  Time
+                </span>
+                <input
+                  type="time"
+                  required
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  className="bg-white rounded-md border border-hub-secondary px-1.5 py-0.5 text-[12px] font-bold text-hub-primary focus:ring-1 focus:ring-hub-primary outline-none"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Delivery Method - Smaller buttons */}
+          <section className="space-y-1.5">
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
+              <LuTruck size={12} className="text-hub-primary" /> Delivery
+            </label>
+            <div className="flex gap-1">
+              {["onsite", "pickup", "remote"].map((method) => (
+                <button
+                  key={method}
+                  type="button"
+                  onClick={() => setDeliveryMethod(method)}
+                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold capitalize border transition-all ${deliveryMethod === method
+                      ? "border-hub-primary bg-hub-primary text-white"
+                      : "border-hub-secondary bg-white text-gray-400"
+                    }`}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Amount & Location Row - Super Tight */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+                Amount
+              </label>
+              <div className="relative">
+                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-hub-primary font-bold">
+                  CA$
+                </span>
+                <input
+                  type="number"
+                  required
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="w-full pl-8! pr-2! py-1.5! input"
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+                Address
+              </label>
               <input
-                type="time"
-                required
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-                className="bg-white rounded-md border border-hub-secondary px-1.5 py-0.5 text-[12px] font-bold text-hub-primary focus:ring-1 focus:ring-hub-primary outline-none"
+                placeholder="Address..."
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className="w-full px-2! py-1.5! input"
               />
             </div>
-          </div>
-        </section>
-
-        {/* Delivery Method - Smaller buttons */}
-        <section className="space-y-1.5">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
-            <LuTruck size={12} className="text-hub-primary" /> Delivery
-          </label>
-          <div className="flex gap-1">
-            {["onsite", "pickup", "remote"].map((method) => (
-              <button
-                key={method}
-                type="button"
-                onClick={() => setDeliveryMethod(method)}
-                className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold capitalize border transition-all ${
-                  deliveryMethod === method
-                    ? "border-hub-primary bg-hub-primary text-white"
-                    : "border-hub-secondary bg-white text-gray-400"
-                }`}
-              >
-                {method}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Amount & Location Row - Super Tight */}
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
-              Amount
-            </label>
-            <div className="relative">
-              <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-hub-primary font-bold">
-                CA$
-              </span>
-              <input
-                type="number"
-                required
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-8! pr-2! py-1.5! input"
-              />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
-              Address
-            </label>
-            <input
-              placeholder="Address..."
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full px-2! py-1.5! input"
-            />
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="p-3 bg-white ">
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full btn btn-primary"
-        >
-          {loading ? "Processing..." : "Send Proposal"}
-        </button>
-      </div>
-    </form>
-  </Modal>
-);
+        {/* Footer */}
+        <div className="p-3 bg-white ">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full btn btn-primary"
+          >
+            {loading ? "Processing..." : "Send Proposal"}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
 }
 
 const customCalendarStyles = `

@@ -179,7 +179,7 @@ function WelcomeBox({ greeting, name }: { greeting: string; name?: string }) {
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 overflow-hidden relative">
       <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full -mr-16 -mt-16 opacity-50" />
       <h2 className="text-xl sm:text-2xl font-bold text-gray-900 relative">
-        {greeting}, <span className="text-green-800">{name ?? "Guest"}</span>
+        {greeting}, <span className="text-hub-secondary">{name ?? "Guest"}</span>
       </h2>
       <p className="text-sm mt-2 text-gray-600 leading-relaxed max-w-xl relative">
         From your dashboard, you can track{" "}
@@ -226,7 +226,7 @@ function ProfileCard({
         {!isEditing && (
           <button
             onClick={onEdit}
-            className="absolute bottom-0 right-0 bg-white p-1.5 rounded-full shadow-md border border-gray-100 text-green-800 hover:scale-110 transition-transform"
+            className="absolute bottom-0 right-0 bg-white p-1.5 rounded-full shadow-md border border-gray-100 text-hub-secondary hover:scale-110 transition-transform"
           >
             <EditIcon />
           </button>

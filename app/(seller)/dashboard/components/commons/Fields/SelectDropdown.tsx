@@ -33,9 +33,8 @@ export default function SelectDropdown({
     <Listbox value={value} onChange={onChange}>
       <div className="relative">
         <ListboxButton
-          className={`relative w-full cursor-default rounded-lg border border-gray-300 bg-white py-3 pl-3 pr-10 text-left focus:outline-none focus:ring-1 focus:ring-green-800 focus:border-green-800 text-sm transition duration-150 ${className} ${
-            value.value === "" ? "text-gray-500" : "text-gray-900"
-          }`}
+          className={`relative w-full cursor-default rounded-lg border border-gray-300 bg-white py-3 pl-3 pr-10 text-left focus:outline-none focus:ring-1 focus:ring-hub-secondary focus:border-hub-secondary text-sm transition duration-150 ${className} ${value.value === "" ? "text-gray-500" : "text-gray-900"
+            }`}
         >
           <span className="block truncate">{displayLabel}</span>
 
@@ -60,17 +59,15 @@ export default function SelectDropdown({
                 key={option.value}
                 value={option}
                 className={({ active }) =>
-                  `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-green-50 text-green-700" : "text-gray-700"
+                  `relative cursor-pointer select-none py-2 pl-10 pr-4 ${active ? "bg-green-50 text-hub-secondary" : "text-gray-700"
                   }`
                 }
               >
                 {({ selected }) => (
                   <>
                     <span
-                      className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
-                      }`}
+                      className={`block truncate ${selected ? "font-medium" : "font-normal"
+                        }`}
                     >
                       {option.label}
                     </span>

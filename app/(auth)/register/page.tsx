@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import Image from "next/image";
 import {
   EyeIcon,
@@ -10,6 +11,7 @@ import {
   ShoppingBagIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+
 import GoogleSignInButton from "@/app/components/common/GoogleSignInButton";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -26,7 +28,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState(""); // Default empty to force choice
+  const [role, setRole] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(
     REGISTRATION_COUNTRY_LIST[0]
   );
@@ -72,7 +74,7 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Column - Image */}
+
       <div className="relative hidden lg:block w-1/2">
         <Image
           width={1200}
@@ -85,20 +87,18 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
-      {/* Right Column - Content */}
+
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">
         <div className="w-full max-w-md">
-          {/* Progress Indicator */}
+
           <div className="flex justify-center mb-8 gap-2">
             <div
-              className={`h-1.5 w-12 rounded-full ${
-                step >= 1 ? "bg-hub-primary" : "bg-gray-200"
-              }`}
+              className={`h-1.5 w-12 rounded-full ${step >= 1 ? "bg-hub-primary" : "bg-gray-200"
+                }`}
             ></div>
             <div
-              className={`h-1.5 w-12 rounded-full ${
-                step >= 2 ? "bg-hub-primary" : "bg-gray-200"
-              }`}
+              className={`h-1.5 w-12 rounded-full ${step >= 2 ? "bg-hub-primary" : "bg-gray-200"
+                }`}
             ></div>
           </div>
 
@@ -287,26 +287,22 @@ export default function RegisterPage() {
   );
 }
 
-/** HELPER COMPONENTS **/
-
 function RoleCard({ title, description, icon, active, onClick }: any) {
   return (
     <button
       onClick={onClick}
       className={`group cursor-pointer relative w-full flex items-center p-5 border-2 rounded-2xl transition-all duration-200 text-left
-        ${
-          active
-            ? "border-hub-primary bg-hub-light-primary/10 shadow-md"
-            : "border-gray-200 bg-white hover:border-hub-light-primary hover:shadow-sm"
+        ${active
+          ? "border-hub-primary bg-hub-secondary/10 shadow-md"
+          : "border-gray-200 bg-white hover:border-hub-secondary hover:shadow-sm"
         }
       `}
     >
       <div
-        className={`p-3 rounded-xl mr-4 transition-colors ${
-          active
+        className={`p-3 rounded-xl mr-4 transition-colors ${active
             ? "bg-hub-primary text-white"
-            : "bg-gray-100 text-gray-500 group-hover:bg-hub-light-primary group-hover:text-hub-secondary"
-        }`}
+            : "bg-gray-100 text-gray-500 group-hover:bg-hub-secondary group-hover:text-hub-secondary"
+          }`}
       >
         {icon}
       </div>

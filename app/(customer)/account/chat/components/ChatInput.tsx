@@ -50,7 +50,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
                 onLoad={(e) => URL.revokeObjectURL(e.currentTarget.src)}
               />
             ) : (
-              <div className="h-20 w-20 flex flex-col items-center justify-center bg-green-50 text-green-600">
+              <div className="h-20 w-20 flex flex-col items-center justify-center bg-green-50 text-hub-secondary">
                 <LuPaperclip size={24} />
                 <span className="text-[10px] font-bold mt-1 uppercase">
                   {selectedFile.name.split(".").pop()}
@@ -94,7 +94,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="text-gray-400 hover:text-green-500 transition-colors p-1"
+          className="text-gray-400 hover:text-hub-primary transition-colors p-1"
         >
           <LuPaperclip size={20} />
         </button>
@@ -130,7 +130,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
                 duration: 3000,
               });
             }}
-            className="text-gray-400 hover:text-green-500 transition-colors p-1 hidden sm:block active:scale-90"
+            className="text-gray-400 hover:text-hub-primary transition-colors p-1 hidden sm:block active:scale-90"
           >
             <LuSmile size={20} />
           </button>
@@ -138,7 +138,7 @@ export default function ChatInput({ onSendMessage, loading }: ChatInputProps) {
           <button
             type="submit"
             disabled={loading || (!text.trim() && !selectedFile)}
-            className="text-green-500 hover:text-green-600 disabled:text-gray-300 transition-all p-1"
+            className="text-hub-primary hover:text-hub-secondary disabled:text-gray-300 transition-all p-1"
           >
             <LuSend size={20} className={loading ? "animate-pulse" : ""} />
           </button>

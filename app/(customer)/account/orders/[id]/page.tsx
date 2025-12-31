@@ -287,11 +287,10 @@ export default function OrderDetail() {
               <p className="font-medium text-gray-600 w-1/2">Payment Status:</p>
               {/* Using the payment_status from the Order object for accuracy */}
               <p
-                className={`font-semibold w-1/2 text-right ${
-                  orderMeta.payment_status === "completed"
-                    ? "text-green-700"
+                className={`font-semibold w-1/2 text-right ${orderMeta.payment_status === "completed"
+                    ? "text-hub-secondary"
                     : "text-red-700"
-                }`}
+                  }`}
               >
                 {orderMeta.payment_status.toUpperCase()}
               </p>

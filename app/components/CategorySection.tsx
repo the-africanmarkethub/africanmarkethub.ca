@@ -60,32 +60,32 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
     () =>
       loading
         ? Array.from({ length: 6 }).map((_, idx) => (
-            <div key={idx} className="rounded-xl overflow-hidden">
-              <Skeleton height={224} />
-            </div>
-          ))
+          <div key={idx} className="rounded-xl overflow-hidden">
+            <Skeleton height={224} />
+          </div>
+        ))
         : categories.slice(0, 6).map((cat) => (
-            <div
-              key={cat.id}
-              onClick={() => handleClick(cat.slug)}
-              className="relative rounded-xl overflow-hidden group cursor-pointer border border-green-100"
-            >
-              <Image
-                src={optimizeImage(cat.image, 400)}
-                alt={cat.name}
-                width={400}
-                height={400}
-                placeholder="blur"
-                blurDataURL="/placeholder.png"
-                className="w-full h-56 object-cover group-hover:scale-105 transition transform"
-              />
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="btn btn-primary text-center text-xs md:text-base truncate">
-                  {cat.name}
-                </div>
+          <div
+            key={cat.id}
+            onClick={() => handleClick(cat.slug)}
+            className="relative rounded-xl overflow-hidden group cursor-pointer border border-green-100"
+          >
+            <Image
+              src={optimizeImage(cat.image, 400)}
+              alt={cat.name}
+              width={400}
+              height={400}
+              placeholder="blur"
+              blurDataURL="/placeholder.png"
+              className="w-full h-56 object-cover group-hover:scale-105 transition transform"
+            />
+            <div className="absolute bottom-3 left-3 right-3">
+              <div className="btn btn-primary text-center text-xs md:text-base truncate">
+                {cat.name}
               </div>
             </div>
-          )),
+          </div>
+        )),
     [categories, loading, handleClick]
   );
 
@@ -112,7 +112,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
             blurDataURL="/placeholder.png"
           />
           <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center">
-            <p className="sm:text-2xl text-sm font-bold text-green-800 text-center">
+            <p className="sm:text-2xl text-sm font-bold text-hub-secondary text-center">
               {type === "services"
                 ? "Nearby Service Providers"
                 : "Essential Daily Needs"}

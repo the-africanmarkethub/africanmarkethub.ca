@@ -63,11 +63,10 @@ const ProductGrid: FC<ProductGridProps> = ({
                 key={product.id}
                 onClick={() => onClickItem?.(product)}
                 className={`bg-gray-50 rounded-xl overflow-hidden shadow relative group cursor-pointer hover:p-2 hover:shadow-lg transition-shadow
-                            ${
-                              variant === "horizontal"
-                                ? "min-w-45 snap-start"
-                                : ""
-                            }
+                            ${variant === "horizontal"
+                    ? "min-w-45 snap-start"
+                    : ""
+                  }
                           `}
               >
                 {/* Product Image */}
@@ -145,7 +144,7 @@ const ProductGrid: FC<ProductGridProps> = ({
                   <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">
                     {product.title}
                   </h3>
-                  <div className="flex items-center text-[8px]! gap-1 text-green-400 mb-1">
+                  <div className="flex items-center text-[8px]! gap-1 text-hub-primary mb-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span key={i}>
                         {i < product.average_rating ? (

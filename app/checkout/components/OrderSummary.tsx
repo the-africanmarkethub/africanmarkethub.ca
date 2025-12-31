@@ -55,12 +55,12 @@ export default function OrderSummary({
     const estimatedDelivery =
       deliveryDays.length > 0
         ? vendors.find(
-            (v) => Number(v.delivery_days) === Math.min(...deliveryDays)
-          )?.estimated_delivery
+          (v) => Number(v.delivery_days) === Math.min(...deliveryDays)
+        )?.estimated_delivery
         : vendors
-            .map((v) => v.estimated_delivery)
-            .filter(Boolean)
-            .sort()[0] || null;
+          .map((v) => v.estimated_delivery)
+          .filter(Boolean)
+          .sort()[0] || null;
 
     const carriers = Array.from(new Set(vendors.map((v) => v.carrier))).join(
       ", "
@@ -182,7 +182,7 @@ export default function OrderSummary({
       </div>
 
       {discount > 0 && appliedCoupon && (
-        <div className="flex justify-between text-green-800 font-medium bg-green-50 p-2 rounded-md">
+        <div className="flex justify-between text-hub-secondary font-medium bg-green-50 p-2 rounded-md">
           <span className="text-xs italic">
             Discount ({appliedCoupon.discount_code})
           </span>
@@ -192,7 +192,7 @@ export default function OrderSummary({
       <div className="flex justify-between items-center mt-2">
         <span className="text-hub-secondary">Coupon</span>
         <button
-          className="text-green-800 font-semibold text-xs hover:underline cursor-pointer"
+          className="text-hub-secondary font-semibold text-xs hover:underline cursor-pointer"
           onClick={() => setShowCouponModal(true)}
         >
           {discount > 0 ? "Change" : "Add Coupon"}
@@ -223,10 +223,9 @@ export default function OrderSummary({
                 key={key}
                 onClick={() => handlePick(key, option)}
                 className={`flex gap-4 items-center p-4 rounded-lg border cursor-pointer transition
-                  ${
-                    active
-                      ? "border-red-800 bg-green-50 scale-[1.02]"
-                      : "border-gray-200 hover:border-gray-400 hover:scale-[1.01]"
+                  ${active
+                    ? "border-red-800 bg-green-50 scale-[1.02]"
+                    : "border-gray-200 hover:border-gray-400 hover:scale-[1.01]"
                   }
                 `}
               >

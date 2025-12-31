@@ -44,7 +44,7 @@ export default function ChatSidebar({
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-green-500 placeholder:text-gray-400 transition-all"
+            className="w-full bg-gray-100 border-none rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-hub-primary placeholder:text-gray-400 transition-all"
           />
         </div>
       </div>
@@ -59,11 +59,10 @@ export default function ChatSidebar({
               <div
                 key={chat.ticket_id}
                 onClick={() => onSelectChat(chat)}
-                className={`flex items-center gap-3 p-4 cursor-pointer border-l-4 transition-all ${
-                  isActive
-                    ? "bg-green-50 border-green-500 shadow-sm"
-                    : "hover:bg-gray-50 border-transparent"
-                }`}
+                className={`flex items-center gap-3 p-4 cursor-pointer border-l-4 transition-all ${isActive
+                  ? "bg-green-50 border-hub-primary shadow-sm"
+                  : "hover:bg-gray-50 border-transparent"
+                  }`}
               >
                 {/* Avatar Section */}
                 <div className="relative shrink-0">
@@ -78,7 +77,7 @@ export default function ChatSidebar({
                     />
                   </div>
                   {chat.online_status === "online" && (
-                    <span className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full shadow-sm" />
+                    <span className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-hub-primary border-2 border-white rounded-full shadow-sm" />
                   )}
                 </div>
 
@@ -86,11 +85,10 @@ export default function ChatSidebar({
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-baseline mb-0.5">
                     <span
-                      className={`text-sm truncate pr-2 ${
-                        isActive
-                          ? "font-bold text-green-900"
-                          : "font-semibold text-gray-900"
-                      }`}
+                      className={`text-sm truncate pr-2 ${isActive
+                        ? "font-bold text-hub-secondary"
+                        : "font-semibold text-gray-900"
+                        }`}
                     >
                       {chat.full_name}
                     </span>
@@ -101,9 +99,8 @@ export default function ChatSidebar({
                     </span>
                   </div>
                   <p
-                    className={`text-xs truncate ${
-                      isActive ? "text-green-700/80" : "text-gray-500"
-                    }`}
+                    className={`text-xs truncate ${isActive ? "text-hub-secondary/80" : "text-gray-500"
+                      }`}
                   >
                     {chat.last_message || "No messages yet"}
                   </p>

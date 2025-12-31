@@ -43,15 +43,14 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-} 
+}
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   /* === Theme Colors === */
-  --color-hub-secondary: #03e500;
-  --color-hub-light-primary: #71ff71;
-  --color-hub-primary: #085f09;
+  --color-hub-secondary: #016134;
+  --color-hub-primary: #00A85A;
 }
 
 /* Typography defaults */
@@ -86,22 +85,22 @@ body,
   margin: 0;
   padding: 0;
 }
- 
+
 input::-ms-reveal {
   display: none;
 }
- 
+
 input::-ms-clear {
   display: none;
 }
- 
+
 input::-webkit-contacts-auto-fill-button,
 input::-webkit-credentials-auto-fill-button {
-  margin-right: 24px; 
+  margin-right: 24px;
 }
 
 .input {
-  @apply w-full border border-gray-300 p-3 rounded-lg focus:ring-2 text-gray-500 focus:ring-green-400 focus:outline-none bg-white;
+  @apply w-full border border-gray-300 p-3 rounded-lg focus:ring-2 text-gray-500 focus:ring-hub-primary focus:outline-none bg-white;
 }
 
 /* ------------------------------
@@ -119,14 +118,14 @@ input::-webkit-credentials-auto-fill-button {
    PRIMARY BUTTON (Orange)
 ------------------------------ */
 .btn-primary {
-  @apply bg-hub-primary text-white hover:bg-hub-secondary hover:text-gray-900;
+  @apply bg-hub-primary text-white hover:bg-hub-secondary hover:text-hub-primary;
 }
 
 /* ------------------------------
    SECONDARY BUTTON (Gray)
 ------------------------------ */
 .btn-gray {
-  @apply bg-gray-200 hover:bg-gray-300 text-gray-700;
+  @apply bg-gray-200 hover:bg-hub-primary text-gray-700;
 }
 
 /* ------------------------------
@@ -142,13 +141,13 @@ h2,
 h3,
 h4,
 h5,
-h6 { 
+h6 {
   font-family: var(--font-heading);
   font-weight: 600;
   color: rgb(44, 44, 44);
 }
 
-p { 
+p {
   font-family: var(--font-sans);
   line-height: 1.6;
   color: rgb(44, 44, 44);

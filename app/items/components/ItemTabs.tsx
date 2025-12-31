@@ -102,32 +102,29 @@ export default function ItemTabs({
       <div className="flex justify-center border-b border-gray-300">
         <button
           onClick={() => setActiveTab("description")}
-          className={`px-4 py-2 text-sm font-medium cursor-pointer ${
-            activeTab === "description"
-              ? "border-b-2 border-green-800 text-green-800"
-              : "text-gray-500 hover:text-gray-900"
-          }`}
+          className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "description"
+            ? "border-b-2 border-hub-secondary text-hub-secondary"
+            : "text-gray-500 hover:text-gray-900"
+            }`}
         >
           Description
         </button>
         <button
           onClick={() => setActiveTab("reviews")}
-          className={`px-4 py-2 text-sm font-medium cursor-pointer ${
-            activeTab === "reviews"
-              ? "border-b-2 border-green-800 text-green-800"
-              : "text-gray-500 hover:text-gray-900"
-          }`}
+          className={`px-4 py-2 text-sm font-medium cursor-pointer ${activeTab === "reviews"
+            ? "border-b-2 border-hub-secondary text-hub-secondary"
+            : "text-gray-500 hover:text-gray-900"
+            }`}
         >
           Reviews
         </button>
         {product.type === "services" && (
           <button
             onClick={() => setActiveTab("service_details")}
-            className={`px-4 py-2 text-sm font-medium cursor-pointer transition-colors ${
-              activeTab === "service_details"
-                ? "border-b-2 border-green-800 text-green-800"
-                : "text-gray-500 hover:text-gray-900"
-            }`}
+            className={`px-4 py-2 text-sm font-medium cursor-pointer transition-colors ${activeTab === "service_details"
+              ? "border-b-2 border-hub-secondary text-hub-secondary"
+              : "text-gray-500 hover:text-gray-900"
+              }`}
           >
             Service Details
           </button>
@@ -148,7 +145,7 @@ export default function ItemTabs({
               {canToggleDescription && (
                 <button
                   onClick={() => setShowFullDescription((prev) => !prev)}
-                  className="mt-2 text-green-800 font-medium text-sm"
+                  className="mt-2 text-hub-secondary font-medium text-sm"
                 >
                   {showFullDescription ? "Show less" : "Read more"}
                 </button>
@@ -167,30 +164,29 @@ export default function ItemTabs({
                   <span className="text-3xl font-bold">
                     {star_rating.total
                       ? (
-                          star_rating.reviews.reduce(
-                            (sum, r) => sum + r.rating,
-                            0
-                          ) / star_rating.total
-                        ).toFixed(1)
+                        star_rating.reviews.reduce(
+                          (sum, r) => sum + r.rating,
+                          0
+                        ) / star_rating.total
+                      ).toFixed(1)
                       : 0}
                   </span>
                   <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
                       <StarIcon
                         key={i}
-                        className={`w-5 h-5 ${
-                          i <
+                        className={`w-5 h-5 ${i <
                           (star_rating.total
                             ? Math.round(
-                                star_rating.reviews.reduce(
-                                  (sum, r) => sum + r.rating,
-                                  0
-                                ) / star_rating.total
-                              )
+                              star_rating.reviews.reduce(
+                                (sum, r) => sum + r.rating,
+                                0
+                              ) / star_rating.total
+                            )
                             : 0)
-                            ? "text-green-500"
-                            : "text-gray-300"
-                        }`}
+                          ? "text-hub-primary"
+                          : "text-gray-300"
+                          }`}
                       />
                     ))}
                   </div>
@@ -204,7 +200,7 @@ export default function ItemTabs({
                       <span className="text-sm">{r.star} star</span>
                       <div className="bg-gray-200 h-2 flex-1 rounded overflow-hidden">
                         <div
-                          className="bg-green-500 h-2"
+                          className="bg-hub-primary h-2"
                           style={{ width: `${r.percentage}%` }}
                         />
                       </div>
@@ -242,11 +238,10 @@ export default function ItemTabs({
                             {[...Array(5)].map((_, i) => (
                               <StarIcon
                                 key={i}
-                                className={`w-4 h-4 ${
-                                  i < review.rating
-                                    ? "text-green-500"
-                                    : "text-gray-300"
-                                }`}
+                                className={`w-4 h-4 ${i < review.rating
+                                  ? "text-hub-primary"
+                                  : "text-gray-300"
+                                  }`}
                               />
                             ))}
                           </div>
@@ -302,7 +297,7 @@ export default function ItemTabs({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
                 <h4 className="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                  <CalendarIcon className="w-4 h-4 text-green-800" />
+                  <CalendarIcon className="w-4 h-4 text-hub-secondary" />
                   Availability Schedule
                 </h4>
                 <div className="space-y-3">
@@ -331,7 +326,7 @@ export default function ItemTabs({
               {/* Fulfillment Section */}
               <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
                 <h4 className="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                  <ClockIcon className="w-4 h-4 text-green-800" />
+                  <ClockIcon className="w-4 h-4 text-hub-secondary" />
                   Fulfillment Info
                 </h4>
                 <div className="space-y-3">
@@ -351,7 +346,7 @@ export default function ItemTabs({
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-500">Pricing Model</span>
-                    <span className="px-2 py-0.5 bg-green-100 text-green-800 rounded text-xs font-bold uppercase">
+                    <span className="px-2 py-0.5 bg-green-100 text-hub-secondary rounded text-xs font-bold uppercase">
                       {product.pricing_model}
                     </span>
                   </div>

@@ -117,9 +117,9 @@ function CustomerSummary({
 
           <div className="flex flex-col gap-3">
             {/* Row 1: Total Spent (Full Width) */}
-            <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg text-center shadow-sm">
+            <div className="p-4 bg-green-50 border-l-4 border-hub-primary rounded-lg text-center shadow-sm">
               <p className="text-sm text-gray-600">Total Spent</p>
-              <p className="font-extrabold text-2xl text-green-800 mt-1">
+              <p className="font-extrabold text-2xl text-hub-secondary mt-1">
                 {formatAmount(parseFloat(stats?.total_amount || "0"))}
               </p>
             </div>
@@ -137,11 +137,11 @@ function CustomerSummary({
               </div>
 
               {/* Delivered Orders */}
-              <div className="p-3 bg-green-50 border-l-4 border-green-500 rounded-lg text-center">
+              <div className="p-3 bg-green-50 border-l-4 border-hub-primary rounded-lg text-center">
                 <p className="text-[10px] md:text-xs text-gray-600 uppercase">
                   Delivered
                 </p>
-                <p className="font-bold text-lg text-green-700">
+                <p className="font-bold text-lg text-hub-secondary">
                   {stats?.total_delivered || 0}
                 </p>
               </div>
@@ -230,7 +230,7 @@ function OrderItemsTable({ order }: { order: Order }) {
             <span>Shipping Fee ({order.shipping_method}):</span>
             <span>{formatAmount(parseFloat(order.shipping_fee))}</span>
           </div>
-          <div className="flex justify-between text-lg font-bold border-t pt-2 border-gray-300 text-green-700">
+          <div className="flex justify-between text-lg font-bold border-t pt-2 border-gray-300 text-hub-secondary">
             <span>Order Total:</span>
             <span>{formatAmount(parseFloat(order.total))}</span>
           </div>
@@ -384,11 +384,10 @@ export default function OrderDetail() {
               <p className="font-medium text-gray-600 w-1/2">Payment Status:</p>
               {/* Using the payment_status from the Order object for accuracy */}
               <p
-                className={`font-semibold w-1/2 text-right ${
-                  orderMeta.payment_status === "completed"
-                    ? "text-green-700"
-                    : "text-red-700"
-                }`}
+                className={`font-semibold w-1/2 text-right ${orderMeta.payment_status === "completed"
+                  ? "text-hub-secondary"
+                  : "text-red-700"
+                  }`}
               >
                 {orderMeta.payment_status.toUpperCase()}
               </p>
@@ -399,11 +398,10 @@ export default function OrderDetail() {
                 Vendor Settlement:
               </p>
               <p
-                className={`font-semibold w-1/2 text-right ${
-                  orderMeta.vendor_payment_settlement_status === "unpaid"
-                    ? "text-red-700"
-                    : "text-green-700"
-                }`}
+                className={`font-semibold w-1/2 text-right ${orderMeta.vendor_payment_settlement_status === "unpaid"
+                  ? "text-red-700"
+                  : "text-hub-secondary"
+                  }`}
               >
                 {orderMeta.vendor_payment_settlement_status.toUpperCase()}
               </p>

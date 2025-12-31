@@ -186,7 +186,7 @@ export default function ConfirmResetCode() {
                   <button
                     type="button"
                     onClick={handleResend}
-                    className="text-green-800 font-bold hover:underline cursor-pointer disabled:opacity-50"
+                    className="text-hub-secondary font-bold hover:underline cursor-pointer disabled:opacity-50"
                     disabled={resending}
                   >
                     {resending ? "Resending..." : "Resend code"}
@@ -204,9 +204,8 @@ export default function ConfirmResetCode() {
 
             <button
               type="submit"
-              className={`btn btn-primary w-full py-3 ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+              className={`btn btn-primary w-full py-3 ${loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
               disabled={loading || code.length < 6}
             >
               {loading ? "Confirming..." : "Verify code"}

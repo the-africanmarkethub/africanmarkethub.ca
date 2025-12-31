@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
-import { 
+import {
   FaHandshake,
-  FaShieldAlt, 
+  FaShieldAlt,
 } from "react-icons/fa";
 
 type IconComponent = React.FC<React.SVGProps<SVGSVGElement>>;
@@ -11,7 +11,7 @@ interface CoreValue {
   title: string;
   description: string;
 }
- 
+
 interface CompanyData {
   name: string;
   about: string;
@@ -24,7 +24,7 @@ const COMPANY_DATA: CompanyData = {
     "At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada. Our platform brings together African vendors, service providers, and consumers, creating a vibrant digital space where authentic African products, services, and cultural goods are celebrated and made easily accessible. Whether you’re looking to reconnect with the flavors, styles, and traditions of Africa or discover new offerings from passionate African entrepreneurs, African Market Hub makes it simple, seamless, and enjoyable.",
   marketplace:
     "Our marketplace is designed with ease, vibrancy, and connection at its core; helping users not only shop but also engage with a thriving community of African businesses. At African Market Hub, we believe in fostering economic growth, cultural pride, and shared experiences, one purchase at a time",
-  
+
   coreValues: [
     {
       icon: FaHandshake,
@@ -44,13 +44,13 @@ const COMPANY_DATA: CompanyData = {
       description:
         "Promoting cultural exchange by making authentic African experiences available to both Africans in Canada and cultural enthusiasts who appreciate Africa's diversity and richness",
     },
-  ], 
+  ],
 };
 
 // Type the component props explicitly
 const ValueCard: React.FC<{ value: CoreValue }> = ({ value }) => (
   <div className="flex flex-col items-center text-center p-6 bg-green-50 rounded-lg shadow-inner">
-    <value.icon className="w-8 h-8 text-green-700 mb-3" />
+    <value.icon className="w-8 h-8 text-hub-secondary mb-3" />
     <h4 className="font-semibold text-lg text-gray-900 mb-1">{value.title}</h4>
     <p className="text-sm text-gray-600">{value.description}</p>
   </div>
@@ -62,7 +62,7 @@ const AboutPageContent: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <header className="text-center py-16 bg-white rounded-xl shadow-lg mb-12">
           <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-            About <span className="text-green-600">{COMPANY_DATA.name}</span>
+            About <span className="text-hub-secondary">{COMPANY_DATA.name}</span>
           </h1>
         </header>
 

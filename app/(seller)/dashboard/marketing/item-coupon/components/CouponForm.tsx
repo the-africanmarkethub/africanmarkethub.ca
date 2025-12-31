@@ -103,8 +103,7 @@ const CouponForm: React.FC<CouponFormProps> = ({ coupon, onClose }) => {
     const validation = couponSchema.safeParse(formData);
     if (!validation.success) {
       toast.error(
-        `${validation.error.issues[0].path.join(" ")}: ${
-          validation.error.issues[0].message
+        `${validation.error.issues[0].path.join(" ")}: ${validation.error.issues[0].message
         }`
       );
       return;
@@ -249,16 +248,14 @@ const CouponForm: React.FC<CouponFormProps> = ({ coupon, onClose }) => {
             <Switch
               checked={field.value}
               onChange={field.onChange}
-              className={`${
-                field.value ? "bg-green-800" : "bg-gray-300"
-              } relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
+              className={`${field.value ? "bg-hub-secondary" : "bg-gray-300"
+                } relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75`}
             >
               <span className="sr-only">Notify users</span>
               <span
                 aria-hidden="true"
-                className={`${
-                  field.value ? "translate-x-5" : "translate-x-0"
-                } pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+                className={`${field.value ? "translate-x-5" : "translate-x-0"
+                  } pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
               />
             </Switch>
           )}
@@ -302,8 +299,8 @@ const CouponForm: React.FC<CouponFormProps> = ({ coupon, onClose }) => {
           {isSubmitting
             ? "Processing..."
             : coupon
-            ? "Update Coupon"
-            : "Create Coupon"}
+              ? "Update Coupon"
+              : "Create Coupon"}
         </button>
       </div>
     </form>

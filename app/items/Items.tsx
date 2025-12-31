@@ -27,7 +27,7 @@ interface ApiResponse {
   stats: Record<string, number>;
 }
 
-const Items: FC<ItemsProps> = ({}) => {
+const Items: FC<ItemsProps> = ({ }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -217,7 +217,7 @@ const Items: FC<ItemsProps> = ({}) => {
               >
                 Previous
               </button>
-              <span className="text-green-800 font-medium">
+              <span className="text-hub-secondary font-medium">
                 Page {currentPage} of {totalPages}
               </span>
               <button

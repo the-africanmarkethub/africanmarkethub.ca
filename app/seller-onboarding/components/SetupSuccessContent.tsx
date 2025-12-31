@@ -110,7 +110,7 @@ export default function SuccessContent() {
         <button
           onClick={() => sessionId && verifyPayment(sessionId)}
           disabled={isRetrying}
-          className="flex items-center justify-center space-x-2 mx-auto bg-green-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-hub-secondary transition-all disabled:opacity-50"
+          className="flex items-center justify-center space-x-2 mx-auto bg-hub-secondary text-white px-8 py-3 rounded-xl font-bold hover:bg-hub-secondary transition-all disabled:opacity-50"
         >
           {isRetrying ? (
             <ArrowPathIcon className="h-5 w-5 animate-spin" />
@@ -126,7 +126,7 @@ export default function SuccessContent() {
     <div className="text-center max-w-lg mx-auto py-8 px-4">
       <div className="mb-6 relative">
         <div className="absolute inset-0 bg-green-100 rounded-full scale-150 opacity-20 animate-pulse"></div>
-        <CheckCircleIcon className="h-24 w-24 text-green-500 mx-auto relative z-10" />
+        <CheckCircleIcon className="h-24 w-24 text-hub-primary mx-auto relative z-10" />
       </div>
 
       <h1 className="text-3xl font-extrabold text-gray-900 mb-2">

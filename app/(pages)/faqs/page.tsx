@@ -87,17 +87,16 @@ const FAQPage: React.FC = () => {
                     {item.question}
                   </span>
                   {activeIndex === index ? (
-                    <FaChevronUp className="w-5 h-5 text-green-600" />
+                    <FaChevronUp className="w-5 h-5 text-hub-secondary" />
                   ) : (
-                    <FaChevronDown className="w-5 h-5 text-green-600" />
+                    <FaChevronDown className="w-5 h-5 text-hub-secondary" />
                   )}
                 </button>
                 <div
-                  className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                    activeIndex === index
+                  className={`transition-all duration-300 ease-in-out overflow-hidden ${activeIndex === index
                       ? "max-h-96 opacity-100"
                       : "max-h-0 opacity-0"
-                  }`}
+                    }`}
                 >
                   <div className="p-6 pt-0">
                     <p className="text-gray-700 leading-relaxed">

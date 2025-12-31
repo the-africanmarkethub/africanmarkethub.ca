@@ -26,7 +26,7 @@ import { getAddress } from "@/lib/api/auth/shipping";
 import { DefaultOption } from "@/app/components/common/SelectField";
 import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
 
-export interface Option extends DefaultOption {}
+export interface Option extends DefaultOption { }
 
 interface SelectOption {
   id: number;
@@ -308,7 +308,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           )}
           <label className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
             <div className="bg-white p-3 rounded-full shadow-lg">
-              <FaPencil className="text-green-600" />
+              <FaPencil className="text-hub-secondary" />
             </div>
             <input
               type="file"

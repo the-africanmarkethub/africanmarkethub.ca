@@ -97,7 +97,7 @@ function SuccessContent() {
   if (status === "loading") {
     return (
       <div className="text-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-hub-primary mx-auto mb-4"></div>
         <h2 className="text-xl font-semibold text-gray-700">
           Finalizing your order...
         </h2>
@@ -121,7 +121,7 @@ function SuccessContent() {
         </p>
         <Link
           href="/items?type=services"
-          className="text-green-600 font-medium hover:text-green-700 underline"
+          className="text-hub-secondary font-medium hover:text-hub-secondary underline"
         >
           Return to services listing
         </Link>
@@ -133,7 +133,7 @@ function SuccessContent() {
     <div className="text-center max-w-md mx-auto">
       <div className="mb-6 relative">
         <div className="absolute inset-0 bg-green-100 rounded-full scale-150 opacity-20 animate-pulse"></div>
-        <CheckCircleIcon className="h-24 w-24 text-green-500 mx-auto relative z-10" />
+        <CheckCircleIcon className="h-24 w-24 text-hub-primary mx-auto relative z-10" />
       </div>
 
       <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -142,7 +142,7 @@ function SuccessContent() {
       <p className="text-gray-600 mb-8">Your payment was successful.</p>
 
       <div className="bg-green-50 border border-green-100 rounded-lg p-4 mb-8">
-        <p className="text-sm text-green-800 font-medium">
+        <p className="text-sm text-hub-secondary font-medium">
           Redirecting to your account in {countdown}s...
         </p>
       </div>

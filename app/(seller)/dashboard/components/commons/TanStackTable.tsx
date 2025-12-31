@@ -46,9 +46,9 @@ function TanStackTable<T>({
     state: {
       pagination: pagination
         ? {
-            pageIndex: pagination.pageIndex,
-            pageSize: pagination.pageSize,
-          }
+          pageIndex: pagination.pageIndex,
+          pageSize: pagination.pageSize,
+        }
         : undefined,
     },
     onPaginationChange: (updater) => {
@@ -56,9 +56,9 @@ function TanStackTable<T>({
         const newPagination =
           typeof updater === "function"
             ? updater({
-                pageIndex: pagination?.pageIndex || 0,
-                pageSize: pagination?.pageSize || 10,
-              })
+              pageIndex: pagination?.pageIndex || 0,
+              pageSize: pagination?.pageSize || 10,
+            })
             : updater;
 
         onPaginationChange(newPagination);
@@ -162,7 +162,7 @@ function TanStackTable<T>({
   //               })
   //             }
   //             disabled={pagination.pageIndex === 0}
-  //             className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-green-800 text-white rounded-md disabled:opacity-40 transition"
+  //             className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-hub-secondary text-white rounded-md disabled:opacity-40 transition"
   //           >
   //             <ArrowLeftIcon className="w-4 h-4 mr-1" />
   //             Previous
@@ -187,7 +187,7 @@ function TanStackTable<T>({
   //               pagination.pageIndex >=
   //               Math.ceil(pagination.totalRows / pagination.pageSize) - 1
   //             }
-  //             className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-green-800 text-white rounded-md disabled:opacity-40 transition"
+  //             className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-hub-secondary text-white rounded-md disabled:opacity-40 transition"
   //           >
   //             Next
   //             <ArrowRightIcon className="w-4 h-4 ml-1" />
@@ -255,9 +255,9 @@ function TanStackTable<T>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </th>
                   ))}
                 </tr>
@@ -266,32 +266,32 @@ function TanStackTable<T>({
             <tbody className="divide-y divide-gray-100 text-gray-800">
               {loading
                 ? [...Array(pagination?.pageSize || 5)].map((_, idx) => (
-                    <tr key={`skeleton-${idx}`}>
-                      {columns.map((_, colIdx) => (
-                        <td key={colIdx} className="px-4 py-4">
-                          <Skeleton height={24} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))
+                  <tr key={`skeleton-${idx}`}>
+                    {columns.map((_, colIdx) => (
+                      <td key={colIdx} className="px-4 py-4">
+                        <Skeleton height={24} />
+                      </td>
+                    ))}
+                  </tr>
+                ))
                 : table.getRowModel().rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-green-50/50 transition-colors"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-4 py-4 whitespace-nowrap"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
+                  <tr
+                    key={row.id}
+                    className="hover:bg-green-50/50 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-4 py-4 whitespace-nowrap"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -332,7 +332,7 @@ function TanStackTable<T>({
               <ArrowLeftIcon className="w-5 h-5 text-gray-600" />
             </button>
 
-            <div className="px-4 py-1.5 bg-green-50 border border-amber-100 rounded-lg text-sm font-bold text-green-900">
+            <div className="px-4 py-1.5 bg-green-50 border border-amber-100 rounded-lg text-sm font-bold text-hub-secondary">
               {pagination.pageIndex + 1} /{" "}
               {Math.max(
                 Math.ceil(pagination.totalRows / pagination.pageSize),

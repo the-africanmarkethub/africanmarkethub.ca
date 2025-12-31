@@ -25,13 +25,12 @@ export default function StepIndicator({
           >
             <div
               className={`w-10 h-10 flex items-center justify-center rounded-full border transition-all
-              ${
-                completed
-                  ? "bg-green-500 text-white border-green-500"
+              ${completed
+                  ? "bg-hub-primary text-white border-hub-primary"
                   : isActive
-                  ? "border-green-800 text-green-800"
-                  : "border-gray-300 text-gray-400"
-              }`}
+                    ? "border-hub-secondary text-hub-secondary"
+                    : "border-gray-300 text-gray-400"
+                }`}
             >
               {completed ? (
                 <FaCheckCircle size={22} />
@@ -43,9 +42,8 @@ export default function StepIndicator({
             </div>
 
             <span
-              className={`mt-2 ${
-                isActive ? "font-bold text-green-800" : "text-gray-500"
-              }`}
+              className={`mt-2 ${isActive ? "font-bold text-hub-secondary" : "text-gray-500"
+                }`}
             >
               {step.label}
             </span>

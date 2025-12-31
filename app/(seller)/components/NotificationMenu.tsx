@@ -41,7 +41,7 @@ export function NotificationMenu() {
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton className="p-2 text-gray-500 hover:text-green-500 relative transition-colors duration-150 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 cursor-pointer">
+      <MenuButton className="p-2 text-gray-500 hover:text-hub-primary relative transition-colors duration-150 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-hub-primary cursor-pointer">
         <LuBell className="w-6 h-6" />
         {hasUnread && (
           <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
@@ -99,7 +99,7 @@ export function NotificationMenu() {
                   {/* Icon */}
                   <div
                     className={classNames(
-                      true ? "text-green-600" : "text-gray-500",
+                      true ? "text-hub-secondary" : "text-gray-500",
                       "mt-1 mr-3 shrink-0"
                     )}
                   >
@@ -123,7 +123,7 @@ export function NotificationMenu() {
 
                   {/* Unread Dot */}
                   {true && (
-                    <span className="h-2 w-2 bg-green-500 rounded-full mt-2 ml-2" />
+                    <span className="h-2 w-2 bg-hub-primary rounded-full mt-2 ml-2" />
                   )}
                 </span>
               ))}
@@ -132,7 +132,7 @@ export function NotificationMenu() {
             {/* <div className="border-t border-gray-100">
               <Link
                 href="/seller/notifications"
-                className="block w-full text-center py-2 text-sm font-medium text-green-600 hover:bg-gray-50"
+                className="block w-full text-center py-2 text-sm font-medium text-hub-secondary hover:bg-gray-50"
               >
                 View all notifications
               </Link>

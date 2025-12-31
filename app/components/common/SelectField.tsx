@@ -36,7 +36,7 @@ type SelectFieldProps<T extends DefaultOption> = {
 //       )}
 //       <Listbox value={value} onChange={onChange}>
 //         <div className="relative mt-1">
-//           <ListboxButton className="w-full cursor-default rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400">
+//           <ListboxButton className="w-full cursor-default rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-hub-primary">
 //             <span className="block truncate">{value?.name ?? label}</span>
 //             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
 //               <ChevronUpDownIcon className="h-5 w-5 text-gray-400" />
@@ -56,7 +56,7 @@ type SelectFieldProps<T extends DefaultOption> = {
 //                   value={option}
 //                   className={({ active }) =>
 //                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-//                       active ? "bg-green-100 text-green-600" : "text-gray-900"
+//                       active ? "bg-green-100 text-hub-secondary" : "text-gray-900"
 //                     }`
 //                   }
 //                 >
@@ -71,7 +71,7 @@ type SelectFieldProps<T extends DefaultOption> = {
 //                       </span>
 
 //                       {selected ? (
-//                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+//                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-hub-secondary">
 //                           <CheckIcon className="h-5 w-5" />
 //                         </span>
 //                       ) : null}
@@ -98,9 +98,8 @@ export default function SelectField<T extends DefaultOption>({
     <div>
       {label && (
         <label
-          className={`block text-sm font-medium mb-1 ${
-            disabled ? "text-gray-400" : "text-gray-700"
-          }`}
+          className={`block text-sm font-medium mb-1 ${disabled ? "text-gray-400" : "text-gray-700"
+            }`}
         >
           {label}
         </label>
@@ -112,18 +111,16 @@ export default function SelectField<T extends DefaultOption>({
           {/* 2. Add conditional styles to the ListboxButton */}
           <ListboxButton
             className={`w-full rounded-lg border py-3 pl-4 pr-10 text-left shadow-sm focus:outline-none 
-              ${
-                disabled
-                  ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed shadow-none"
-                  : "bg-white border-gray-300 text-gray-900 cursor-default focus:ring-2 focus:ring-green-400"
+              ${disabled
+                ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed shadow-none"
+                : "bg-white border-gray-300 text-gray-900 cursor-default focus:ring-2 focus:ring-hub-primary"
               }`}
           >
             <span className="block truncate">{value?.name ?? label}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
               <ChevronUpDownIcon
-                className={`h-5 w-5 ${
-                  disabled ? "text-gray-300" : "text-gray-400"
-                }`}
+                className={`h-5 w-5 ${disabled ? "text-gray-300" : "text-gray-400"
+                  }`}
               />
             </span>
           </ListboxButton>
@@ -140,22 +137,20 @@ export default function SelectField<T extends DefaultOption>({
                   key={option.id}
                   value={option}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-green-100 text-green-600" : "text-gray-900"
+                    `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? "bg-green-100 text-hub-secondary" : "text-gray-900"
                     }`
                   }
                 >
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
-                        }`}
+                        className={`block truncate ${selected ? "font-medium" : "font-normal"
+                          }`}
                       >
                         {option.name}
                       </span>
                       {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-green-600">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-hub-secondary">
                           <CheckIcon className="h-5 w-5" />
                         </span>
                       ) : null}

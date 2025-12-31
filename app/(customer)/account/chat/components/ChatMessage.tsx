@@ -46,7 +46,7 @@ export default function ChatMessages({ messages, isloadingChatMessage }: ChatMes
                 className={cn(
                   "max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm transition-all",
                   isMe
-                    ? "bg-green-400 rounded-tr-none" // Removed text-white from here
+                    ? "bg-hub-primary rounded-tr-none" // Removed text-white from here
                     : "bg-green-100/80 rounded-tl-none"
                 )}
               >

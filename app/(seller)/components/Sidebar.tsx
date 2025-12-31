@@ -79,9 +79,8 @@ export function Sidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:translate-x-0 md:static md:h-screen ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:translate-x-0 md:static md:h-screen ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center px-6 h-20 border-b border-gray-50">
           <Image
@@ -107,24 +106,21 @@ export function Sidebar({
                 {hasChildren ? (
                   <button
                     onClick={() => toggleExpand(item.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
-                      isActive
-                        ? "bg-green-50 text-green-800"
-                        : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
+                      ? "bg-green-50 text-hub-secondary"
+                      : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     <div className="flex items-center">
                       <item.icon
-                        className={`w-5 h-5 mr-3 ${
-                          isActive ? "text-green-800" : "text-gray-400"
-                        }`}
+                        className={`w-5 h-5 mr-3 ${isActive ? "text-hub-secondary" : "text-gray-400"
+                          }`}
                       />
                       {item.label}
                     </div>
                     <LuChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isExpanded ? "rotate-180" : ""
-                      }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
                 ) : (
@@ -132,18 +128,16 @@ export function Sidebar({
                   <Link
                     href={item.href}
                     onClick={() => window.innerWidth < 768 && toggleSidebar()}
-                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                      currentPath === item.href
-                        ? "bg-green-50 text-green-800 shadow-sm"
-                        : "text-gray-600 hover:bg-gray-50"
-                    }`}
+                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${currentPath === item.href
+                      ? "bg-green-50 text-hub-secondary shadow-sm"
+                      : "text-gray-600 hover:bg-gray-50"
+                      }`}
                   >
                     <item.icon
-                      className={`w-5 h-5 mr-3 ${
-                        currentPath === item.href
-                          ? "text-green-800"
-                          : "text-gray-400"
-                      }`}
+                      className={`w-5 h-5 mr-3 ${currentPath === item.href
+                        ? "text-hub-secondary"
+                        : "text-gray-400"
+                        }`}
                     />
                     {item.label}
                   </Link>
@@ -161,11 +155,10 @@ export function Sidebar({
                           onClick={() =>
                             window.innerWidth < 768 && toggleSidebar()
                           }
-                          className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${
-                            isChildActive
-                              ? "text-green-700 bg-green-50/50"
-                              : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                          }`}
+                          className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${isChildActive
+                            ? "text-hub-secondary bg-green-50/50"
+                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                            }`}
                         >
                           {child.label}
                         </Link>

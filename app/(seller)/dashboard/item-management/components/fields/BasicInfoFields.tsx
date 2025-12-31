@@ -60,11 +60,10 @@ export default function BasicInfoFields({
         <label className="block text-sm font-medium text-gray-700">
           Description <span className="text-red-500">*</span>
           <span
-            className={`ml-2 text-xs ${
-              description.length > 4000
-                ? "text-red-500 font-bold"
-                : "text-gray-400"
-            }`}
+            className={`ml-2 text-xs ${description.length > 4000
+              ? "text-red-500 font-bold"
+              : "text-gray-400"
+              }`}
           >
             ({description.length}/4000)
           </span>
@@ -119,14 +118,14 @@ export default function BasicInfoFields({
           {keywords.map((keyword: string, index: number) => (
             <span
               key={index}
-              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800"
+              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-hub-secondary"
             >
               {keyword}
               <button
                 type="button"
                 aria-label="remove"
                 onClick={() => removeKeyword(index)}
-                className="ml-1.5 cursor-pointer inline-flex items-center justify-center text-green-400 hover:text-green-600 focus:outline-none"
+                className="ml-1.5 cursor-pointer inline-flex items-center justify-center text-hub-primary hover:text-hub-secondary focus:outline-none"
               >
                 <FaTimes size={12} />
               </button>

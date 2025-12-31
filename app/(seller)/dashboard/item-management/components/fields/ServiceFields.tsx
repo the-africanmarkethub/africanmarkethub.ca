@@ -33,8 +33,7 @@ export default function ServiceFields(props: any) {
     }
     if (deliveryMinutes && parseInt(deliveryMinutes) > 0) {
       parts.push(
-        `${deliveryMinutes} ${
-          parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"
+        `${deliveryMinutes} ${parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"
         }`
       );
     }
@@ -113,7 +112,7 @@ export default function ServiceFields(props: any) {
           </div>
           {/* Hidden preview to help the user see what's happening */}
           {(deliveryHours || deliveryMinutes) && (
-            <p className="mt-2 text-xs text-green-700 font-medium bg-green-50 p-2 rounded border border-green-100">
+            <p className="mt-2 text-xs text-hub-secondary font-medium bg-green-50 p-2 rounded border border-green-100">
               Will be saved as: {deliveryHours || 0}{" "}
               {parseInt(deliveryHours) === 1 ? "hour" : "hours"}{" "}
               {deliveryMinutes || 0}{" "}
@@ -141,11 +140,10 @@ export default function ServiceFields(props: any) {
                       setAvailableDays([...availableDays, day]);
                     }
                   }}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border cursor-pointer ${
-                    isSelected
-                      ? "bg-green-800 border-green-800 text-white shadow-sm"
-                      : "bg-white border-gray-300 text-gray-700 hover:border-green-800"
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border cursor-pointer ${isSelected
+                    ? "bg-hub-secondary border-hub-secondary text-white shadow-sm"
+                    : "bg-white border-gray-300 text-gray-700 hover:border-hub-secondary"
+                    }`}
                 >
                   <span className="capitalize">{day}</span>
                 </button>

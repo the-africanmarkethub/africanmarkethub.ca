@@ -21,9 +21,8 @@ export default function QuantityControl({
 
   return (
     <div
-      className={`flex items-center gap-3 bg-green-50 px-2 py-1.5 rounded-full border border-green-100 shadow-sm w-fit ${
-        disabled ? "opacity-50 grayscale" : ""
-      }`}
+      className={`flex items-center gap-3 bg-green-50 px-2 py-1.5 rounded-full border border-green-100 shadow-sm w-fit ${disabled ? "opacity-50 grayscale" : ""
+        }`}
     >
       {/* Decrease Button */}
       <button
@@ -33,14 +32,14 @@ export default function QuantityControl({
           onDecrease();
         }}
         disabled={disabled || quantity <= 1 || isOutOfStock}
-        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
+        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-hub-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
         aria-label="Decrease quantity"
       >
         <MinusIcon className="w-4 h-4 stroke-[3px]" />
       </button>
 
       {/* Quantity Display */}
-      <span className="text-sm font-extrabold text-green-900 min-w-5 text-center select-none">
+      <span className="text-sm font-extrabold text-hub-secondary min-w-5 text-center select-none">
         {isOutOfStock ? 0 : quantity}
       </span>
 
@@ -52,7 +51,7 @@ export default function QuantityControl({
           onIncrease();
         }}
         disabled={disabled || quantity >= stockQty || isOutOfStock}
-        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-green-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
+        className="w-4 h-4 flex items-center justify-center rounded-full bg-white shadow-sm text-hub-secondary disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-90 cursor-pointer"
         aria-label="Increase quantity"
       >
         <PlusIcon className="w-4 h-4 stroke-[3px]" />

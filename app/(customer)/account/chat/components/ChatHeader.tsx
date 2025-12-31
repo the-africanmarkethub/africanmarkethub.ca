@@ -83,7 +83,7 @@ export default function ChatHeader({
             )}
           </div>
           {displayParticipant && participant.is_online && (
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-hub-primary border-2 border-white rounded-full" />
           )}
         </div>
 
@@ -114,9 +114,8 @@ export default function ChatHeader({
               </h2>
               <div className="flex items-center gap-1.5">
                 <span
-                  className={`text-[10px] font-semibold uppercase tracking-wider ${
-                    participant?.is_online ? "text-green-500" : "text-gray-400"
-                  }`}
+                  className={`text-[10px] font-semibold uppercase tracking-wider ${participant?.is_online ? "text-hub-primary" : "text-gray-400"
+                    }`}
                 >
                   {participant?.is_online ? "Active Now" : "Offline"}
                 </span>

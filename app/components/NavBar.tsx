@@ -55,7 +55,6 @@ export default function NavBar() {
                 leaveFrom="transform opacity-100 translate-y-0 scale-100"
                 leaveTo="transform opacity-0 translate-y-1 scale-95"
               >
-                {/* 🎯 THE KEY CHANGE FOR RESPONSIVENESS */}
                 <MenuItems
                   className="
                       absolute
@@ -72,15 +71,11 @@ export default function NavBar() {
                       rounded-xl
                       focus:outline-none
                       overflow-hidden
-
-                      /* ---------- DESKTOP ---------- */
                       md:left-0
                       md:w-150
                       md:max-w-150
-
                       lg:w-225
                       lg:max-w-225
-
                       xl:w-275
                       xl:max-w-275
                     "
@@ -121,12 +116,12 @@ function MobileNavLinks() {
     },
     ...(user?.role === "customer"
       ? [
-          {
-            label: "Start Selling",
-            href: "/seller-onboarding",
-            icon: <BuildingStorefrontIcon className="w-4 h-4 " />,
-          },
-        ]
+        {
+          label: "Start Selling",
+          href: "/seller-onboarding",
+          icon: <BuildingStorefrontIcon className="w-4 h-4 " />,
+        },
+      ]
       : []),
   ];
 
@@ -152,10 +147,9 @@ function MobileNavLinks() {
               title={link.label}
               className={`
                 flex items-center gap-1.5 text-[11px] transition-all duration-200
-                ${
-                  isCTA
-                    ? "bg-white text-hub-primary px-3 py-1.5 rounded-full font-bold shadow-sm"
-                    : "text-gray-100 hover:text-hub-light-primary"
+                ${isCTA
+                  ? "bg-white text-hub-primary px-3 py-1.5 rounded-full font-bold shadow-sm"
+                  : "text-gray-100 hover:text-hub-secondary"
                 }
               `}
             >
@@ -197,12 +191,12 @@ function DesktopNavLinks() {
     },
     ...(user?.role === "customer"
       ? [
-          {
-            label: "Start Selling",
-            href: "/seller-onboarding",
-            icon: <BuildingStorefrontIcon className="w-4 h-4" />,
-          },
-        ]
+        {
+          label: "Start Selling",
+          href: "/seller-onboarding",
+          icon: <BuildingStorefrontIcon className="w-4 h-4" />,
+        },
+      ]
       : []),
   ];
 
@@ -222,13 +216,12 @@ function DesktopNavLinks() {
             <Link
               href={link.href}
               title={link.label}
-              className={`flex items-center gap-2 transition-all duration-200 ${
-                isCTA
+              className={`flex items-center gap-2 transition-all duration-200 ${isCTA
                   ? "bg-white text-hub-primary px-4 py-1.5 rounded-full font-bold shadow-md hover:shadow-lg hover:bg-gray-50"
                   : isActive
-                  ? "text-hub-primary"
-                  : "text-gray-100 hover:text-hub-light-primary"
-              }`}
+                    ? "text-hub-primary"
+                    : "text-gray-100 hover:text-hub-secondary"
+                }`}
             >
               {isCTA && link.icon}
               <span>{link.label}</span>
@@ -238,9 +231,8 @@ function DesktopNavLinks() {
             {!isCTA && (
               <motion.span
                 layoutId="underline"
-                className={`absolute left-0 -bottom-1 h-0.5 rounded-full ${
-                  isActive ? "bg-hub-primary w-full" : "bg-hub-primary w-0"
-                } group-hover:w-full transition-all duration-300`}
+                className={`absolute left-0 -bottom-1 h-0.5 rounded-full ${isActive ? "bg-hub-primary w-full" : "bg-hub-primary w-0"
+                  } group-hover:w-full transition-all duration-300`}
               />
             )}
           </motion.li>

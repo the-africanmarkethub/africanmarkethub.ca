@@ -24,8 +24,8 @@ const ShippingPage: React.FC = () => {
 
         {/* Shipping Features */}
         <section className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-green-600">
-            <div className="flex items-center mb-4 text-green-600">
+          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-secondary">
+            <div className="flex items-center mb-4 text-hub-secondary">
               <FaTruck className="w-6 h-6 mr-3" />
               <h2 className="text-2xl font-bold">Reliable Shipping</h2>
             </div>
@@ -36,8 +36,8 @@ const ShippingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-green-600">
-            <div className="flex items-center mb-4 text-green-600">
+          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-secondary">
+            <div className="flex items-center mb-4 text-hub-secondary">
               <FaMapMarkerAlt className="w-6 h-6 mr-3" />
               <h2 className="text-2xl font-bold">Real-Time Tracking</h2>
             </div>
@@ -49,8 +49,8 @@ const ShippingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-green-600">
-            <div className="flex items-center mb-4 text-green-600">
+          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-secondary">
+            <div className="flex items-center mb-4 text-hub-secondary">
               <FaShieldAlt className="w-6 h-6 mr-3" />
               <h2 className="text-2xl font-bold">Safe & Secure Delivery</h2>
             </div>
@@ -62,8 +62,8 @@ const ShippingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-green-600">
-            <div className="flex items-center mb-4 text-green-600">
+          <div className="flex flex-col justify-center p-6 bg-white rounded-xl shadow-lg border-l-4 border-hub-secondary">
+            <div className="flex items-center mb-4 text-hub-secondary">
               <FaClock className="w-6 h-6 mr-3" />
               <h2 className="text-2xl font-bold">Efficient & Timely</h2>
             </div>

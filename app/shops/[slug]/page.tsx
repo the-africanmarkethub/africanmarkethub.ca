@@ -30,16 +30,15 @@ const ReadMore: FC<ReadMoreProps> = ({ text, lines = 2 }) => {
   return (
     <div className="text-sm text-gray-600 mt-1">
       <p
-        className={`transition-all duration-300 overflow-hidden ${
-          !expanded ? `line-clamp-${lines}` : ""
-        }`}
+        className={`transition-all duration-300 overflow-hidden ${!expanded ? `line-clamp-${lines}` : ""
+          }`}
       >
         {text}
       </p>
       {text.split(" ").length > 15 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-green-800 hover:underline mt-1 block cursor-pointer"
+          className="text-hub-secondary hover:underline mt-1 block cursor-pointer"
         >
           {expanded ? "Read Less" : "Read More"}
         </button>
@@ -191,7 +190,7 @@ const ShopItems: FC = () => {
           >
             Previous
           </button>
-          <span className="font-medium text-green-800">
+          <span className="font-medium text-hub-secondary">
             Page {currentPage} of {totalPages}
           </span>
           <button

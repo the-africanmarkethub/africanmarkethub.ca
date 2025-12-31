@@ -40,16 +40,15 @@ export default function AccountSidebar() {
               key={item.name}
               prefetch={true}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg whitespace-nowrap transition-all duration-200
-              ${
-                isActive
-                  ? "bg-green-100 text-green-800 font-medium"
+              ${isActive
+                  ? "bg-green-100 text-hub-secondary font-medium"
                   : "hover:bg-gray-100 text-gray-700"
-              }
+                }
             `}
             >
               <Icon
                 size={18}
-                className={isActive ? "text-green-800" : "text-gray-500"}
+                className={isActive ? "text-hub-secondary" : "text-gray-500"}
               />
               <span className="text-sm md:text-base">{item.name}</span>
             </Link>

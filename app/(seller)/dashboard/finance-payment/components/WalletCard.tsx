@@ -75,14 +75,14 @@ export default function WalletCard({
                 </p>
                 <div className="mt-3 flex flex-wrap gap-y-1 items-center text-sm">
                   <span className="text-gray-500">Available:</span>
-                  <span className="ml-1 font-bold text-green-600">
+                  <span className="ml-1 font-bold text-hub-secondary">
                     {formatAmount(wallet?.available_to_withdraw)}
                   </span>
                   <span className="mx-2 text-gray-300 hidden sm:inline space-x-2">
                     •
                   </span>
                   <span className="text-gray-500 ml-2 sm:ml-0">Pending:</span>
-                  <span className="ml-1 font-bold text-green-600">
+                  <span className="ml-1 font-bold text-hub-secondary">
                     {formatAmount(wallet?.pending)}
                   </span>
                 </div>
@@ -99,10 +99,9 @@ export default function WalletCard({
             onClick={onRequestWithdraw}
             disabled={!canWithdraw || loading}
             className={`order-1 md:order-2 w-full md:w-auto px-6 py-3 md:py-2 rounded-lg font-bold text-sm transition-all
-              ${
-                canWithdraw
-                  ? "bg-slate-900 text-white hover:bg-black active:scale-95"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              ${canWithdraw
+                ? "bg-slate-900 text-white hover:bg-black active:scale-95"
+                : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
           >
             {canWithdraw ? "Request Withdrawal" : "Insufficient Balance"}
@@ -129,7 +128,7 @@ export default function WalletCard({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-7 pr-4 py-3 border-2 border-gray-100 rounded-xl focus:border-green-500 outline-none text-lg font-semibold transition-colors"
+                className="w-full pl-7 pr-4 py-3 border-2 border-gray-100 rounded-xl focus:border-hub-primary outline-none text-lg font-semibold transition-colors"
                 min={0}
                 max={availableBalance}
               />
@@ -145,7 +144,7 @@ export default function WalletCard({
               Cancel
             </button>
             <button
-              className="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:bg-green-700 disabled:bg-gray-300 transition-all"
+              className="w-full sm:w-auto px-8 py-3 bg-hub-secondary text-white font-bold rounded-xl shadow-lg shadow-green-200 hover:bg-hub-secondary disabled:bg-gray-300 transition-all"
               onClick={handleWithdraw}
               disabled={
                 submitting || !amount || Number(amount) > availableBalance
