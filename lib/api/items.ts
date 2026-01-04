@@ -1,8 +1,8 @@
 import api from "./axios";
 
 interface ListItemsParams {
-  limit: number;
-  offset: number;
+  limit?: number;
+  offset?: number;
   search?: string;
   type?: string;
   status?: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, FC } from "react";
-import { listRecommendedItems } from "@/lib/api/items";
+import { listItems, listRecommendedItems } from "@/lib/api/items";
 import Item from "@/interfaces/items";
 import { useRouter } from "next/navigation";
 import ProductGrid from "../items/components/ProductGrid";
@@ -20,7 +20,12 @@ const RecommendedItems: FC<RecommendedItemsProps> = ({ type }) => {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        const res = await listRecommendedItems(type);
+        const res = await listItems({
+          limit: 20,
+          offset: 0,
+          search: '',
+          type: 'services'
+        });
         setProducts(res.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -31,6 +36,7 @@ const RecommendedItems: FC<RecommendedItemsProps> = ({ type }) => {
 
     fetchItems();
   }, [type]);
+
 
   return (
     <section className="mb-4">

@@ -7,9 +7,9 @@ export default function Home() {
     <div className="bg-gray-50">
       <HeroBanner />
       <CategorySection type="products" />
-      <CategorySection type="services" />
+      {/* <CategorySection type="services" /> */}
       <RecommendedItems type="products" />
-      <RecommendedItems type="services" /> 
+      {/* <RecommendedItems type="services" />  */}
       
     </div>
   );
