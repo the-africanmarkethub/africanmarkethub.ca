@@ -4,8 +4,8 @@
     "description": "The central marketplace for African goods",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#fff085",
-    "theme_color": "#C2680C",
+    "background_color": "#016134",
+    "theme_color": "#00A85A",
     "icons": [
         {
             "src": "/android-icon-36x36.png",
