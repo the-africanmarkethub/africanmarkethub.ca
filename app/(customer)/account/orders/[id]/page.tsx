@@ -11,7 +11,8 @@ import Address from "@/interfaces/address";
 import { getOrderDetail } from "@/lib/api/orders";
 import { formatHumanReadableDate } from "@/utils/formatDate";
 
-// Define the overall API response structure
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
 interface OrderDetailResponse {
   status: string;
   message: string;
@@ -87,7 +88,10 @@ function OrderItemsTable({ order }: { order: Order }) {
             {order.order_items.map((item) => (
               <tr key={item.id}>
                 <td className="py-4 px-2">
-                  <div className="flex items-center">
+                  <Link
+                    href={`/items/${item.product.slug}`}
+                    className="flex items-center hover:bg-gray-50 -mx-2 px-2 rounded-lg transition duration-150"
+                  >
                     <Image
                       src={item.product.images[0] || "/placeholder.png"}
                       alt={item.product.title}
@@ -98,7 +102,7 @@ function OrderItemsTable({ order }: { order: Order }) {
                     <span className="font-medium truncate text-gray-700">
                       {item.product.title}
                     </span>
-                  </div>
+                  </Link>
                 </td>
                 <td className="py-4 px-2 text-gray-500 truncate">
                   {item.product.sku}
@@ -181,6 +185,12 @@ export default function OrderDetail() {
   const customer = orderDetail.customer;
   const address = orderDetail.address;
 
+  const router = useRouter();
+
+  const handleTrackClick = () => {
+    // 2. Use router.push() for a clean, client-side navigation
+    router.push('/account/tracking');
+  };
   return (
     <div className="p-0 text-gray-600 space-y-4">
       {/* Header */}
@@ -192,20 +202,10 @@ export default function OrderDetail() {
 
         {/* Right: buttons — stays on one line on md+ */}
         <div className="flex items-center flex-nowrap space-x-3">
-          {/* 1: Buy Again (only when payment completed) */}
-          {orderMeta.payment_status === "completed" && (
-            <button className="btn btn-primary min-w-[100px] text-xs!">
-              Buy Again
-            </button>
-          )}
 
-          {/* 2 & 3: Cancel / Track (only when shipping ongoing) */}
           {orderMeta.shipping_status === "ongoing" && (
-            <>
-              <button className="btn btn-gray min-w-[100px] text-xs!">
-                Cancel Order
-              </button>
-              <button className="btn btn-primary min-w-[90px] text-xs!">
+            <> 
+              <button onClick={handleTrackClick} className="btn btn-primary min-w-22.5 text-xs!">
                 Track Order
               </button>
             </>

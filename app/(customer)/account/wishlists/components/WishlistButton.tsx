@@ -55,8 +55,8 @@ export default function WishlistButton({ product }: Props) {
         // Default (mobile) padding is p-2 for icon only. Sm screens use px-3 py-1.5 for text+icon
         "inline-flex items-center gap-2 p-2 sm:px-3 sm:py-1.5 rounded-full text-sm font-medium transition cursor-pointer",
         wishlisted
-          ? "bg-amber-50 text-amber-700 border border-amber-200"
-          : "bg-amber-100 text-amber-700"
+          ? "bg-hub-primary/20 text-hub-secondary border border-hub-primary/80"
+          : "bg-hub-primary/20/50 text-hub-secondary"
       )}
       aria-pressed={wishlisted}
       aria-label="wishlist"
@@ -64,7 +64,7 @@ export default function WishlistButton({ product }: Props) {
     >
       {wishlisted ? (
         <>
-          <HeartSolid className="w-4 h-4 text-amber-600" />
+          <HeartSolid className="w-4 h-4 text-hub-secondary" />
           {/* Added hidden class for mobile, sm:inline for desktop visibility */}
           <span className="hidden sm:inline">Saved</span>
         </>

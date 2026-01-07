@@ -356,9 +356,9 @@ export default function ItemTabs({
 
             {/* Notice for Negotiable Pricing */}
             {product.pricing_model === "negotiable" && (
-              <div className="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-100 flex items-start gap-3">
-                <InformationCircleIcon className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-800 leading-relaxed">
+              <div className="mt-6 p-4 bg-hub-primary/20 rounded-lg border border--hub-primary/50 flex items-start gap-3">
+                <InformationCircleIcon className="w-5 h-5 text-hub-secondary shrink-0 mt-0.5" />
+                <p className="text-xs text-hub-secondary leading-relaxed">
                   <strong>Note on Pricing:</strong> This service uses a
                   negotiable pricing model. The displayed price is a starting
                   point. Final costs may vary based on your specific

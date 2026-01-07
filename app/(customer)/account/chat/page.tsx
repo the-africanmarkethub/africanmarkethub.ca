@@ -66,6 +66,7 @@ export default function ServiceChatPage({
 
         let initialMessages = [];
         let initialParticipant = null;
+        let bookingStatus = null;
 
         if (activeTicket) {
           try {
@@ -77,6 +78,7 @@ export default function ServiceChatPage({
             ) {
               initialMessages = payload?.messages || [];
               initialParticipant = payload?.participant || null;
+              bookingStatus = payload?.status || '';
             }
           } catch (err) {
             console.error("Detail fetch failed", err);
@@ -96,6 +98,7 @@ export default function ServiceChatPage({
           activeChat: activeTicket,
           messages: initialMessages,
           participant: initialParticipant,
+          status: bookingStatus,
         });
       } catch (err) {
         console.error("Main Fetch Error:", err);
@@ -120,6 +123,7 @@ export default function ServiceChatPage({
   return (
     <ChatClientWrapper
       initialChats={data.chats}
+      bookingStatus={data.status}
       initialActiveChat={data.activeChat}
       initialMessages={data.messages}
       initialParticipant={data.participant}

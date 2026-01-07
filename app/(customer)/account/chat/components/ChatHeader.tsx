@@ -8,23 +8,59 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { createBookingProposal } from "@/lib/api/customer/services";
 import Skeleton from "react-loading-skeleton";
-
+import { useAuthStore } from "@/store/useAuthStore";
 interface ChatHeaderProps {
   participant: Participant | null;
   onBack?: () => void;
   ticketId: string;
+  bookingStatus: string;
   isLoading?: boolean;
 }
-
+ 
 export default function ChatHeader({
   participant,
   onBack,
   ticketId,
+  bookingStatus,
   isLoading,
 }: ChatHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuthStore();
+  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false); // New state for vendor action
 
+  // --- Customer Booking Logic ---
+  const isCustomer = user?.role === 'customer';
+  const isBooked = bookingStatus === "ongoing";
+  const buttonText = isBooked ? "Booked" : "Book now";
+  // Customer button is disabled only if it's already booked
+  const customerButtonDisabled = isBooked;
+
+  const buttonBaseClass = "text-white text-xs font-bold px-4 py-2 rounded-full transition-all active:scale-95 shadow-sm";
+  const buttonActiveStyle = "bg-hub-primary hover:brightness-110 shadow-green-100";
+  const buttonBookedStyle = "bg-gray-400 cursor-not-allowed";
+
+  const finalButtonClass = isBooked
+    ? `${buttonBaseClass} ${buttonBookedStyle}`
+    : `${buttonBaseClass} ${buttonActiveStyle}`;
+
+  // --- Vendor Action Logic ---
+  const isVendor = user?.role === 'vendor';
+  const showVendorCompleteButton = isVendor && bookingStatus === 'ongoing';
+
+  const handleMarkAsCompleted = async () => {
+    setIsMarkingCompleted(true);
+    // --- Placeholder for Vendor API Call ---
+    try { 
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+      toast.success("Booking marked as completed!");
+      // You may need to trigger a parent state update or router refresh here
+    } catch (error) {
+      toast.error("Failed to mark as completed.");
+    } finally {
+      setIsMarkingCompleted(false);
+    }
+  };
   const handleBookingSubmit = async (bookingData: any) => {
     setIsSubmitting(true);
     try {
@@ -47,6 +83,7 @@ export default function ChatHeader({
       setIsSubmitting(false);
     }
   };
+ 
 
   if (!participant) return null;
   const displayParticipant = participant && !isLoading;
@@ -135,12 +172,27 @@ export default function ChatHeader({
             highlightColor="#e5e7eb"
           />
         ) : (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="bg-hub-primary text-white text-xs font-bold px-4 py-2 rounded-full hover:brightness-110 transition-all active:scale-95 shadow-sm shadow-green-100"
-          >
-            Book now
-          </button>
+          <>
+              {isCustomer && (
+                <button
+                  onClick={() => !customerButtonDisabled && setIsModalOpen(true)}
+                  className={finalButtonClass}
+                  disabled={customerButtonDisabled}
+                >
+                  {buttonText}
+                </button>
+              )}
+
+              {showVendorCompleteButton && (
+                <button
+                  onClick={handleMarkAsCompleted}
+                  disabled={isMarkingCompleted}
+                  className="bg-hub-secondary cursor-pointer text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-hub-primary transition-all active:scale-95 shadow-md shadow-blue-200 disabled:bg-hub-primary disabled:cursor-not-allowed"
+                >
+                  {isMarkingCompleted ? 'Processing...' : 'Mark as Completed'}
+                </button>
+              )}
+              </>
         )}
       </div>
 

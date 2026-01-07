@@ -67,7 +67,7 @@ function TanStackTable<T>({
   });
 
   // return (
-  //   <div className="w-full overflow-x-auto rounded-xl border border-amber-200 bg-white shadow-md">
+  //   <div className="w-full overflow-x-auto rounded-xl border border-hub-primary/80 bg-white shadow-md">
   //     <table className="min-w-full divide-y divide-gray-200 text-sm">
   //       {/* Always show table head */}
   //       <thead className="bg-green-50 text-xs font-semibold text-gray-700 uppercase">
@@ -205,7 +205,7 @@ function TanStackTable<T>({
           [...Array(3)].map((_, idx) => (
             <div
               key={idx}
-              className="p-4 bg-white rounded-xl border border-amber-200 animate-pulse"
+              className="p-4 bg-white rounded-xl border border-hub-primary/80 animate-pulse"
             >
               <Skeleton height={20} width="60%" className="mb-4" />
               <Skeleton height={15} width="40%" className="mb-2" />
@@ -220,7 +220,7 @@ function TanStackTable<T>({
           table.getRowModel().rows.map((row) => (
             <div
               key={row.id}
-              className="bg-white rounded-xl border border-amber-200 shadow-sm p-4 space-y-3"
+              className="bg-white rounded-xl border border-hub-primary/80 shadow-sm p-4 space-y-3"
             >
               {row.getVisibleCells().map((cell) => (
                 <div
@@ -241,7 +241,7 @@ function TanStackTable<T>({
       </div>
 
       {/* 2. DESKTOP VIEW: The Classic Table (Hidden on small screens) */}
-      <div className="hidden md:block overflow-hidden rounded-xl border border-amber-200 bg-white shadow-md">
+      <div className="hidden md:block overflow-hidden rounded-xl border border-hub-primary/80 bg-white shadow-md">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-green-50 text-xs font-semibold text-gray-700 uppercase">
@@ -332,7 +332,7 @@ function TanStackTable<T>({
               <ArrowLeftIcon className="w-5 h-5 text-gray-600" />
             </button>
 
-            <div className="px-4 py-1.5 bg-green-50 border border-amber-100 rounded-lg text-sm font-bold text-hub-secondary">
+            <div className="px-4 py-1.5 bg-green-50 border border--hub-primary/50 rounded-lg text-sm font-bold text-hub-secondary">
               {pagination.pageIndex + 1} /{" "}
               {Math.max(
                 Math.ceil(pagination.totalRows / pagination.pageSize),

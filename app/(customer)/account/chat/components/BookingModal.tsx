@@ -67,7 +67,7 @@ export default function BookingModal({
               <LuCalendar size={12} className="text-hub-primary" /> Appointment
               Date
             </label>
-            <div className="bg-black rounded-xl flex flex-col items-center">
+            <div className="bg-hub-primary rounded-xl flex flex-col items-center">
               <DayPicker
                 mode="single"
                 selected={selectedDate}

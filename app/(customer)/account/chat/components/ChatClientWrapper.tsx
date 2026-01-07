@@ -12,6 +12,7 @@ import ChatSidebar from "./ChatSidebar";
 
 interface ChatClientWrapperProps {
   initialChats: Ticket[];
+  bookingStatus: string;
   initialActiveChat: Ticket | null;
   initialMessages: Message[];
   initialParticipant: Participant | null;
@@ -19,6 +20,7 @@ interface ChatClientWrapperProps {
 
 export default function ChatClientWrapper({
   initialChats,
+  bookingStatus,
   initialActiveChat,
   initialMessages,
   initialParticipant,
@@ -102,10 +104,10 @@ export default function ChatClientWrapper({
             .map((c) =>
               c.ticket_id === activeChat.ticket_id
                 ? {
-                    ...c,
-                    last_message: text || "📎 Attachment",
-                    last_message_time: new Date().toISOString(),
-                  }
+                  ...c,
+                  last_message: text || "📎 Attachment",
+                  last_message_time: new Date().toISOString(),
+                }
                 : c
             )
             .sort(
@@ -127,9 +129,8 @@ export default function ChatClientWrapper({
   return (
     <div className="flex h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-white overflow-hidden md:rounded-2xl md:m-4 shadow-sm border border-gray-100">
       <div
-        className={`${
-          showMobileChat ? "hidden" : "block"
-        } w-full md:block md:w-80 border-r border-gray-100`}
+        className={`${showMobileChat ? "hidden" : "block"
+          } w-full md:block md:w-80 border-r border-gray-100`}
       >
         <ChatSidebar
           chats={chats}
@@ -142,9 +143,8 @@ export default function ChatClientWrapper({
       </div>
 
       <main
-        className={`${
-          showMobileChat ? "flex" : "hidden"
-        } flex-1 flex-col bg-white w-full`}
+        className={`${showMobileChat ? "flex" : "hidden"
+          } flex-1 flex-col bg-white w-full`}
       >
         {activeChat ? (
           <>
@@ -152,6 +152,7 @@ export default function ChatClientWrapper({
               participant={participant}
               onBack={() => setShowMobileChat(false)}
               ticketId={activeChat?.ticket_id}
+              bookingStatus={bookingStatus}
               isLoading={isloadingChatMessage}
             />
             <ChatMessages

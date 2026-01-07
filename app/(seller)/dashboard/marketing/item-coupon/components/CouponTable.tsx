@@ -170,7 +170,7 @@ const CouponTable: React.FC<CouponTableProps> = ({ limit, onEdit }) => {
           placeholder="Search by coupon code..."
           value={search}
           onChange={handleSearchChange}
-          className="w-full max-w-md px-3 py-2 border rounded-md border-amber-600 text-gray-900 focus:outline-hub-primary-400"
+          className="w-full max-w-md px-3 py-2 border rounded-md border-hub-secondary text-gray-900 focus:outline-hub-primary-400"
         />
       </div>
 

@@ -48,10 +48,10 @@ export default function HeroBanner() {
   const extendedItems =
     latestItems.length > VISIBLE
       ? [
-          ...latestItems.slice(-VISIBLE),
-          ...latestItems,
-          ...latestItems.slice(0, VISIBLE),
-        ]
+        ...latestItems.slice(-VISIBLE),
+        ...latestItems,
+        ...latestItems.slice(0, VISIBLE),
+      ]
       : latestItems;
 
   const nextItem = useCallback(() => {
@@ -102,7 +102,7 @@ export default function HeroBanner() {
   }
 
   return (
-    <section className="w-full mx-auto px-4 bg-amber-50 pb-8">
+    <section className="w-full mx-auto px-4 bg-hub-primary/5 pb-8">
       <div className="grid lg:grid-cols-3 gap-3 items-stretch">
         <div className="lg:col-span-2 relative overflow-hidden rounded-b-3xl h-125">
           <div
@@ -131,11 +131,10 @@ export default function HeroBanner() {
                   key={index}
                   aria-label={`Go to slide ${index + 1}`}
                   onClick={() => setCurrent(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === current
-                      ? "w-6 bg-hub-primary"
-                      : "w-2 bg-white/70 hover:bg-white"
-                  }`}
+                  className={`h-2 rounded-full transition-all duration-300 ${index === current
+                    ? "w-6 bg-hub-primary"
+                    : "w-2 bg-white/70 hover:bg-white"
+                    }`}
                 />
               ))}
             </div>
@@ -175,11 +174,10 @@ export default function HeroBanner() {
             onMouseLeave={resumeItems}
           >
             <div
-              className={`flex ${
-                isAnimating
-                  ? "transition-transform duration-500 ease-in-out"
-                  : ""
-              }`}
+              className={`flex ${isAnimating
+                ? "transition-transform duration-500 ease-in-out"
+                : ""
+                }`}
               style={{
                 transform: `translateX(-${itemIndex * (100 / VISIBLE)}%)`,
               }}
@@ -190,8 +188,8 @@ export default function HeroBanner() {
                 const discount =
                   regularPrice > salesPrice
                     ? Math.round(
-                        ((regularPrice - salesPrice) / regularPrice) * 100
-                      )
+                      ((regularPrice - salesPrice) / regularPrice) * 100
+                    )
                     : 0;
 
                 return (
