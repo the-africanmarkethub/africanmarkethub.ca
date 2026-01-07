@@ -10,6 +10,7 @@ import { subscriptionCheckout } from "@/lib/api/seller/shop";
 import { FiExternalLink } from "react-icons/fi";
 import { useSearchParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { formatAmount } from "@/utils/formatCurrency";
 
 interface SubscriptionPlan {
   id: number;
@@ -140,7 +141,7 @@ export default function StepSubscription({ onNext }: StepProps) {
         ) : error ? (
           renderError()
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-6 items-start pt-4">
             {plans.map((plan) => {
               const styles = getPlanStyles(plan.name);
 
@@ -152,7 +153,7 @@ export default function StepSubscription({ onNext }: StepProps) {
                   {/* Plan Header */}
                   <div className="text-center pb-4 border-b border-gray-100">
                     <h3 className={`text-2xl font-extrabold ${styles.title}`}>
-                      {plan.name}
+                      {plan.name} Plan
                     </h3>
                     <p className="mt-2 text-gray-500 text-sm">
                       Best for{" "}
@@ -164,10 +165,10 @@ export default function StepSubscription({ onNext }: StepProps) {
 
                     <p className="mt-4">
                       <span className="text-5xl font-extrabold text-gray-900">
-                        £{plan.monthly_price}
+                        {formatAmount(plan.monthly_price)}
                       </span>
                       <span className="text-lg font-medium text-gray-500">
-                        /mo
+                        /month
                       </span>
                     </p>
                   </div>
