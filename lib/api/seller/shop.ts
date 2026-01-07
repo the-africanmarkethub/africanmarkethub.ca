@@ -12,7 +12,7 @@ export async function saveShop(formData: FormData) {
 }
 
 export async function subscriptionCheckout(priceId: string) {
-  const response = await api.post("/vendor/subscription/checkout", {
+  const response = await api.post("/subscription/checkout", {
     price_id: priceId,
   });
   return response.data;
@@ -20,19 +20,19 @@ export async function subscriptionCheckout(priceId: string) {
 
 export const verifySubscriptionCheckout = async (sessionId: string) => {
   const response = await api.get(
-    `/vendor/subscription/checkout/verify?session_id=${sessionId}`
+    `/subscription/checkout/verify?session_id=${sessionId}`
   );
   return response.data;
 };
 
 export async function verifyOnboardingStatus(){
   const response = await api.get(
-    `/vendor/subscription/onboarding/verify`
+    `/subscription/onboarding/verify`
   );
   return response.data;
 };
 export async function retryOnboardingStatus(){
-  const response = await api.get(`/vendor/subscription/onboarding/retry`);
+  const response = await api.get(`/subscription/onboarding/retry`);
   return response.data;
 };
 
