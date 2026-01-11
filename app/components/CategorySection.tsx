@@ -105,7 +105,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
             fill
             sizes="(max-width: 621px) 100vw, 621px"
             priority
-            className="object-cover" // Ensures the image fills the 621x952 container
+            className="object-cover" 
             placeholder="blur"
             blurDataURL="/placeholder.png"
           />
