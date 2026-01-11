@@ -92,27 +92,27 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
   const renderBanner = useMemo(
     () =>
       loading ? (
-        <Skeleton height={200} className="rounded-2xl w-full" />
+        /* Match the skeleton to the new shape */
+        <Skeleton className="rounded-2xl w-full max-w-[621px] aspect-[621/952]" />
       ) : banner ? (
-        <div
-          className="relative bg-white rounded-2xl overflow-hidden cursor-pointer h-40 sm:h-80 md:h-130"
+        <div 
+          className="relative bg-white rounded-2xl overflow-hidden cursor-pointer w-full max-w-[621px] aspect-[621/952.825] shadow-lg"
           onClick={() => router.push(`/items?type=${type}`)}
         >
           <Image
-            src={optimizeImage(banner.banner, 1600)}
+            src={optimizeImage(banner.banner, 800)} 
             alt={banner.type}
             fill
-            sizes="(max-width: 640px) 100vw,
-                   (max-width: 1024px) 100vw,
-                   (max-width: 1280px) 100vw,
-                   100vw"
+            sizes="(max-width: 621px) 100vw, 621px"
             priority
-            className="w-full h-full object-cover"
+            className="object-cover" // Ensures the image fills the 621x952 container
             placeholder="blur"
             blurDataURL="/placeholder.png"
           />
-          <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center">
-            <p className="sm:text-lg text-xs font-bold text-white! text-center">
+
+          {/* Overlay Content */}
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-6">
+            <p className="text-xl sm:text-2xl font-bold text-white! text-center leading-tight">
               {type === "services"
                 ? "Nearby Service Providers"
                 : "Essential Daily Needs"}
@@ -120,15 +120,15 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
 
             <button
               aria-label={type === "services" ? "Book now" : "Shop now"}
-              className="mt-4 bg-green-100 text-hub-secondary sm:px-6 sm:py-2 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 hover:bg-green-200 transition cursor-pointer"
+              className="mt-6 bg-green-100 text-hub-secondary px-8 py-3 rounded-full text-sm sm:text-base font-bold flex items-center gap-2 hover:bg-green-200 transition active:scale-95"
             >
               {type === "services" ? (
                 <>
-                  <SlCalender className="w-3 h-3 sm:w-5 sm:h-5" /> Book Now
+                  <SlCalender className="w-5 h-5" /> Book Now
                 </>
               ) : (
                 <>
-                  <ShoppingBagIcon className="w-3 h-3 sm:w-5 sm:h-5" /> Shop Now
+                  <ShoppingBagIcon className="w-5 h-5" /> Shop Now
                 </>
               )}
             </button>
