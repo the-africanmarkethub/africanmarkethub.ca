@@ -48,7 +48,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [categoriesError, setCategoriesError] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // --- Form States ---
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [description, setDescription] = useState("");
@@ -61,7 +60,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [lat, setLat] = useState<number | undefined>(undefined);
   const [lng, setLng] = useState<number | undefined>(undefined);
 
-  // --- Media & UI States ---
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
