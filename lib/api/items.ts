@@ -46,7 +46,7 @@ export async function getItemDetail(slug: string) {
 }
 
 export async function listRecommendedItems(type?: string) {
-  const response = await api.get(`/products/recommended`, {
+  const response = await api.get(`/items`, {
     params: { type },
   });
   return response.data;
