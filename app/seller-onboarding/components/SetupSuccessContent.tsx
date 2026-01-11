@@ -18,6 +18,7 @@ export default function SuccessContent() {
   const [countdown, setCountdown] = useState(5);
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [hasStripe, setHasStripe] = useState(false);
 
   const verificationStarted = useRef(false);
 
@@ -25,11 +26,19 @@ export default function SuccessContent() {
     try {
       setIsRetrying(true);
       const response = await verifySubscriptionCheckout(id);
-
-      if (response.status === "paid" && response.onboarding_url) {
-        setOnboardingUrl(response.onboarding_url);
-        setStatus("success");
-        triggerConfetti();
+      if (response.status === "paid") {
+        if (response.stripe_connect_id) {
+          setHasStripe(true);
+          setStatus("success");
+          triggerConfetti();
+        } else if (response.onboarding_url) {
+          setHasStripe(false);
+          setOnboardingUrl(response.onboarding_url);
+          setStatus("success");
+          triggerConfetti();
+        } else {
+          setStatus("error");
+        }
       } else {
         setStatus("error");
       }
@@ -51,33 +60,25 @@ export default function SuccessContent() {
   }, [sessionId]);
 
   useEffect(() => {
-    if (status === "success" && onboardingUrl && countdown > 0) {
+    if (status === "success" && countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (status === "success" && onboardingUrl && countdown === 0) {
-      window.location.href = onboardingUrl;
+    } else if (status === "success" && countdown === 0) {
+      if (hasStripe) {
+        router.replace("/dashboard");
+      } else if (onboardingUrl) {
+        window.location.href = onboardingUrl;
+      }
     }
-  }, [status, countdown, onboardingUrl]);
+  }, [status, countdown, onboardingUrl, hasStripe, router]);
+
 
   const triggerConfetti = () => {
     const end = Date.now() + 3000;
-    const colors = ["#ea580c", "#fb923c", "#facc15"];
-
+    const colors = ["#016134", "#00A85A", "#facc15"];
     (function frame() {
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors,
-      });
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors,
-      });
+      confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+      confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
       if (Date.now() < end) requestAnimationFrame(frame);
     })();
   };
@@ -133,16 +134,17 @@ export default function SuccessContent() {
         Payment Successful!
       </h1>
       <p className="text-lg text-gray-600 mb-8">
-        Your subscription is active. Now, let's set up your payouts.
+        Your subscription is active. {hasStripe ? "Welcome back!" : "Now, let's set up your payouts."}
       </p>
 
       <div className="bg-green-50 border border-green-100 rounded-2xl p-6 mb-8 text-left">
         <h3 className="text-hub-secondary font-bold mb-1">
-          Next Step: Seller Verification
+          {hasStripe ? "Redirecting to Dashboard" : "Next Step: Seller Verification"}
         </h3>
         <p className="text-hub-secondary text-sm leading-relaxed mb-4">
-          We are taking you to <strong>Stripe Connect</strong> to verify your
-          identity and link your bank account so you can receive payments.
+          {hasStripe 
+            ? "Your account is already linked. We are taking you to your dashboard to start managing your shop." 
+            : "We are taking you to Stripe Connect to verify your identity and link your bank account so you can receive payments."}
         </p>
         <div className="flex items-center text-hub-secondary font-semibold text-sm">
           <div className="h-2 w-full bg-green-200 rounded-full overflow-hidden mr-3">
@@ -157,17 +159,17 @@ export default function SuccessContent() {
 
       <button
         onClick={() => {
-          if (onboardingUrl) window.location.href = onboardingUrl;
+          if (hasStripe) {
+            router.push("/dashboard");
+          } else if (onboardingUrl) {
+            window.location.href = onboardingUrl;
+          }
         }}
         className="w-full flex items-center justify-center bg-gray-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-all transform hover:scale-[1.02] shadow-xl"
       >
-        Verify Identity on Stripe
+        {hasStripe ? "Go to Dashboard" : "Verify Identity on Stripe"}
         <ArrowRightIcon className="h-5 w-5 ml-2" />
       </button>
-
-      <p className="mt-6 text-xs text-gray-400 uppercase tracking-widest font-medium">
-        Securely powered by Stripe Connect
-      </p>
     </div>
   );
 }

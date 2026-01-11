@@ -36,7 +36,7 @@ api.interceptors.response.use(
       toast.error("Session expired. Please log in to continue.");
 
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
     }
     return Promise.reject(error);
