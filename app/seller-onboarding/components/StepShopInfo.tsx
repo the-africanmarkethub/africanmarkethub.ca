@@ -72,6 +72,24 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [isValidatingPhone, setIsValidatingPhone] = useState(false);
   const [dialCode, setDialCode] = useState("");
 
+  const [identificationType, setIdentificationType] = useState<Option | null>(null);
+  const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
+  const [idDocFile, setIdDocFile] = useState<File | null>(null);
+
+  const ID_OPTIONS: Option[] = [
+    { id: 1, name: "Work permit" },
+    { id: 2, name: "Study permit" },
+    { id: 3, name: "Permanent resident" },
+    { id: 4, name: "Passport for citizen" },
+  ];
+
+  // 2. Add identification data to the initial load (inside useEffect)
+  // In your loadAccountData, add:
+  // if (s.identification_type) {
+  //    const found = ID_OPTIONS.find(opt => opt.name === s.identification_type);
+  //    if(found) setIdentificationType(found);
+  // }
+  // setIdDocUrl(s.identification_document);
   // phone validation
   const validatePhoneNumber = useCallback(async () => {
     if (!phoneNumber || phoneNumber.length < 7) {
@@ -120,6 +138,11 @@ export default function StepShopInfo({ onNext }: StepProps) {
             if (foundType) setSelectedType(foundType);
           }
           setDescription(s.description || "");
+          if (s.identification_type) {
+            const found = ID_OPTIONS.find(opt => opt.name === s.identification_type);
+            if (found) setIdentificationType(found);
+          }
+          setIdDocUrl(s.identification_document);
           setLogoUrl(s.logo);
           setBannerUrl(s.banner);
           if (s.category) setSelectedCategory(s.category);
@@ -213,7 +236,10 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("phone", phoneNumber);
       form.append("category_id", String(selectedCategory?.id));
       form.append("type", selectedType.name.toLowerCase());
-
+      form.append("identification_type", identificationType?.name || "");
+      if (idDocFile) {
+        form.append("identification_document", idDocFile);
+      }
       // Address Data
       form.append("address", addressLine);
       form.append("city", city);
@@ -281,7 +307,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   if (initialLoading)
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <BeatLoader color="#ea580c" />
+        <BeatLoader color="#00A85A" />
         <p className="text-sm text-gray-500 mt-4">Syncing vendor profile...</p>
       </div>
     );
@@ -362,8 +388,68 @@ export default function StepShopInfo({ onNext }: StepProps) {
             selectedCategory={selectedCategory}
             onCategoryChange={setSelectedCategory}
             categoriesError={categoriesError}
-            isTypeDisabled={hasExistingShop} // 4. Pass the flag here
+            isTypeDisabled={hasExistingShop}
           />
+        </section>
+        {/* --- Identification Section --- */}
+        <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <h3 className="text-lg font-bold text-slate-800">Legal Verification</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+            {/* Identification Type Dropdown */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Identification Type</label>
+              <CategorySelector
+                // Reusing your logic but for ID types
+                types={ID_OPTIONS.map(opt => ({ id: opt.id, name: opt.name }))}
+                selectedType={identificationType || ID_OPTIONS[0]}
+                onTypeChange={(val) => setIdentificationType(val as any)}
+                categories={[]} // Not needed here
+                categoriesLoading={false}
+                selectedCategory={null}
+                onCategoryChange={() => { }}
+                isTypeDisabled={false}
+              />
+            </div>
+
+            {/* Identification Document Upload & Preview */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Upload Identification Document</label>
+              <div className="relative group w-full h-40 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
+                {idDocUrl ? (
+                  <div className="relative w-full h-full">
+                    <img
+                      src={idDocUrl}
+                      className="w-full h-full object-contain p-2"
+                      alt="ID Document Preview"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-white text-xs font-bold bg-black/50 px-3 py-1 rounded-full">Change Document</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center p-4">
+                    <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
+                      <FaPencil className="text-slate-400" />
+                    </div>
+                    <p className="text-xs text-slate-500">Click to upload JPG, PNG or PDF</p>
+                  </div>
+                )}
+                <input
+                  type="file"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  accept="image/*,.pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setIdDocFile(file);
+                      setIdDocUrl(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">

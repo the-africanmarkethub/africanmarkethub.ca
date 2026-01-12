@@ -35,18 +35,16 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
         // 2. Fetch Shop Details from Backend
         const response = await getMyShop();
         const shop = response.data;
-        console.log(shop);
-        // 3. Logic: Check Subscription
+        const link = response.stripe_onboarding_url;
+
         if (!shop.subscription_id) {
           router.replace("/subscription");
           return;
         }
 
         // 4. Logic: Check Stripe Connection
-        if (!shop.stripe_connect_id) {
-          // If you have a specific onboarding URL from backend, use that
-          // Otherwise, redirect to a internal "connect-stripe" page or external link
-          window.location.href = shop.stripe_onboarding_url || "https://connect.stripe.com/setup/s/...";
+        if (!shop.stripe_connect_id) { 
+          window.location.href = link;
           return;
         }
 
