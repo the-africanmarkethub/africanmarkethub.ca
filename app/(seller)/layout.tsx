@@ -17,15 +17,14 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
   const router = useRouter();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isValidating, setIsValidating] = useState(true); // New state for shop check
+  const [isValidating, setIsValidating] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
     const validateShopStatus = async () => {
-      // 1. First, check if auth has hydrated and token exists
       if (!_hasHydrated) return;
-      
+
       if (!token) {
         router.replace("/login");
         return;
@@ -43,7 +42,7 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
         }
 
         // 4. Logic: Check Stripe Connection
-        if (!shop.stripe_connect_id) { 
+        if (!shop.stripe_connect_id) {
           window.location.href = link;
           return;
         }
@@ -52,7 +51,9 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
         setIsValidating(false);
       } catch (error) {
         console.error("Shop validation failed:", error);
-        router.replace("/seller-onboarding"); 
+        router.replace("/seller-onboarding");
+      } finally {
+        setIsValidating(false);
       }
     };
 
@@ -64,7 +65,7 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-4">
-          <PulseLoader color="#ff6600" />
+          <PulseLoader color="#016134" />
           <p className="text-sm text-gray-500 font-medium animate-pulse">
             Verifying shop status...
           </p>

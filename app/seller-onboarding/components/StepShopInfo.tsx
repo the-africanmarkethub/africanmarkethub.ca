@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
-import { FaPencil } from "react-icons/fa6";
+import { FaFilePdf, FaPencil } from "react-icons/fa6";
 
 import { listCategories } from "@/lib/api/category";
 import {
@@ -23,7 +23,7 @@ import ShopHeaderCard from "@/app/(seller)/dashboard/shop-management/components/
 import TextareaField from "@/app/(seller)/dashboard/shop-management/components/TextareaField";
 import TextInput from "@/app/(seller)/dashboard/shop-management/components/TextInput";
 import { getAddress } from "@/lib/api/auth/shipping";
-import { DefaultOption } from "@/app/components/common/SelectField";
+import SelectField, { DefaultOption } from "@/app/components/common/SelectField";
 import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
 
 export interface Option extends DefaultOption { }
@@ -82,15 +82,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     { id: 3, name: "Permanent resident" },
     { id: 4, name: "Passport for citizen" },
   ];
-
-  // 2. Add identification data to the initial load (inside useEffect)
-  // In your loadAccountData, add:
-  // if (s.identification_type) {
-  //    const found = ID_OPTIONS.find(opt => opt.name === s.identification_type);
-  //    if(found) setIdentificationType(found);
-  // }
-  // setIdDocUrl(s.identification_document);
-  // phone validation
+ 
   const validatePhoneNumber = useCallback(async () => {
     if (!phoneNumber || phoneNumber.length < 7) {
       setIsPhoneValid(null);
@@ -223,6 +215,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
   };
 
+  const isPdf = idDocUrl?.includes("data:application/pdf") || idDocUrl?.toLowerCase().endsWith(".pdf");
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -236,9 +231,11 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("phone", phoneNumber);
       form.append("category_id", String(selectedCategory?.id));
       form.append("type", selectedType.name.toLowerCase());
-      form.append("identification_type", identificationType?.name || "");
-      if (idDocFile) {
-        form.append("identification_document", idDocFile);
+      if (selectedType.name === "Services") {
+        form.append("identification_type", identificationType?.name || "");
+        if (idDocFile) {
+          form.append("identification_document", idDocFile);
+        }
       }
       // Address Data
       form.append("address", addressLine);
@@ -391,66 +388,94 @@ export default function StepShopInfo({ onNext }: StepProps) {
             isTypeDisabled={hasExistingShop}
           />
         </section>
+
         {/* --- Identification Section --- */}
-        <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-lg font-bold text-slate-800">Legal Verification</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {selectedType.name === "Products" && (
+          <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+            <h3 className="text-lg font-bold text-slate-800">Legal Verification</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
 
-            {/* Identification Type Dropdown */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Identification Type</label>
-              <CategorySelector
-                // Reusing your logic but for ID types
-                types={ID_OPTIONS.map(opt => ({ id: opt.id, name: opt.name }))}
-                selectedType={identificationType || ID_OPTIONS[0]}
-                onTypeChange={(val) => setIdentificationType(val as any)}
-                categories={[]} // Not needed here
-                categoriesLoading={false}
-                selectedCategory={null}
-                onCategoryChange={() => { }}
-                isTypeDisabled={false}
-              />
-            </div>
-
-            {/* Identification Document Upload & Preview */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Upload Identification Document</label>
-              <div className="relative group w-full h-40 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
-                {idDocUrl ? (
-                  <div className="relative w-full h-full">
-                    <img
-                      src={idDocUrl}
-                      className="w-full h-full object-contain p-2"
-                      alt="ID Document Preview"
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="text-white text-xs font-bold bg-black/50 px-3 py-1 rounded-full">Change Document</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center p-4">
-                    <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
-                      <FaPencil className="text-slate-400" />
-                    </div>
-                    <p className="text-xs text-slate-500">Click to upload JPG, PNG or PDF</p>
-                  </div>
-                )}
-                <input
-                  type="file"
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  accept="image/*,.pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setIdDocFile(file);
-                      setIdDocUrl(URL.createObjectURL(file));
-                    }
-                  }}
+              {/* Identification Type Dropdown */}
+              <div className="space-y-2">
+                <SelectField
+                  label="Identification Type"
+                  value={identificationType || ID_OPTIONS[0]}
+                  onChange={(val) => setIdentificationType(val as any)}
+                  options={ID_OPTIONS.map(opt => ({ id: opt.id, name: opt.name }))}
                 />
               </div>
+
+              {/* Identification Document Upload & Preview */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">
+                  Upload {identificationType?.name || ID_OPTIONS[0].name}
+                </label>
+
+                <div className="relative group w-full h-64 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
+                  {idDocUrl ? (
+                    <div className="relative w-full h-full">
+                      {isPdf ? (
+                        /* PDF Placeholder: Green background with File Name */
+                        <div className="w-full h-full bg-emerald-50 flex flex-col items-center justify-center p-6 text-center">
+                          <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                            <FaFilePdf className="text-white text-3xl" />
+                          </div>
+                          <p className="text-emerald-900 font-bold text-sm truncate max-w-[80%]">
+                            {idDocFile?.name || "Document Uploaded"}
+                          </p>
+                          <p className="text-emerald-600 text-xs mt-1 uppercase tracking-widest font-semibold">
+                            Ready to Save
+                          </p>
+                        </div>
+                      ) : (
+                        /* Image Preview - fills the box */
+                        <img
+                          src={idDocUrl}
+                          className="w-full h-full object-cover"
+                          alt="ID Preview"
+                        />
+                      )}
+
+                      {/* Hover Overlay */}
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 z-20">
+                        <div className="bg-white/20 backdrop-blur-md p-2 rounded-full">
+                          <FaPencil className="text-white" />
+                        </div>
+                        <span className="text-white text-xs font-bold px-3 py-1 rounded-full bg-black/20">
+                          Change Document
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Empty State */
+                    <div className="text-center p-4">
+                      <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
+                        <FaPencil className="text-slate-400" />
+                      </div>
+                      <p className="text-xs text-slate-500">Click to upload document</p>
+                      <p className="text-[10px] text-slate-400 mt-1 uppercase">PNG, JPG or PDF</p>
+                    </div>
+                  )}
+
+                  {/* Hidden Input Layer */}
+                  <input
+                    type="file"
+                    className="absolute inset-0 opacity-0 cursor-pointer z-30"
+                    accept="image/png, image/jpeg, application/pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setIdDocFile(file);
+                        if (idDocUrl) URL.revokeObjectURL(idDocUrl);
+                        setIdDocUrl(URL.createObjectURL(file));
+                      }
+                    }}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold text-slate-800">
