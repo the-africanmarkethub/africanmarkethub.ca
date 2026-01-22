@@ -35,7 +35,7 @@ export default function CategorySelector({
       {/* Type Selector */}
       <div>
         <SelectField
-          label="Type"
+          label="Niche Type"
           value={selectedType}
           onChange={onTypeChange}
           options={types}

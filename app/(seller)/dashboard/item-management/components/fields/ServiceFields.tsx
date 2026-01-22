@@ -8,7 +8,6 @@ import Link from "next/link"; // Assuming you use Next.js Link
 
 export default function ServiceFields(props: any) {
   const {
-    selectedCategory,
     pricingModel,
     setPricingModel,
     deliveryMethod,
@@ -28,8 +27,6 @@ export default function ServiceFields(props: any) {
   const [deliveryHours, setDeliveryHours] = useState("");
   const [deliveryMinutes, setDeliveryMinutes] = useState("");
   const [storeCity, setStoreCity] = useState("Loading...");
-
-  const isTransLogistics = selectedCategory?.value === "33";
 
   // Fetch address once on mount
   useEffect(() => {
@@ -69,71 +66,32 @@ export default function ServiceFields(props: any) {
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        {/* SHIPPING FEE INFO */}
-        {isTransLogistics && (
-          <div className="col-span-2 bg-hub-primary/10 p-4 rounded-md mb-2 border border-hub-primary/20">
-            <label className="block text-sm font-bold text-hub-secondary mb-1">
-              Shipping Fee (Tiered Pricing)
-            </label>
-            <p className="text-xs text-hub-secondary/80">
-              Fixed pricing based on item value on checkout.
-            </p>
-          </div>
-        )}
-
         {/* PRICING & DELIVERY (Hidden for Logistics) */}
-        {!isTransLogistics && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Pricing Model
-              </label>
-              <SelectDropdown
-                options={PRICING_MODEL_OPTIONS}
-                value={pricingModel}
-                onChange={(v: any) => setPricingModel(v)}
-                placeholder="Select Pricing Model"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Delivery Method
-              </label>
-              <SelectDropdown
-                options={DELIVERY_METHOD_OPTIONS}
-                value={deliveryMethod}
-                onChange={(v: any) => setDeliveryMethod(v)}
-                placeholder="Select Delivery Method"
-              />
-            </div>
-          </>
-        )}
-
-        {/* DELIVERY AREA (Informative Box) */}
-        {isTransLogistics && (
-          <div className="col-span-2">
+        <>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Delivery Zone
+              Pricing Model
             </label>
-            <div className="relative">
-              <input
-                type="text"
-                readOnly
-                value={storeCity}
-                className="input w-full bg-gray-50 text-gray-500 cursor-not-allowed border-dashed"
-              />
-              <p className="mt-1.5 text-[11px] text-gray-500 flex justify-between">
-                <span>The primary city or region for your deliveries.</span>
-                <Link
-                  href="/dashboard/storefront"
-                  className="text-hub-secondary hover:underline font-medium"
-                >
-                  Change in Storefront →
-                </Link>
-              </p>
-            </div>
+            <SelectDropdown
+              options={PRICING_MODEL_OPTIONS}
+              value={pricingModel}
+              onChange={(v: any) => setPricingModel(v)}
+              placeholder="Select Pricing Model"
+            />
           </div>
-        )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Delivery Method
+            </label>
+            <SelectDropdown
+              options={DELIVERY_METHOD_OPTIONS}
+              value={deliveryMethod}
+              onChange={(v: any) => setDeliveryMethod(v)}
+              placeholder="Select Delivery Method"
+            />
+          </div>
+        </>
+ 
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-4">

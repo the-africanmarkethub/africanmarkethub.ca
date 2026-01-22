@@ -42,7 +42,6 @@ export default function ItemForm({ onClose, item }: Props) {
       />
 
       <PriceFields
-        selectedCategory={form.selectedCategory}
         salesPrice={form.salesPrice}
         setSalesPrice={form.setSalesPrice}
         regularPrice={form.regularPrice}
@@ -71,7 +70,6 @@ export default function ItemForm({ onClose, item }: Props) {
 
       {form.shopType === "services" && (
         <ServiceFields
-          selectedCategory={form.selectedCategory}
           pricingModel={form.pricingModel}
           setPricingModel={form.setPricingModel}
           deliveryMethod={form.deliveryMethod}
