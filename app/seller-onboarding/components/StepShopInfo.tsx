@@ -45,6 +45,25 @@ const TYPES: SelectOption[] = [
   { id: 2, name: "Services", label: "Service Provider" },
   { id: 1, name: "Deliveries", label: "Delivery Partner" },
 ];
+const LOCALDELIVERYOPTION: SelectOption[] = [
+  {
+    id: 1,
+    name: "Flat Fee",
+    label:
+      "I will charge a fixed price (e.g. $10) for any delivery in my city.",
+  },
+  {
+    id: 2,
+    name: "Free Delivery",
+    label: "I will deliver for free to customers within my city.",
+  },
+  {
+    id: 3,
+    name: "Not Available",
+    label:
+      "I don't do deliveries. Use the platform's standard shipping/couriers.",
+  },
+];
 
 export default function StepShopInfo({ onNext }: StepProps) {
   // --- Internal Persistence Flag ---
@@ -77,7 +96,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
   const [isValidatingPhone, setIsValidatingPhone] = useState(false);
   const [dialCode, setDialCode] = useState("");
-
+  const [localDelivery, setLocalDelivery] = useState<SelectOption>(
+    LOCALDELIVERYOPTION[2],
+  ); // Default: Not Available
   const [identificationType, setIdentificationType] = useState<Option | null>(
     null,
   );
@@ -149,6 +170,14 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setLogoUrl(s.logo);
           setBannerUrl(s.banner);
           if (s.category) setSelectedCategory(s.category);
+          if (s.local_delivery_setting) {
+            const found = LOCALDELIVERYOPTION.find(
+              (opt) =>
+                opt.name.toLowerCase() ===
+                s.local_delivery_setting.toLowerCase(),
+            );
+            if (found) setLocalDelivery(found);
+          }
         }
 
         if (addrRes) {
@@ -250,6 +279,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
     // 3. Address Validation
     if (!addressLine) return toast.error("Address is required");
+    if (!localDelivery) return toast.error("Local Delivery Setting is required");
     if (!city) return toast.error("City is required");
     if (!stateCode) return toast.error("State is required");
     if (!countryCode) return toast.error("Country is required");
@@ -265,6 +295,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("phone", phoneNumber);
       form.append("category_id", String(selectedCategory?.id));
       form.append("type", selectedType.name.toLowerCase());
+      form.append("local_delivery_setting", localDelivery.name);
       if (selectedType.name === "Services") {
         form.append("identification_type", identificationType?.name || "");
         if (idDocFile) {
@@ -455,6 +486,14 @@ export default function StepShopInfo({ onNext }: StepProps) {
             categoriesError={categoriesError}
             isTypeDisabled={hasExistingShop}
           />
+          {selectedType.name === "Products" && (
+            <SelectField
+              label="Local Delivery Service"
+              value={localDelivery}
+              onChange={(val) => setLocalDelivery(val as SelectOption)}
+              options={LOCALDELIVERYOPTION}
+            />
+          )}
         </section>
 
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
