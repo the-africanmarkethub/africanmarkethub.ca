@@ -27,6 +27,7 @@ import SelectField, {
   DefaultOption,
 } from "@/app/components/common/SelectField";
 import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
+import { Shop } from "@/interfaces/shop";
 
 export interface Option extends DefaultOption {}
 
@@ -70,6 +71,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [initialLoading, setInitialLoading] = useState(true);
 
   const [selectedType, setSelectedType] = useState(TYPES[0]);
+  const [shop, setShop] = useState<Shop>();
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
@@ -127,6 +129,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
         if (shopRes?.status === "success" && shopRes.data) {
           const s = shopRes.data;
+          setShop(s);
           setHasExistingShop(true);
           setName(s.name || "");
           if (s.type) {
@@ -340,10 +343,45 @@ export default function StepShopInfo({ onNext }: StepProps) {
       </div>
     );
 
+  // --- Helper to get Dynamic Terminology ---
+  const getLabels = () => {
+    switch (selectedType.name) {
+      case "Deliveries":
+        return {
+          header: "Service Base / Dispatch Point",
+          nameLabel: "Logistics Business Name",
+          descLabel: "About your Delivery Service",
+          addressHelp: "Where your fleet or operations are based",
+        };
+      case "Services":
+        return {
+          header: "Business Location",
+          nameLabel: "Service Business Name",
+          descLabel: "Describe your professional services",
+          addressHelp: "Your office or primary service area address",
+        };
+      default: // Products
+        return {
+          header: "Pickup Address",
+          nameLabel: "Shop Name",
+          descLabel: "About your Shop & Products",
+          addressHelp: "Where customers or couriers pick up items",
+        };
+    }
+  };
+  const labels = getLabels();
+  // We require ID for both Services and Deliveries
+  const requiresID =
+    selectedType.name === "Services" || selectedType.name === "Deliveries";
+
   return (
     <div className=" mx-auto pb-20">
-      <ShopHeaderCard subtitle="Your identity on the platform. Keep your info up to date." />
-
+      {!initialLoading && shop && (
+        <ShopHeaderCard
+          shop={shop}
+          subtitle={`Set up your ${selectedType.name.toLowerCase()} profile to start selling.`}
+        />
+      )}
       {/* Visual Identity Section */}
       <div className="relative mb-24">
         <div className="w-full h-52 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 group relative">
@@ -398,11 +436,10 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </div>
         </div>
       </div>
-
       <form onSubmit={handleSubmit} className="space-y-10">
         <section className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
           <TextInput
-            label="Official Shop Name"
+            label={labels.nameLabel} // Dynamic Label
             value={name}
             onChange={setName}
             required
@@ -420,13 +457,11 @@ export default function StepShopInfo({ onNext }: StepProps) {
           />
         </section>
 
-        {/* --- Identification Section --- */}
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold text-slate-800">
             Legal Verification
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-start">
-            {/* Identification Type Dropdown */}
             <div className="space-y-2">
               <SelectField
                 label="Identification Type"
@@ -516,15 +551,17 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-lg font-bold text-slate-800">
-            Operational Address
-          </h3>
+          <div>
+            <h3 className="text-lg font-bold text-slate-800">
+              {labels.header}
+            </h3>
+            <p className="text-xs text-gray-400">{labels.addressHelp}</p>
+          </div>{" "}
           <FadeSlide keyId="address">
             {googleLoaded && (
               <GoogleAddressAutocomplete onSelect={handleAddressSelect} />
             )}
           </FadeSlide>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-80">
             <TextInput label="City" value={city} onChange={setCity} disabled />
 
@@ -548,7 +585,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
               required
             />
           </div>
-
           <PhoneInput
             countryFlag={countryCodeToFlag(countryCode)}
             dialCode={dialCode ?? ""}
@@ -560,7 +596,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <TextareaField
-          label="About the Shop"
+          label={labels.descLabel} // Dynamic Label
           value={description}
           onChange={setDescription}
           rows={4}

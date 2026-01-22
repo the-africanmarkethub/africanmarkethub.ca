@@ -20,6 +20,8 @@ export interface Shop {
   category: Category;
   status: string;
   stripe_connect_id?: string;
+  stripe_requirements: [];
+  stripe_payouts_enabled: boolean;
   stripe_onboarding_completed?: boolean;
 
   created_at: string;
