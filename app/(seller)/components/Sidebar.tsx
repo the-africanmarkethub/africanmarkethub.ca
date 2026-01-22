@@ -46,23 +46,35 @@ export function Sidebar({
 
   const filteredMenu = useMemo(() => {
     return VENDOR_MENU.filter((item) => {
-      // Logic: If Service shop, hide these IDs. If Product shop, hide these IDs.
-      const hiddenForServices = [5];
+      // Define hidden IDs for each shop type
+      const hiddenForServices = [5]; // e.g., hide some product-specific finance
       const hiddenForProducts = [6];
+
+      // Deliveries: Hide Items/Inventory and Marketing Coupons
+      const hiddenForDeliveries = [2, 50];
 
       if (shopType === "services" && hiddenForServices.includes(item.id))
         return false;
       if (shopType === "products" && hiddenForProducts.includes(item.id))
         return false;
+      if (shopType === "deliveries" && hiddenForDeliveries.includes(item.id))
+        return false;
 
       return true;
     }).map((item) => {
-      if (item.id === 2 && item.children) {
+      // Deep filtering for children
+      if (item.children) {
         return {
           ...item,
-          children: item.children.filter(
-            (child) => !(shopType === "services" && child.id === 22)
-          ),
+          children: item.children.filter((child) => {
+            if (shopType === "services" && child.id === 22) return false;
+
+            // Example: If Deliveries, hide Returns/Refunds (ID 33)
+            // since logistics usually handles 'failed delivery' not 'product returns'
+            if (shopType === "deliveries" && child.id === 33) return false;
+
+            return true;
+          }),
         };
       }
       return item;
@@ -79,8 +91,9 @@ export function Sidebar({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:translate-x-0 md:static md:h-screen ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-100 flex flex-col transform transition-transform duration-300 md:translate-x-0 md:static md:h-screen ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="flex items-center px-6 h-20 border-b border-gray-50">
           <Image
@@ -100,27 +113,35 @@ export function Sidebar({
               (hasChildren && currentPath.startsWith(item.href));
             const isExpanded =
               expandedItem === item.id || (isActive && expandedItem === null);
+            // Inside the .map of filteredMenu
+            const label =
+              item.id === 3 && shopType === "deliveries"
+                ? "Shipments"
+                : item.label;
 
             return (
               <div key={item.id} className="space-y-1">
                 {hasChildren ? (
                   <button
                     onClick={() => toggleExpand(item.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${isActive
-                      ? "bg-green-50 text-hub-secondary"
-                      : "text-gray-600 hover:bg-gray-50"
-                      }`}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-green-50 text-hub-secondary"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
                   >
                     <div className="flex items-center">
                       <item.icon
-                        className={`w-5 h-5 mr-3 ${isActive ? "text-hub-secondary" : "text-gray-400"
-                          }`}
+                        className={`w-5 h-5 mr-3 ${
+                          isActive ? "text-hub-secondary" : "text-gray-400"
+                        }`}
                       />
-                      {item.label}
+                      {label}
                     </div>
                     <LuChevronDown
-                      className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""
-                        }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
                 ) : (
@@ -128,18 +149,20 @@ export function Sidebar({
                   <Link
                     href={item.href}
                     onClick={() => window.innerWidth < 768 && toggleSidebar()}
-                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${currentPath === item.href
-                      ? "bg-green-50 text-hub-secondary shadow-sm"
-                      : "text-gray-600 hover:bg-gray-50"
-                      }`}
+                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                      currentPath === item.href
+                        ? "bg-green-50 text-hub-secondary shadow-sm"
+                        : "text-gray-600 hover:bg-gray-50"
+                    }`}
                   >
                     <item.icon
-                      className={`w-5 h-5 mr-3 ${currentPath === item.href
-                        ? "text-hub-secondary"
-                        : "text-gray-400"
-                        }`}
+                      className={`w-5 h-5 mr-3 ${
+                        currentPath === item.href
+                          ? "text-hub-secondary"
+                          : "text-gray-400"
+                      }`}
                     />
-                    {item.label}
+                    {label}
                   </Link>
                 )}
 
@@ -155,10 +178,11 @@ export function Sidebar({
                           onClick={() =>
                             window.innerWidth < 768 && toggleSidebar()
                           }
-                          className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${isChildActive
-                            ? "text-hub-secondary bg-green-50/50"
-                            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                            }`}
+                          className={`flex items-center px-4 py-2 rounded-lg text-xs font-medium transition-all ${
+                            isChildActive
+                              ? "text-hub-secondary bg-green-50/50"
+                              : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                          }`}
                         >
                           {child.label}
                         </Link>

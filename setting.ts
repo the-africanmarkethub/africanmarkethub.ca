@@ -105,13 +105,7 @@ export const VENDOR_MENU: NavItem[] = [
         label: "Coupon Management",
         href: "/dashboard/marketing/item-coupon",
         icon: HiOutlineTicket,
-      },
-      // {
-      //   id: 52,
-      //   label: "Discounted Orders",
-      //   href: "/dashboard/marketing/discount-usage",
-      //   icon: HiOutlineClipboardList,
-      // },
+      }, 
     ],
   },
   {
