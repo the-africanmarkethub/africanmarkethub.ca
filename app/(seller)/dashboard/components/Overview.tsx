@@ -31,25 +31,27 @@ const StatGroup = ({
   children,
   icon: Icon,
   filterLabel = "This Week",
-  gridClassName = "grid-cols-2", // Default to 2 columns for mobile
+  gridClassName = "grid-cols-2",
 }: {
   children: React.ReactNode;
   icon: any;
   filterLabel?: string;
-  gridClassName?: string; // New prop
+  gridClassName?: string;
 }) => (
-  <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex flex-col gap-6 relative overflow-hidden">
+  <div className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm flex flex-col gap-6 relative overflow-hidden h-full">
     <div className="flex justify-between items-start">
-      <div className="p-3 bg-green-50 rounded-xl">
+      <div className="p-3 bg-green-50 rounded-xl shrink-0">
         <Icon className="text-hub-primary text-xl" />
       </div>
-      <button className="flex items-center gap-2 text-[10px] font-bold text-gray-400 border border-gray-100 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors uppercase tracking-wider">
-        {filterLabel} <FaChevronDown className="text-[8px]" />
+      <button className="flex items-center gap-2 text-[10px] font-bold text-gray-400 border border-gray-100 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-colors uppercase tracking-wider ml-2">
+        <span className="truncate max-w-20">{filterLabel}</span>
+        <FaChevronDown className="text-[8px] shrink-0" />
       </button>
     </div>
-    {/* Use the dynamic gridClassName here */}
+
+    {/* FIX: Use flex-wrap instead of items-end to allow items to flow to next line if needed */}
     <div
-      className={`grid ${gridClassName} sm:flex sm:flex-row items-end gap-8`}
+      className={`grid ${gridClassName} lg:flex lg:flex-row lg:items-end gap-x-4 gap-y-6 lg:gap-8`}
     >
       {children}
     </div>
@@ -65,12 +67,12 @@ const StatItem = ({
   value?: string | number;
   loading: boolean;
 }) => (
-  <div className="flex flex-col gap-1 min-w-25">
-    <span className="text-sm font-medium text-gray-400 whitespace-nowrap">
+  <div className="flex flex-col gap-1 min-w-20">
+    <span className="text-[11px] sm:text-xs font-medium text-gray-400 uppercase tracking-tight leading-tight">
       {label}
     </span>
-    <span className="text-2xl font-bold text-gray-900">
-      {loading ? <Skeleton width={60} /> : value ?? 0}
+    <span className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
+      {loading ? <Skeleton width={40} /> : (value ?? 0)}
     </span>
   </div>
 );

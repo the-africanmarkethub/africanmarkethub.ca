@@ -61,7 +61,7 @@ export default function WalletCard({
 
   return (
     <>
-      <div className="card p-5 bg-white shadow-sm border rounded-xl">
+      <div className="card p-5 bg-white shadow-sm rounded-xl">
         {/* Mobile-first: Column layout on small screens, row on medium */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="order-2 md:order-1">
