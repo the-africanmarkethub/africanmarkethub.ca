@@ -4,7 +4,7 @@ import { LuShoppingBag } from "react-icons/lu";
 
 export default function ShopHeaderCard({ subtitle }: { subtitle?: string }) {
   return (
-    <div className="card p-4 border rounded-md bg-white shadow-sm mb-6">
+    <div className="card p-4  border border-slate-200 rounded-md bg-white shadow-sm mb-6">
       <div className="flex items-start gap-3">
         <div className="rounded-md bg-green-50 p-2">
           <LuShoppingBag className="text-hub-secondary" size={22} />

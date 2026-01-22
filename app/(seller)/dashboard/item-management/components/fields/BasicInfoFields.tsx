@@ -8,8 +8,6 @@ interface BasicInfoProps {
   setTitle: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
-  keywords: string[];
-  setKeywords: (value: string[]) => void;
 }
 
 export default function BasicInfoFields({
@@ -17,30 +15,7 @@ export default function BasicInfoFields({
   setTitle,
   description,
   setDescription,
-  keywords = [],
-  setKeywords,
 }: BasicInfoProps) {
-  const [inputValue, setInputValue] = useState("");
-
-  // Logic to add keyword
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      const trimmed = inputValue.trim();
-
-      // Add only if not empty and not duplicate
-      if (trimmed && !keywords.includes(trimmed)) {
-        setKeywords([...keywords, trimmed]);
-        setInputValue("");
-      }
-    }
-  };
-
-  // Logic to remove keyword
-  const removeKeyword = (indexToRemove: number) => {
-    setKeywords(keywords.filter((_, index) => index !== indexToRemove));
-  };
-
   return (
     <>
       <div>
@@ -60,10 +35,11 @@ export default function BasicInfoFields({
         <label className="block text-sm font-medium text-gray-700">
           Description <span className="text-red-500">*</span>
           <span
-            className={`ml-2 text-xs ${description.length > 4000
-              ? "text-red-500 font-bold"
-              : "text-gray-400"
-              }`}
+            className={`ml-2 text-xs ${
+              description.length > 4000
+                ? "text-red-500 font-bold"
+                : "text-gray-400"
+            }`}
           >
             ({description.length}/4000)
           </span>
@@ -105,46 +81,6 @@ export default function BasicInfoFields({
       </div>
 
       {/* Keywords Field */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          SEO Keywords <span className="text-red-500">*</span>
-          <span className="text-gray-400 text-xs">
-            (Press Enter or Comma to add)
-          </span>
-        </label>
-
-        <div className="flex flex-wrap items-center gap-2 input">
-          {/* Render Chips */}
-          {keywords.map((keyword: string, index: number) => (
-            <span
-              key={index}
-              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-hub-secondary"
-            >
-              {keyword}
-              <button
-                type="button"
-                aria-label="remove"
-                onClick={() => removeKeyword(index)}
-                className="ml-1.5 cursor-pointer inline-flex items-center justify-center text-hub-primary hover:text-hub-secondary focus:outline-none"
-              >
-                <FaTimes size={12} />
-              </button>
-            </span>
-          ))}
-
-          {/* Input for typing new keywords */}
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1 outline-none bg-transparent min-w-35 text-sm text-gray-700 placeholder-gray-400"
-            placeholder={
-              keywords.length === 0 ? "e.g., Authentic, Organic, Food" : ""
-            }
-          />
-        </div>
-      </div>
     </>
   );
 }

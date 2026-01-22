@@ -1,11 +1,14 @@
 "use client";
 import SelectDropdown from "@/app/(seller)/dashboard/components/commons/Fields/SelectDropdown";
+import { getAddress } from "@/lib/api/auth/shipping";
 import { PRICING_MODEL_OPTIONS, DELIVERY_METHOD_OPTIONS } from "@/setting";
 import { timeOptions } from "@/utils/generateTimeSlot";
 import { useEffect, useState } from "react";
+import Link from "next/link"; // Assuming you use Next.js Link
 
 export default function ServiceFields(props: any) {
   const {
+    selectedCategory,
     pricingModel,
     setPricingModel,
     deliveryMethod,
@@ -19,66 +22,122 @@ export default function ServiceFields(props: any) {
     availableTo,
     setAvailableTo,
     dayOptions,
+    setDeliveryArea,
   } = props;
+
   const [deliveryHours, setDeliveryHours] = useState("");
   const [deliveryMinutes, setDeliveryMinutes] = useState("");
+  const [storeCity, setStoreCity] = useState("Loading...");
 
-  // Update the parent state whenever local inputs change
+  const isTransLogistics = selectedCategory?.value === "33";
+
+  // Fetch address once on mount
+  useEffect(() => {
+    const fetchStoreAddress = async () => {
+      try {
+        const response = await getAddress();
+        if (response && response.city) {
+          setStoreCity(response.city);
+        } else {
+          setStoreCity("Not Set");
+        }
+      } catch (error) {
+        console.error("Failed to fetch address", error);
+        setStoreCity("Error loading city");
+      }
+    };
+    fetchStoreAddress();
+  }, []);
+
+  // Update delivery time string
   useEffect(() => {
     const parts = [];
     if (deliveryHours && parseInt(deliveryHours) > 0) {
       parts.push(
-        `${deliveryHours} ${parseInt(deliveryHours) === 1 ? "hour" : "hours"}`
+        `${deliveryHours} ${parseInt(deliveryHours) === 1 ? "hour" : "hours"}`,
       );
     }
     if (deliveryMinutes && parseInt(deliveryMinutes) > 0) {
       parts.push(
-        `${deliveryMinutes} ${parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"
-        }`
+        `${deliveryMinutes} ${parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"}`,
       );
     }
-
     const combined = parts.join(" ");
     setEstimatedDeliveryTime(combined);
   }, [deliveryHours, deliveryMinutes, setEstimatedDeliveryTime]);
 
-  useEffect(() => {
-    if (estimatedDeliveryTime && !deliveryHours && !deliveryMinutes) {
-      const hourMatch = estimatedDeliveryTime.match(/(\d+)\s*hour/);
-      const minuteMatch = estimatedDeliveryTime.match(/(\d+)\s*minute/);
-
-      if (hourMatch) setDeliveryHours(hourMatch[1]);
-      if (minuteMatch) setDeliveryMinutes(minuteMatch[1]);
-    }
-  }, []);
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Pricing Model
-          </label>
-          <SelectDropdown
-            options={PRICING_MODEL_OPTIONS}
-            value={pricingModel}
-            onChange={(v: any) => setPricingModel(v)}
-            placeholder="Select Pricing Model"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Delivery Method
-          </label>
-          <SelectDropdown
-            options={DELIVERY_METHOD_OPTIONS}
-            value={deliveryMethod}
-            onChange={(v: any) => setDeliveryMethod(v)}
-            placeholder="Select Delivery Method"
-          />
-        </div>
+        {/* SHIPPING FEE INFO */}
+        {isTransLogistics && (
+          <div className="col-span-2 bg-hub-primary/10 p-4 rounded-md mb-2 border border-hub-primary/20">
+            <label className="block text-sm font-bold text-hub-secondary mb-1">
+              Shipping Fee (Tiered Pricing)
+            </label>
+            <p className="text-xs text-hub-secondary/80">
+              Fixed pricing based on item value on checkout.
+            </p>
+          </div>
+        )}
+
+        {/* PRICING & DELIVERY (Hidden for Logistics) */}
+        {!isTransLogistics && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Pricing Model
+              </label>
+              <SelectDropdown
+                options={PRICING_MODEL_OPTIONS}
+                value={pricingModel}
+                onChange={(v: any) => setPricingModel(v)}
+                placeholder="Select Pricing Model"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Delivery Method
+              </label>
+              <SelectDropdown
+                options={DELIVERY_METHOD_OPTIONS}
+                value={deliveryMethod}
+                onChange={(v: any) => setDeliveryMethod(v)}
+                placeholder="Select Delivery Method"
+              />
+            </div>
+          </>
+        )}
+
+        {/* DELIVERY AREA (Informative Box) */}
+        {isTransLogistics && (
+          <div className="col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Delivery Zone
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                readOnly
+                value={storeCity}
+                className="input w-full bg-gray-50 text-gray-500 cursor-not-allowed border-dashed"
+              />
+              <p className="mt-1.5 text-[11px] text-gray-500 flex justify-between">
+                <span>The primary city or region for your deliveries.</span>
+                <Link
+                  href="/dashboard/storefront"
+                  className="text-hub-secondary hover:underline font-medium"
+                >
+                  Change in Storefront →
+                </Link>
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4">
+      <div className="mt-6 grid grid-cols-1 gap-4">
+        {/* Estimated Delivery Time */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Estimated Delivery Time
@@ -87,8 +146,6 @@ export default function ServiceFields(props: any) {
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                min="0"
-                max="99"
                 value={deliveryHours}
                 onChange={(e) => setDeliveryHours(e.target.value)}
                 className="input w-full"
@@ -96,12 +153,9 @@ export default function ServiceFields(props: any) {
               />
               <span className="text-sm text-gray-500">Hrs</span>
             </div>
-
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                min="0"
-                max="59"
                 value={deliveryMinutes}
                 onChange={(e) => setDeliveryMinutes(e.target.value)}
                 className="input w-full"
@@ -110,16 +164,9 @@ export default function ServiceFields(props: any) {
               <span className="text-sm text-gray-500">Mins</span>
             </div>
           </div>
-          {/* Hidden preview to help the user see what's happening */}
-          {(deliveryHours || deliveryMinutes) && (
-            <p className="mt-2 text-xs text-hub-secondary font-medium bg-green-50 p-2 rounded border border-green-100">
-              Will be saved as: {deliveryHours || 0}{" "}
-              {parseInt(deliveryHours) === 1 ? "hour" : "hours"}{" "}
-              {deliveryMinutes || 0}{" "}
-              {parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"}
-            </p>
-          )}
         </div>
+
+        {/* Available Days */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Available Days
@@ -130,20 +177,21 @@ export default function ServiceFields(props: any) {
               return (
                 <button
                   key={day}
-                  type="button" // Important: prevents form submission
+                  type="button"
                   onClick={() => {
                     if (isSelected) {
                       setAvailableDays(
-                        availableDays.filter((d: any) => d !== day)
+                        availableDays.filter((d: any) => d !== day),
                       );
                     } else {
                       setAvailableDays([...availableDays, day]);
                     }
                   }}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border cursor-pointer ${isSelected
-                    ? "bg-hub-secondary border-hub-secondary text-white shadow-sm"
-                    : "bg-white border-gray-300 text-gray-700 hover:border-hub-secondary"
-                    }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                    isSelected
+                      ? "bg-hub-secondary border-hub-secondary text-white"
+                      : "bg-white border-gray-300 text-gray-700"
+                  }`}
                 >
                   <span className="capitalize">{day}</span>
                 </button>
@@ -154,7 +202,6 @@ export default function ServiceFields(props: any) {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-4">
-        {/* Available From */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Available From
@@ -168,19 +215,16 @@ export default function ServiceFields(props: any) {
               }
             }
             onChange={(selected) => setAvailableFrom(selected.value)}
-            className="w-full"
             placeholder="Select Start Time"
           />
         </div>
-
-        {/* Available To */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Available To
           </label>
           <SelectDropdown
             options={timeOptions.filter(
-              (opt) => !availableFrom || opt.value > availableFrom
+              (opt) => !availableFrom || opt.value > availableFrom,
             )}
             value={
               timeOptions.find((opt) => opt.value === availableTo) || {
@@ -189,7 +233,6 @@ export default function ServiceFields(props: any) {
               }
             }
             onChange={(selected) => setAvailableTo(selected.value)}
-            className="w-full"
             placeholder="Select End Time"
           />
         </div>

@@ -24,7 +24,7 @@ export default function PhoneInput({
   return (
     <div>
       <label className="text-sm font-medium mb-1 block text-gray-700">
-        Phone number
+        Phone number <span className="text-red-500">*</span>
       </label>
       <div className="flex items-center">
         <div className="flex items-center justify-center h-12.25 px-3 border border-gray-300 rounded-l-md bg-gray-50 text-gray-700! text-sm min-w-25">

@@ -3,7 +3,6 @@
 import SelectField, {
   DefaultOption,
 } from "@/app/components/common/SelectField";
-import React from "react";
 import Skeleton from "react-loading-skeleton";
 
 export interface Option extends DefaultOption {}

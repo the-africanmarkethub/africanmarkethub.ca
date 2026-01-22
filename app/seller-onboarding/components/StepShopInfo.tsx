@@ -23,22 +23,26 @@ import ShopHeaderCard from "@/app/(seller)/dashboard/shop-management/components/
 import TextareaField from "@/app/(seller)/dashboard/shop-management/components/TextareaField";
 import TextInput from "@/app/(seller)/dashboard/shop-management/components/TextInput";
 import { getAddress } from "@/lib/api/auth/shipping";
-import SelectField, { DefaultOption } from "@/app/components/common/SelectField";
+import SelectField, {
+  DefaultOption,
+} from "@/app/components/common/SelectField";
 import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
 
-export interface Option extends DefaultOption { }
+export interface Option extends DefaultOption {}
 
 interface SelectOption {
   id: number;
   name: string;
+  label?: string;
   code?: string;
   flag?: string;
   dial_code?: string;
 }
 
 const TYPES: SelectOption[] = [
-  { id: 2, name: "Products" },
-  { id: 1, name: "Services" },
+  { id: 3, name: "Products", label: "Product Merchant" },
+  { id: 2, name: "Services", label: "Service Provider" },
+  { id: 1, name: "Deliveries", label: "Delivery Partner" },
 ];
 
 export default function StepShopInfo({ onNext }: StepProps) {
@@ -72,7 +76,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [isValidatingPhone, setIsValidatingPhone] = useState(false);
   const [dialCode, setDialCode] = useState("");
 
-  const [identificationType, setIdentificationType] = useState<Option | null>(null);
+  const [identificationType, setIdentificationType] = useState<Option | null>(
+    null,
+  );
   const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
   const [idDocFile, setIdDocFile] = useState<File | null>(null);
 
@@ -82,7 +88,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     { id: 3, name: "Permanent resident" },
     { id: 4, name: "Passport for citizen" },
   ];
- 
+
   const validatePhoneNumber = useCallback(async () => {
     if (!phoneNumber || phoneNumber.length < 7) {
       setIsPhoneValid(null);
@@ -125,13 +131,15 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setName(s.name || "");
           if (s.type) {
             const foundType = TYPES.find(
-              (t) => t.name.toLowerCase() === s.type.toLowerCase()
+              (t) => t.name.toLowerCase() === s.type.toLowerCase(),
             );
             if (foundType) setSelectedType(foundType);
           }
           setDescription(s.description || "");
           if (s.identification_type) {
-            const found = ID_OPTIONS.find(opt => opt.name === s.identification_type);
+            const found = ID_OPTIONS.find(
+              (opt) => opt.name === s.identification_type,
+            );
             if (found) setIdentificationType(found);
           }
           setIdDocUrl(s.identification_document);
@@ -170,7 +178,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           50,
           0,
           undefined,
-          selectedType.name.toLowerCase()
+          selectedType.name.toLowerCase(),
         );
         if (cancelled) return;
         const formatted = (r?.categories ?? []).map((c: any) => ({
@@ -215,11 +223,34 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
   };
 
-  const isPdf = idDocUrl?.includes("data:application/pdf") || idDocUrl?.toLowerCase().endsWith(".pdf");
-
+  const isPdf =
+    idDocUrl?.includes("data:application/pdf") ||
+    idDocUrl?.toLowerCase().endsWith(".pdf");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // 1. Basic Field Validation
+    if (!name.trim()) return toast.error("Shop name is required");
+    if (!description.trim()) return toast.error("Description is required");
+    if (!phoneNumber.trim()) return toast.error("Phone number is required");
+    if (!selectedCategory?.id) return toast.error("Please select a category");
+
+    // 2. Conditional Validation (Services)
+    if (selectedType.name === "Services") {
+      if (!identificationType?.name) {
+        return toast.error("Identification type is required for Services");
+      }
+      if (!idDocFile) {
+        return toast.error("Please upload an identification document");
+      }
+    }
+
+    // 3. Address Validation
+    if (!addressLine) return toast.error("Address is required");
+    if (!city) return toast.error("City is required");
+    if (!stateCode) return toast.error("State is required");
+    if (!countryCode) return toast.error("Country is required");
+
     setLoading(true);
     setErrorMsg("");
 
@@ -390,92 +421,99 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         {/* --- Identification Section --- */}
-        {selectedType.name === "Products" && (
-          <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-            <h3 className="text-lg font-bold text-slate-800">Legal Verification</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <h3 className="text-lg font-bold text-slate-800">
+            Legal Verification
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-start">
+            {/* Identification Type Dropdown */}
+            <div className="space-y-2">
+              <SelectField
+                label="Identification Type"
+                value={identificationType || ID_OPTIONS[0]}
+                onChange={(val) => setIdentificationType(val as any)}
+                options={ID_OPTIONS.map((opt) => ({
+                  id: opt.id,
+                  name: opt.name,
+                }))}
+              />
+            </div>
 
-              {/* Identification Type Dropdown */}
-              <div className="space-y-2">
-                <SelectField
-                  label="Identification Type"
-                  value={identificationType || ID_OPTIONS[0]}
-                  onChange={(val) => setIdentificationType(val as any)}
-                  options={ID_OPTIONS.map(opt => ({ id: opt.id, name: opt.name }))}
+            {/* Identification Document Upload & Preview */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">
+                Upload {identificationType?.name || ID_OPTIONS[0].name}{" "}
+                <span className="text-red-500">*</span>
+              </label>
+
+              <div className="relative group w-full h-64 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
+                {idDocUrl ? (
+                  <div className="relative w-full h-full">
+                    {isPdf ? (
+                      /* PDF Placeholder: Green background with File Name */
+                      <div className="w-full h-full bg-emerald-50 flex flex-col items-center justify-center p-6 text-center">
+                        <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                          <FaFilePdf className="text-white text-3xl" />
+                        </div>
+                        <p className="text-emerald-900 font-bold text-sm truncate max-w-[80%]">
+                          {idDocFile?.name || "Document Uploaded"}
+                        </p>
+                        <p className="text-emerald-600 text-xs mt-1 uppercase tracking-widest font-semibold">
+                          Ready to Save
+                        </p>
+                      </div>
+                    ) : (
+                      /* Image Preview - fills the box */
+                      <img
+                        src={idDocUrl}
+                        className="w-full h-full object-cover"
+                        alt="ID Preview"
+                      />
+                    )}
+
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 z-20">
+                      <div className="bg-white/20 backdrop-blur-md p-2 rounded-full">
+                        <FaPencil className="text-white" />
+                      </div>
+                      <span className="text-white text-xs font-bold px-3 py-1 rounded-full bg-black/20">
+                        Change Document
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  /* Empty State */
+                  <div className="text-center p-4">
+                    <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
+                      <FaPencil className="text-slate-400" />
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Click to upload document
+                    </p>
+                    <p className="text-[10px] text-slate-400 mt-1 uppercase">
+                      PNG, JPG or PDF
+                    </p>
+                  </div>
+                )}
+
+                {/* Hidden Input Layer */}
+                <input
+                  type="file"
+                  className="absolute inset-0 opacity-0 cursor-pointer z-30"
+                  accept="image/png, image/jpeg, application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setIdDocFile(file);
+                      if (idDocUrl) URL.revokeObjectURL(idDocUrl);
+                      setIdDocUrl(URL.createObjectURL(file));
+                    }
+                  }}
                 />
               </div>
-
-              {/* Identification Document Upload & Preview */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">
-                  Upload {identificationType?.name || ID_OPTIONS[0].name}
-                </label>
-
-                <div className="relative group w-full h-64 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
-                  {idDocUrl ? (
-                    <div className="relative w-full h-full">
-                      {isPdf ? (
-                        /* PDF Placeholder: Green background with File Name */
-                        <div className="w-full h-full bg-emerald-50 flex flex-col items-center justify-center p-6 text-center">
-                          <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
-                            <FaFilePdf className="text-white text-3xl" />
-                          </div>
-                          <p className="text-emerald-900 font-bold text-sm truncate max-w-[80%]">
-                            {idDocFile?.name || "Document Uploaded"}
-                          </p>
-                          <p className="text-emerald-600 text-xs mt-1 uppercase tracking-widest font-semibold">
-                            Ready to Save
-                          </p>
-                        </div>
-                      ) : (
-                        /* Image Preview - fills the box */
-                        <img
-                          src={idDocUrl}
-                          className="w-full h-full object-cover"
-                          alt="ID Preview"
-                        />
-                      )}
-
-                      {/* Hover Overlay */}
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 z-20">
-                        <div className="bg-white/20 backdrop-blur-md p-2 rounded-full">
-                          <FaPencil className="text-white" />
-                        </div>
-                        <span className="text-white text-xs font-bold px-3 py-1 rounded-full bg-black/20">
-                          Change Document
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Empty State */
-                    <div className="text-center p-4">
-                      <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
-                        <FaPencil className="text-slate-400" />
-                      </div>
-                      <p className="text-xs text-slate-500">Click to upload document</p>
-                      <p className="text-[10px] text-slate-400 mt-1 uppercase">PNG, JPG or PDF</p>
-                    </div>
-                  )}
-
-                  {/* Hidden Input Layer */}
-                  <input
-                    type="file"
-                    className="absolute inset-0 opacity-0 cursor-pointer z-30"
-                    accept="image/png, image/jpeg, application/pdf"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setIdDocFile(file);
-                        if (idDocUrl) URL.revokeObjectURL(idDocUrl);
-                        setIdDocUrl(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                </div>
-              </div>
             </div>
-          </section>
-        )}
+          </div>
+        </section>
 
         <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
           <h3 className="text-lg font-bold text-slate-800">

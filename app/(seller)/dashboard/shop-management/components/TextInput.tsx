@@ -29,7 +29,7 @@ export default function TextInput({
     <div className={className}>
       {label && (
         <label className="text-sm font-medium text-gray-700 block mb-1">
-          {label}
+          {label} <span className="text-red-500">*</span>
         </label>
       )}
       <input

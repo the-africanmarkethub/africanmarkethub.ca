@@ -29,11 +29,11 @@ export default function ItemForm({ onClose, item }: Props) {
         setTitle={form.setTitle}
         description={form.description}
         setDescription={form.setDescription}
-        keywords={form.keywords}
-        setKeywords={form.setKeywords}
       />
 
       <CategoryFields
+        keywords={form.keywords}
+        setKeywords={form.setKeywords}
         categories={form.categories}
         selectedCategory={form.selectedCategory}
         setSelectedCategory={form.setSelectedCategory}
@@ -42,6 +42,7 @@ export default function ItemForm({ onClose, item }: Props) {
       />
 
       <PriceFields
+        selectedCategory={form.selectedCategory}
         salesPrice={form.salesPrice}
         setSalesPrice={form.setSalesPrice}
         regularPrice={form.regularPrice}
@@ -70,6 +71,7 @@ export default function ItemForm({ onClose, item }: Props) {
 
       {form.shopType === "services" && (
         <ServiceFields
+          selectedCategory={form.selectedCategory}
           pricingModel={form.pricingModel}
           setPricingModel={form.setPricingModel}
           deliveryMethod={form.deliveryMethod}
@@ -110,8 +112,8 @@ export default function ItemForm({ onClose, item }: Props) {
             {form.loading
               ? "Saving..."
               : item?.id
-              ? "Update item"
-              : "Save changes"}
+                ? "Update item"
+                : "Save changes"}
           </button>
         )}
       </div>
