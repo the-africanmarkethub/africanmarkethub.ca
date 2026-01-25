@@ -8,18 +8,14 @@ interface Props {
   countryFlag?: string;
   dialCode?: string;
   value: string;
-  onChange: (v: string) => void;
-  validating?: boolean;
-  valid?: boolean | null;
+  onChange: (v: string) => void; 
 }
 
 export default function PhoneInput({
   countryFlag,
   dialCode,
   value,
-  onChange,
-  validating,
-  valid,
+  onChange, 
 }: Props) {
   return (
     <div>
@@ -39,16 +35,7 @@ export default function PhoneInput({
           placeholder="712 345 678"
           maxLength={10}
           required
-        />
-        <div className="ml-3 w-8">
-          {validating ? (
-            <BeatLoader size={6} />
-          ) : valid === true ? (
-            <span className="text-hub-secondary text-lg">✓</span>
-          ) : valid === false ? (
-            <span className="text-red-600 text-lg">✕</span>
-          ) : null}
-        </div>
+        /> 
       </div>
     </div>
   );

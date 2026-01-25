@@ -2,6 +2,35 @@ import { FaDhl } from "react-icons/fa6";
 import { SiFedex, SiUps, SiUsps, SiAmazon, SiDeliveroo } from "react-icons/si";
 import { MdLocalShipping } from "react-icons/md";
 
+export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
+
+export const FILE_LIMITS = {
+  logo: { max: 1 * 1024 * 1024, label: "Logo (Max 1MB)" },
+  banner: { max: 2 * 1024 * 1024, label: "Banner (Max 2MB)" },
+  document: { max: 3 * 1024 * 1024, label: "Document (Max 3MB)" },
+};
+
+export const TYPES: SelectOption[] = [
+  { id: 3, name: "Products", label: "Product Merchant" },
+  { id: 2, name: "Services", label: "Service Provider" },
+  { id: 1, name: "Deliveries", label: "Delivery Partner" },
+];
+
+export const LOCALDELIVERYOPTION: SelectOption[] = [
+  { id: 1, name: "Flat Fee", label: "I will charge a fixed price for any delivery." },
+  { id: 2, name: "Free Delivery", label: "I will deliver for free to customers." },
+  { id: 3, name: "Not Available", label: "Use platform's standard shipping." },
+];
+
+export const ID_OPTIONS: Option[] = [
+  { id: 1, name: "Work permit" },
+  { id: 2, name: "Study permit" },
+  { id: 3, name: "Permanent resident" },
+  { id: 4, name: "Passport for citizen" },
+];
+
+export interface Option extends DefaultOption {}
+export interface SelectOption { id: number; name: string; label?: string; code?: string; flag?: string; dial_code?: string; }
 import {
   FiUser,
   FiPackage,
@@ -28,6 +57,7 @@ import {
   LuTruck,
 } from "react-icons/lu";
 import { HiOutlineTicket, HiOutlineClipboardList } from "react-icons/hi";
+import { DefaultOption } from "./app/components/common/SelectField";
 
 export const APP_NAME = "African Market Hub";
 

@@ -2,9 +2,9 @@ import api from "../axios";
 
 export interface ErrorPayload {
   message: string;
+  url: string;
   stack?: string;
   digest?: string;
-  url: string;
   timestamp: string;
 }
 

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
-import { FaFilePdf, FaPencil } from "react-icons/fa6";
+import { FaPencil, FaImage, FaCloudArrowUp } from "react-icons/fa6";
 
 import { listCategories } from "@/lib/api/category";
 import {
@@ -12,9 +12,7 @@ import {
   updateShopLogo,
   updateShopBanner,
 } from "@/lib/api/seller/shop";
-import { numverifyValidatePhone } from "@/lib/api/ip/route";
 import { StepProps } from "@/interfaces/StepProps";
-
 import { countryCodeToFlag } from "@/utils/countryFlag";
 import CategorySelector from "@/app/(seller)/dashboard/shop-management/components/CategorySelector";
 import GoogleAddressAutocomplete from "@/app/(seller)/dashboard/shop-management/components/GoogleAddressAutocomplete";
@@ -26,54 +24,24 @@ import { getAddress } from "@/lib/api/auth/shipping";
 import SelectField, {
   DefaultOption,
 } from "@/app/components/common/SelectField";
-import FadeSlide from "@/app/(seller)/dashboard/shop-management/components/FadeSlide";
-import { Shop } from "@/interfaces/shop";
-
-export interface Option extends DefaultOption {}
-
-interface SelectOption {
-  id: number;
-  name: string;
-  label?: string;
-  code?: string;
-  flag?: string;
-  dial_code?: string;
-}
-
-const TYPES: SelectOption[] = [
-  { id: 3, name: "Products", label: "Product Merchant" },
-  { id: 2, name: "Services", label: "Service Provider" },
-  { id: 1, name: "Deliveries", label: "Delivery Partner" },
-];
-const LOCALDELIVERYOPTION: SelectOption[] = [
-  {
-    id: 1,
-    name: "Flat Fee",
-    label:
-      "I will charge a fixed price (e.g. $10) for any delivery in my city.",
-  },
-  {
-    id: 2,
-    name: "Free Delivery",
-    label: "I will deliver for free to customers within my city.",
-  },
-  {
-    id: 3,
-    name: "Not Available",
-    label:
-      "I don't do deliveries. Use the platform's standard shipping/couriers.",
-  },
-];
+import {
+  TYPES,
+  LOCALDELIVERYOPTION,
+  ID_OPTIONS,
+  SelectOption,
+} from "@/setting";
+import { validateImageFile } from "@/utils/validateImageFile";
 
 export default function StepShopInfo({ onNext }: StepProps) {
-  // --- Internal Persistence Flag ---
-  const [hasExistingShop, setHasExistingShop] = useState(false);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
-  const [categoriesError, setCategoriesError] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const MAX_DESC_LENGTH = 500;
 
+  const [hasExistingShop, setHasExistingShop] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [uploadingMode, setUploadingMode] = useState<string | null>(null);
+
+  // Form States
   const [name, setName] = useState("");
-  const [type, setType] = useState("");
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [addressLine, setAddressLine] = useState("");
@@ -84,127 +52,191 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [lat, setLat] = useState<number | undefined>(undefined);
   const [lng, setLng] = useState<number | undefined>(undefined);
 
+  // Media States
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
-
-  const [selectedType, setSelectedType] = useState(TYPES[0]);
-  const [shop, setShop] = useState<Shop>();
-  const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
-  const [isPhoneValid, setIsPhoneValid] = useState<boolean | null>(null);
-  const [isValidatingPhone, setIsValidatingPhone] = useState(false);
-  const [dialCode, setDialCode] = useState("");
-  const [localDelivery, setLocalDelivery] = useState<SelectOption>(
-    LOCALDELIVERYOPTION[2],
-  ); // Default: Not Available
-  const [identificationType, setIdentificationType] = useState<Option | null>(
-    null,
-  );
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
   const [idDocFile, setIdDocFile] = useState<File | null>(null);
 
-  const ID_OPTIONS: Option[] = [
-    { id: 1, name: "Work permit" },
-    { id: 2, name: "Study permit" },
-    { id: 3, name: "Permanent resident" },
-    { id: 4, name: "Passport for citizen" },
-  ];
+  const [selectedType, setSelectedType] = useState(TYPES[0]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
-  const validatePhoneNumber = useCallback(async () => {
-    if (!phoneNumber || phoneNumber.length < 7) {
-      setIsPhoneValid(null);
+  const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+  const [localDelivery, setLocalDelivery] = useState<SelectOption>(
+    LOCALDELIVERYOPTION[2],
+  );
+  const [identificationType, setIdentificationType] =
+    useState<DefaultOption | null>(ID_OPTIONS[0]);
+
+  const [dialCode, setDialCode] = useState('+1');
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  // --- Memory Cleanup ---
+  useEffect(() => {
+    return () => {
+      [logoUrl, bannerUrl, idDocUrl].forEach((url) => {
+        if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
+      });
+    };
+  }, [logoUrl, bannerUrl, idDocUrl]);
+
+  // --- Google Maps Script ---
+  useEffect(() => {
+    if ((window as any).google?.maps?.places) {
+      setGoogleLoaded(true);
       return;
     }
-    setIsValidatingPhone(true);
-    try {
-      const fullNumber = `${phoneNumber}`;
-      const data = await numverifyValidatePhone({
-        number: fullNumber,
-        countryCode: countryCode ?? "",
-      });
-      setIsPhoneValid(data.valid === true);
-    } catch (err) {
-      setIsPhoneValid(false);
-    } finally {
-      setIsValidatingPhone(false);
-    }
-  }, [phoneNumber, countryCode]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => validatePhoneNumber(), 600);
-    return () => clearTimeout(timer);
-  }, [phoneNumber, validatePhoneNumber]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadAccountData = async () => {
-      try {
-        const [shopRes, addrRes] = await Promise.all([
-          getMyShop().catch(() => null),
-          getAddress().catch(() => null),
-        ]);
-
-        if (!isMounted) return;
-
-        if (shopRes?.status === "success" && shopRes.data) {
-          const s = shopRes.data;
-          setShop(s);
-          setHasExistingShop(true);
-          setName(s.name || "");
-          if (s.type) {
-            const foundType = TYPES.find(
-              (t) => t.name.toLowerCase() === s.type.toLowerCase(),
-            );
-            if (foundType) setSelectedType(foundType);
-          }
-          setDescription(s.description || "");
-          if (s.identification_type) {
-            const found = ID_OPTIONS.find(
-              (opt) => opt.name === s.identification_type,
-            );
-            if (found) setIdentificationType(found);
-          }
-          setIdDocUrl(s.identification_document);
-          setLogoUrl(s.logo);
-          setBannerUrl(s.banner);
-          if (s.category) setSelectedCategory(s.category);
-          if (s.local_delivery_setting) {
-            const found = LOCALDELIVERYOPTION.find(
-              (opt) =>
-                opt.name.toLowerCase() ===
-                s.local_delivery_setting.toLowerCase(),
-            );
-            if (found) setLocalDelivery(found);
-          }
-        }
-
-        if (addrRes) {
-          setAddressLine(addrRes.street_address || "");
-          setCity(addrRes.city || "");
-          setPhoneNumber(addrRes.phone || "");
-          setZip(addrRes.zip_code || "");
-          setCountryCode(addrRes.country || "");
-          setStateCode(addrRes.state || "");
-          setLat(addrRes.lat);
-          setLng(addrRes.lng);
-        }
-      } finally {
-        if (isMounted) setInitialLoading(false);
-      }
-    };
-    loadAccountData();
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
     return () => {
-      isMounted = false;
+      script.remove();
     };
   }, []);
 
+  const handleMediaChange = async (
+    file: File,
+    mode: "logo" | "banner" | "document",
+  ) => {
+    // FIX: Destructure the result to get valid and error
+    const { valid, error } = validateImageFile(
+      file,
+      mode === "document" ? "document" : mode,
+    );
+
+    if (!valid) {
+      toast.error(error || "Invalid file"); // Tell the user WHY it failed
+      return; // Stop execution
+    }
+
+    setUploadingMode(mode);
+    const localPreview = URL.createObjectURL(file);
+
+    if (mode === "logo") {
+      setLogoUrl(localPreview);
+      setLogoFile(file);
+    } else if (mode === "banner") {
+      setBannerUrl(localPreview);
+      setBannerFile(file);
+    } else {
+      setIdDocUrl(localPreview);
+      setIdDocFile(file);
+    }
+
+    // Auto-upload logic for existing shops
+    if (hasExistingShop && mode !== "document") {
+      const uploadFn =
+        mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
+      toast.promise(uploadFn, {
+        loading: `Syncing ${mode}...`,
+        success: `${mode} updated!`,
+        error: `Failed to upload ${mode}.`,
+      });
+    }
+    setTimeout(() => setUploadingMode(null), 600);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (description.length > MAX_DESC_LENGTH)
+      return toast.error("Description is too long.");
+    if (!name || !description || !phoneNumber || !selectedCategory)
+      return toast.error("Missing required fields.");
+    if (!zip || !lat || !lng) {
+      return toast.error(
+        "Please select a valid address from the dropdown to provide Zip and Coordinates.",
+      );
+    }
+    setLoading(true);
+    try {
+      const form = new FormData();
+      form.append("name", name);
+      form.append("description", description);
+      form.append("phone", phoneNumber);
+      form.append("category_id", String(selectedCategory.id));
+      form.append("type", selectedType.name.toLowerCase());
+      form.append("local_delivery_setting", localDelivery.name);
+      form.append("identification_type", identificationType?.name || "");
+
+      if (idDocFile) form.append("identification_document", idDocFile);
+      if (logoFile) form.append("logo", logoFile);
+      if (bannerFile) form.append("banner", bannerFile);
+      form.append("address", addressLine);
+      form.append("city", city);
+      form.append("state", stateCode);
+      form.append("zip", zip);
+      form.append("country", countryCode);
+      form.append("lat", String(lat)); // Ensure these are strings in FormData
+      form.append("lng", String(lng));
+
+      const res = await saveShop(form);
+      if (res.status === "success") {
+        toast.success("Shop updated!");
+        onNext?.();
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Submit failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const [shopRes, addrRes] = await Promise.all([
+        getMyShop().catch(() => null),
+        getAddress().catch(() => null),
+      ]);
+
+      // 1. Set fallback values from general address first
+      if (addrRes) {
+        setAddressLine(addrRes.street_address || "");
+        setCity(addrRes.city || "");
+        setPhoneNumber(addrRes.phone || "");
+        setCountryCode(addrRes.country || "");
+        setStateCode(addrRes.state || "");
+        setZip(addrRes.zip_code || "");
+        if (addrRes.lat) setLat(Number(addrRes.lat));
+        if (addrRes.lng) setLng(Number(addrRes.lng));
+      }
+
+      // 2. OVERWRITE with specific Shop data if it exists
+      // This ensures shop-specific location takes priority over profile address
+      if (shopRes?.status === "success" && shopRes.data) {
+        const s = shopRes.data;
+        setHasExistingShop(true);
+        setName(s.name || "");
+        setDescription(s.description || "");
+        setLogoUrl(s.logo);
+        setBannerUrl(s.banner);
+        setIdDocUrl(s.identification_document);
+        setIdentificationType(s.identification_type);
+        setLocalDelivery(s.local_delivery_setting);
+
+        const foundType = TYPES.find(
+          (t) => t.name.toLowerCase() === s.type?.toLowerCase(),
+        );
+        if (foundType) setSelectedType(foundType);
+        if (s.category) setSelectedCategory(s.category);
+      }
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+  loadData();
+}, []);
+
   useEffect(() => {
-    let cancelled = false;
-    const loadCats = async () => {
-      setCategoriesLoading(true);
-      setCategoriesError("");
+    let isMounted = true;
+
+    const fetchCats = async () => {
+      setCategoriesLoading(true); // Start loading
       try {
         const r = await listCategories(
           50,
@@ -212,221 +244,77 @@ export default function StepShopInfo({ onNext }: StepProps) {
           undefined,
           selectedType.name.toLowerCase(),
         );
-        if (cancelled) return;
-        const formatted = (r?.categories ?? []).map((c: any) => ({
-          id: c.id,
-          name: c.name,
-        }));
-        setCategories(formatted);
-        setSelectedCategory((prev: any) => {
-          if (!prev) return formatted[0] ?? null;
-          const keep = formatted.find((f: Option) => f.id === prev.id);
-          return keep ?? formatted[0] ?? null;
-        });
-      } catch (err) {
-        console.error(err);
-        setCategoriesError("Failed to load categories.");
+
+        if (isMounted) {
+          const formatted = (r?.categories ?? []).map((c: any) => ({
+            id: c.id,
+            name: c.name,
+          }));
+          setCategories(formatted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        toast.error("Could not load categories for this type.");
       } finally {
-        setCategoriesLoading(false);
+        if (isMounted) {
+          setCategoriesLoading(false);
+        }
       }
     };
-    loadCats();
+
+    fetchCats();
+
     return () => {
-      cancelled = true;
+      isMounted = false; // Cleanup to prevent memory leaks/race conditions
     };
   }, [selectedType]);
-
-  const handleMediaChange = async (file: File, mode: "logo" | "banner") => {
-    const localPreview = URL.createObjectURL(file);
-    mode === "logo" ? setLogoUrl(localPreview) : setBannerUrl(localPreview);
-
-    if (hasExistingShop) {
-      const uploadPromise =
-        mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
-
-      toast.promise(uploadPromise, {
-        loading: `Uploading your ${mode}...`,
-        success: (res) => {
-          if (res.status !== "success") throw new Error(res.message);
-          return `${mode} updated!`;
-        },
-        error: (err) => `Upload failed: ${err.message || "Unknown error"}`,
-      });
-    }
-  };
-
-  const isPdf =
-    idDocUrl?.includes("data:application/pdf") ||
-    idDocUrl?.toLowerCase().endsWith(".pdf");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // 1. Basic Field Validation
-    if (!name.trim()) return toast.error("Shop name is required");
-    if (!description.trim()) return toast.error("Description is required");
-    if (!phoneNumber.trim()) return toast.error("Phone number is required");
-    if (!selectedCategory?.id) return toast.error("Please select a category");
-
-    if (!identificationType?.name) {
-      return toast.error("Identification type is required for Services");
-    }
-    if (!idDocFile) {
-      return toast.error("Please upload an identification document");
-    }
-
-    // 3. Address Validation
-    if (!addressLine) return toast.error("Address is required");
-    if (!localDelivery)
-      return toast.error("Local Delivery Setting is required");
-    if (!city) return toast.error("City is required");
-    if (!stateCode) return toast.error("State is required");
-    if (!countryCode) return toast.error("Country is required");
-
-    setLoading(true);
-    setErrorMsg("");
-
-    try {
-      const form = new FormData();
-      // Required Fields
-      form.append("name", name);
-      form.append("description", description);
-      form.append("phone", phoneNumber);
-      form.append("category_id", String(selectedCategory?.id));
-      form.append("type", selectedType.name.toLowerCase());
-      form.append("local_delivery_setting", localDelivery.name);
-      form.append("identification_type", identificationType?.name || "");
-      if (idDocFile) {
-        form.append("identification_document", idDocFile);
-      }
-
-      // Address Data
-      form.append("address", addressLine);
-      form.append("city", city);
-      form.append("state", stateCode);
-      form.append("zip", zip);
-      form.append("country", countryCode);
-
-      if (lat !== undefined) form.append("lat", String(lat));
-      if (lng !== undefined) form.append("lng", String(lng));
-
-      const res = await saveShop(form);
-
-      if (res.status === "success") {
-        toast.success(hasExistingShop ? "Shop updated!" : "Shop created!");
-        onNext?.();
-      }
-    } catch (err: any) {
-      const msg = err.response?.data?.message || "Something went wrong";
-      setErrorMsg(msg);
-      toast.error(msg);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const [googleLoaded, setGoogleLoaded] = useState(false);
-
-  useEffect(() => {
-    if ((window.google as any)?.maps?.places) {
-      setGoogleLoaded(true);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.onload = () => setGoogleLoaded(true);
-    document.head.appendChild(script);
-
-    return () => {
-      script.remove();
-    };
-  }, []);
-
-  const handleAddressSelect = (addr: {
-    street_address: string;
-    city: string;
-    state: string;
-    zip_code: string;
-    country: string;
-    lat?: number;
-    lng?: number;
-    dialCode?: string;
-  }) => {
-    setAddressLine(addr.street_address);
-    setCity(addr.city);
-    setStateCode(addr.state);
-    setZip(addr.zip_code);
-    setCountryCode(addr.country);
-    setLat(addr.lat);
-    setLng(addr.lng);
-    setDialCode(addr.dialCode ?? "");
-  };
 
   if (initialLoading)
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <BeatLoader color="#00A85A" />
-        <p className="text-sm text-gray-500 mt-4">Syncing vendor profile...</p>
+        <p className="text-sm text-slate-500 mt-4">Syncing...</p>
       </div>
     );
 
-  // --- Helper to get Dynamic Terminology ---
-  const getLabels = () => {
-    switch (selectedType.name) {
-      case "Deliveries":
-        return {
-          header: "Service Base / Dispatch Point",
-          nameLabel: "Logistics Business Name",
-          descLabel: "About your Delivery Service",
-          addressHelp: "Where your fleet or operations are based",
-        };
-      case "Services":
-        return {
-          header: "Business Location",
-          nameLabel: "Service Business Name",
-          descLabel: "Describe your professional services",
-          addressHelp: "Your office or primary service area address",
-        };
-      default: // Products
-        return {
-          header: "Pickup Address",
-          nameLabel: "Shop Name",
-          descLabel: "About your Shop & Products",
-          addressHelp: "Where customers or couriers pick up items",
-        };
-    }
-  };
-  const labels = getLabels(); 
   return (
-    <div className=" mx-auto pb-20">
-      {!initialLoading && shop && (
-        <ShopHeaderCard
-          shop={shop}
-          subtitle={`Set up your ${selectedType.name.toLowerCase()} profile to start selling.`}
-        />
-      )}
-      {/* Visual Identity Section */}
+    <div className="mx-auto pb-20 max-w-5xl">
+      <ShopHeaderCard
+        shop={{ name } as any}
+        subtitle={`Managing ${selectedType.name} Profile`}
+      />
+
       <div className="relative mb-24">
-        <div className="w-full h-52 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 group relative">
+        {/* Banner Upload Area */}
+        <div className="w-full h-56 bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative group">
           {bannerUrl ? (
             <img
               src={bannerUrl}
               className="w-full h-full object-cover"
-              alt="Banner"
+              alt="Shop Banner"
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-slate-400">
-              No Banner Uploaded
+            <div className="flex flex-col items-center justify-center h-full text-slate-400">
+              <FaImage className="text-4xl mb-2 opacity-20" />
+              <p className="text-sm font-medium">Upload Shop Banner</p>
+              <p className="text-[10px]">Recommended: 1200 x 400px (Max 2MB)</p>
             </div>
           )}
-          <label className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
+
+          {uploadingMode === "banner" && (
+            <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+              <BeatLoader size={10} color="#00A85A" />
+            </div>
+          )}
+
+          <label className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer z-20">
             <div className="bg-white p-3 rounded-full shadow-lg">
               <FaPencil className="text-hub-secondary" />
             </div>
             <input
               type="file"
               className="hidden"
+              accept="image/*"
               onChange={(e) =>
                 e.target.files?.[0] &&
                 handleMediaChange(e.target.files[0], "banner")
@@ -435,22 +323,38 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </label>
         </div>
 
-        <div className="absolute -bottom-16 left-10 group/logo">
-          <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden relative">
+        {/* Logo Upload Area */}
+        <div className="absolute -bottom-16 left-10">
+          <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden relative group/logo">
             {logoUrl ? (
               <img
                 src={logoUrl}
                 className="w-full h-full object-cover"
-                alt="Logo"
+                alt="Shop Logo"
               />
             ) : (
-              <div className="h-full bg-slate-50" />
+              <div className="flex flex-col items-center justify-center h-full bg-slate-50 text-slate-400 p-2 text-center">
+                <FaImage className="text-xl mb-1 opacity-20" />
+                <p className="text-[9px] leading-tight font-bold">
+                  Upload
+                  <br />
+                  Logo
+                </p>
+              </div>
             )}
-            <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/logo:opacity-100 transition-opacity cursor-pointer flex items-center justify-center">
+
+            {uploadingMode === "logo" && (
+              <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+                <BeatLoader size={8} color="#00A85A" />
+              </div>
+            )}
+
+            <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/logo:opacity-100 transition flex items-center justify-center cursor-pointer z-20">
               <FaPencil className="text-white" />
               <input
                 type="file"
                 className="hidden"
+                accept="image/*"
                 onChange={(e) =>
                   e.target.files?.[0] &&
                   handleMediaChange(e.target.files[0], "logo")
@@ -460,28 +364,29 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </div>
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <TextInput
-            label={labels.nameLabel} // Dynamic Label
-            value={name}
-            onChange={setName}
-            required
-          />
-          <CategorySelector
-            types={TYPES}
-            selectedType={selectedType}
-            onTypeChange={setSelectedType}
-            categories={categories}
-            categoriesLoading={categoriesLoading}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            categoriesError={categoriesError}
-            isTypeDisabled={hasExistingShop}
-          />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <div className="grid grid-cols-1 md:grid-cols-2 mb-4 gap-6">
+            <TextInput
+              label="Business Name"
+              value={name}
+              onChange={setName}
+              required
+            />
+            <CategorySelector
+              categoriesLoading={categoriesLoading}
+              types={TYPES}
+              selectedType={selectedType}
+              onTypeChange={setSelectedType}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+              isTypeDisabled={hasExistingShop}
+            />
+          </div>
           {selectedType.name === "Products" && (
             <SelectField
-              label="Local Delivery Service"
+              label="Local Delivery"
               value={localDelivery}
               onChange={(val) => setLocalDelivery(val as SelectOption)}
               options={LOCALDELIVERYOPTION}
@@ -489,126 +394,56 @@ export default function StepShopInfo({ onNext }: StepProps) {
           )}
         </section>
 
-        <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <h3 className="text-lg font-bold text-slate-800">
-            Legal Verification
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-8 items-start">
-            <div className="space-y-2">
-              <SelectField
-                label="Identification Type"
-                value={identificationType || ID_OPTIONS[0]}
-                onChange={(val) => setIdentificationType(val as any)}
-                options={ID_OPTIONS.map((opt) => ({
-                  id: opt.id,
-                  name: opt.name,
-                }))}
-              />
-            </div>
-
-            {/* Identification Document Upload & Preview */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">
-                Upload {identificationType?.name || ID_OPTIONS[0].name}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-
-              <div className="relative group w-full h-64 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex flex-col items-center justify-center transition-colors hover:bg-slate-100">
-                {idDocUrl ? (
-                  <div className="relative w-full h-full">
-                    {isPdf ? (
-                      /* PDF Placeholder: Green background with File Name */
-                      <div className="w-full h-full bg-emerald-50 flex flex-col items-center justify-center p-6 text-center">
-                        <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg mb-4">
-                          <FaFilePdf className="text-white text-3xl" />
-                        </div>
-                        <p className="text-emerald-900 font-bold text-sm truncate max-w-[80%]">
-                          {idDocFile?.name || "Document Uploaded"}
-                        </p>
-                        <p className="text-emerald-600 text-xs mt-1 uppercase tracking-widest font-semibold">
-                          Ready to Save
-                        </p>
-                      </div>
-                    ) : (
-                      /* Image Preview - fills the box */
-                      <img
-                        src={idDocUrl}
-                        className="w-full h-full object-cover"
-                        alt="ID Preview"
-                      />
-                    )}
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 z-20">
-                      <div className="bg-white/20 backdrop-blur-md p-2 rounded-full">
-                        <FaPencil className="text-white" />
-                      </div>
-                      <span className="text-white text-xs font-bold px-3 py-1 rounded-full bg-black/20">
-                        Change Document
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  /* Empty State */
-                  <div className="text-center p-4">
-                    <div className="bg-white p-3 rounded-full shadow-sm mx-auto mb-2 w-fit">
-                      <FaPencil className="text-slate-400" />
-                    </div>
-                    <p className="text-xs text-slate-500">
-                      Click to upload document
-                    </p>
-                    <p className="text-[10px] text-slate-400 mt-1 uppercase">
-                      PNG, JPG or PDF
-                    </p>
-                  </div>
-                )}
-
-                {/* Hidden Input Layer */}
-                <input
-                  type="file"
-                  className="absolute inset-0 opacity-0 cursor-pointer z-30"
-                  accept="image/png, image/jpeg, application/pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setIdDocFile(file);
-                      if (idDocUrl) URL.revokeObjectURL(idDocUrl);
-                      setIdDocUrl(URL.createObjectURL(file));
-                    }
-                  }}
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+          <h3 className="font-bold mb-6 text-slate-800">Legal Verification</h3>
+          <SelectField
+            label="ID Type"
+            value={identificationType || ID_OPTIONS[0]}
+            onChange={(val) => setIdentificationType(val as any)}
+            options={ID_OPTIONS}
+          />
+          <div className="mt-4">
+            <label className="text-sm font-semibold mb-2 block">
+              Upload ID Preview
+            </label>
+            <div className="relative h-48 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center justify-center overflow-hidden">
+              {idDocUrl ? (
+                <img
+                  src={idDocUrl}
+                  className="w-full h-full object-cover"
+                  alt="ID"
                 />
-              </div>
+              ) : (
+                <FaCloudArrowUp className="text-slate-300 text-3xl" />
+              )}
+              <input
+                type="file"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={(e) =>
+                  e.target.files?.[0] &&
+                  handleMediaChange(e.target.files[0], "document")
+                }
+              />
             </div>
           </div>
         </section>
 
-        <section className="space-y-6 bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-          <div>
-            <h3 className="text-lg font-bold text-slate-800">
-              {labels.header}
-            </h3>
-            <p className="text-xs text-gray-400">{labels.addressHelp}</p>
-          </div>{" "}
-          <FadeSlide keyId="address">
-            {googleLoaded && (
-              <GoogleAddressAutocomplete onSelect={handleAddressSelect} />
-            )}
-          </FadeSlide>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-80">
-            <TextInput label="City" value={city} onChange={setCity} disabled />
-
-            <TextInput
-              label="Postal Code"
-              value={zip}
-              onChange={setZip}
-              disabled
+        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+          {googleLoaded && (
+            <GoogleAddressAutocomplete
+              onSelect={(addr) => {
+                setAddressLine(addr.street_address);
+                setCity(addr.city);
+                setStateCode(addr.state);
+                setZip(addr.zip_code); 
+                setCountryCode(addr.country);
+                setLat(addr.lat);  
+                setLng(addr.lng);  
+                setDialCode(addr.dialCode ?? '+1');
+              }}
             />
-            <TextInput
-              label="Province"
-              value={stateCode}
-              onChange={setStateCode}
-              disabled
-            />
+          )}
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
             <TextInput
               label="Street Address"
               value={addressLine}
@@ -616,36 +451,37 @@ export default function StepShopInfo({ onNext }: StepProps) {
               placeholder="street / building no"
               required
             />
-          </div>
+            <TextInput label="City" value={city} onChange={setCity} disabled />
+            <TextInput
+              label="Province"
+              value={stateCode}
+              onChange={setStateCode}
+              disabled
+            />
           <PhoneInput
             countryFlag={countryCodeToFlag(countryCode)}
-            dialCode={dialCode ?? ""}
+            dialCode={dialCode}
             value={phoneNumber}
-            onChange={setPhoneNumber}
-            validating={isValidatingPhone}
-            valid={isPhoneValid}
+            onChange={setPhoneNumber} 
           />
+          </div>
         </section>
 
-        <TextareaField
-          label={labels.descLabel} // Dynamic Label
-          value={description}
-          onChange={setDescription}
-          rows={4}
-        />
+        <div className="relative">
+          <TextareaField
+            label="Shop Description"
+            value={description}
+            onChange={setDescription}
+            rows={4}
+          />
+        </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary gap-3 w-full"
+          className="btn btn-primary w-full py-4 rounded-xl font-bold"
         >
-          {loading ? (
-            <BeatLoader size={8} color="white" />
-          ) : hasExistingShop ? (
-            "Update Shop Profile"
-          ) : (
-            "Create & Continue"
-          )}
+          {loading ? <BeatLoader size={8} color="white" /> : "Save Changes"}
         </button>
       </form>
     </div>
