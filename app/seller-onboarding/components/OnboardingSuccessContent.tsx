@@ -36,7 +36,7 @@ export default function OnboardingSuccessContent() {
       if (response.completed) {
         setStatus("success");
         triggerConfetti();
-        clearAuth();
+        // clearAuth();
       } else {
         setStatus("error");
       }
