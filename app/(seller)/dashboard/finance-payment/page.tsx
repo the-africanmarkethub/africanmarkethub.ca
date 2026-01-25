@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { getVendorEarnings } from "@/lib/api/seller/earnings";
 import { LuMessageCircle } from "react-icons/lu";
-import WalletCard, { Wallet } from "./components/WalletCard";
+import WalletCard from "./components/WalletCard";
 import SalesGraph from "./components/SalesGraph";
 import WithdrawalHistory from "./components/WithdrawalHistory";
+import { Wallet } from "@/interfaces/wallet";
 
 export default function FinancePaymentPage() {
   const [wallet, setWallet] = useState<Wallet>();
