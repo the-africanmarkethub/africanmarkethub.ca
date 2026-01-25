@@ -267,19 +267,17 @@ export default function StepShopInfo({ onNext }: StepProps) {
     if (!phoneNumber.trim()) return toast.error("Phone number is required");
     if (!selectedCategory?.id) return toast.error("Please select a category");
 
-    // 2. Conditional Validation (Services)
-    if (selectedType.name === "Services") {
-      if (!identificationType?.name) {
-        return toast.error("Identification type is required for Services");
-      }
-      if (!idDocFile) {
-        return toast.error("Please upload an identification document");
-      }
+    if (!identificationType?.name) {
+      return toast.error("Identification type is required for Services");
+    }
+    if (!idDocFile) {
+      return toast.error("Please upload an identification document");
     }
 
     // 3. Address Validation
     if (!addressLine) return toast.error("Address is required");
-    if (!localDelivery) return toast.error("Local Delivery Setting is required");
+    if (!localDelivery)
+      return toast.error("Local Delivery Setting is required");
     if (!city) return toast.error("City is required");
     if (!stateCode) return toast.error("State is required");
     if (!countryCode) return toast.error("Country is required");
@@ -296,12 +294,11 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("category_id", String(selectedCategory?.id));
       form.append("type", selectedType.name.toLowerCase());
       form.append("local_delivery_setting", localDelivery.name);
-      if (selectedType.name === "Services") {
-        form.append("identification_type", identificationType?.name || "");
-        if (idDocFile) {
-          form.append("identification_document", idDocFile);
-        }
+      form.append("identification_type", identificationType?.name || "");
+      if (idDocFile) {
+        form.append("identification_document", idDocFile);
       }
+
       // Address Data
       form.append("address", addressLine);
       form.append("city", city);
@@ -400,11 +397,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         };
     }
   };
-  const labels = getLabels();
-  // We require ID for both Services and Deliveries
-  const requiresID =
-    selectedType.name === "Services" || selectedType.name === "Deliveries";
-
+  const labels = getLabels(); 
   return (
     <div className=" mx-auto pb-20">
       {!initialLoading && shop && (

@@ -9,50 +9,48 @@ export default async function proxy(req: Request) {
 
   const isCustomerRoute = pathname.startsWith("/account");
   const isVendorRoute = pathname.startsWith("/dashboard");
+  // Add the new onboarding route check
+  const isOnboardingRoute = pathname.startsWith("/seller-onboarding");
+
   const isAuthRoute =
     pathname.startsWith("/login") || pathname.startsWith("/register");
 
-  // ----------------------------------------------------
   // 1. Prevent authenticated users from accessing /login or /register
-  // ----------------------------------------------------
   if (isAuthRoute && token) {
     const redirectPath = role === "vendor" ? "/dashboard" : "/account";
     return Response.redirect(`${url.origin}${redirectPath}`, 302);
   }
 
-  // ----------------------------------------------------
   // 2. Customer protected routes
-  // ----------------------------------------------------
   if (isCustomerRoute) {
     if (!token) {
       const redirectUrl = new URL("/login", url.origin);
       redirectUrl.searchParams.set("redirect", pathname);
       return Response.redirect(redirectUrl.toString(), 302);
     }
-
     if (role !== "customer") {
       return Response.redirect(`${url.origin}/unauthorized`, 302);
     }
   }
 
-  // ----------------------------------------------------
-  // 3. Vendor protected routes
-  // ----------------------------------------------------
-  if (isVendorRoute) {
+  // 3. Vendor protected routes & Onboarding
+  // Logic: Must have a token. If it's the dashboard, must be a vendor.
+  if (isVendorRoute || isOnboardingRoute) {
     if (!token) {
       const redirectUrl = new URL("/login", url.origin);
       redirectUrl.searchParams.set("redirect", pathname);
       return Response.redirect(redirectUrl.toString(), 302);
     }
 
-    if (role !== "vendor") {
+    if (isCustomerRoute && role !== "customer") {
+       return Response.redirect(`${url.origin}/unauthorized`, 302);
+    }
+
+    if (isVendorRoute && role !== "vendor") {
       return Response.redirect(`${url.origin}/unauthorized`, 302);
     }
   }
 
-  // ----------------------------------------------------
-  // 4. Public routes → allowed
-  // ----------------------------------------------------
   return;
 }
 
@@ -64,18 +62,14 @@ function extractCookie(cookieString: string, name: string): string | null {
 
 export const config = {
   matcher: [
-    // Auth pages
     "/login",
     "/register",
     "/forgot-password",
     "/reset-password",
     "/confirm-email",
     "/confirm-reset-code",
-
-    // Customer section
     "/account/:path*",
-
-    // Vendor section
     "/dashboard/:path*",
+    "/seller-onboarding/:path*",  
   ],
 };
