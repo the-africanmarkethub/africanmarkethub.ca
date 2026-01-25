@@ -6,15 +6,9 @@ import { withdrawRequest } from "@/lib/api/seller/earnings";
 import toast from "react-hot-toast";
 import ConfirmationModal from "../../components/commons/ConfirmationModal";
 import { LuExternalLink, LuZap, LuShieldCheck, LuInfo } from "react-icons/lu";
+import { Wallet } from "@/interfaces/wallet";
 
 // Updated to match your NEW Laravel Response
-export interface Wallet {
-  available_to_withdraw: number;
-  pending_clearance: number;
-  instant_cashout: number;
-  reserved_for_refunds: number;
-  currency: string;
-}
 
 interface WalletCardProps {
   wallet?: Wallet;

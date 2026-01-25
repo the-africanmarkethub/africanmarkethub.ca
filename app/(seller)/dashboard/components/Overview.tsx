@@ -12,7 +12,7 @@ import {
   FaShoppingBag,
 } from "react-icons/fa";
 import { getVendorEarnings } from "@/lib/api/seller/earnings";
-import { Wallet } from "../finance-payment/components/WalletCard";
+import { Wallet } from "@/interfaces/wallet";
 
 interface Stats {
   total_orders: number;
@@ -81,7 +81,7 @@ const Overview: React.FC<OverviewProps> = ({ period }) => {
   const [stats, setStats] = useState<Stats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [wallet, setWallet] = useState<Wallet | undefined>(undefined);
+  const [wallet, setWallet] = useState<Wallet>();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -113,13 +113,14 @@ const Overview: React.FC<OverviewProps> = ({ period }) => {
           gridClassName="grid-cols-1"
         >
           <StatItem
-            label="Total Earnings"
-            value={formatAmount(wallet?.total_earning || 0)}
-            loading={isLoading}
-          />
-          <StatItem
             label="Available Balance"
             value={formatAmount(wallet?.available_to_withdraw || 0)}
+            loading={isLoading}
+          />
+
+          <StatItem
+            label="Pending Balance"
+            value={formatAmount(wallet?.pending_clearance || 0)}
             loading={isLoading}
           />
         </StatGroup>
