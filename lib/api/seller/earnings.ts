@@ -1,9 +1,13 @@
 import api from "../axios";
 
 export async function getVendorEarnings() {
-  const response = await api.get("/vendor/earnings");
+  const response = await api.get("/vendor/shop/balance");
   return response.data;
 }
+// export async function getVendorEarnings() {
+//   const response = await api.get("/vendor/earnings");
+//   return response.data;
+// }
 export async function getVendorEarningsGraph() {
   const response = await api.get("/vendor/graph");
   return response.data;

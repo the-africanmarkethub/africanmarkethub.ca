@@ -3,33 +3,36 @@
 import { useEffect, useState } from "react";
 import { getVendorEarnings } from "@/lib/api/seller/earnings";
 import { LuMessageCircle } from "react-icons/lu";
-import WalletCard from "./components/WalletCard";
+import WalletCard, { Wallet } from "./components/WalletCard";
 import SalesGraph from "./components/SalesGraph";
 import WithdrawalHistory from "./components/WithdrawalHistory";
 
-interface Earnings {
-  id: number;
-  user_id: number;
-  total_earning: string;
-  available_to_withdraw: string;
-  pending: number;
-}
-
 export default function FinancePaymentPage() {
-  const [wallet, setWallet] = useState<Earnings | undefined>(undefined);
+  const [wallet, setWallet] = useState<Wallet>();
   const [loading, setLoading] = useState(true);
 
   async function fetchFinance() {
     try {
       setLoading(true);
       const earnings = await getVendorEarnings();
-      setWallet(earnings?.data.data || null);
+      setWallet(earnings || null);
     } catch (err) {
       console.error("Error loading finance data:", err);
     } finally {
       setLoading(false);
     }
   }
+  // async function fetchFinance() {
+  //   try {
+  //     setLoading(true);
+  //     const earnings = await getVendorEarnings();
+  //     setWallet(earnings?.data.data || null);
+  //   } catch (err) {
+  //     console.error("Error loading finance data:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   useEffect(() => {
     fetchFinance();
