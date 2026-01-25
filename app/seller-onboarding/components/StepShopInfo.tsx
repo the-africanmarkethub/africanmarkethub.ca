@@ -71,7 +71,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [identificationType, setIdentificationType] =
     useState<DefaultOption | null>(ID_OPTIONS[0]);
 
-  const [dialCode, setDialCode] = useState('+1');
+  const [dialCode, setDialCode] = useState("+1");
   const [googleLoaded, setGoogleLoaded] = useState(false);
 
   // --- Memory Cleanup ---
@@ -180,57 +180,75 @@ export default function StepShopInfo({ onNext }: StepProps) {
         onNext?.();
       }
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Submit failed.");
+      // 1. Check if the backend sent a specific validation errors object (e.g., Laravel style)
+      const validationErrors = err.response?.data?.errors;
+
+      if (validationErrors) {
+        // Loop through the errors and show a toast for each one
+        Object.values(validationErrors)
+          .flat()
+          .forEach((errorMsg: any) => {
+            toast.error(errorMsg);
+          });
+      }
+      // 2. Check for a single error message
+      else if (err.response?.data?.message) {
+        toast.error(err.response.data.message);
+      }
+      // 3. Fallback for network issues or unexpected crashes
+      else {
+        toast.error("Something went wrong. Please check your inputs.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-useEffect(() => {
-  const loadData = async () => {
-    try {
-      const [shopRes, addrRes] = await Promise.all([
-        getMyShop().catch(() => null),
-        getAddress().catch(() => null),
-      ]);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [shopRes, addrRes] = await Promise.all([
+          getMyShop().catch(() => null),
+          getAddress().catch(() => null),
+        ]);
 
-      // 1. Set fallback values from general address first
-      if (addrRes) {
-        setAddressLine(addrRes.street_address || "");
-        setCity(addrRes.city || "");
-        setPhoneNumber(addrRes.phone || "");
-        setCountryCode(addrRes.country || "");
-        setStateCode(addrRes.state || "");
-        setZip(addrRes.zip_code || "");
-        if (addrRes.lat) setLat(Number(addrRes.lat));
-        if (addrRes.lng) setLng(Number(addrRes.lng));
+        // 1. Set fallback values from general address first
+        if (addrRes) {
+          setAddressLine(addrRes.street_address || "");
+          setCity(addrRes.city || "");
+          setPhoneNumber(addrRes.phone || "");
+          setCountryCode(addrRes.country || "");
+          setStateCode(addrRes.state || "");
+          setZip(addrRes.zip_code || "");
+          if (addrRes.lat) setLat(Number(addrRes.lat));
+          if (addrRes.lng) setLng(Number(addrRes.lng));
+        }
+
+        // 2. OVERWRITE with specific Shop data if it exists
+        // This ensures shop-specific location takes priority over profile address
+        if (shopRes?.status === "success" && shopRes.data) {
+          const s = shopRes.data;
+          setHasExistingShop(true);
+          setName(s.name || "");
+          setDescription(s.description || "");
+          setLogoUrl(s.logo);
+          setBannerUrl(s.banner);
+          setIdDocUrl(s.identification_document);
+          setIdentificationType(s.identification_type);
+          setLocalDelivery(s.local_delivery_setting);
+
+          const foundType = TYPES.find(
+            (t) => t.name.toLowerCase() === s.type?.toLowerCase(),
+          );
+          if (foundType) setSelectedType(foundType);
+          if (s.category) setSelectedCategory(s.category);
+        }
+      } finally {
+        setInitialLoading(false);
       }
-
-      // 2. OVERWRITE with specific Shop data if it exists
-      // This ensures shop-specific location takes priority over profile address
-      if (shopRes?.status === "success" && shopRes.data) {
-        const s = shopRes.data;
-        setHasExistingShop(true);
-        setName(s.name || "");
-        setDescription(s.description || "");
-        setLogoUrl(s.logo);
-        setBannerUrl(s.banner);
-        setIdDocUrl(s.identification_document);
-        setIdentificationType(s.identification_type);
-        setLocalDelivery(s.local_delivery_setting);
-
-        const foundType = TYPES.find(
-          (t) => t.name.toLowerCase() === s.type?.toLowerCase(),
-        );
-        if (foundType) setSelectedType(foundType);
-        if (s.category) setSelectedCategory(s.category);
-      }
-    } finally {
-      setInitialLoading(false);
-    }
-  };
-  loadData();
-}, []);
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -435,11 +453,11 @@ useEffect(() => {
                 setAddressLine(addr.street_address);
                 setCity(addr.city);
                 setStateCode(addr.state);
-                setZip(addr.zip_code); 
+                setZip(addr.zip_code);
                 setCountryCode(addr.country);
-                setLat(addr.lat);  
-                setLng(addr.lng);  
-                setDialCode(addr.dialCode ?? '+1');
+                setLat(addr.lat);
+                setLng(addr.lng);
+                setDialCode(addr.dialCode ?? "+1");
               }}
             />
           )}
@@ -458,12 +476,12 @@ useEffect(() => {
               onChange={setStateCode}
               disabled
             />
-          <PhoneInput
-            countryFlag={countryCodeToFlag(countryCode)}
-            dialCode={dialCode}
-            value={phoneNumber}
-            onChange={setPhoneNumber} 
-          />
+            <PhoneInput
+              countryFlag={countryCodeToFlag(countryCode)}
+              dialCode={dialCode}
+              value={phoneNumber}
+              onChange={setPhoneNumber}
+            />
           </div>
         </section>
 
