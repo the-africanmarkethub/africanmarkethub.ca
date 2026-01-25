@@ -19,9 +19,11 @@ export default function ShopHeaderCard({
 }: ShopHeaderCardProps) {
   const [loading, setLoading] = useState(false);
 
+  console.log(shop);
   // Logic: Show alert if onboarding is not true OR payouts are disabled
   const showStripeAlert =
-    !shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled;
+    shop?.id &&
+    (!shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled);
 
   const handleRetryOnboarding = async () => {
     try {
@@ -40,8 +42,8 @@ export default function ShopHeaderCard({
     }
   };
 
-  const needsAttention = !shop.stripe_onboarding_completed ||
-  !shop.stripe_payouts_enabled;
+  const needsAttention =
+    !shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled;
   return (
     <div className="flex flex-col gap-4 mb-6">
       {/* Stripe Warning Alert */}
