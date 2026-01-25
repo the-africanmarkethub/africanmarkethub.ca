@@ -6,7 +6,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
-import { getMyShop } from "@/lib/api/seller/shop";
+import { getMyShop, retryOnboardingStatus } from "@/lib/api/seller/shop";
 
 interface SellerLayoutProps {
   children: React.ReactNode;
@@ -44,6 +44,12 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
         // 4. Logic: Check Stripe Connection
         if (!shop.stripe_connect_id) {
           window.location.href = link;
+          return;
+        }
+        // 4b. Logic: check Stripe Onboarding complete is true
+        if (!shop.stripe_onboarding_completed) {
+          const response = await retryOnboardingStatus();
+          window.location.href = response.onboarding_url;
           return;
         }
 
