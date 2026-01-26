@@ -31,6 +31,7 @@ import {
   SelectOption,
 } from "@/setting";
 import { validateImageFile } from "@/utils/validateImageFile";
+import { Shop } from "@/interfaces/shop";
 
 export default function StepShopInfo({ onNext }: StepProps) {
   const MAX_DESC_LENGTH = 500;
@@ -42,6 +43,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
   // Form States
   const [name, setName] = useState("");
+  const [shopData, setShopData] = useState<Shop>();
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [addressLine, setAddressLine] = useState("");
@@ -228,6 +230,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         // This ensures shop-specific location takes priority over profile address
         if (shopRes?.status === "success" && shopRes.data) {
           const s = shopRes.data;
+          setShopData(s);
           setHasExistingShop(true);
           setName(s.name || "");
           setDescription(s.description || "");
@@ -313,7 +316,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   return (
     <div className="mx-auto pb-20 max-w-5xl">
       <ShopHeaderCard
-        shop={{ name } as any}
+        shop={shopData}
         subtitle={`Managing ${selectedType.name} Profile`}
       />
 

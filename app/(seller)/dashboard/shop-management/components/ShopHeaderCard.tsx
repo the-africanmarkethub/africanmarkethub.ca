@@ -9,7 +9,7 @@ import { FiAlertTriangle } from "react-icons/fi";
 import Link from "next/link";
 
 interface ShopHeaderCardProps {
-  shop: Shop;
+  shop: Shop | any;
   subtitle?: string;
 }
 
