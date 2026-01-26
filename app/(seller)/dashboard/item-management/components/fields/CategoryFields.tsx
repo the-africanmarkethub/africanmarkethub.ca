@@ -17,7 +17,6 @@ export default function CategoryFields(props: any) {
   const [inputValue, setInputValue] = useState("");
 
   // Check if it's Transportation & Logistics
-  const isTransLogistics = selectedCategory?.value === "33";
 
   // Logic to add keyword
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -72,7 +71,6 @@ export default function CategoryFields(props: any) {
         ) : null)}
 
       {/* NEW: Keywords Field - Hidden if Logistics */}
-      {!isTransLogistics && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             SEO Keywords <span className="text-red-500">*</span>
@@ -111,7 +109,6 @@ export default function CategoryFields(props: any) {
             />
           </div>
         </div>
-      )}
     </>
   );
 }

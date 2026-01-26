@@ -204,14 +204,36 @@ export const SIZE_UNIT_OPTIONS = [
 ];
 
 export const PRICING_MODEL_OPTIONS = [
-  { value: "fixed", label: "Fixed" },
-  { value: "negotiable", label: "Negotiable" },
+  {
+    label: "Fixed Price",
+    value: "fixed",
+    description: "Standard price for every customer.",
+  },
+  {
+    label: "Negotiable",
+    value: "negotiable",
+    description: "Chat with customers to agree on a price.",
+  },
 ];
 
 export const DELIVERY_METHOD_OPTIONS = [
-  { value: "remote", label: "Remote" },
-  { value: "onsite", label: "Onsite" },
-  { value: "hybrid", label: "Hybrid" },
+  {
+    value: "remote",
+    label: "Remote (Online)",
+    description:
+      "Work is done entirely online or over the phone. No travel needed.",
+  },
+  {
+    value: "onsite",
+    label: "Onsite (At Location)",
+    description:
+      "You will travel to the customer's location or work at a specific physical site.",
+  },
+  {
+    value: "hybrid",
+    label: "Hybrid",
+    description: "A mix of both online work and in-person meetings.",
+  },
 ];
 
 export const STATUS_OPTIONS = [
