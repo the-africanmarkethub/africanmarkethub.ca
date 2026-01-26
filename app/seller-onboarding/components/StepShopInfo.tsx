@@ -314,7 +314,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     );
 
   return (
-    <div className="mx-auto pb-20 max-w-5xl">
+    <div className="mx-auto pb-20 max-w-6xl">
       <ShopHeaderCard
         shop={shopData}
         subtitle={`Managing ${selectedType.name} Profile`}
@@ -401,7 +401,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-8">
-        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+        <section className="">
           <div className="grid grid-cols-1 md:grid-cols-2 mb-4 gap-6">
             <TextInput
               label="Business Name"
@@ -430,7 +430,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           )}
         </section>
 
-        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+        <section className="">
           <h3 className="font-bold mb-6 text-slate-800">Legal Verification</h3>
           <SelectField
             label="ID Type"
@@ -464,7 +464,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </div>
         </section>
 
-        <section className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+        <section className=" space-y-6">
           {googleLoaded && (
             <GoogleAddressAutocomplete
               onSelect={(addr) => {
