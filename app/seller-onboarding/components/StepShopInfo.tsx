@@ -234,8 +234,23 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setLogoUrl(s.logo);
           setBannerUrl(s.banner);
           setIdDocUrl(s.identification_document);
-          setIdentificationType(s.identification_type);
-          setLocalDelivery(s.local_delivery_setting);
+          if (s.identification_type) {
+            const matchedId = ID_OPTIONS.find(
+              (option) => option.name === s.identification_type,
+            );
+            setIdentificationType(
+              matchedId || { id: 0, name: s.identification_type },
+            );
+          }
+
+          if (s.local_delivery_setting) {
+            const matchedDelivery = LOCALDELIVERYOPTION.find(
+              (option) => option.name === s.local_delivery_setting,
+            );
+            setLocalDelivery(
+              matchedDelivery || { id: 0, name: s.local_delivery_setting },
+            );
+          }
 
           const foundType = TYPES.find(
             (t) => t.name.toLowerCase() === s.type?.toLowerCase(),
