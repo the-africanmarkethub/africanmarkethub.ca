@@ -19,16 +19,11 @@ export default function ShopHeaderCard({
 }: ShopHeaderCardProps) {
   const [loading, setLoading] = useState(false);
 
+  console.log(shop);
   // Logic: Show alert if onboarding is not true OR payouts are disabled
-  // 1. They haven't even started or finished the Stripe forms
-  const needsOnboarding = !shop?.stripe_onboarding_completed;
-
-  // 2. They finished the forms, but Stripe is still reviewing or needs more docs
-  const restricted =
-    shop?.stripe_onboarding_completed && !shop?.stripe_payouts_enabled;
-
-  // Final Logic for the Alert
-  const showStripeAlert = shop?.id && (needsOnboarding || restricted);
+  const showStripeAlert =
+    shop?.id &&
+    (!shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled);
 
   const handleRetryOnboarding = async () => {
     try {
