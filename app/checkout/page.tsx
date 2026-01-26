@@ -326,12 +326,14 @@ export default function CheckoutPage() {
                   onChange={(v) => handleAddressChange("zip_code", v)}
                   required
                 />
-                <TextInput
-                  label="Country"
-                  value={address.country}
-                  onChange={(v) => handleAddressChange("country", v)}
-                  required
-                />
+                <span hidden>
+                  <TextInput
+                    label="Country"
+                    value={address.country}
+                    onChange={(v) => handleAddressChange("country", v)}
+                    required
+                  />
+                </span>
 
                 {/* Phone Section */}
                 <div className="flex flex-col gap-1">

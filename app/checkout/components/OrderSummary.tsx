@@ -43,7 +43,6 @@ export default function OrderSummary({
   const { user } = useAuthStore();
   const { clearCart } = useCart();
 
-  // Aggregate vendor info: earliest delivery & combined carriers
   const aggregateRate = (option: RateOption) => {
     const vendors = Object.values(option.vendors);
 
@@ -75,7 +74,6 @@ export default function OrderSummary({
     onSelectRate(option.total);
   };
 
-  console.log(discount);
   const handleCheckout = async () => {
     if (!shippingFee || !selectedShipping) {
       return toast.error("Please select a shipping option before checkout");
