@@ -19,18 +19,27 @@ export default function ShopHeaderCard({
 }: ShopHeaderCardProps) {
   const [loading, setLoading] = useState(false);
 
-  console.log(shop);
-  // Logic: Show alert if onboarding is not true OR payouts are disabled
+  // 1. Safely check if we have a shop and if it needs Stripe attention
+  // If shop is null/undefined, showStripeAlert becomes false (silent)
+  const isExistingShop = !!shop?.id;
+
   const showStripeAlert =
-    shop?.id &&
-    (!shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled);
+    isExistingShop &&
+    (shop.stripe_onboarding_completed === false ||
+      shop.stripe_payouts_enabled === false);
+
+  // 2. Determine exactly which state they are in for the UI text
+  const needsOnboarding = isExistingShop && !shop.stripe_onboarding_completed;
+  const isPendingVerification =
+    isExistingShop &&
+    shop.stripe_onboarding_completed &&
+    !shop.stripe_payouts_enabled;
 
   const handleRetryOnboarding = async () => {
     try {
       setLoading(true);
       const res = await retryOnboardingStatus();
-      if (res.onboarding_url) {
-        // Redirect vendor to Stripe to finish the process
+      if (res?.onboarding_url) {
         window.location.href = res.onboarding_url;
       } else {
         toast.success("Account status updated!");
@@ -42,32 +51,45 @@ export default function ShopHeaderCard({
     }
   };
 
-  const needsAttention =
-    !shop.stripe_onboarding_completed || !shop.stripe_payouts_enabled;
+  // If there is no shop at all (brand new seller), we skip the alert and show a simpler card
+  if (!isExistingShop) {
+    return (
+      <div className="card p-4 border border-dashed border-slate-300 rounded-md bg-slate-50 mb-4">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Welcome to African Market Hub!
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Please complete the form below to create your shop.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 mb-6">
-      {/* Stripe Warning Alert */}
-      {/* Logic: Show alert if they haven't finished the Stripe form OR if payouts are still blocked */}
-      {showStripeAlert && needsAttention && (
-        <div className="flex items-center justify-between p-4 bg-amber-50 border border-amber-200 rounded-md">
+      {/* Stripe Warning Alert - Only shows for existing shops needing setup */}
+      {showStripeAlert && (
+        <div className="flex items-center justify-between p-4 bg-amber-50 border border-amber-200 rounded-md shadow-sm">
           <div className="flex items-center gap-3">
-            <FiAlertTriangle className="text-amber-600" size={20} />
+            <FiAlertTriangle
+              className="text-amber-600 shrink-0"
+              size={20}
+            />
             <div>
               <p className="text-sm font-semibold text-amber-800">
-                {!shop.stripe_onboarding_completed
+                {needsOnboarding
                   ? "Action Required: Complete Stripe Setup"
                   : "Account Pending: Payouts Restricted"}
               </p>
               <p className="text-xs text-amber-700">
-                {!shop.stripe_onboarding_completed
+                {needsOnboarding
                   ? "Finish onboarding to enable payouts for your services."
                   : "Stripe is verifying your details. This usually takes 24-48 hours."}
               </p>
             </div>
           </div>
 
-          {/* Only show the button if they actually have more forms to fill (onboarding not completed) */}
-          {!shop.stripe_onboarding_completed && (
+          {needsOnboarding && (
             <button
               onClick={handleRetryOnboarding}
               disabled={loading}
@@ -79,18 +101,17 @@ export default function ShopHeaderCard({
           )}
         </div>
       )}
+
       {/* Main Header Card */}
       <div className="card p-4 border border-slate-200 rounded-md bg-white shadow-sm">
-        {/* <div className="flex items-start gap-3"> */}
         <Link
-          href={`https://africanmarkethub.ca/shops/${shop.slug}`}
+          href={`https://africanmarkethub.ca/shops/${shop?.slug}`}
           className="flex items-start gap-3"
-          title="Checkout your store"
+          title="View your store"
           target="_blank"
         >
-          {" "}
-          <div className="rounded-md bg-green-50 p-2 h-10 w-10 flex items-center justify-center border border-green-100">
-            {shop.logo ? (
+          <div className="rounded-md bg-green-50 p-2 h-10 w-10 flex items-center justify-center border border-green-100 shrink-0">
+            {shop?.logo ? (
               <img
                 src={shop.logo}
                 alt={shop.name}
@@ -101,13 +122,14 @@ export default function ShopHeaderCard({
             )}
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-800">{shop.name}</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              {shop?.name || "Unnamed Shop"}
+            </h2>
             <p className="text-sm text-gray-500 mt-1">
               {subtitle ?? "Manage and update your shop details from here."}
             </p>
           </div>
         </Link>
-        {/* </div> */}
       </div>
     </div>
   );

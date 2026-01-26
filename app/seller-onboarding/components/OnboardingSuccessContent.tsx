@@ -17,7 +17,6 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function OnboardingSuccessContent() {
   const router = useRouter();
-  const { clearAuth } = useAuthStore();
   // States
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading"
