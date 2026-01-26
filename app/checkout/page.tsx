@@ -14,8 +14,9 @@ import { countryCodeToFlag } from "@/utils/countryFlag";
 import Coupon from "@/interfaces/coupon";
 import verifyCoupon from "@/lib/api/customer/coupon";
 import Modal from "../components/common/Modal";
-import Script from "next/script";
 import OrderSummary from "./components/OrderSummary";
+import { getAddress } from "@/lib/api/auth/shipping";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
@@ -46,7 +47,7 @@ export default function CheckoutPage() {
   const [lastname, setLastname] = useState(user?.last_name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
-
+  const [showPersonalDetails, setShowPersonalDetails] = useState(true);
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
 
   const handleAddressChange = (field: keyof Address, value: string) => {
@@ -108,7 +109,7 @@ export default function CheckoutPage() {
       // For UK: Must be more than 2 letters (e.g., "London", not "LD")
       if (stateTrimmed.length <= 2) {
         return toast.error(
-          "Please enter the full County/State name for UK (e.g., London)"
+          "Please enter the full County/State name for UK (e.g., London)",
         );
       }
     } else {
@@ -121,7 +122,7 @@ export default function CheckoutPage() {
     const zipLength = address.zip_code.length;
     if (zipLength < 5 || zipLength > 10) {
       return toast.error(
-        "Postal/Code code must be between 5 and 10 characters"
+        "Postal/Code code must be between 5 and 10 characters",
       );
     }
 
@@ -168,6 +169,37 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    const fetchSavedAddress = async () => {
+      try {
+        // The API call happens here
+        const addrRes = await getAddress();
+        if (addrRes && addrRes.street_address) {
+          setAddress({
+            street_address: addrRes.street_address || "",
+            city: addrRes.city || "",
+            state: addrRes.state || "",
+            zip_code: addrRes.zip_code || "",
+            country: addrRes.country || "",
+            phone: addrRes.phone || "",
+            dialCode: addrRes.dialCode || "+1",
+          });
+
+          if (addrRes.phone) setPhone(addrRes.phone);
+
+          // Hide the personal fields only if we actually found data
+          setShowPersonalDetails(false);
+        }
+      } catch (error: any) {
+        // SILENT FAIL
+        console.log(
+          "No saved address found or user not logged in. Continuing with empty form.",
+        );
+      }
+    };
+
+    fetchSavedAddress();
+  }, []);
 
   useEffect(() => {
     if ((window.google as any)?.maps?.places) {
@@ -198,26 +230,65 @@ export default function CheckoutPage() {
                 className="grid grid-cols-1 bg-white p-6 rounded-lg shadow-sm md:grid-cols-2 gap-4"
                 onSubmit={handleSubmit}
               >
+                <div className="md:col-span-2 border-b border-gray-100 pb-4 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPersonalDetails(!showPersonalDetails)}
+                    className="flex items-center justify-between w-full text-left group"
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                        Personal Details
+                      </span>
+                      {!showPersonalDetails && (
+                        <span className="text-gray-400 text-xs mt-1">
+                          {firstname} {lastname} • {email}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-hub-primary">
+                      <span className="text-xs font-medium group-hover:underline">
+                        {showPersonalDetails ? "Hide" : "Edit Details"}
+                      </span>
+                      {showPersonalDetails ? (
+                        <FaChevronUp className="text-xs" />
+                      ) : (
+                        <FaChevronDown className="text-xs" />
+                      )}
+                    </div>
+                  </button>
+                </div>
+                {showPersonalDetails && (
+                  <>
+                    <TextInput
+                      label="First Name"
+                      value={firstname}
+                      onChange={setFirstname}
+                      required
+                    />
+                    <TextInput
+                      label="Last Name"
+                      value={lastname}
+                      onChange={setLastname}
+                      required
+                    />
+                    <div className="md:col-span-2">
+                      <TextInput
+                        label="Email Address"
+                        value={email}
+                        onChange={setEmail}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
                 {/* Identity Fields */}
-                <TextInput
-                  label="First Name"
-                  value={firstname}
-                  onChange={setFirstname}
-                  required
-                />
-                <TextInput
-                  label="Last Name"
-                  value={lastname}
-                  onChange={setLastname}
-                  required
-                />
-                <div className="md:col-span-2">
-                  <TextInput
-                    label="Email Address"
-                    value={email}
-                    onChange={setEmail}
-                    required
-                  />
+
+                <div className="md:col-span-2 pt-2">
+                  <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                    Delivery Address
+                  </span>
                 </div>
 
                 {/* Address Section */}
