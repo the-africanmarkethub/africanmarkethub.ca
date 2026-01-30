@@ -38,7 +38,7 @@ export default function TutorialDetailPage() {
 
         const listResponse = await listTutorials(0, 4);
         const filtered = listResponse.data.filter(
-          (t: Tutorial) => t.slug !== slug
+          (t: Tutorial) => t.slug !== slug,
         );
         setRelated(filtered.slice(0, 6));
       } catch (error) {
@@ -50,6 +50,21 @@ export default function TutorialDetailPage() {
 
     if (slug) fetchData();
   }, [slug]);
+
+const getYoutubeEmbedUrl = (url?: string | null) => {
+  if (!url) return "";
+
+  // Clean escaped slashes
+  const cleanUrl = url.replace(/\\/g, "");
+
+  // This regex now specifically looks for the video ID in shorts, watch, or youtu.be links
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+  const match = cleanUrl.match(regExp);
+
+  return (match && match[2].length === 11) 
+    ? `https://www.youtube.com/embed/${match[2]}` 
+    : "";
+};
 
   // --- SKELETON LOADING STATE ---
   if (loading) {
@@ -139,6 +154,7 @@ export default function TutorialDetailPage() {
             fill
             className="object-cover"
             priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
           />
         </div>
 
@@ -157,16 +173,23 @@ export default function TutorialDetailPage() {
               dangerouslySetInnerHTML={{ __html: tutorial.description }}
             />
 
-            {tutorial.video_url && (
+            {getYoutubeEmbedUrl(tutorial.video_url) && (
               <div className="bg-gray-50 rounded-3xl p-6 md:p-8 border border-gray-100 mb-12">
                 <h3 className="text-2xl font-bold flex items-center gap-3 mb-6 text-gray-800">
                   <FaYoutube className="text-red-600" /> Watch Video Tutorial
                 </h3>
-                <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black">
+
+                <div
+                  style={{ width: "100%", height: "420px" }}
+                  className="rounded-2xl overflow-hidden shadow-2xl bg-black"
+                >
                   <iframe
                     className="w-full h-full"
-                    src={tutorial.video_url.replace("watch?v=", "embed/")}
+                    src={getYoutubeEmbedUrl(tutorial.video_url)}
                     title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
                     allowFullScreen
                   ></iframe>
                 </div>
@@ -194,6 +217,7 @@ export default function TutorialDetailPage() {
                           alt={item.title}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-300"
+                          sizes="100px"
                         />
                       </div>
                       <div>
@@ -210,7 +234,9 @@ export default function TutorialDetailPage() {
               </div>
 
               <div className="mt-10 p-6 bg-green-50 rounded-3xl border border-green-100">
-                <p className="text-hub-secondary font-semibold mb-2">Need Help?</p>
+                <p className="text-hub-secondary font-semibold mb-2">
+                  Need Help?
+                </p>
                 <p className="text-sm text-hub-secondary mb-4">
                   Can't find what you are looking for? Contact our support team.
                 </p>
