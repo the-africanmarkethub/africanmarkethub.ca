@@ -61,9 +61,9 @@ const getYoutubeEmbedUrl = (url?: string | null) => {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
   const match = cleanUrl.match(regExp);
 
-  return (match && match[2].length === 11) 
-    ? `https://www.youtube.com/embed/${match[2]}` 
-    : "";
+ return (match && match[2].length === 11) 
+  ? `https://www.youtube.com/embed/${match[2]}?rel=0&modestbranding=1` 
+  : "";
 };
 
   // --- SKELETON LOADING STATE ---
