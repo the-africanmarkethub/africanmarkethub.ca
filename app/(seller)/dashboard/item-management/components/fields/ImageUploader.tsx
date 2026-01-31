@@ -62,7 +62,7 @@ export default function ImageUploader(props: any) {
         {newPreviews.map((src: string, idx: number) => (
           <div
             key={"new-" + idx}
-            className="relative rounded-lg overflow-hidden h-28 border"
+            className="relative rounded-lg overflow-hidden h-18 border"
           >
             <Image src={src} alt={"new-" + idx} fill className="object-cover" />
             <button
