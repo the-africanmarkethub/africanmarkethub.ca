@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { HiOutlineUpload, HiOutlineXCircle } from "react-icons/hi";
-import imageCompression from 'browser-image-compression';
 
 export default function ImageUploader(props: any) {
   const {
@@ -21,7 +20,7 @@ export default function ImageUploader(props: any) {
       </label>
 
       {existingImages.urls.length + newPreviews.length < 7 && (
-        <label className="relative w-full aspect-square border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-red-500 hover:bg-red-50 transition-colors overflow-hidden flex items-center justify-center p-4">
+        <label className="relative w-full h-40 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-red-500 hover:bg-red-50 transition-colors overflow-hidden flex items-center justify-center p-4">
           <div className="flex flex-col items-center justify-center text-center text-gray-500">
             <HiOutlineUpload className="text-3xl" />
             <span className="mt-2 text-sm">
@@ -62,7 +61,7 @@ export default function ImageUploader(props: any) {
         {newPreviews.map((src: string, idx: number) => (
           <div
             key={"new-" + idx}
-            className="relative rounded-lg overflow-hidden h-18 border"
+            className="relative rounded-lg overflow-hidden h-28 border"
           >
             <Image src={src} alt={"new-" + idx} fill className="object-cover" />
             <button

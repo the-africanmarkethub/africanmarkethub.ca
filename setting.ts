@@ -260,6 +260,8 @@ export const VALID_IMAGE_TYPES = [
   "image/jpg",
   "image/png",
   "image/webp",
+  "image/heic",  
+  "image/heif",
 ];
 
 export const CARRIER_ICONS: Record<
