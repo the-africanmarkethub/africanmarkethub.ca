@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { HiOutlineUpload, HiOutlineXCircle } from "react-icons/hi";
+import imageCompression from 'browser-image-compression';
 
 export default function ImageUploader(props: any) {
   const {
@@ -15,7 +16,7 @@ export default function ImageUploader(props: any) {
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-2">
-        Item Images (min 2, max 7, 2MB each){" "}
+        Item Images (min 2, max 7, 15MB each){" "}
         <span className="text-red-500">*</span>
       </label>
 

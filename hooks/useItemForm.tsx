@@ -15,6 +15,7 @@ import {
   MAX_IMAGE_SIZE,
   VALID_IMAGE_TYPES,
 } from "@/setting";
+import imageCompression from "browser-image-compression";
 
 type DropdownOption = {
   label: string;
@@ -44,35 +45,35 @@ export function useItemForm(item: any) {
   });
   // pricing
   const [salesPrice, setSalesPrice] = useState<string>(
-    item?.sales_price ? String(item.sales_price) : ""
+    item?.sales_price ? String(item.sales_price) : "",
   );
   const [regularPrice, setRegularPrice] = useState<string>(
-    item?.regular_price ? String(item.regular_price) : ""
+    item?.regular_price ? String(item.regular_price) : "",
   );
   const [quantity, setQuantity] = useState<string>(
-    item?.quantity ? String(item.quantity) : "0"
+    item?.quantity ? String(item.quantity) : "0",
   );
 
   // dimensions
   const [weight, setWeight] = useState<string>(
-    item?.weight ? String(item.weight) : ""
+    item?.weight ? String(item.weight) : "",
   );
   const findOption = (options: any[], value: string) =>
     options.find((o) => o.value === value) ?? EMPTY;
   const [weightUnit, setWeightUnit] = useState<DropdownOption>(
-    findOption(DIMENSION_OPTIONS, item?.weight_unit)
+    findOption(DIMENSION_OPTIONS, item?.weight_unit),
   );
   const [lengthVal, setLengthVal] = useState<string>(
-    item?.length ? String(item.length) : ""
+    item?.length ? String(item.length) : "",
   );
   const [widthVal, setWidthVal] = useState<string>(
-    item?.width ? String(item.width) : ""
+    item?.width ? String(item.width) : "",
   );
   const [heightVal, setHeightVal] = useState<string>(
-    item?.height ? String(item.height) : ""
+    item?.height ? String(item.height) : "",
   );
   const [sizeUnit, setSizeUnit] = useState<DropdownOption>(
-    findOption(SIZE_UNIT_OPTIONS, item?.size_unit)
+    findOption(SIZE_UNIT_OPTIONS, item?.size_unit),
   );
 
   // categories
@@ -91,27 +92,27 @@ export function useItemForm(item: any) {
 
   // services
   const [pricingModel, setPricingModel] = useState(
-    findOption(PRICING_MODEL_OPTIONS, item?.pricing_model ?? "fixed")
+    findOption(PRICING_MODEL_OPTIONS, item?.pricing_model ?? "fixed"),
   );
   const [deliveryMethod, setDeliveryMethod] = useState(
-    findOption(DELIVERY_METHOD_OPTIONS, item?.delivery_method ?? "online")
+    findOption(DELIVERY_METHOD_OPTIONS, item?.delivery_method ?? "online"),
   );
   const [estimatedDeliveryTime, setEstimatedDeliveryTime] = useState<string>(
-    item?.estimated_delivery_time ?? ""
+    item?.estimated_delivery_time ?? "",
   );
   const [availableDays, setAvailableDays] = useState<string[]>(
-    item?.available_days ?? []
+    item?.available_days ?? [],
   );
   const [availableFrom, setAvailableFrom] = useState<string>(
-    item?.available_from ?? ""
+    item?.available_from ?? "",
   );
   const [availableTo, setAvailableTo] = useState<string>(
-    item?.available_to ?? ""
+    item?.available_to ?? "",
   );
 
   function findCategory(
     categories: DropdownOption[],
-    id: string
+    id: string,
   ): DropdownOption | undefined {
     for (const cat of categories) {
       if (cat.value === id) return cat;
@@ -145,13 +146,13 @@ export function useItemForm(item: any) {
 
         const parentCategory = findCategory(
           formatted,
-          String(item.category_id)
+          String(item.category_id),
         );
         if (parentCategory) {
           setSelectedCategory(parentCategory);
           const child = parentCategory.children?.find(
             (ch) =>
-              ch.value === String(item.child_category_id ?? item.category_id)
+              ch.value === String(item.child_category_id ?? item.category_id),
           );
           if (child) setSelectedChildCategory(child);
         }
@@ -166,10 +167,39 @@ export function useItemForm(item: any) {
     };
   }, []);
 
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = Array.from(e.target.files || []);
+  //   if (files.length === 0) return;
+
+  //   const combinedCount =
+  //     existingImages.urls.length + newImages.length + files.length;
+  //   if (combinedCount > MAX_IMAGES) {
+  //     toast.error(`Maximum ${MAX_IMAGES} images allowed`);
+  //     return;
+  //   }
+
+  //   for (const file of files) {
+  //     if (!VALID_IMAGE_TYPES.includes(file.type)) {
+  //       toast.error("Only JPG, PNG, WebP, or JPEG images are allowed");
+  //       return;
+  //     }
+  //     if (file.size > MAX_IMAGE_SIZE) {
+  //       toast.error("Each image must be smaller than 2MB");
+  //       return;
+  //     }
+  //   }
+
+  //   setNewImages((prev) => [...prev, ...files]);
+  //   const previews = files.map((f) => URL.createObjectURL(f));
+  //   setNewPreviews((prev) => [...prev, ...previews]);
+  //   e.currentTarget.value = "";
+  // };
+
+  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
+    // 1. Check total count first (to stop early)
     const combinedCount =
       existingImages.urls.length + newImages.length + files.length;
     if (combinedCount > MAX_IMAGES) {
@@ -177,21 +207,53 @@ export function useItemForm(item: any) {
       return;
     }
 
+    // 2. Initial Validation (Type and Size)
     for (const file of files) {
       if (!VALID_IMAGE_TYPES.includes(file.type)) {
-        toast.error("Only JPG, PNG, WebP, or JPEG images are allowed");
+        toast.error(`File ${file.name} is not a valid image type`);
         return;
       }
+      // We now allow up to 15MB because we will compress it
       if (file.size > MAX_IMAGE_SIZE) {
-        toast.error("Each image must be smaller than 2MB");
+        toast.error(`${file.name} is too large. Max 15MB allowed.`);
         return;
       }
     }
 
-    setNewImages((prev) => [...prev, ...files]);
-    const previews = files.map((f) => URL.createObjectURL(f));
-    setNewPreviews((prev) => [...prev, ...previews]);
-    e.currentTarget.value = "";
+    // 3. Compression Options
+    const options = {
+      maxSizeMB: 1.5, // Target size ~1.5MB
+      maxWidthOrHeight: 1920, // Keep it Full HD
+      useWebWorker: true, // Don't freeze the browser
+    };
+
+    try {
+      // Show a loading toast if you have many files
+      const loadingToast = toast.loading("Optimizing images...");
+
+      const compressedFiles = await Promise.all(
+        files.map(async (file) => {
+          // Only compress if the file is actually large (> 1.5MB)
+          if (file.size <= 1.5 * 1024 * 1024) return file;
+          return await imageCompression(file, options);
+        }),
+      );
+
+      // 4. Update state with compressed files
+      setNewImages((prev) => [...prev, ...compressedFiles]);
+
+      // 5. Create previews for the compressed versions
+      const previews = compressedFiles.map((f) => URL.createObjectURL(f));
+      setNewPreviews((prev) => [...prev, ...previews]);
+
+      toast.dismiss(loadingToast);
+      toast.success("Images added and optimized!");
+    } catch (error) {
+      toast.error("Failed to process images.");
+      console.error(error);
+    } finally {
+      e.currentTarget.value = ""; // Reset input
+    }
   };
 
   const removeNewImage = (idx: number) => {
@@ -378,7 +440,7 @@ export function useItemForm(item: any) {
       "saturday",
       "sunday",
     ],
-    []
+    [],
   );
 
   return {

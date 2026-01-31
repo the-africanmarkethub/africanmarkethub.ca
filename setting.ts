@@ -253,7 +253,7 @@ export const PAYMENT_STATUS_OPTIONS = [
 ];
 
 export const MAX_IMAGES = 7;
-export const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+export const MAX_IMAGE_SIZE = 15 * 1024 * 1024;
 
 export const VALID_IMAGE_TYPES = [
   "image/jpeg",
