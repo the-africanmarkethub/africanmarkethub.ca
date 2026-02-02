@@ -132,7 +132,7 @@ export default function ConfirmResetCode() {
   };
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       <AuthSideBarBanner />
 
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">

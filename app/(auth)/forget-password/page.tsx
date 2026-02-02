@@ -47,7 +47,7 @@ export default function ForgetPassword() {
   };
 
   return (
-    <div className="flex min-screen">
+    <div className="flex min-h-screen">
       {/* Left Column: Image */}
           <AuthSideBarBanner />
     
