@@ -15,7 +15,6 @@ export default async function contactUs(formData: Payload) {
       ...formData,
       device_name: navigator.userAgent, 
     });
-
     return {
       success: true,
       message: response.data?.message || "Message sent successfully",

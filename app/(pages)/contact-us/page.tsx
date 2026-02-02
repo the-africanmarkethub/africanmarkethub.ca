@@ -11,6 +11,7 @@ import {
   FaPaperPlane,
   FaWhatsapp,
 } from "react-icons/fa";
+import { FaMailchimp } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
 
 interface FormData {
@@ -308,13 +309,13 @@ const ContactUsPage: React.FC = () => {
 
               {/* Phone */}
               <div className="flex items-start mb-4">
-                <FaWhatsapp className="w-6 h-6 text-hub-primary mt-1 shrink-0" />
+                <FaMailchimp className="w-6 h-6 text-hub-primary mt-1 shrink-0" />
                 <div className="ml-3">
                   <p className="text-sm font-semibold text-gray-900">
-                    WhatsApp Us
+                    Email Us
                   </p>
                   <p className="text-gray-700 hover:text-hub-secondary transition-colors">
-                    <Link href="https://wa.me/2348129022334">
+                    <Link href="mailto:support@africanmarkethub.ca">
                       Send us a message
                     </Link>
                   </p>
