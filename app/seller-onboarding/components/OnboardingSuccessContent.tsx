@@ -37,7 +37,9 @@ export default function OnboardingSuccessContent() {
         setStatus("success");
         triggerConfetti();
         clearAuth();
-        router.replace("/dashboard");
+        setTimeout(() => {
+          router.replace("/dashboard");
+        }, 3000);
       } else {
         setStatus("error");
       }
