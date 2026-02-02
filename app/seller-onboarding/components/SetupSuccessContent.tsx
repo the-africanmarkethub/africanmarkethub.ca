@@ -24,22 +24,6 @@ export default function SuccessContent() {
 
   const verificationStarted = useRef(false);
 
-  const handleFinalRedirect = useCallback(() => {
-    // FORCE Stripe if the URL exists. No exceptions.
-    if (onboardingUrl) {
-      window.location.href = onboardingUrl;
-      return;
-    }
-
-    // Only allow dashboard if we explicitly confirmed they don't need onboarding
-    if (isFullyVerified) {
-      router.replace("/dashboard");
-    } else {
-      // If something went wrong and we have neither, re-verify
-      setStatus("error");
-    }
-  }, [onboardingUrl, isFullyVerified, router]);
-
   const verifyPayment = async (id: string) => {
     try {
       setIsRetrying(true);
@@ -67,6 +51,20 @@ export default function SuccessContent() {
       setIsRetrying(false);
     }
   };
+
+  const handleFinalRedirect = useCallback(() => {
+    if (onboardingUrl) {
+      window.location.href = onboardingUrl;
+      return;
+    }
+
+    if (isFullyVerified) {
+      router.replace("/dashboard");
+    } else {
+      // If something went wrong and we have neither, re-verify
+      setStatus("error");
+    }
+  }, [onboardingUrl, isFullyVerified, router]);
 
   useEffect(() => {
     if (sessionId && !verificationStarted.current) {
@@ -105,6 +103,8 @@ export default function SuccessContent() {
       if (Date.now() < end) requestAnimationFrame(frame);
     })();
   };
+
+  
   return (
     <div className="text-center max-w-lg mx-auto py-8 px-4">
       <CheckCircleIcon className="h-24 w-24 text-hub-primary mx-auto mb-6" />
