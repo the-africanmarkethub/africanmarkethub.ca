@@ -7,6 +7,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Image from "next/image";
 import { resetPassword } from "@/lib/api/auth/auth";
+import AuthSideBarBanner from "@/app/components/common/AuthSideBarBanner";
 
 type ResetErrorResponse = {
   message?: string;
@@ -67,17 +68,7 @@ export default function ResetPassword() {
   return (
     <div className="flex max-h-screen">
       {/* Left Column: Image */}
-      <div className="relative hidden lg:block h-full w-1/2">
-        <Image
-          width={1200}
-          height={1600}
-          src="account-header.jpg"
-          alt="A woman in traditional African attire"
-          className="w-full h-full object-cover"
-          unoptimized
-        />
-        <div className="absolute inset-0 bg-gray-50 opacity-10"></div>
-      </div>
+      <AuthSideBarBanner />
 
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">
         <div className="w-full max-w-md">

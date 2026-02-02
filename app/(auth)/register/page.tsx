@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import Image from "next/image";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -18,6 +17,7 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { registerUser } from "@/lib/api/auth/auth";
 import { REGISTRATION_COUNTRY_LIST } from "@/setting";
+import AuthSideBarBanner from "@/app/components/common/AuthSideBarBanner";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1);
@@ -75,17 +75,8 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen">
 
-      <div className="relative hidden lg:block w-1/2">
-        <Image
-          width={1200}
-          height={1600}
-          src="/account-header.jpg"
-          alt="African Culture"
-          className="w-full h-full object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/20"></div>
-      </div>
+           <AuthSideBarBanner />
+     
 
 
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">

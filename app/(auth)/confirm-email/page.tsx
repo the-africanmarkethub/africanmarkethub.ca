@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { confirmEmail, forgetPassword } from "@/lib/api/auth/auth";
+import AuthSideBarBanner from "@/app/components/common/AuthSideBarBanner";
 
 type ErrorResponse = {
   message?: string;
@@ -68,7 +69,7 @@ export default function ConfirmResetCode() {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     const value = e.target.value;
     if (!/^[0-9]?$/.test(value)) return;
@@ -85,7 +86,7 @@ export default function ConfirmResetCode() {
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    idx: number
+    idx: number,
   ) => {
     if (e.key === "Backspace" && !otp[idx] && idx > 0) {
       const prev = idx - 1;
@@ -132,16 +133,7 @@ export default function ConfirmResetCode() {
 
   return (
     <div className="flex">
-      <div className="relative hidden lg:block h-full w-1/2">
-        <Image
-          width={1200}
-          height={1600}
-          src="/account-header.jpg"
-          alt="African Market"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gray-50 opacity-10"></div>
-      </div>
+      <AuthSideBarBanner />
 
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">
         <div className="w-full max-w-md">
@@ -200,8 +192,9 @@ export default function ConfirmResetCode() {
 
             <button
               type="submit"
-              className={`btn btn-primary w-full py-3 ${loading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+              className={`btn btn-primary w-full py-3 ${
+                loading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
               disabled={loading || code.length < 6}
             >
               {loading ? "Confirming..." : "Verify code"}
