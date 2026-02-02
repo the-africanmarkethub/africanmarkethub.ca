@@ -19,10 +19,11 @@ export default function OnboardingSuccessContent() {
   const router = useRouter();
   // States
   const [status, setStatus] = useState<"loading" | "success" | "error">(
-    "loading"
+    "loading",
   );
   const [countdown, setCountdown] = useState(5);
   const [isRetrying, setIsRetrying] = useState(false);
+  const { clearAuth } = useAuthStore();
 
   // Refs to prevent double-calls in dev mode
   const hasVerified = useRef(false);
@@ -35,7 +36,8 @@ export default function OnboardingSuccessContent() {
       if (response.completed) {
         setStatus("success");
         triggerConfetti();
-        // clearAuth();
+        clearAuth();
+        router.replace("/dashboard");
       } else {
         setStatus("error");
       }
