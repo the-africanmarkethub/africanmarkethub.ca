@@ -222,9 +222,11 @@ export function useItemForm(item: any) {
 
     // 3. Compression Options
     const options = {
-      maxSizeMB: 1.5, // Target size ~1.5MB
-      maxWidthOrHeight: 1920, // Keep it Full HD
-      useWebWorker: true, // Don't freeze the browser
+      maxSizeMB: 0.1, // Target size after compression
+      maxWidthOrHeight: 800, // Standard product view size
+      useWebWorker: true,
+      fileType: "image/webp", // Force WebP conversion for everyone
+      initialQuality: 0.75, // Start at 75% quality for a good balance
     };
 
     try {
@@ -233,8 +235,6 @@ export function useItemForm(item: any) {
 
       const compressedFiles = await Promise.all(
         files.map(async (file) => {
-          // Only compress if the file is actually large (> 1.5MB)
-          if (file.size <= 1.5 * 1024 * 1024) return file;
           return await imageCompression(file, options);
         }),
       );
@@ -252,7 +252,7 @@ export function useItemForm(item: any) {
       toast.error("Failed to process images.");
       console.error(error);
     } finally {
-      e.currentTarget.value = ""; // Reset input
+      e.currentTarget.value = "";
     }
   };
 
