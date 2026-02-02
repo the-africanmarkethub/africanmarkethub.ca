@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -10,12 +10,14 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import { loginUser } from "@/lib/api/auth/auth";
+import { listBanners } from "@/lib/api/banners";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [banners, setBanners] = useState<Array<any>>([]);
 
   const router = useRouter();
 
@@ -71,13 +73,18 @@ export default function LoginPage() {
     }
   };
 
+    useEffect(() => {
+      listBanners("auth").then((res) => setBanners(res.data));
+    }, []);
+    const banner = banners.length > 0 ? banners[0] : null;
+
   return (
     <div className="flex min-h-screen">
       {/* Left Column: Branding Image */}
       <div className="relative hidden lg:block w-1/2">
         <Image
           fill
-          src="/account-header.jpg"
+          src={banner?.banner || "/account-header.jpg"}
           alt="African Market Hub Branding"
           className="object-cover"
           priority
