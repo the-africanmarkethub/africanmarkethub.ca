@@ -303,7 +303,7 @@ const ContactUsPage: React.FC = () => {
                 Get in Touch
               </h2>
               <p className="text-gray-600 mb-6">
-                Connect with our team directly via phone or email for specific
+                Connect with our team directly via email for specific
                 inquiries.
               </p>
 
