@@ -103,12 +103,12 @@ export async function deleteItemPhoto(
 }
 
 export async function listSizes() {
-  const response = await api.get("/vendor/list-sizes");
+  const response = await api.get("/vendor/items/sizes");
   return response.data.data;
 }
 
 export async function listColors() {
-  const response = await api.get("/vendor/list-colors");
+  const response = await api.get("/vendor/items/colors");
   return response.data.data;
 }
 
