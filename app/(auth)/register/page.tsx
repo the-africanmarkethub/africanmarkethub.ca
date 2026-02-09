@@ -57,17 +57,19 @@ export default function RegisterPage() {
         toast.success(response.message || "Registration successful!");
         router.replace("/confirm-email");
       }
-    } catch (error) {
-      let message = "Registration failed. Please try again.";
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 422 && error.response.data?.errors) {
-          message = Object.values(error.response.data.errors).flat().join(" ");
-        } else if (error.response?.data?.message) {
-          message = error.response.data.message;
+  } catch (error:any) {
+    console.error("Full Backend Error:", error.response?.data); // CHECK THIS IN PROD CONSOLE
+    let message = "Registration failed. Please try again.";
+    if (error instanceof AxiosError) {
+        const serverErrors = error.response?.data?.errors;
+        if (serverErrors) {
+            message = Object.values(serverErrors).flat().join(" ");
+        } else {
+            message = error.response?.data?.message || message;
         }
-      }
-      toast.error(message);
-    } finally {
+    }
+    toast.error(message);
+} finally {
       setLoading(false);
     }
   };
