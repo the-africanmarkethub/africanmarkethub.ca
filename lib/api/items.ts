@@ -76,7 +76,6 @@ export async function addItem(formData: FormData) {
 }
 
 export async function updateItem(ItemId: number, formData: FormData) {
-  formData.append("_method", "PUT");
   const response = await api.post(`/vendor/items/update/${ItemId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
