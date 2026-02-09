@@ -29,7 +29,6 @@ export const metadata: Metadata = {
     "buy African products",
     "African fashion",
     "African marketplace",
-    "Afrovending",
   ],
   openGraph: {
     title: APP_NAME,

@@ -299,8 +299,8 @@ export const REGISTRATION_COUNTRY_LIST: CountryOption[] = [
   },
 ];
 export const COMPANY_CONTACT_INFO = {
-  address: "77 The Lakes, Larkfield, Aylesford, Kent ME20 6SJ, UK",
-  phone: "+44 7930 173135",
+  address: "",
+  phone: "",
   email: "info@africanmarkethub.ca",
   companyName: APP_NAME,
   about: `
