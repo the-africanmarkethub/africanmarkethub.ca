@@ -116,7 +116,7 @@ export const upsertProductVariations = async (
   productId: number,
   variations: any[]
 ) => {
-  const response = await api.post("/vendor/product/variation/upsert", {
+  const response = await api.post("/vendor/items/variation/save", {
     product_id: productId,
     variations: variations.map((v) => ({
       id: v.id || null,

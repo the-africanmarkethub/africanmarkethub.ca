@@ -6,7 +6,7 @@ export async function listCoupons(
   offset: number = 0,
   search: string = ""
 ) {
-  const response = await api.get("/vendor/discounts", {
+  const response = await api.get("/vendor/items/discounts", {
     params: {
       limit,
       offset,
@@ -17,6 +17,6 @@ export async function listCoupons(
 }
  
 export async function upsertCoupon(data: any){
-    const response = await api.post("/vendor/discounts/upsert", data);
+    const response = await api.post("/vendor/items/discounts/save", data);
     return response.data;
 }
