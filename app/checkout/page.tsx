@@ -172,7 +172,7 @@ export default function CheckoutPage() {
           });
 
           if (addrRes.phone) setPhone(addrRes.phone);
- 
+
           setShowPersonalDetails(false);
         }
       } catch (error: any) {
