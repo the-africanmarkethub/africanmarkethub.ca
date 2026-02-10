@@ -53,7 +53,7 @@ export default function Error({
       <div className="bg-white shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
         <div className="flex justify-center mb-6">
           <div className="bg-red-100 p-6 rounded-full">
-            <XCircleIcon className="text-red-600 size-60"/>
+            <XCircleIcon className="text-red-600 size-12"/>
           </div>
         </div>
 
