@@ -105,26 +105,12 @@ export default function CheckoutPage() {
     // State 2-letter validation
     const stateTrimmed = address.state.trim();
 
-    if (address.country === "GB") {
-      // For UK: Must be more than 2 letters (e.g., "London", not "LD")
-      if (stateTrimmed.length <= 2) {
-        return toast.error(
-          "Please enter the full County/State name for UK (e.g., London)",
-        );
-      }
-    } else {
-      // For others (US/CA): Must be exactly 2 letters (e.g., "NY", "ON")
-      if (stateTrimmed.length !== 2) {
-        return toast.error("State must be a 2-letter code (e.g., NY or ON)");
-      }
+    if (stateTrimmed.length !== 2) {
+      return toast.error("State must be a 2-letter code (e.g., NY or ON)");
     }
 
     const zipLength = address.zip_code.length;
-    if (zipLength < 5 || zipLength > 10) {
-      return toast.error(
-        "Postal/Code code must be between 5 and 10 characters",
-      );
-    }
+    if (!zipLength) return toast.error("Postal code is required");
 
     if (!address.country.trim()) return toast.error("Country is required");
 
@@ -186,8 +172,7 @@ export default function CheckoutPage() {
           });
 
           if (addrRes.phone) setPhone(addrRes.phone);
-
-          // Hide the personal fields only if we actually found data
+ 
           setShowPersonalDetails(false);
         }
       } catch (error: any) {
