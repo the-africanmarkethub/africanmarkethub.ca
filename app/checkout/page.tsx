@@ -109,8 +109,11 @@ export default function CheckoutPage() {
       return toast.error("State must be a 2-letter code (e.g., NY or ON)");
     }
 
-    const zipLength = address.zip_code.length;
-    if (!zipLength) return toast.error("Postal code is required");
+    if (address.zip_code.length < 6) {
+      return toast.error(
+        "Google provided a partial zip. Please add the last 3 digits.",
+      );
+    }
 
     if (!address.country.trim()) return toast.error("Country is required");
 
@@ -156,38 +159,38 @@ export default function CheckoutPage() {
     }
   };
 
-useEffect(() => {
-  const fetchSavedAddress = async () => {
-    // Only attempt if we have a user in the store, 
-    // but don't block guests if we don't.
-    if (!user) return; 
+  useEffect(() => {
+    const fetchSavedAddress = async () => {
+      // Only attempt if we have a user in the store,
+      // but don't block guests if we don't.
+      if (!user) return;
 
-    try {
-      const addrRes = await getAddress();
-      if (addrRes && addrRes.street_address) {
-        setAddress({
-          street_address: addrRes.street_address || "",
-          city: addrRes.city || "",
-          state: addrRes.state || "",
-          zip_code: addrRes.zip_code || "",
-          country: addrRes.country || "",
-          phone: addrRes.phone || "",
-          dialCode: addrRes.dialCode || "+1",
-        });
+      try {
+        const addrRes = await getAddress();
+        if (addrRes && addrRes.street_address) {
+          setAddress({
+            street_address: addrRes.street_address || "",
+            city: addrRes.city || "",
+            state: addrRes.state || "",
+            zip_code: addrRes.zip_code || "",
+            country: addrRes.country || "",
+            phone: addrRes.phone || "",
+            dialCode: addrRes.dialCode || "+1",
+          });
 
-        if (addrRes.phone) setPhone(addrRes.phone);
-        
-        // Collapse the personal details if we successfully auto-filled
-        setShowPersonalDetails(false);
+          if (addrRes.phone) setPhone(addrRes.phone);
+
+          // Collapse the personal details if we successfully auto-filled
+          setShowPersonalDetails(false);
+        }
+      } catch (error) {
+        // Guest path: API might return 401, we just ignore it.
+        console.log("Proceeding as Guest.");
       }
-    } catch (error) {
-      // Guest path: API might return 401, we just ignore it.
-      console.log("Proceeding as Guest.");
-    }
-  };
+    };
 
-  fetchSavedAddress();
-}, [user]);
+    fetchSavedAddress();
+  }, [user]);
 
   useEffect(() => {
     if ((window.google as any)?.maps?.places) {
