@@ -40,7 +40,7 @@ export const createBookingProposal = async (payload: {
   address?: string;
   amount: number;
 }) => {
-  const { data } = await api.post("/customer/booking/upsert", payload);
+  const { data } = await api.post("/customer/booking/checkout", payload);
   return data;
 };
 
