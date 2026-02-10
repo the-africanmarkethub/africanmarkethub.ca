@@ -111,7 +111,7 @@ export default function CheckoutPage() {
 
     if (address.zip_code.length < 6) {
       return toast.error(
-        "Google provided a partial zip. Please add the last 3 digits.",
+        "Incomplete/Incorrect postal code.",
       );
     }
 
