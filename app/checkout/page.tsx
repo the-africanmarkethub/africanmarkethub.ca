@@ -155,36 +155,39 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const fetchSavedAddress = async () => {
-      try {
-        // The API call happens here
-        const addrRes = await getAddress();
-        if (addrRes && addrRes.street_address) {
-          setAddress({
-            street_address: addrRes.street_address || "",
-            city: addrRes.city || "",
-            state: addrRes.state || "",
-            zip_code: addrRes.zip_code || "",
-            country: addrRes.country || "",
-            phone: addrRes.phone || "",
-            dialCode: addrRes.dialCode || "+1",
-          });
+  
+useEffect(() => {
+  const fetchSavedAddress = async () => {
+    // Only attempt if we have a user in the store, 
+    // but don't block guests if we don't.
+    if (!user) return; 
 
-          if (addrRes.phone) setPhone(addrRes.phone);
+    try {
+      const addrRes = await getAddress();
+      if (addrRes && addrRes.street_address) {
+        setAddress({
+          street_address: addrRes.street_address || "",
+          city: addrRes.city || "",
+          state: addrRes.state || "",
+          zip_code: addrRes.zip_code || "",
+          country: addrRes.country || "",
+          phone: addrRes.phone || "",
+          dialCode: addrRes.dialCode || "+1",
+        });
 
-          setShowPersonalDetails(false);
-        }
-      } catch (error: any) {
-        // SILENT FAIL
-        console.log(
-          "No saved address found or user not logged in. Continuing with empty form.",
-        );
+        if (addrRes.phone) setPhone(addrRes.phone);
+        
+        // Collapse the personal details if we successfully auto-filled
+        setShowPersonalDetails(false);
       }
-    };
+    } catch (error) {
+      // Guest path: API might return 401, we just ignore it.
+      console.log("Proceeding as Guest.");
+    }
+  };
 
-    fetchSavedAddress();
-  }, []);
+  fetchSavedAddress();
+}, [user]);
 
   useEffect(() => {
     if ((window.google as any)?.maps?.places) {
