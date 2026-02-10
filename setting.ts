@@ -20,7 +20,7 @@ export const LOCALDELIVERYOPTION: SelectOption[] = [
   {
     id: 1,
     name: "Flat Fee",
-    label: "I will charge a fixed price for any delivery.",
+    label: "I will charge a fixed price for my delivery carrier.",
   },
   // { id: 2, name: "Free Delivery", label: "I will deliver for free to customers." },
   { id: 3, name: "Not Available", label: "Use platform's standard shipping." },
