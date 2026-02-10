@@ -71,7 +71,7 @@ export async function getStats(period: string) {
 }
 
 export async function submitReview(payload: FormData) {
-  const response = await api.post("/customer/review/create", payload, {
+  const response = await api.post("/customer/items/review/create", payload, {
     headers: {
       "Content-Type": "multipart/form-data", 
     },
