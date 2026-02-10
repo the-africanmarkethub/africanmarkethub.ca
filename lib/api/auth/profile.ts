@@ -6,7 +6,7 @@ export async function updateUserProfile(payload: {
   last_name: string;
   phone: string;
 }): Promise<User> {
-  const response = await api.put(`/profile/update`, payload);
+  const response = await api.post(`/profile/update`, payload);
   return response.data.data;
 }
 
