@@ -17,8 +17,12 @@ export const TYPES: SelectOption[] = [
 ];
 
 export const LOCALDELIVERYOPTION: SelectOption[] = [
-  { id: 1, name: "Flat Fee", label: "I will charge a fixed price for any delivery." },
-  { id: 2, name: "Free Delivery", label: "I will deliver for free to customers." },
+  {
+    id: 1,
+    name: "Flat Fee",
+    label: "I will charge a fixed price for any delivery.",
+  },
+  // { id: 2, name: "Free Delivery", label: "I will deliver for free to customers." },
   { id: 3, name: "Not Available", label: "Use platform's standard shipping." },
 ];
 
@@ -30,7 +34,14 @@ export const ID_OPTIONS: Option[] = [
 ];
 
 export interface Option extends DefaultOption {}
-export interface SelectOption { id: number; name: string; label?: string; code?: string; flag?: string; dial_code?: string; }
+export interface SelectOption {
+  id: number;
+  name: string;
+  label?: string;
+  code?: string;
+  flag?: string;
+  dial_code?: string;
+}
 import {
   FiUser,
   FiPackage,
@@ -135,7 +146,7 @@ export const VENDOR_MENU: NavItem[] = [
         label: "Coupon Management",
         href: "/dashboard/marketing/item-coupon",
         icon: HiOutlineTicket,
-      }, 
+      },
     ],
   },
   {
@@ -260,7 +271,7 @@ export const VALID_IMAGE_TYPES = [
   "image/jpg",
   "image/png",
   "image/webp",
-  "image/heic",  
+  "image/heic",
   "image/heif",
 ];
 
