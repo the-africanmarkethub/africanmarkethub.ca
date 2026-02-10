@@ -155,7 +155,7 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
-  
+
 useEffect(() => {
   const fetchSavedAddress = async () => {
     // Only attempt if we have a user in the store, 
@@ -267,6 +267,7 @@ useEffect(() => {
                         value={email}
                         onChange={setEmail}
                         required
+                        placeholder="for tracking purposes"
                       />
                     </div>
                   </>

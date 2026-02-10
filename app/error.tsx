@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { FaSkullCrossbones, FaArrowLeft, FaRedo } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Error({
   error,
@@ -52,7 +53,7 @@ export default function Error({
       <div className="bg-white shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
         <div className="flex justify-center mb-6">
           <div className="bg-red-100 p-6 rounded-full">
-            <FaSkullCrossbones className="text-red-600" size={60} />
+            <XCircleIcon className="text-red-600 size-60"/>
           </div>
         </div>
 
