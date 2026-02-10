@@ -1,6 +1,7 @@
 import { FaDhl } from "react-icons/fa6";
 import { SiFedex, SiUps, SiUsps, SiAmazon, SiDeliveroo } from "react-icons/si";
 import { MdLocalShipping } from "react-icons/md";
+import { TbTruckDelivery } from "react-icons/tb"; // Modern delivery icon
 
 export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 
@@ -285,6 +286,7 @@ export const CARRIER_ICONS: Record<
   usps: { icon: SiUsps, color: "#3333CC" },
   amazon: { icon: SiAmazon, color: "#FF9900" },
   deliveroo: { icon: SiDeliveroo, color: "#00CCBC" },
+  uniuni: { icon: TbTruckDelivery, color: "#F68841" },
   default: { icon: MdLocalShipping, color: "#FF9920" },
 };
 
