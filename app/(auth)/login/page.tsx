@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link"; 
+import Link from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import GoogleSignInButton from "@/app/components/common/GoogleSignInButton";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
@@ -59,10 +59,23 @@ export default function LoginPage() {
       let message = "Login failed. Please try again.";
 
       if (error instanceof AxiosError) {
-        if (error.response?.status === 422 && error.response.data?.errors) {
-          message = Object.values(error.response.data.errors).flat().join(" ");
-        } else if (error.response?.data?.message) {
-          message = error.response.data.message;
+        const responseData = error.response?.data;
+ 
+        if (
+          error.response?.status === 403 &&
+          responseData?.code === "EMAIL_UNVERIFIED"
+        ) {
+          toast.error(responseData.message || "Email not verified");
+ 
+          router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
+          return;
+        }
+ 
+        if (error.response?.status === 422 && responseData?.errors) {
+          message = Object.values(responseData.errors).flat().join(" ");
+        } 
+        else if (responseData?.message) {
+          message = responseData.message;
         }
       }
       toast.error(message);
@@ -70,13 +83,12 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
- 
 
   return (
     <div className="flex min-h-screen">
       {/* Left Column: Branding Image */}
-      
-     <AuthSideBarBanner />
+
+      <AuthSideBarBanner />
 
       {/* Right Column: Auth UI */}
       <div className="flex items-center justify-center bg-gray-50 p-8 w-full lg:w-1/2">
@@ -145,7 +157,6 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  // Use tabIndex="-1" so the user doesn't accidentally tab onto the eye icon instead of the button
                   tabIndex={-1}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
                 >
