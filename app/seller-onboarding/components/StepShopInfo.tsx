@@ -181,24 +181,25 @@ export default function StepShopInfo({ onNext }: StepProps) {
         toast.success("Shop updated!");
         onNext?.();
       }
-    } catch (err: any) {
-      console.log(err);
-      // 1. Check if the backend sent a specific validation errors object (e.g., Laravel style)
-      const validationErrors = err.response?.data?.message;
-      if (validationErrors) {
-        // Loop through the errors and show a toast for each one
-        
-            toast.error(validationErrors);
-          
-      }
-      // 2. Check for a single error message
-      //else if (err.response?.data?.message) {
-        //toast.error(err.response.data.message);
-      //}
-      // 3. Fallback for network issues or unexpected crashes
-      else {
-       toast.error("Something went wrong. Please check your inputs.");
-      }
+  } catch (err: any) {
+  console.log("Full Error Object:", err.response?.data);
+
+  const errorData = err.response?.data;
+
+  // 1. Handle Laravel Validation Errors (Objects)
+  if (errorData?.errors) {
+    const firstErrorKey = Object.keys(errorData.errors)[0];
+    const firstErrorMessage = errorData.errors[firstErrorKey][0];
+    toast.error(firstErrorMessage); // Shows "The phone field is required" etc.
+  } 
+  // 2. Handle Custom Backend Messages
+  else if (errorData?.message) {
+    toast.error(errorData.message);
+  } 
+  else {
+    toast.error("Something went wrong. Please check your inputs.");
+  }
+
     } finally {
       setLoading(false);
     }
