@@ -191,13 +191,13 @@ export default function StepShopInfo({ onNext }: StepProps) {
           
       }
       // 2. Check for a single error message
-      else if (err.response?.data?.message) {
-        toast.error(err.response.data.message);
-      }
+      //else if (err.response?.data?.message) {
+        //toast.error(err.response.data.message);
+      //}
       // 3. Fallback for network issues or unexpected crashes
-      else {
-        toast.error("Something went wrong. Please check your inputs.");
-      }
+      //else {
+      //  toast.error("Something went wrong. Please check your inputs.");
+      //}
     } finally {
       setLoading(false);
     }
