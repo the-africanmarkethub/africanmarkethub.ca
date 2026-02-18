@@ -183,15 +183,12 @@ export default function StepShopInfo({ onNext }: StepProps) {
       }
     } catch (err: any) {
       // 1. Check if the backend sent a specific validation errors object (e.g., Laravel style)
-      const validationErrors = err.response?.data?.errors;
-
+      const validationErrors = err.response?.data?.message;
       if (validationErrors) {
         // Loop through the errors and show a toast for each one
-        Object.values(validationErrors)
-          .flat()
-          .forEach((errorMsg: any) => {
-            toast.error(errorMsg);
-          });
+        
+            toast.error(validationErrors);
+          
       }
       // 2. Check for a single error message
       else if (err.response?.data?.message) {
