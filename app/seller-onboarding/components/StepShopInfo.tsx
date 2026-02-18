@@ -162,7 +162,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("phone", phoneNumber);
       form.append("category_id", String(selectedCategory.id));
       form.append("type", selectedType.name.toLowerCase());
-      form.append("local_delivery_setting", localDelivery.name);
+      form.append("local_delivery_setting", localDelivery.name || "");
       form.append("identification_type", identificationType?.name || "");
 
       if (idDocFile) form.append("identification_document", idDocFile);
