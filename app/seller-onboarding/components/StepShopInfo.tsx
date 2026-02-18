@@ -182,6 +182,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         onNext?.();
       }
     } catch (err: any) {
+      console.log(err);
       // 1. Check if the backend sent a specific validation errors object (e.g., Laravel style)
       const validationErrors = err.response?.data?.message;
       if (validationErrors) {
@@ -195,9 +196,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
         //toast.error(err.response.data.message);
       //}
       // 3. Fallback for network issues or unexpected crashes
-      //else {
-      //  toast.error("Something went wrong. Please check your inputs.");
-      //}
+      else {
+       toast.error("Something went wrong. Please check your inputs.");
+      }
     } finally {
       setLoading(false);
     }
