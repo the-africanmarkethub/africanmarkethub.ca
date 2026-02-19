@@ -33,9 +33,10 @@ export async function getOrderDetail(orderId: string) {
   return response.data;
 }
 
-export async function changeOrderStatus(orderId: number, status: string) {
-  const response = await api.put(`/orders/${orderId}/status`, {
-    status,
+export async function changeOrderStatus(orderId: number, status: string, extraData: any = {}) {
+  const response = await api.put(`/vendor/order/update/${orderId}`, {
+    shipping_status: status,
+    ...extraData
   });
   return response.data;
 }

@@ -32,7 +32,7 @@ export default function SelectField<T extends DefaultOption>({
       {label && (
         <label
           className={`block text-sm font-medium mb-1 ${
-            disabled ? "text-gray-400" : "text-gray-700"
+            disabled ? "text-gray-400" : "text-gray-500"
           }`}
         >
           {label} <span className="text-red-500">*</span>

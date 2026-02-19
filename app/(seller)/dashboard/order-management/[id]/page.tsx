@@ -11,7 +11,14 @@ import { Order, OrderItem as OrderItemType } from "@/interfaces/orders";
 import Address from "@/interfaces/address";
 import { getOrderDetail } from "@/lib/api/orders";
 import { formatHumanReadableDate } from "@/utils/formatDate";
-import { STATUS_OPTIONS, PAYMENT_STATUS_OPTIONS } from "@/setting";
+import { STATUS_OPTIONS } from "@/setting";
+import { changeOrderStatus } from "@/lib/api/orders";
+import { toast } from "react-hot-toast";
+import Modal from "@/app/components/common/Modal";
+import SelectField from "@/app/components/common/SelectField";
+import Input from "../../components/commons/Fields/Input";
+import { SubmitButton } from "../../components/commons/SubmitButton";
+
 interface OrderStats {
   total_orders: number;
   total_amount: string;
@@ -19,20 +26,17 @@ interface OrderStats {
   total_delivered: number;
 }
 
-// Define the overall API response structure
 interface OrderDetailResponse {
   status: string;
   message: string;
   data: {
-    order: Order; // Use the corrected Order type
+    order: Order;
     total_orders: number;
     total_amount: string;
     total_cancelled: number;
     total_delivered: number;
   };
 }
-
-// --- OPTIONS (Kept the same) ---
 
 function CustomerSummary({
   customer,
@@ -221,8 +225,8 @@ function OrderItemsTable({ order }: { order: Order }) {
               {formatAmount(
                 order.order_items.reduce(
                   (sum, item) => sum + parseFloat(item.subtotal),
-                  0
-                )
+                  0,
+                ),
               )}
             </span>
           </div>
@@ -240,8 +244,6 @@ function OrderItemsTable({ order }: { order: Order }) {
   );
 }
 
-// --- Main Component ---
-
 export default function OrderDetail() {
   const params = useParams();
   const orderId = params?.id as string | undefined;
@@ -252,21 +254,32 @@ export default function OrderDetail() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  const initialShippingStatus = useMemo(() => {
-    const statusValue = orderDetail?.shipping_status || STATUS_OPTIONS[0].value;
-    return (
-      STATUS_OPTIONS.find((opt) => opt.value === statusValue) ||
-      STATUS_OPTIONS[0]
-    );
-  }, [orderDetail]);
+  const selectOptions = STATUS_OPTIONS.map((opt, index) => ({
+    id: index,
+    name: opt.label,
+    value: opt.value,
+  }));
 
-  const initialPaymentStatus = useMemo(() => {
-    const statusValue =
-      orderDetail?.payment_status || PAYMENT_STATUS_OPTIONS[0].value;
-    return (
-      PAYMENT_STATUS_OPTIONS.find((opt) => opt.value === statusValue) ||
-      PAYMENT_STATUS_OPTIONS[0]
-    );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    status: "",
+    tracking_number: "",
+    tracking_url: "",
+    shipping_method: "",
+    shipping_confirmation_code: "",
+  });
+
+  useEffect(() => {
+    if (orderDetail) {
+      setFormData({
+        status: orderDetail.shipping_status,
+        tracking_number: orderDetail.tracking_number || "",
+        tracking_url: orderDetail.tracking_url || "",
+        shipping_method: orderDetail.shipping_method || "",
+        shipping_confirmation_code:
+          orderDetail.shipping_confirmation_code || "",
+      });
+    }
   }, [orderDetail]);
 
   useEffect(() => {
@@ -305,20 +318,51 @@ export default function OrderDetail() {
   const customer = orderDetail.customer;
   const address = orderDetail.address;
 
+  const handleUpdateStatus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!orderId) return;
+
+    setUpdating(true);
+    try {
+      await changeOrderStatus(Number(orderId), formData.status, {
+        tracking_number: formData.tracking_number,
+        tracking_url: formData.tracking_url,
+        shipping_method: formData.shipping_method,
+        shipping_confirmation_code: formData.shipping_confirmation_code,
+      });
+
+      toast.success("Order updated successfully");
+      setIsModalOpen(false);
+      window.location.reload();
+    } catch (err) {
+      toast.error("Failed to update order");
+      console.error(err);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const selectedStatusOption =
+    selectOptions.find((opt) => opt.value === formData.status) ||
+    selectOptions[0];
+
+  const handleStatusChange = (option: (typeof selectOptions)[0]) => {
+    setFormData({ ...formData, status: option.value });
+  };
+
   return (
     <div className="p-0 text-gray-600 space-y-4">
-      {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold text-gray-800">
           Order Details - #{orderMeta.id}
         </h1>
         <div className="flex items-center gap-2">
-          {orderMeta.shipping_status === "processing" &&
-            orderMeta.payment_status === "pending" && (
-              <button className="bg-red-100 text-red-600 px-4 py-1 rounded-md text-sm font-medium">
-                Eligible for refund
-              </button>
-            )}
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-hub-primary cursor-pointer text-white px-4 py-1 rounded-md text-sm font-medium hover:bg-opacity-90"
+          >
+            Update Shipping Info
+          </button>
         </div>
       </div>
       <CustomerSummary customer={customer} address={address} stats={stats} />
@@ -340,13 +384,12 @@ export default function OrderDetail() {
               <p className="font-medium text-gray-600 w-1/2">
                 Shipping Method:
               </p>
-              {/* Assuming shipping_method is available on orderMeta */}
               <p className="text-gray-800 font-semibold w-1/2 text-right">
                 {orderMeta.shipping_method ?? "N/A"}
               </p>
             </div>
 
-            <div className="flex justify-between items-start">
+            <div hidden className="flex justify-between items-start">
               <p className="font-medium text-gray-600 w-1/2">
                 Tracking Number:
               </p>
@@ -382,12 +425,12 @@ export default function OrderDetail() {
 
             <div className="flex justify-between items-start">
               <p className="font-medium text-gray-600 w-1/2">Payment Status:</p>
-              {/* Using the payment_status from the Order object for accuracy */}
               <p
-                className={`font-semibold w-1/2 text-right ${orderMeta.payment_status === "completed"
-                  ? "text-hub-secondary"
-                  : "text-red-700"
-                  }`}
+                className={`font-semibold w-1/2 text-right ${
+                  orderMeta.payment_status === "completed"
+                    ? "text-hub-secondary"
+                    : "text-red-700"
+                }`}
               >
                 {orderMeta.payment_status.toUpperCase()}
               </p>
@@ -398,10 +441,11 @@ export default function OrderDetail() {
                 Vendor Settlement:
               </p>
               <p
-                className={`font-semibold w-1/2 text-right ${orderMeta.vendor_payment_settlement_status === "unpaid"
-                  ? "text-red-700"
-                  : "text-hub-secondary"
-                  }`}
+                className={`font-semibold w-1/2 text-right ${
+                  orderMeta.vendor_payment_settlement_status === "unpaid"
+                    ? "text-red-700"
+                    : "text-hub-secondary"
+                }`}
               >
                 {orderMeta.vendor_payment_settlement_status.toUpperCase()}
               </p>
@@ -409,6 +453,74 @@ export default function OrderDetail() {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Update Order Status"
+        description="Modify shipping details and order progress."
+      >
+        <form onSubmit={handleUpdateStatus} className="space-y-4 mt-4">
+          <SelectField
+            label="Status"
+            options={selectOptions}
+            value={selectedStatusOption}
+            onChange={handleStatusChange}
+          />
+
+          {formData.status === "delivered" && (
+            <Input
+              id="shipping_confirmation_code"
+              label="Shipping Confirmation Code"
+              placeholder="Enter delivery code"
+              maxLength={6}
+              type="tel"
+              value={formData.shipping_confirmation_code}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  shipping_confirmation_code: e.target.value,
+                })
+              }
+              helpText="Required for status 'Delivered'"
+              showHelpText={true}
+            />
+          )}
+
+          <Input
+            id="tracking_number"
+            label="Tracking Number"
+            placeholder="e.g. TRK123456"
+            value={formData.tracking_number}
+            onChange={(e) =>
+              setFormData({ ...formData, tracking_number: e.target.value })
+            }
+          />
+
+          <Input
+            id="tracking_url"
+            label="Tracking URL"
+            type="url"
+            placeholder="https://shipping-provider.com/..."
+            value={formData.tracking_url}
+            onChange={(e) =>
+              setFormData({ ...formData, tracking_url: e.target.value })
+            }
+          />
+
+          <div className="flex flex-col gap-3 mt-6">
+            <SubmitButton label="Update Order" loading={updating} />
+
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="w-full py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Cancel and Go Back
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

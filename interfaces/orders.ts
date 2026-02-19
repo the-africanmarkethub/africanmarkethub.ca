@@ -40,6 +40,7 @@ export interface Order {
   payment_method: string; // e.g., "card"
   shipping_status: string; // e.g., "processing"
   shipping_method: string; // e.g., "UPS"
+  shipping_confirmation_code?: string; // e.g., "UPS"
   shipping_fee: string;
   tracking_number: string | null;
   payment_link: string | null;
