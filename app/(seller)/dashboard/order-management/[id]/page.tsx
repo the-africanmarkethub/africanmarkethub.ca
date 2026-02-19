@@ -334,9 +334,9 @@ export default function OrderDetail() {
       toast.success("Order updated successfully");
       setIsModalOpen(false);
       window.location.reload();
-    } catch (err) {
-      toast.error("Failed to update order");
-      console.error(err);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message;
+      toast.error(errorMessage ?? "Failed to update shipping");
     } finally {
       setUpdating(false);
     }
