@@ -143,67 +143,69 @@ export default function StepShopInfo({ onNext }: StepProps) {
     setTimeout(() => setUploadingMode(null), 600);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (description.length > MAX_DESC_LENGTH)
-      return toast.error("Description is too long.");
-    if (!name || !description || !phoneNumber || !selectedCategory)
-      return toast.error("Missing required fields.");
-    if (!zip || !lat || !lng) {
-      return toast.error(
-        "Please select a valid address from the dropdown to provide Zip and Coordinates.",
-      );
-    }
-    setLoading(true);
-    try {
-      const form = new FormData();
-      form.append("name", name);
-      form.append("description", description);
-      form.append("phone", phoneNumber);
-      form.append("category_id", String(selectedCategory.id));
-      form.append("type", selectedType.name.toLowerCase());
-      form.append("local_delivery_setting", localDelivery.name || "");
-      form.append("identification_type", identificationType?.name || "");
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (description.length > MAX_DESC_LENGTH)
+  //     return toast.error("Description is too long.");
+  //   if (!name || !description || !phoneNumber || !selectedCategory)
+  //     return toast.error("Missing required fields.");
+  //   if (!zip || !lat || !lng) {
+  //     return toast.error(
+  //       "Please select a valid address from the dropdown to provide Zip and Coordinates.",
+  //     );
+  //   }
+  //   setLoading(true);
+  //   try {
+  //     const form = new FormData();
+  //     form.append("name", name);
+  //     form.append("description", description);
+  //     form.append("phone", phoneNumber);
+  //     form.append("category_id", String(selectedCategory.id));
+  //     form.append("type", selectedType.name.toLowerCase());
+  //     form.append("local_delivery_setting", localDelivery.name || "");
+  //     form.append("identification_type", identificationType?.name ?? "studuent");
+      
+  //     if (idDocFile) form.append("identification_document", idDocFile);
+  //     console.log(idDocFile);
+  //     if (logoFile) form.append("logo", logoFile);
+  //     if (bannerFile) form.append("banner", bannerFile);
+  //     form.append("address", addressLine);
+  //     form.append("city", city);
+  //     form.append("state", stateCode);
+  //     form.append("zip", zip);
+  //     form.append("country", countryCode);
+  //     form.append("lat", String(lat)); // Ensure these are strings in FormData
+  //     form.append("lng", String(lng));
+      
+  //     const res = await saveShop(form);
+  //     console.log(res);
+  //     if (res.status === "success") {
+  //       toast.success("Shop updated!");
+  //       onNext?.();
+  //     }
+  // } catch (err: any) {
+  // // console.log("Full Error Object:", err.response?.data);
 
-      if (idDocFile) form.append("identification_document", idDocFile);
-      if (logoFile) form.append("logo", logoFile);
-      if (bannerFile) form.append("banner", bannerFile);
-      form.append("address", addressLine);
-      form.append("city", city);
-      form.append("state", stateCode);
-      form.append("zip", zip);
-      form.append("country", countryCode);
-      form.append("lat", String(lat)); // Ensure these are strings in FormData
-      form.append("lng", String(lng));
+  // const errorData = err.response?.data;
 
-      const res = await saveShop(form);
-      if (res.status === "success") {
-        toast.success("Shop updated!");
-        onNext?.();
-      }
-  } catch (err: any) {
-  console.log("Full Error Object:", err.response?.data);
+  // // 1. Handle Laravel Validation Errors (Objects)
+  // if (errorData?.errors) {
+  //   const firstErrorKey = Object.keys(errorData.errors)[0];
+  //   const firstErrorMessage = errorData.errors[firstErrorKey][0];
+  //   toast.error(firstErrorMessage); // Shows "The phone field is required" etc.
+  // } 
+  // // 2. Handle Custom Backend Messages
+  // else if (errorData?.message) {
+  //   toast.error(errorData.message);
+  // } 
+  // else {
+  //   toast.error("Something went wrong. Please check your inputs.");
+  // }
 
-  const errorData = err.response?.data;
-
-  // 1. Handle Laravel Validation Errors (Objects)
-  if (errorData?.errors) {
-    const firstErrorKey = Object.keys(errorData.errors)[0];
-    const firstErrorMessage = errorData.errors[firstErrorKey][0];
-    toast.error(firstErrorMessage); // Shows "The phone field is required" etc.
-  } 
-  // 2. Handle Custom Backend Messages
-  else if (errorData?.message) {
-    toast.error(errorData.message);
-  } 
-  else {
-    toast.error("Something went wrong. Please check your inputs.");
-  }
-
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     const loadData = async () => {
@@ -312,6 +314,74 @@ export default function StepShopInfo({ onNext }: StepProps) {
       </div>
     );
 
+    const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // 1. Basic Validation
+    if (description.length > MAX_DESC_LENGTH) {
+      return toast.error("Description is too long.");
+    }
+    if (!name || !description || !phoneNumber || !selectedCategory) {
+      return toast.error("Missing required fields.");
+    }
+    if (!zip || !lat || !lng) {
+      return toast.error(
+        "Please select a valid address from the dropdown to provide Zip and Coordinates."
+      );
+    }
+
+    // 2. Prepare FormData
+    const form = new FormData();
+    form.append("name", name);
+    form.append("description", description);
+    form.append("phone", phoneNumber);
+    form.append("category_id", String(selectedCategory.id));
+    form.append("type", selectedType.name.toLowerCase());
+    
+    // Only append local_delivery_setting if type is 'products'
+    if (selectedType.name.toLowerCase() === "products") {
+      form.append("local_delivery_setting", localDelivery.name || "");
+    }
+
+    form.append("identification_type", identificationType?.name ?? "student");
+    
+    if (idDocFile) form.append("identification_document", idDocFile);
+    if (logoFile) form.append("logo", logoFile);
+    if (bannerFile) form.append("banner", bannerFile);
+    
+    form.append("address", addressLine);
+    form.append("city", city);
+    form.append("state", stateCode);
+    form.append("zip", zip);
+    form.append("country", countryCode);
+    form.append("lat", String(lat));
+    form.append("lng", String(lng));
+
+    // 3. Execution
+    setLoading(true);
+    try {
+      const res = await saveShop(form);
+      if (res.status === "success") {
+        toast.success("Shop updated!");
+        onNext?.();
+      }
+    } catch (err: any) {
+      const errorData = err.response?.data;
+
+      if (errorData?.errors) {
+        const firstErrorKey = Object.keys(errorData.errors)[0];
+        const firstErrorMessage = errorData.errors[firstErrorKey][0];
+        toast.error(firstErrorMessage);
+      } else if (errorData?.message) {
+        toast.error(errorData.message);
+      } else {
+        toast.error("Something went wrong. Please check your inputs.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   return (
     <div className="mx-auto pb-20 max-w-6xl">
       <ShopHeaderCard
