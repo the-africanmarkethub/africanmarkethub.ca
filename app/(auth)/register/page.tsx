@@ -19,7 +19,12 @@ import { registerUser } from "@/lib/api/auth/auth";
 import { REGISTRATION_COUNTRY_LIST } from "@/setting";
 import AuthSideBarBanner from "@/app/components/common/AuthSideBarBanner";
 
-export default function RegisterPage() {
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
+
+function RegisterPage() {
   const [step, setStep] = useState(1);
   const [firstname, setName] = useState("");
   const [lastname, setLastName] = useState("");
@@ -30,15 +35,22 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(
-    REGISTRATION_COUNTRY_LIST[0]
+    REGISTRATION_COUNTRY_LIST[0],
   );
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!executeRecaptcha) {
+      toast.error("Security system not ready. Please refresh.");
+      return;
+    }
     setLoading(true);
 
     try {
+      const token = await executeRecaptcha("register_user");
+
       const device_name =
         typeof window !== "undefined" ? navigator.userAgent : "web";
       const payload = {
@@ -49,6 +61,7 @@ export default function RegisterPage() {
         password,
         role,
         device_name,
+        captcha_token: token,
       };
 
       const response = await registerUser(payload);
@@ -57,41 +70,39 @@ export default function RegisterPage() {
         toast.success(response.message || "Registration successful!");
         router.replace("/confirm-email");
       }
-  } catch (error:any) {
-    console.error("Full Backend Error:", error.response?.data); // CHECK THIS IN PROD CONSOLE
-    let message = "Registration failed. Please try again.";
-    if (error instanceof AxiosError) {
+    } catch (error: any) {
+      console.error("Full Backend Error:", error.response?.data); // CHECK THIS IN PROD CONSOLE
+      let message = "Registration failed. Please try again.";
+      if (error instanceof AxiosError) {
         const serverErrors = error.response?.data?.errors;
         if (serverErrors) {
-            message = Object.values(serverErrors).flat().join(" ");
+          message = Object.values(serverErrors).flat().join(" ");
         } else {
-            message = error.response?.data?.message || message;
+          message = error.response?.data?.message || message;
         }
-    }
-    toast.error(message);
-} finally {
+      }
+      toast.error(message);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="flex min-h-screen">
-
-           <AuthSideBarBanner />
-     
-
+      <AuthSideBarBanner />
 
       <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">
         <div className="w-full max-w-md">
-
           <div className="flex justify-center mb-8 gap-2">
             <div
-              className={`h-1.5 w-12 rounded-full ${step >= 1 ? "bg-hub-primary" : "bg-gray-200"
-                }`}
+              className={`h-1.5 w-12 rounded-full ${
+                step >= 1 ? "bg-hub-primary" : "bg-gray-200"
+              }`}
             ></div>
             <div
-              className={`h-1.5 w-12 rounded-full ${step >= 2 ? "bg-hub-primary" : "bg-gray-200"
-                }`}
+              className={`h-1.5 w-12 rounded-full ${
+                step >= 2 ? "bg-hub-primary" : "bg-gray-200"
+              }`}
             ></div>
           </div>
 
@@ -285,17 +296,19 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
     <button
       onClick={onClick}
       className={`group cursor-pointer relative w-full flex items-center p-5 border-2 rounded-2xl transition-all duration-200 text-left
-        ${active
-          ? "border-hub-primary bg-hub-secondary/10 shadow-md"
-          : "border-gray-200 bg-white hover:border-hub-secondary hover:shadow-sm"
+        ${
+          active
+            ? "border-hub-primary bg-hub-secondary/10 shadow-md"
+            : "border-gray-200 bg-white hover:border-hub-secondary hover:shadow-sm"
         }
       `}
     >
       <div
-        className={`p-3 rounded-xl mr-4 transition-colors ${active
+        className={`p-3 rounded-xl mr-4 transition-colors ${
+          active
             ? "bg-hub-primary text-white"
             : "bg-gray-100 text-gray-500 group-hover:bg-hub-secondary group-hover:text-hub-secondary"
-          }`}
+        }`}
       >
         {icon}
       </div>
@@ -310,7 +323,13 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
   );
 }
 
-export function Input({ label, type = "text", value, onChange, placeholder }: any) {
+export function Input({
+  label,
+  type = "text",
+  value,
+  onChange,
+  placeholder,
+}: any) {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -325,5 +344,13 @@ export function Input({ label, type = "text", value, onChange, placeholder }: an
         placeholder={placeholder}
       />
     </div>
+  );
+}
+
+export default function Register() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey="6LdTuXAsAAAAAJlPqPJxOiiJeT8s61H3P1SgF9-X">
+      <RegisterPage />
+    </GoogleReCaptchaProvider>
   );
 }
