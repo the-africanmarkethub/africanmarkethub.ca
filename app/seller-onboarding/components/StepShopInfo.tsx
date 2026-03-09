@@ -444,7 +444,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
             options={ID_OPTIONS}
           />
           <div className="mt-4">
-            <label className="block mb-2 text-sm font-semibold">
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Upload ID Preview
             </label>
             <div className="relative flex flex-col items-center justify-center h-48 overflow-hidden border bg-slate-200 rounded-xl border-slate-100">
