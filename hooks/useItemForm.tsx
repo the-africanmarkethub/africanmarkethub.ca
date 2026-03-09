@@ -296,8 +296,8 @@ export function useItemForm(item: any) {
     if (!title || title.trim().length < 5)
       return "Title is required and must be at least 5 characters";
     if (title.length > 250) return "Title must be at most 250 characters";
-    if (!description || description.trim().length < 100)
-      return "Description is required and must be at least 100 characters";
+    if (!description || description.trim().length < 50)
+      return "Description is required and must be at least 50 characters";
 
     const totalImages = existingImages.urls.length + newPreviews.length;
     if (totalImages < 2) return "Please upload at least 2 images";
@@ -312,15 +312,15 @@ export function useItemForm(item: any) {
       return "Please select a subcategory";
 
     const floatOK = (v: string) =>
-      v === "" || (!isNaN(Number(v)) && Number(v) >= 0.1 && Number(v) <= 10000);
+      v === "" || (!isNaN(Number(v)) && Number(v) >= 1.0 && Number(v) <= 10000);
     if (!floatOK(weight))
-      return "Weight must be a number between 0.1 and 10000 or left empty";
+      return "Weight must be a number between 1.0 and 10000 or left empty";
     if (!floatOK(lengthVal))
-      return "Length must be a number between 0.1 and 10000 or left empty";
+      return "Length must be a number between 1.0 and 10000 or left empty";
     if (!floatOK(widthVal))
-      return "Width must be a number between 0.1 and 10000 or left empty";
+      return "Width must be a number between 1.0 and 10000 or left empty";
     if (!floatOK(heightVal))
-      return "Height must be a number between 0.1 and 10000 or left empty";
+      return "Height must be a number between 1.0 and 10000 or left empty";
     if (!weightUnit) return "Weight unit is required for dimension";
     if (!sizeUnit) return "Size unit is required for dimension";
 
