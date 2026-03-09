@@ -69,10 +69,8 @@ export default function BasicInfoFields({
               "body { font-family:Inter,Arial,sans-serif; font-size:14px; color:#374151 }",
 
             setup: (editor: any) => {
-              // Strict enforcement of max characters
               editor.on("KeyDown", (e: any) => {
                 const totalLength = editor.getContent().length;
-                // Allow Backspace (8) and Delete (46)
                 if (
                   totalLength >= 4000 &&
                   e.keyCode !== 8 &&
@@ -84,7 +82,6 @@ export default function BasicInfoFields({
             },
           }}
           onEditorChange={(content) => {
-            // Only update if within character limit
             if (content.length <= 4000) {
               setDescription(content);
             }

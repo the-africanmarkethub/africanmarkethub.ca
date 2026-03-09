@@ -131,82 +131,21 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
 
     // Auto-upload logic for existing shops
-    if (hasExistingShop && mode !== "document") {
-      const uploadFn =
-        mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
-      toast.promise(uploadFn, {
-        loading: `Syncing ${mode}...`,
-        success: `${mode} updated!`,
-        error: `Failed to upload ${mode}.`,
-      });
-    }
+  if (hasExistingShop && mode !== "document") {
+    const uploadPromise =
+      mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
+
+    toast.promise(uploadPromise, {
+      loading: `Syncing ${mode}...`,
+      success: (data) =>
+        `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
+      error: (err) =>
+        `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
+    });
+  }
     setTimeout(() => setUploadingMode(null), 600);
-  };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (description.length > MAX_DESC_LENGTH)
-  //     return toast.error("Description is too long.");
-  //   if (!name || !description || !phoneNumber || !selectedCategory)
-  //     return toast.error("Missing required fields.");
-  //   if (!zip || !lat || !lng) {
-  //     return toast.error(
-  //       "Please select a valid address from the dropdown to provide Zip and Coordinates.",
-  //     );
-  //   }
-  //   setLoading(true);
-  //   try {
-  //     const form = new FormData();
-  //     form.append("name", name);
-  //     form.append("description", description);
-  //     form.append("phone", phoneNumber);
-  //     form.append("category_id", String(selectedCategory.id));
-  //     form.append("type", selectedType.name.toLowerCase());
-  //     form.append("local_delivery_setting", localDelivery.name || "");
-  //     form.append("identification_type", identificationType?.name ?? "studuent");
-      
-  //     if (idDocFile) form.append("identification_document", idDocFile);
-  //     console.log(idDocFile);
-  //     if (logoFile) form.append("logo", logoFile);
-  //     if (bannerFile) form.append("banner", bannerFile);
-  //     form.append("address", addressLine);
-  //     form.append("city", city);
-  //     form.append("state", stateCode);
-  //     form.append("zip", zip);
-  //     form.append("country", countryCode);
-  //     form.append("lat", String(lat)); // Ensure these are strings in FormData
-  //     form.append("lng", String(lng));
-      
-  //     const res = await saveShop(form);
-  //     console.log(res);
-  //     if (res.status === "success") {
-  //       toast.success("Shop updated!");
-  //       onNext?.();
-  //     }
-  // } catch (err: any) {
-  // // console.log("Full Error Object:", err.response?.data);
-
-  // const errorData = err.response?.data;
-
-  // // 1. Handle Laravel Validation Errors (Objects)
-  // if (errorData?.errors) {
-  //   const firstErrorKey = Object.keys(errorData.errors)[0];
-  //   const firstErrorMessage = errorData.errors[firstErrorKey][0];
-  //   toast.error(firstErrorMessage); // Shows "The phone field is required" etc.
-  // } 
-  // // 2. Handle Custom Backend Messages
-  // else if (errorData?.message) {
-  //   toast.error(errorData.message);
-  // } 
-  // else {
-  //   toast.error("Something went wrong. Please check your inputs.");
-  // }
-
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  }; 
+  
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -215,7 +154,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
           getAddress().catch(() => null),
         ]);
 
-        // 1. Set fallback values from general address first
         if (addrRes) {
           setAddressLine(addrRes.street_address || "");
           setCity(addrRes.city || "");
@@ -225,10 +163,8 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setZip(addrRes.zip_code || "");
           if (addrRes.lat) setLat(Number(addrRes.lat));
           if (addrRes.lng) setLng(Number(addrRes.lng));
-        }
-
-        // 2. OVERWRITE with specific Shop data if it exists
-        // This ensures shop-specific location takes priority over profile address
+        } 
+        
         if (shopRes?.status === "success" && shopRes.data) {
           const s = shopRes.data;
           setShopData(s);
@@ -273,7 +209,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     let isMounted = true;
 
     const fetchCats = async () => {
-      setCategoriesLoading(true); // Start loading
+      setCategoriesLoading(true);  
       try {
         const r = await listCategories(
           50,
@@ -302,7 +238,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     fetchCats();
 
     return () => {
-      isMounted = false; // Cleanup to prevent memory leaks/race conditions
+      isMounted = false;  
     };
   }, [selectedType]);
 
@@ -310,7 +246,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <BeatLoader color="#00A85A" />
-        <p className="text-sm text-slate-500 mt-4">Syncing...</p>
+        <p className="mt-4 text-sm text-slate-500">Syncing...</p>
       </div>
     );
 
@@ -383,7 +319,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   };
   
   return (
-    <div className="mx-auto pb-20 max-w-6xl">
+    <div className="max-w-6xl pb-20 mx-auto">
       <ShopHeaderCard
         shop={shopData}
         subtitle={`Managing ${selectedType.name} Profile`}
@@ -391,29 +327,29 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
       <div className="relative mb-24">
         {/* Banner Upload Area */}
-        <div className="w-full h-56 bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative group">
+        <div className="relative w-full h-56 overflow-hidden border bg-slate-100 rounded-2xl border-slate-200 group">
           {bannerUrl ? (
             <img
               src={bannerUrl}
-              className="w-full h-full object-cover"
+              className="object-cover w-full h-full"
               alt="Shop Banner"
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-slate-400">
-              <FaImage className="text-4xl mb-2 opacity-20" />
+              <FaImage className="mb-2 text-4xl opacity-20" />
               <p className="text-sm font-medium">Upload Shop Banner</p>
               <p className="text-[10px]">Recommended: 1200 x 400px (Max 2MB)</p>
             </div>
           )}
 
           {uploadingMode === "banner" && (
-            <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
               <BeatLoader size={10} color="#00A85A" />
             </div>
           )}
 
-          <label className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition flex items-center justify-center cursor-pointer z-20">
-            <div className="bg-white p-3 rounded-full shadow-lg">
+          <label className="absolute inset-0 z-20 flex items-center justify-center transition opacity-0 cursor-pointer bg-black/10 group-hover:opacity-100">
+            <div className="p-3 bg-white rounded-full shadow-lg">
               <FaPencil className="text-hub-secondary" />
             </div>
             <input
@@ -430,16 +366,16 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
         {/* Logo Upload Area */}
         <div className="absolute -bottom-16 left-10">
-          <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-xl overflow-hidden relative group/logo">
+          <div className="relative w-32 h-32 overflow-hidden bg-white border-4 border-white rounded-full shadow-xl group/logo">
             {logoUrl ? (
               <img
                 src={logoUrl}
-                className="w-full h-full object-cover"
+                className="object-cover w-full h-full"
                 alt="Shop Logo"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full bg-slate-50 text-slate-400 p-2 text-center">
-                <FaImage className="text-xl mb-1 opacity-20" />
+              <div className="flex flex-col items-center justify-center h-full p-2 text-center bg-slate-50 text-slate-400">
+                <FaImage className="mb-1 text-xl opacity-20" />
                 <p className="text-[9px] leading-tight font-bold">
                   Upload
                   <br />
@@ -449,12 +385,12 @@ export default function StepShopInfo({ onNext }: StepProps) {
             )}
 
             {uploadingMode === "logo" && (
-              <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60">
                 <BeatLoader size={8} color="#00A85A" />
               </div>
             )}
 
-            <label className="absolute inset-0 bg-black/40 opacity-0 group-hover/logo:opacity-100 transition flex items-center justify-center cursor-pointer z-20">
+            <label className="absolute inset-0 z-20 flex items-center justify-center transition opacity-0 cursor-pointer bg-black/40 group-hover/logo:opacity-100">
               <FaPencil className="text-white" />
               <input
                 type="file"
@@ -471,7 +407,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
       </div>
       <form onSubmit={handleSubmit} className="space-y-8">
         <section className="">
-          <div className="grid grid-cols-1 md:grid-cols-2 mb-4 gap-6">
+          <div className="grid grid-cols-1 gap-6 mb-4 md:grid-cols-2">
             <TextInput
               label="Business Name"
               value={name}
@@ -500,7 +436,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <section className="">
-          <h3 className="font-bold mb-6 text-slate-800">Legal Verification</h3>
+          <h3 className="mb-6 font-bold text-slate-800">Legal Verification</h3>
           <SelectField
             label="ID Type"
             value={identificationType || ID_OPTIONS[0]}
@@ -508,18 +444,18 @@ export default function StepShopInfo({ onNext }: StepProps) {
             options={ID_OPTIONS}
           />
           <div className="mt-4">
-            <label className="text-sm font-semibold mb-2 block">
+            <label className="block mb-2 text-sm font-semibold">
               Upload ID Preview
             </label>
-            <div className="relative h-48 bg-slate-50 rounded-xl border border-slate-100 flex flex-col items-center justify-center overflow-hidden">
+            <div className="relative flex flex-col items-center justify-center h-48 overflow-hidden border bg-slate-200 rounded-xl border-slate-100">
               {idDocUrl ? (
                 <img
                   src={idDocUrl}
-                  className="w-full h-full object-cover"
+                  className="object-cover w-full h-full"
                   alt="ID"
                 />
               ) : (
-                <FaCloudArrowUp className="text-slate-300 text-3xl" />
+                <FaCloudArrowUp className="text-3xl text-slate-300" />
               )}
               <input
                 type="file"
@@ -533,7 +469,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </div>
         </section>
 
-        <section className=" space-y-6">
+        <section className="space-y-6 ">
           {googleLoaded && (
             <GoogleAddressAutocomplete
               onSelect={(addr) => {
@@ -548,7 +484,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
               }}
             />
           )}
-          <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <TextInput
               label="Street Address"
               value={addressLine}
@@ -584,7 +520,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary w-full py-4 rounded-xl font-bold"
+          className="w-full py-4 font-bold btn btn-primary rounded-xl"
         >
           {loading ? <BeatLoader size={8} color="white" /> : "Save Changes"}
         </button>

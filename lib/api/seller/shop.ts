@@ -37,10 +37,8 @@ export async function retryOnboardingStatus(){
 };
 
 export async function updateShopLogo(file: File) {
-  const formData = new FormData();
-  // Laravel "Method Spoofing" for file uploads via PUT
-  // formData.append("_method", "PUT");
-  // formData.append("logo", file);
+  const formData = new FormData(); 
+  formData.append("logo", file);
 
   const response = await api.post("/vendor/shop/logo/update", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -50,9 +48,8 @@ export async function updateShopLogo(file: File) {
 }
 
 export async function updateShopBanner(file: File) {
-  const formData = new FormData();
-  // formData.append("_method", "PUT");
-  // formData.append("banner", file);
+  const formData = new FormData(); 
+  formData.append("banner", file);
 
   const response = await api.post("/vendor/shop/banner/update", formData, {
     headers: { "Content-Type": "multipart/form-data" },
