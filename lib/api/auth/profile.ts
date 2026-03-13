@@ -24,7 +24,7 @@ export async function changeUserPassword(payload: {
   current_password: string;
   new_password: string;
 }): Promise<User> {
-  const response = await api.post(`/profile/change-password`, payload);
+  const response = await api.post(`/profile/password/change`, payload);
   return response.data.data;
 }
 
