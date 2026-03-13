@@ -96,7 +96,7 @@ export default function SecuritySection() {
                     <h3 className="text-lg font-bold text-gray-900">Login Security</h3>
                 </div>
 
-                <div className="max-w-md space-y-5">
+                <div className="max-w-full space-y-5">
                     {/* Current Password */}
                     <div className="space-y-1.5">
                         <label className="text-sm font-semibold text-gray-700">Current Password</label>
