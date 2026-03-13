@@ -13,19 +13,16 @@ export default function SecuritySection() {
     const router = useRouter();
     const clearAuth = useAuthStore((state) => state.clearAuth);
 
-    // Form & Loading States
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    // Password States
     const [passwords, setPasswords] = useState({
         current_password: "",
         new_password: "",
         confirm_password: "",
     });
 
-    // Visibility Toggles
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -33,14 +30,10 @@ export default function SecuritySection() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswords({ ...passwords, [e.target.name]: e.target.value });
     };
-      /**
-     * Handles the Password Change logic
-     */
+
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form Data being sent:", passwords); // Check if all fields have values here
 
-        // 1. Basic Validation
         if (!passwords.current_password || !passwords.new_password) {
             return toast.error("Please fill in all password fields.");
         }
@@ -59,17 +52,27 @@ export default function SecuritySection() {
                 current_password: passwords.current_password,
                 new_password: passwords.new_password,
             });
-            
+
             toast.success("Password updated successfully!");
             setPasswords({ current_password: "", new_password: "", confirm_password: "" });
+            await clearAuth();
         } catch (err: any) {
-            const msg = err.response?.data?.message || "Failed to update password.";
-            toast.error(msg);
+            let errorMsg = err.response?.data?.message || "Failed to update password.";
+            const validationErrors = err.response?.data?.errors;
+            if (validationErrors) {
+                const firstErrorKey = Object.keys(validationErrors)[0];
+                errorMsg = validationErrors[firstErrorKey][0];
+            }
+            else if (err.response?.data?.new_password) {
+                errorMsg = err.response.data.new_password[0];
+            }
+
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
     };
-    
+
     const handleDeleteAccount = async () => {
         setIsDeleting(true);
         try {
@@ -153,8 +156,8 @@ export default function SecuritySection() {
                                 value={passwords.confirm_password}
                                 onChange={handleInputChange}
                                 className={`pr-12 input transition-all focus:ring-2 ${passwords.confirm_password && passwords.new_password !== passwords.confirm_password
-                                        ? "border-red-300 focus:ring-red-100"
-                                        : "focus:ring-hub-primary/10"
+                                    ? "border-red-300 focus:ring-red-100"
+                                    : "focus:ring-hub-primary/10"
                                     }`}
                                 type={showConfirm ? "text" : "password"}
                                 placeholder="Repeat new password"

@@ -13,19 +13,16 @@ export default function SecuritySection() {
     const router = useRouter();
     const clearAuth = useAuthStore((state) => state.clearAuth);
 
-    // Form & Loading States
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    // Password States
     const [passwords, setPasswords] = useState({
         current_password: "",
         new_password: "",
         confirm_password: "",
     });
 
-    // Visibility Toggles
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -33,13 +30,10 @@ export default function SecuritySection() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPasswords({ ...passwords, [e.target.name]: e.target.value });
     };
-    /**
-   * Handles the Password Change logic
-   */
+
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 1. Basic Validation
         if (!passwords.current_password || !passwords.new_password) {
             return toast.error("Please fill in all password fields.");
         }
@@ -61,20 +55,14 @@ export default function SecuritySection() {
 
             toast.success("Password updated successfully!");
             setPasswords({ current_password: "", new_password: "", confirm_password: "" });
+            await clearAuth();
         } catch (err: any) {
-            // 1. Extract the main message
             let errorMsg = err.response?.data?.message || "Failed to update password.";
-
-            // 2. Check for Laravel-style validation errors (errors object)
             const validationErrors = err.response?.data?.errors;
-
             if (validationErrors) {
-                // This will pick the first error message from the first field that failed
-                // In your case: "The new password field confirmation does not match."
                 const firstErrorKey = Object.keys(validationErrors)[0];
                 errorMsg = validationErrors[firstErrorKey][0];
             }
-            // 3. Fallback for the specific format you just showed (directly in data)
             else if (err.response?.data?.new_password) {
                 errorMsg = err.response.data.new_password[0];
             }
