@@ -201,7 +201,8 @@ export const CUSTOMER_MENU = [
   { name: "Inbox", href: "/account/chat", icon: FiMail },
   { name: "Notifications", href: "/account/notifications", icon: FiBell },
   { name: "Support & Returns", href: "/account/support", icon: FiLifeBuoy },
-  { name: "Security & Settings", href: "/account/settings", icon: FiSettings },
+  { name: "Settings", href: "/account/settings", icon: FiSettings },
+  { name: "Security", href: "/account/security", icon: LuShieldCheck },
 ];
 
 export const MONTHS = [
