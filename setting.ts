@@ -67,6 +67,8 @@ import {
   LuList,
   LuRotateCcw,
   LuTruck,
+  LuUser,
+  LuShieldCheck,
 } from "react-icons/lu";
 import { HiOutlineTicket, HiOutlineClipboardList } from "react-icons/hi";
 import { DefaultOption } from "./app/components/common/SelectField";
@@ -173,6 +175,20 @@ export const VENDOR_MENU: NavItem[] = [
     label: "Settings",
     href: "/dashboard/account-settings",
     icon: LuSettings,
+    children: [
+      {
+        id: 91,
+        label: "My Profile", 
+        href: "/dashboard/account-settings",
+        icon: LuUser,  
+      },
+      {
+        id: 92,
+        label: "Security",  
+        href: "/dashboard/account-settings/security",
+        icon: LuShieldCheck, 
+      },
+    ],
   },
 ];
 

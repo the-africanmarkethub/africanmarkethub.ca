@@ -20,6 +20,14 @@ export async function getUserProfile(): Promise<User> {
   return response.data.data;
 }
 
+export async function changeUserPassword(payload: {
+  current_password: string;
+  new_password: string;
+}): Promise<User> {
+  const response = await api.post(`/profile/change-password`, payload);
+  return response.data.data;
+}
+
 export async function logoutProfile() {
   const response = await api.post(`/profile/logout`);
   return response.data;

@@ -46,11 +46,8 @@ export function Sidebar({
 
   const filteredMenu = useMemo(() => {
     return VENDOR_MENU.filter((item) => {
-      // Define hidden IDs for each shop type
-      const hiddenForServices = [5]; // e.g., hide some product-specific finance
-      const hiddenForProducts = [6];
-
-      // Deliveries: Hide Items/Inventory and Marketing Coupons
+      const hiddenForServices = [5];  
+      const hiddenForProducts = [6]; 
       const hiddenForDeliveries = [2, 50];
 
       if (shopType === "services" && hiddenForServices.includes(item.id))
@@ -68,9 +65,6 @@ export function Sidebar({
           ...item,
           children: item.children.filter((child) => {
             if (shopType === "services" && child.id === 22) return false;
-
-            // Example: If Deliveries, hide Returns/Refunds (ID 33)
-            // since logistics usually handles 'failed delivery' not 'product returns'
             if (shopType === "deliveries" && child.id === 33) return false;
 
             return true;
@@ -95,17 +89,17 @@ export function Sidebar({
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center px-6 h-20 border-b border-gray-50">
+        <div className="flex items-center h-20 px-6 border-b border-gray-50">
           <Image
             width={120}
             height={40}
             src="/logo.svg"
             alt="logo"
-            className="h-8 w-auto"
+            className="w-auto h-8"
           />
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4 space-y-1 custom-scrollbar">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
           {filteredMenu.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
             const isActive =
@@ -113,7 +107,6 @@ export function Sidebar({
               (hasChildren && currentPath.startsWith(item.href));
             const isExpanded =
               expandedItem === item.id || (isActive && expandedItem === null);
-            // Inside the .map of filteredMenu
             const label =
               item.id === 3 && shopType === "deliveries"
                 ? "Shipments"
@@ -168,7 +161,7 @@ export function Sidebar({
 
                 {/* CHILDREN LIST */}
                 {hasChildren && isExpanded && (
-                  <div className="ml-9 space-y-1 mt-1 border-l-2 border-gray-50 pl-2">
+                  <div className="pl-2 mt-1 space-y-1 border-l-2 ml-9 border-gray-50">
                     {item.children?.map((child) => {
                       const isChildActive = currentPath === child.href;
                       return (
@@ -195,10 +188,10 @@ export function Sidebar({
           })}
         </nav>
 
-        <div className="p-4 bg-gray-50/50 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50">
           <button
             onClick={handleLogout}
-            className="flex items-center w-full px-4 py-3 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+            className="flex items-center w-full px-4 py-3 text-sm font-bold text-red-600 transition-colors cursor-pointer hover:bg-red-50 rounded-xl"
           >
             <LuLogOut className="w-5 h-5 mr-3" />
             Logout
