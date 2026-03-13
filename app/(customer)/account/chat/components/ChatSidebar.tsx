@@ -18,9 +18,7 @@ export default function ChatSidebar({
   onSelectChat,
 }: ChatSidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter chats based on vendor name or last message
-  // Inside ChatSidebar.tsx
+ 
   const filteredChats = chats
     .filter(
       (chat, index, self) =>
@@ -33,10 +31,9 @@ export default function ChatSidebar({
     );
 
   return (
-    <aside className="w-full md:w-80 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
-      {/* Search Header */}
+    <aside className="flex flex-col w-full h-full overflow-hidden bg-white border-r border-gray-200 md:w-80">
       <div className="p-6 pb-4">
-        <h1 className="text-2xl font-bold mb-4 text-gray-900">Chats</h1>
+        <h1 className="mb-4 text-2xl font-bold text-gray-900">Chats</h1>
         <div className="relative">
           <LuSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 size={18}" />
           <input
@@ -66,14 +63,14 @@ export default function ChatSidebar({
               >
                 {/* Avatar Section */}
                 <div className="relative shrink-0">
-                  <div className="h-12 w-12 rounded-full overflow-hidden border bg-gray-50 flex items-center justify-center">
+                  <div className="flex items-center justify-center w-12 h-12 overflow-hidden border rounded-full bg-gray-50">
                     <Image
                       src={chat.profile_photo || "/placeholder.png"}
                       alt={chat.full_name || "User"}
                       width={48}
                       height={48}
-                      unoptimized // Important: since your SVGs are Base64 strings
-                      className="h-full w-full object-cover"
+                      unoptimized  
+                      className="object-cover w-full h-full"
                     />
                   </div>
                   {chat.online_status === "online" && (
@@ -110,13 +107,13 @@ export default function ChatSidebar({
           })
         ) : (
           <div className="flex flex-col items-center justify-center p-10 text-center">
-            <div className="bg-gray-100 p-3 rounded-full mb-3">
+            <div className="p-3 mb-3 bg-gray-100 rounded-full">
               <LuSearch size={24} className="text-gray-400" />
             </div>
             <p className="text-sm font-medium text-gray-500">
               No conversations
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="mt-1 text-xs text-gray-400">
               Try a different search term
             </p>
           </div>

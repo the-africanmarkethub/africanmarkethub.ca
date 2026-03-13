@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { DayPicker } from "react-day-picker";
+import React, { useState, useMemo } from "react";
 import {
   format,
-  addMonths,
+  addDays,
   startOfToday,
   setHours,
   setMinutes,
+  isSameDay,
 } from "date-fns";
-import { LuCalendar, LuMapPin, LuDollarSign, LuTruck } from "react-icons/lu";
-import "react-day-picker/dist/style.css";
+import { LuCalendar, LuMapPin, LuDollarSign, LuTruck, LuClock } from "react-icons/lu";
 import Modal from "@/app/components/common/Modal";
 
 interface BookingModalProps {
@@ -35,6 +34,11 @@ export default function BookingModal({
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
 
+  // Generate next 14 days for the horizontal scroller
+  const days = useMemo(() => {
+    return Array.from({ length: 14 }).map((_, i) => addDays(today, i));
+  }, [today]);
+
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const [hours, minutes] = selectedTime.split(":").map(Number);
@@ -46,157 +50,131 @@ export default function BookingModal({
       delivery_method: deliveryMethod,
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      address: address,
+      address: ["onsite", "pickup"].includes(deliveryMethod) ? address : "",
       amount: parseFloat(amount),
     });
   };
 
+  const showAddress = ["onsite", "pickup"].includes(deliveryMethod);
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Finalize Booking">
-      <style>{customCalendarStyles}</style>
+      <form onSubmit={handleBookingSubmit} className="flex flex-col gap-5 p-1">
 
-      <form
-        onSubmit={handleBookingSubmit}
-        className="flex flex-col h-full overflow-hidden"
-      >
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto px-0 py-2 space-y-3 scrollbar-hide">
-          {/* Date Selection - Compacted */}
-          <section className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
-              <LuCalendar size={12} className="text-hub-primary" /> Appointment
-              Date
-            </label>
-            <div className="bg-hub-primary rounded-xl flex flex-col items-center">
-              <DayPicker
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                disabled={{ before: today }}
-                startMonth={today}
-                endMonth={addMonths(today, 3)}
-              />
-              <div className="w-full border-t border-hub-secondary/10 flex items-center justify-between p-2">
-                <span className="text-sm  text-white font-semibold">
-                  Time
-                </span>
-                <input
-                  type="time"
-                  required
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="bg-white rounded-md border border-hub-secondary px-1.5 py-0.5 text-[12px] font-bold text-hub-primary focus:ring-1 focus:ring-hub-primary outline-none"
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Delivery Method - Smaller buttons */}
-          <section className="space-y-1.5">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight flex items-center gap-1">
-              <LuTruck size={12} className="text-hub-primary" /> Delivery
-            </label>
-            <div className="flex gap-1">
-              {["onsite", "pickup", "remote"].map((method) => (
+        {/* Date Scroller */}
+        <section className="space-y-2">
+          <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+            <LuCalendar className="text-hub-primary" /> Select Date
+          </label>
+          <div className="flex gap-2 pb-2 overflow-x-auto scrollbar-hide snap-x">
+            {days.map((day) => {
+              const isSelected = isSameDay(day, selectedDate);
+              return (
                 <button
-                  key={method}
+                  key={day.toISOString()}
                   type="button"
-                  onClick={() => setDeliveryMethod(method)}
-                  className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold capitalize border transition-all ${deliveryMethod === method
-                      ? "border-hub-primary bg-hub-primary text-white"
-                      : "border-hub-secondary bg-white text-gray-400"
+                  onClick={() => setSelectedDate(day)}
+                  className={`flex flex-col items-center justify-center min-w-[55px] h-[70px] rounded-2xl border transition-all snap-start ${isSelected
+                    ? "bg-hub-primary border-hub-primary text-white shadow-lg shadow-hub-primary/20"
+                    : "bg-gray-50 border-gray-100 text-gray-600 hover:border-hub-primary/30"
                     }`}
                 >
-                  {method}
+                  <span className="text-[10px] uppercase font-medium opacity-80">
+                    {format(day, "EEE")}
+                  </span>
+                  <span className="text-lg font-bold">{format(day, "d")}</span>
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="grid grid-cols-2 gap-4">
+          {/* Time Input */}
+          <section className="space-y-2">
+            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+              <LuClock className="text-hub-primary" /> Time
+            </label>
+            <input
+              type="time"
+              required
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2.5 text-sm font-bold text-gray-700 outline-none focus:border-hub-primary transition-colors"
+            />
           </section>
 
-          {/* Amount & Location Row - Super Tight */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
-                Amount
-              </label>
-              <div className="relative">
-                <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] text-hub-primary font-bold">
-                  CA$
-                </span>
-                <input
-                  type="number"
-                  required
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  className="w-full pl-8! pr-2! py-1.5! input"
-                />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
-                Address
-              </label>
+          {/* Amount Input */}
+          <section className="space-y-2">
+            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+              <LuDollarSign className="text-hub-primary" /> Agreed Amount
+            </label>
+            <div className="relative">
+              <span className="absolute text-sm font-bold text-gray-400 -translate-y-1/2 left-3 top-1/2">
+                $
+              </span>
               <input
-                placeholder="Address..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-2! py-1.5! input"
+                type="number"
+                required
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-7 pr-3 py-2.5 text-sm font-bold text-gray-700 outline-none focus:border-hub-primary transition-colors"
               />
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Footer */}
-        <div className="p-3 bg-white ">
+        {/* Delivery Method */}
+        <section className="space-y-2">
+          <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+            <LuTruck className="text-hub-primary" /> Delivery Method
+          </label>
+          <div className="flex gap-1 p-1 bg-gray-100 rounded-xl">
+            {["onsite", "pickup", "remote"].map((method) => (
+              <button
+                key={method}
+                type="button"
+                onClick={() => setDeliveryMethod(method)}
+                className={`flex-1 py-2 rounded-lg text-[11px] font-bold capitalize transition-all ${deliveryMethod === method
+                  ? "bg-white text-hub-primary shadow-sm"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
+              >
+                {method}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Conditional Address Field */}
+        {showAddress && (
+          <section className="space-y-2 duration-300 animate-in fade-in slide-in-from-top-2">
+            <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider flex items-center gap-2">
+              <LuMapPin className="text-hub-primary" /> {deliveryMethod === 'onsite' ? 'Service Address' : 'Pickup Location'}
+            </label>
+            <textarea
+              placeholder="Enter full address details..."
+              required={showAddress}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 text-sm text-gray-700 outline-none focus:border-hub-primary transition-colors min-h-[80px] resize-none"
+            />
+          </section>
+        )}
+
+        {/* Footer Action */}
+        <div className="pt-2">
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn btn-primary"
+            className="w-full cursor-pointer bg-hub-primary hover:bg-hub-primary/90 text-white py-3.5 rounded-2xl font-bold text-sm shadow-lg shadow-hub-primary/20 transition-all active:scale-[0.98] disabled:opacity-70"
           >
-            {loading ? "Processing..." : "Send Proposal"}
+            {loading ? "Processing..." : "Confirm & Pay"}
           </button>
+          <p className="text-xs text-center">You will be directed to secured stripe for payment processing.</p>
         </div>
       </form>
     </Modal>
   );
 }
-
-const customCalendarStyles = `
-  .rdp {
-    --rdp-cell-size: 32px; /* Reduces the size of each day circle */
-    --rdp-caption-font-size: 13px; /* Shrinks the Month/Year header */
-    --rdp-accent-color: #F28C0D;
-    --rdp-background-color: #fff7ed;
-    margin: 0;
-  }
-  
-  /* Make the day numbers smaller */
-  .rdp-day {
-    font-size: 11px;
-    height: var(--rdp-cell-size);
-    width: var(--rdp-cell-size);
-  }
-
-  .rdp-day_selected { 
-    background-color: #F28C0D !important; 
-    border-radius: 8px !important; 
-    color: white !important;
-  }
-
-  .rdp-day_today { 
-    color: #F28C0D; 
-    font-weight: 900; 
-  }
-
-  /* Tighten the header height */
-  .rdp-caption {
-    height: 30px;
-  }
-
-  /* Shrink the navigation arrows */
-  .rdp-nav_button {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-  }
-`;
