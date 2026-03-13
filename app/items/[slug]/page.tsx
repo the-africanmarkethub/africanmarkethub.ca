@@ -100,7 +100,6 @@ export default async function ItemDetailPage({ params }: PageParams) {
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
       },
-      // Only include AggregateRating if there are actually ratings
       ...(star_rating.total > 0 && {
         aggregateRating: {
           "@type": "AggregateRating",
@@ -110,7 +109,6 @@ export default async function ItemDetailPage({ params }: PageParams) {
       }),
     };
 
-    // Breadcrumb Schema helps Google show the path in search results
     const breadcrumbSchema = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

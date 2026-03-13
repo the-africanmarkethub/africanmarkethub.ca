@@ -47,12 +47,12 @@ const TrackOrderPage: React.FC = () => {
 
   return (
     <>
-      <div className="card mb-6">
-        <h2 className="text-lg font-semibold flex items-center">
-          <FiMapPin className="text-hub-secondary text-xl mr-2" size={24} />
+      <div className="mb-6 card">
+        <h2 className="flex items-center text-lg font-semibold">
+          <FiMapPin className="mr-2 text-xl text-hub-secondary" size={24} />
           Track Order
         </h2>
-        <p className="text-sm mt-1 text-gray-600">
+        <p className="mt-1 text-sm text-gray-600">
           Enter your email to view and manage delivery expectation of your
           <span className="text-hub-secondary"> Order </span>
         </p>
@@ -63,15 +63,15 @@ const TrackOrderPage: React.FC = () => {
         className="w-full mt-5 mb-8 space-y-3 md:space-y-0 md:flex md:items-end md:gap-3"
       >
         <div className="flex-1 w-full">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Enter your tracking number
+          <label className="block mb-1 text-sm font-medium text-gray-700">
+            Enter your email address
           </label>
 
           <input
-            type="text"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="TRA1238"
+            placeholder="you@example.com"
             className="input"
             required
           />
@@ -80,7 +80,7 @@ const TrackOrderPage: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="btn btn-primary w-full md:w-auto"
+          className="w-full btn btn-primary md:w-auto"
         >
           {loading ? "Searching..." : "Track"}
         </button>
@@ -89,7 +89,7 @@ const TrackOrderPage: React.FC = () => {
       {order && <OrderStatusTracker order={order} />}
 
       {!order && !loading && (
-        <div className="text-center py-10 border-2 border-dashed border-green-200 rounded-lg">
+        <div className="py-10 text-center border-2 border-green-200 border-dashed rounded-lg">
           <p className="text-gray-500">Your order status will appear here.</p>
         </div>
       )}
