@@ -4,7 +4,6 @@ import { getAddress } from "@/lib/api/auth/shipping";
 import { PRICING_MODEL_OPTIONS, DELIVERY_METHOD_OPTIONS } from "@/setting";
 import { timeOptions } from "@/utils/generateTimeSlot";
 import { useEffect, useState } from "react";
-import Link from "next/link"; // Assuming you use Next.js Link
 
 export default function ServiceFields(props: any) {
   const {
@@ -28,7 +27,6 @@ export default function ServiceFields(props: any) {
   const [deliveryMinutes, setDeliveryMinutes] = useState("");
   const [storeCity, setStoreCity] = useState("Loading...");
 
-  // Fetch address once on mount
   useEffect(() => {
     const fetchStoreAddress = async () => {
       try {
@@ -46,30 +44,39 @@ export default function ServiceFields(props: any) {
     fetchStoreAddress();
   }, []);
 
-  // Update delivery time string
   useEffect(() => {
+    if (estimatedDeliveryTime && !deliveryHours && !deliveryMinutes) {
+      const hourMatch = estimatedDeliveryTime.match(/(\d+)\s*hour/i);
+      const minuteMatch = estimatedDeliveryTime.match(/(\d+)\s*minute/i);
+
+      if (hourMatch) setDeliveryHours(hourMatch[1]);
+      if (minuteMatch) setDeliveryMinutes(minuteMatch[1]);
+    }
+  }, [estimatedDeliveryTime]);
+
+  useEffect(() => {
+    if (!deliveryHours && !deliveryMinutes) return;
+
     const parts = [];
     if (deliveryHours && parseInt(deliveryHours) > 0) {
-      parts.push(
-        `${deliveryHours} ${parseInt(deliveryHours) === 1 ? "hour" : "hours"}`,
-      );
+      parts.push(`${deliveryHours} ${parseInt(deliveryHours) === 1 ? "hour" : "hours"}`);
     }
     if (deliveryMinutes && parseInt(deliveryMinutes) > 0) {
-      parts.push(
-        `${deliveryMinutes} ${parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"}`,
-      );
+      parts.push(`${deliveryMinutes} ${parseInt(deliveryMinutes) === 1 ? "minute" : "minutes"}`);
     }
-    const combined = parts.join(" ");
-    setEstimatedDeliveryTime(combined);
-  }, [deliveryHours, deliveryMinutes, setEstimatedDeliveryTime]);
 
+    const combined = parts.join(" ");
+
+    if (combined !== estimatedDeliveryTime) {
+      setEstimatedDeliveryTime(combined);
+    }
+  }, [deliveryHours, deliveryMinutes, estimatedDeliveryTime, setEstimatedDeliveryTime]);
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
-        {/* PRICING & DELIVERY (Hidden for Logistics) */}
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Pricing Model
             </label>
             <SelectDropdown
@@ -80,7 +87,7 @@ export default function ServiceFields(props: any) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Delivery Method
             </label>
             <SelectDropdown
@@ -91,13 +98,12 @@ export default function ServiceFields(props: any) {
             />
           </div>
         </>
- 
+
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4">
-        {/* Estimated Delivery Time */}
+      <div className="grid grid-cols-1 gap-4 mt-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Estimated Delivery Time
           </label>
           <div className="grid grid-cols-2 gap-4">
@@ -106,7 +112,7 @@ export default function ServiceFields(props: any) {
                 type="number"
                 value={deliveryHours}
                 onChange={(e) => setDeliveryHours(e.target.value)}
-                className="input w-full"
+                className="w-full input"
                 placeholder="0"
               />
               <span className="text-sm text-gray-500">Hrs</span>
@@ -116,7 +122,7 @@ export default function ServiceFields(props: any) {
                 type="number"
                 value={deliveryMinutes}
                 onChange={(e) => setDeliveryMinutes(e.target.value)}
-                className="input w-full"
+                className="w-full input"
                 placeholder="0"
               />
               <span className="text-sm text-gray-500">Mins</span>
@@ -124,9 +130,8 @@ export default function ServiceFields(props: any) {
           </div>
         </div>
 
-        {/* Available Days */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Available Days
           </label>
           <div className="flex flex-wrap gap-2">
@@ -145,11 +150,10 @@ export default function ServiceFields(props: any) {
                       setAvailableDays([...availableDays, day]);
                     }
                   }}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
-                    isSelected
-                      ? "bg-hub-secondary border-hub-secondary text-white"
-                      : "bg-white border-gray-300 text-gray-700"
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${isSelected
+                    ? "bg-hub-secondary border-hub-secondary text-white"
+                    : "bg-white border-gray-300 text-gray-700"
+                    }`}
                 >
                   <span className="capitalize">{day}</span>
                 </button>
@@ -159,15 +163,15 @@ export default function ServiceFields(props: any) {
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 mt-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Available From
           </label>
           <SelectDropdown
             options={timeOptions}
             value={
-              timeOptions.find((opt) => opt.value === availableFrom) || {
+              timeOptions.find((opt) => opt.value === availableFrom?.substring(0, 5)) || {
                 label: "",
                 value: "",
               }
@@ -177,7 +181,7 @@ export default function ServiceFields(props: any) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
             Available To
           </label>
           <SelectDropdown
@@ -185,7 +189,7 @@ export default function ServiceFields(props: any) {
               (opt) => !availableFrom || opt.value > availableFrom,
             )}
             value={
-              timeOptions.find((opt) => opt.value === availableTo) || {
+              timeOptions.find((opt) => opt.value === availableTo?.substring(0, 5)) || {
                 label: "",
                 value: "",
               }

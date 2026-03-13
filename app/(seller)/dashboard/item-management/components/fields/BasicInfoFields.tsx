@@ -41,16 +41,12 @@ export default function BasicInfoFields({
         <label className="block mb-1 text-sm font-medium text-gray-700">
           Description <span className="text-red-500">*</span>
           <span
-            className={`ml-2 text-xs ${charCount > 4000 ? "text-red-500 font-bold" : "text-gray-400"}`}
+            className={`ml-2 text-xs ${wordCount < 30 || wordCount > 4000
+                ? "text-red-500 font-bold"
+                : "text-green-600 font-medium"
+              }`}
           >
-            ({charCount}/4000 characters)
-          </span>
-          <span
-            className={`ml-2 text-xs ${wordCount < 50 ? "text-orange-500" : "text-green-600"}`}
-          >
-            {wordCount < 50
-              ? `(Min 50 words needed: ${wordCount} current)`
-              : `(${wordCount} words)`}
+            ({wordCount} / 4000 words)
           </span>
         </label>
 
@@ -87,9 +83,9 @@ export default function BasicInfoFields({
             }
           }}
         />
-        {wordCount < 50 && charCount > 0 && (
+        {wordCount < 30 && charCount > 0 && (
           <p className="mt-1 text-xs text-orange-600">
-            Please provide a bit more detail (minimum 50 words).
+            Please provide a bit more detail for SEO purposes (minimum 30 words).
           </p>
         )}
       </div>

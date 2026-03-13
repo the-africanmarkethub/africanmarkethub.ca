@@ -167,34 +167,6 @@ export function useItemForm(item: any) {
     };
   }, []);
 
-  // const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = Array.from(e.target.files || []);
-  //   if (files.length === 0) return;
-
-  //   const combinedCount =
-  //     existingImages.urls.length + newImages.length + files.length;
-  //   if (combinedCount > MAX_IMAGES) {
-  //     toast.error(`Maximum ${MAX_IMAGES} images allowed`);
-  //     return;
-  //   }
-
-  //   for (const file of files) {
-  //     if (!VALID_IMAGE_TYPES.includes(file.type)) {
-  //       toast.error("Only JPG, PNG, WebP, or JPEG images are allowed");
-  //       return;
-  //     }
-  //     if (file.size > MAX_IMAGE_SIZE) {
-  //       toast.error("Each image must be smaller than 2MB");
-  //       return;
-  //     }
-  //   }
-
-  //   setNewImages((prev) => [...prev, ...files]);
-  //   const previews = files.map((f) => URL.createObjectURL(f));
-  //   setNewPreviews((prev) => [...prev, ...previews]);
-  //   e.currentTarget.value = "";
-  // };
-
   const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
@@ -222,15 +194,14 @@ export function useItemForm(item: any) {
 
     // 3. Compression Options
     const options = {
-      maxSizeMB: 0.1, // Target size after compression
-      maxWidthOrHeight: 800, // Standard product view size
+      maxSizeMB: 0.1,
+      maxWidthOrHeight: 800,
       useWebWorker: true,
-      fileType: "image/webp", // Force WebP conversion for everyone
-      initialQuality: 0.75, // Start at 75% quality for a good balance
+      fileType: "image/webp",
+      initialQuality: 0.95,
     };
 
     try {
-      // Show a loading toast if you have many files
       const loadingToast = toast.loading("Optimizing images...");
 
       const compressedFiles = await Promise.all(
@@ -239,10 +210,7 @@ export function useItemForm(item: any) {
         }),
       );
 
-      // 4. Update state with compressed files
       setNewImages((prev) => [...prev, ...compressedFiles]);
-
-      // 5. Create previews for the compressed versions
       const previews = compressedFiles.map((f) => URL.createObjectURL(f));
       setNewPreviews((prev) => [...prev, ...previews]);
 
@@ -346,7 +314,7 @@ export function useItemForm(item: any) {
         const parse = (t: string) => t.replace(/\s+/g, "");
         if (parse(availableFrom) >= parse(availableTo))
           return "Available 'to' must be after 'from'";
-      } catch (e) {}
+      } catch (e) { }
     }
 
     if (
@@ -396,8 +364,8 @@ export function useItemForm(item: any) {
       fd.append("pricing_model", pricingModel.value);
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
-      fd.append("available_days", JSON.stringify(availableDays));
-      fd.append("available_from", availableFrom);
+      fd.append("available_days", availableDays.join(','));
+            fd.append("available_from", availableFrom);
       fd.append("available_to", availableTo);
     }
 
