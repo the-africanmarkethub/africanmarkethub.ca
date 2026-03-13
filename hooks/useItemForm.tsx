@@ -365,8 +365,8 @@ export function useItemForm(item: any) {
       fd.append("delivery_method", deliveryMethod.value);
       fd.append("estimated_delivery_time", estimatedDeliveryTime);
       fd.append("available_days", availableDays.join(','));
-            fd.append("available_from", availableFrom);
-      fd.append("available_to", availableTo);
+      fd.append("available_from", availableFrom?.substring(0, 5));
+      fd.append("available_to", availableTo?.substring(0, 5));
     }
 
     fd.append("sales_price", salesPrice);
