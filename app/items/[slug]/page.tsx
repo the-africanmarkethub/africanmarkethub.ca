@@ -141,8 +141,8 @@ export default async function ItemDetailPage({ params }: PageParams) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
-        <nav className="text-sm text-gray-500 my-4" aria-label="Breadcrumb">
-          <ol className="list-none ml-4 inline-flex">
+        <nav className="my-4 text-sm text-gray-500" aria-label="Breadcrumb">
+          <ol className="inline-flex ml-4 list-none">
             <li className="flex items-center">
               <Link
                 href="/"
@@ -157,7 +157,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
             <li className="flex items-center min-w-0">
               <Link
                 href={`/items?category=${product.category.slug}`}
-                className="text-hub-primary hover:text-hub-secondary truncate"
+                className="truncate text-hub-primary hover:text-hub-secondary"
               >
                 {product.category.name}
               </Link>
@@ -166,7 +166,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
               </span>
             </li>
             <li
-              className="text-hub-primary font-semibold truncate"
+              className="min-w-0 font-semibold truncate text-hub-primary max-w-40 md:max-w-80 lg:max-w-120"
               aria-current="page"
             >
               {product.title}
@@ -186,7 +186,7 @@ export default async function ItemDetailPage({ params }: PageParams) {
     );
   } catch {
     return (
-      <div className="p-10 text-center text-red-500 font-medium">
+      <div className="p-10 font-medium text-center text-red-500">
         Failed to load product.
       </div>
     );
