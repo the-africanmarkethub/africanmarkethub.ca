@@ -30,12 +30,10 @@ export default function SuccessContent() {
       const response = await verifySubscriptionCheckout(id);
 
       if (response.status === "paid") {
-        if (response.onboarding_url) {
-          // USER MUST ONBOARD
+        if (response.onboarding_url) { 
           setOnboardingUrl(response.onboarding_url);
           setIsFullyVerified(false);
-        } else {
-          // USER IS ALREADY DONE WITH STRIPE
+        } else { 
           setOnboardingUrl(null);
           setIsFullyVerified(true);
         }
@@ -60,8 +58,7 @@ export default function SuccessContent() {
 
     if (isFullyVerified) {
       router.replace("/dashboard");
-    } else {
-      // If something went wrong and we have neither, re-verify
+    } else { 
       setStatus("error");
     }
   }, [onboardingUrl, isFullyVerified, router]);
@@ -106,14 +103,14 @@ export default function SuccessContent() {
 
   
   return (
-    <div className="text-center max-w-lg mx-auto py-8 px-4">
-      <CheckCircleIcon className="h-24 w-24 text-hub-primary mx-auto mb-6" />
+    <div className="max-w-lg px-4 py-8 mx-auto text-center">
+      <CheckCircleIcon className="w-24 h-24 mx-auto mb-6 text-hub-primary" />
 
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+      <h1 className="mb-2 text-3xl font-extrabold text-gray-900">
         {onboardingUrl ? "Identity Verification" : "Payment Confirmed!"}
       </h1>
 
-      <p className="text-lg text-gray-600 mb-8">
+      <p className="mb-8 text-lg text-gray-600">
         {onboardingUrl
           ? "To start receiving payouts, you must complete your Stripe setup."
           : "You're all set! Redirecting you to your shop manager."}
@@ -135,10 +132,10 @@ export default function SuccessContent() {
             : "Verification complete. We are preparing your dashboard access."}
         </p>
 
-        <div className="flex items-center font-semibold text-sm">
-          <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden mr-3">
+        <div className="flex items-center text-sm font-semibold">
+          <div className="w-full h-2 mr-3 overflow-hidden bg-gray-200 rounded-full">
             <div
-              className="h-full bg-hub-primary transition-all duration-1000 ease-linear"
+              className="h-full transition-all duration-1000 ease-linear bg-hub-primary"
               style={{ width: `${(countdown / 5) * 100}%` }}
             ></div>
           </div>
@@ -148,10 +145,10 @@ export default function SuccessContent() {
 
       <button
         onClick={handleFinalRedirect}
-        className="w-full flex items-center justify-center bg-gray-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-black transition-all"
+        className="flex items-center justify-center w-full px-6 py-4 font-bold text-white transition-all bg-gray-900 rounded-xl hover:bg-black"
       >
         {onboardingUrl ? "Continue to Stripe Verification" : "Enter Dashboard"}
-        <ArrowRightIcon className="h-5 w-5 ml-2" />
+        <ArrowRightIcon className="w-5 h-5 ml-2" />
       </button>
     </div>
   );

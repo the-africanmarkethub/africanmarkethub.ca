@@ -273,8 +273,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     form.append("phone", phoneNumber);
     form.append("category_id", String(selectedCategory.id));
     form.append("type", selectedType.name.toLowerCase());
-    
-    // Only append local_delivery_setting if type is 'products'
+     
     if (selectedType.name.toLowerCase() === "products") {
       form.append("local_delivery_setting", localDelivery.name || "");
     }
