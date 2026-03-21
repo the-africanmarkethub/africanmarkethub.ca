@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { FaShieldAlt, FaArrowLeft } from "react-icons/fa";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function UnauthorizedPage() {
   
