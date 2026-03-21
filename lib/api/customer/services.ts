@@ -50,6 +50,11 @@ export const updateBookingStatus = async (bookingId: string, status: string) => 
   const { data } = await api.post(`/bookings/update/${bookingId}`, { status });
   return data;
 };
+
+export const verifyBookingCode = async (ticketId: string, code: string) => {
+  const { data } = await api.post(`/booking/verify`, { ticket_id: ticketId, code });
+  return data;
+}
 export const verifyBookingStripeSession = async (sessionId: string) => {
   const res = await api.get(`/customer/booking/payment/verify?session_id=${sessionId}`);
   return res.data;
