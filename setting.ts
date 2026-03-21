@@ -338,7 +338,9 @@ At African Market Hub, we are more than just a marketplace; we are a bridge conn
   companyDescription: `
 At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada.`,
 };
-
+export const waMessage = encodeURIComponent(
+  "Hello African Market Hub Support! I'm reaching out from the marketplace and I'd like some assistance.",
+);
 export const ROLE_OPTIONS = [
   { value: "customer", label: "Register as Customer" },
   { value: "vendor", label: "Register as Seller" },

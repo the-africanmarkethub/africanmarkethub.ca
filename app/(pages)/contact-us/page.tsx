@@ -1,7 +1,7 @@
 "use client";
 
 import contactUs from "@/lib/api/contact";
-import { COMPANY_CONTACT_INFO } from "@/setting";
+import { COMPANY_CONTACT_INFO, waMessage } from "@/setting";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -276,9 +276,7 @@ const ContactForm: React.FC = () => {
 };
 
 const ContactUsPage: React.FC = () => {
-  const waMessage = encodeURIComponent(
-    "Hello African Market Hub Support! I'm reaching out from the marketplace and I'd like some assistance."
-  );
+ 
   return (
     <div className="p-4 font-sans bg-gray-50 sm:p-8">
       <div className="max-w-6xl mx-auto">

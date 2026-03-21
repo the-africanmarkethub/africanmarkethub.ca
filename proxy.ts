@@ -1,6 +1,24 @@
+import { NextResponse } from "next/server";
+
 export default async function proxy(req: Request) {
   const url = new URL(req.url);
   const pathname = url.pathname;
+
+  const isInMaintenanceMode = process.env.MAINTENANCE_MODE === "true";
+
+  if (isInMaintenanceMode) {
+    const isMaintenancePage = pathname.startsWith("/maintenance");
+    const isPublicAsset =
+      pathname.startsWith("/_next") || pathname.includes("/api/health");
+
+    if (!isMaintenancePage && !isPublicAsset) {
+      url.pathname = "/maintenance";
+      return NextResponse.rewrite(url, {
+        status: 503,
+        statusText: "Service Unavailable",
+      });
+    }
+  }
 
   // ----- READ COOKIES -----
   const cookieHeader = req.headers.get("cookie") || "";
@@ -43,7 +61,7 @@ export default async function proxy(req: Request) {
     }
 
     if (isCustomerRoute && role !== "customer") {
-       return Response.redirect(`${url.origin}/unauthorized`, 302);
+      return Response.redirect(`${url.origin}/unauthorized`, 302);
     }
 
     if (isVendorRoute && role !== "vendor") {
