@@ -30,6 +30,7 @@ export default function SuccessContent() {
       const response = await verifySubscriptionCheckout(id);
 
       if (response.status === "paid") {
+        
         if (response.onboarding_url) { 
           setOnboardingUrl(response.onboarding_url);
           setIsFullyVerified(false);
@@ -57,6 +58,8 @@ export default function SuccessContent() {
     }
 
     if (isFullyVerified) {
+      // we need to update the user data role to seller before redirecting to dashboard
+      
       router.replace("/dashboard");
     } else { 
       setStatus("error");
