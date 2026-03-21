@@ -332,6 +332,7 @@ export const COMPANY_CONTACT_INFO = {
   phone: "",
   email: "info@africanmarkethub.ca",
   companyName: APP_NAME,
+  whatsappNumber: "17097709514",
   about: `
 At African Market Hub, we are more than just a marketplace; we are a bridge connecting African culture, entrepreneurship, and community to the heart of Canada. Our platform brings together African vendors, service providers, and consumers, creating a vibrant digital space where authentic African products, services, and cultural goods are celebrated and made easily accessible. Whether you’re looking to reconnect with the flavors, styles, and traditions of Africa or discover new offerings from passionate African entrepreneurs, African Market Hub makes it simple, seamless, and enjoyable.`,
   companyDescription: `

@@ -6,7 +6,7 @@ import { Participant } from "@/interfaces/ticket";
 import BookingModal from "./BookingModal";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { createBookingProposal } from "@/lib/api/customer/services";
+import { createBookingProposal, updateBookingStatus } from "@/lib/api/customer/services";
 import Skeleton from "react-loading-skeleton";
 import { useAuthStore } from "@/store/useAuthStore";
 interface ChatHeaderProps {
@@ -27,13 +27,11 @@ export default function ChatHeader({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuthStore();
-  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false); // New state for vendor action
+  const [isMarkingCompleted, setIsMarkingCompleted] = useState(false);  
 
-  // --- Customer Booking Logic ---
   const isCustomer = user?.role === 'customer';
   const isBooked = bookingStatus === "ongoing";
   const buttonText = isBooked ? "Booked" : "Book now";
-  // Customer button is disabled only if it's already booked
   const customerButtonDisabled = isBooked;
 
   const buttonBaseClass = "text-white text-xs font-bold px-4 py-2 rounded-full transition-all active:scale-95 shadow-sm";
@@ -44,23 +42,22 @@ export default function ChatHeader({
     ? `${buttonBaseClass} ${buttonBookedStyle}`
     : `${buttonBaseClass} ${buttonActiveStyle}`;
 
-  // --- Vendor Action Logic ---
   const isVendor = user?.role === 'vendor';
   const showVendorCompleteButton = isVendor && bookingStatus === 'ongoing';
 
   const handleMarkAsCompleted = async () => {
     setIsMarkingCompleted(true);
-    // --- Placeholder for Vendor API Call ---
-    try { 
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
-      toast.success("Booking marked as completed!");
-      // You may need to trigger a parent state update or router refresh here
-    } catch (error) {
-      toast.error("Failed to mark as completed.");
+    try {
+      const response = await updateBookingStatus(ticketId, 'delivered');
+      toast.success("Confirmation code has been sent to the customer!"); 
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Failed to mark as completed.";
+      toast.error(errorMessage);
     } finally {
       setIsMarkingCompleted(false);
     }
   };
+  
   const handleBookingSubmit = async (bookingData: any) => {
     setIsSubmitting(true);
     try {
@@ -94,13 +91,13 @@ export default function ChatHeader({
         <button
           onClick={onBack}
           aria-label="back"
-          className="md:hidden p-1 -ml-1 text-gray-500 hover:bg-gray-100 rounded-full transition-colors"
+          className="p-1 -ml-1 text-gray-500 transition-colors rounded-full md:hidden hover:bg-gray-100"
         >
           <LuChevronLeft size={24} />
         </button>
 
         <div className="relative shrink-0">
-          <div className="h-10 w-10 rounded-full overflow-hidden border border-gray-100">
+          <div className="w-10 h-10 overflow-hidden border border-gray-100 rounded-full">
             {isLoading ? (
               <Skeleton
                 circle
@@ -115,12 +112,12 @@ export default function ChatHeader({
                 width={40}
                 height={40}
                 unoptimized
-                className="h-full w-full object-cover"
+                className="object-cover w-full h-full"
               />
             )}
           </div>
           {displayParticipant && participant.is_online && (
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-hub-primary border-2 border-white rounded-full" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full bg-hub-primary" />
           )}
         </div>
 
@@ -187,7 +184,7 @@ export default function ChatHeader({
                 <button
                   onClick={handleMarkAsCompleted}
                   disabled={isMarkingCompleted}
-                  className="bg-hub-secondary cursor-pointer text-white text-xs font-bold px-4 py-2 rounded-full hover:bg-hub-primary transition-all active:scale-95 shadow-md shadow-blue-200 disabled:bg-hub-primary disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-xs font-bold text-white transition-all rounded-full shadow-md cursor-pointer bg-hub-secondary hover:bg-hub-primary active:scale-95 shadow-blue-200 disabled:bg-hub-primary disabled:cursor-not-allowed"
                 >
                   {isMarkingCompleted ? 'Processing...' : 'Mark as Completed'}
                 </button>

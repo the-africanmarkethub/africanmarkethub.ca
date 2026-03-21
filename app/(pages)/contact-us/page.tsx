@@ -11,7 +11,7 @@ import {
   FaPaperPlane,
   FaWhatsapp,
 } from "react-icons/fa";
-import { FaMailchimp } from "react-icons/fa6";
+import { FaMailchimp, FaPhone } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
 
 interface FormData {
@@ -95,8 +95,6 @@ const ContactForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate puzzle before submission
     if (userAnswer.trim().toLowerCase() !== expectedAnswer.toLowerCase()) {
       toast.error("Incorrect puzzle answer. Please try again.");
       return;
@@ -130,9 +128,9 @@ const ContactForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 bg-white p-8 rounded-xl shadow-2xl border border-gray-100 text-gray-700"
+      className="p-8 space-y-6 text-gray-700 bg-white border border-gray-100 shadow-2xl rounded-xl"
     >
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+      <h3 className="mb-4 text-2xl font-bold text-gray-900">
         Send Us a Message
       </h3>
 
@@ -140,7 +138,7 @@ const ContactForm: React.FC = () => {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block mb-1 text-sm font-medium text-gray-700"
         >
           Your Name
         </label>
@@ -157,11 +155,11 @@ const ContactForm: React.FC = () => {
       </div>
 
       {/* Email + Phone */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block mb-1 text-sm font-medium text-gray-700"
           >
             Your Email
           </label>
@@ -180,7 +178,7 @@ const ContactForm: React.FC = () => {
         <div>
           <label
             htmlFor="phone"
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block mb-1 text-sm font-medium text-gray-700"
           >
             Your Phone
           </label>
@@ -201,7 +199,7 @@ const ContactForm: React.FC = () => {
       <div>
         <label
           htmlFor="subject"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block mb-1 text-sm font-medium text-gray-700"
         >
           Subject
         </label>
@@ -221,7 +219,7 @@ const ContactForm: React.FC = () => {
       <div>
         <label
           htmlFor="message"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block mb-1 text-sm font-medium text-gray-700"
         >
           Message
         </label>
@@ -240,10 +238,10 @@ const ContactForm: React.FC = () => {
 
       {/* Puzzle validation */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block mb-1 text-sm font-medium text-gray-700">
           Security Question
         </label>
-        <p className="text-gray-600 mb-2">{puzzle}</p>
+        <p className="mb-2 text-gray-600">{puzzle}</p>
         <input
           type="text"
           name="puzzle"
@@ -259,15 +257,15 @@ const ContactForm: React.FC = () => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="btn btn-primary w-full flex justify-center items-center"
+        className="flex items-center justify-center w-full btn btn-primary"
       >
         {isSubmitting ? (
-          <div className="flex justify-center items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <ClipLoader size={20} color="#fff" />
             <span>Processing...</span>
           </div>
         ) : (
-          <div className="flex justify-center items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <FaPaperPlane className="w-5 h-5" />
             <span>Submit Message</span>
           </div>
@@ -278,45 +276,62 @@ const ContactForm: React.FC = () => {
 };
 
 const ContactUsPage: React.FC = () => {
+  const waMessage = encodeURIComponent(
+    "Hello African Market Hub Support! I'm reaching out from the marketplace and I'd like some assistance."
+  );
   return (
-    <div className=" bg-gray-50 font-sans p-4 sm:p-8">
+    <div className="p-4 font-sans bg-gray-50 sm:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
-        <header className="text-center py-16 bg-white rounded-xl shadow-lg mb-12">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+        <header className="py-16 mb-12 text-center bg-white shadow-lg rounded-xl">
+          <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl">
             Contact{" "}
             <span className="text-hub-secondary">
               {COMPANY_CONTACT_INFO.companyName}
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="max-w-3xl mx-auto text-lg text-gray-700 sm:text-xl">
             {COMPANY_CONTACT_INFO.companyDescription}
           </p>
         </header>
 
         {/* Contact Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid gap-10 lg:grid-cols-3">
           {/* Contact Info Sidebar (2/3) */}
-          <div className="lg:col-span-1 space-y-8 p-6 lg:p-0">
-            <div className="bg-green-50 p-6 rounded-xl shadow-md border-l-4 border-hub-secondary">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <div className="p-6 space-y-8 lg:col-span-1 lg:p-0">
+            <div className="p-6 border-l-4 shadow-md bg-green-50 rounded-xl border-hub-secondary">
+              <h2 className="mb-4 text-2xl font-bold text-gray-900">
                 Get in Touch
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="mb-6 text-gray-600">
                 Connect with our team directly via email for specific
                 inquiries.
               </p>
 
-              {/* Phone */}
+              {/* Email */}
               <div className="flex items-start mb-4">
-                <FaMailchimp className="w-6 h-6 text-hub-primary mt-1 shrink-0" />
+                <FaMailchimp className="w-6 h-6 mt-1 text-hub-primary shrink-0" />
                 <div className="ml-3">
                   <p className="text-sm font-semibold text-gray-900">
                     Email Us
                   </p>
-                  <p className="text-gray-700 hover:text-hub-secondary transition-colors">
+                  <p className="text-gray-700 transition-colors hover:text-hub-secondary">
                     <Link href="mailto:support@africanmarkethub.ca">
                       Send us a message
+                    </Link>
+                  </p>
+                </div>
+              </div>
+              {/* WhatsApp */}
+              <div className="flex items-start mb-4">
+                <FaWhatsapp className="w-6 h-6 mt-1 text-hub-primary shrink-0" />
+                <div className="ml-3">
+                  <p className="text-sm font-semibold text-gray-900">
+                    WhatsApp us
+                  </p>
+                  <p className="text-gray-700 transition-colors hover:text-hub-secondary">
+                    <Link href={`https://wa.me/${COMPANY_CONTACT_INFO.whatsappNumber}?text=${waMessage}`} target="_blank" rel="noopener noreferrer">
+                      Chat on WhatsApp
                     </Link>
                   </p>
                 </div>
