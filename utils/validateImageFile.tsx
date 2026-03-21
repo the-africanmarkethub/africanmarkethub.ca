@@ -1,9 +1,9 @@
-import { FILE_LIMITS, ALLOWED_IMAGE_TYPES } from "@/setting";
+import { FILE_LIMITS, VALID_IMAGE_TYPES } from "@/setting";
 
 export const validateImageFile = (file: File | null, type: keyof typeof FILE_LIMITS) => {
   if (!file) return { valid: true };
   
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+  if (!VALID_IMAGE_TYPES.includes(file.type)) {
     return { valid: false, error: `Invalid format. Only PNG, JPG, and JPEG are allowed.` };
   }
 

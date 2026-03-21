@@ -3,7 +3,6 @@ import { SiFedex, SiUps, SiUsps, SiAmazon, SiDeliveroo } from "react-icons/si";
 import { MdLocalShipping } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb"; // Modern delivery icon
 
-export const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/jpg"];
 
 export const FILE_LIMITS = {
   logo: { max: 1 * 1024 * 1024, label: "Logo (Max 1MB)" },
