@@ -44,15 +44,13 @@ export const createBookingProposal = async (payload: {
   return data;
 };
 
-// booking update function for vendor
 export const updateBookingStatus = async (bookingId: string, status: string) => {
-  // We pass { status } as the second argument (the request body)
   const { data } = await api.post(`/bookings/update/${bookingId}`, { status });
   return data;
 };
 
 export const verifyBookingCode = async (ticketId: string, code: string) => {
-  const { data } = await api.post(`/booking/verify`, { ticket_id: ticketId, code });
+  const { data } = await api.post(`/bookings/verify`, { ticket_id: ticketId, code });
   return data;
 }
 export const verifyBookingStripeSession = async (sessionId: string) => {

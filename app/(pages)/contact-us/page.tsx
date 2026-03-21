@@ -327,11 +327,25 @@ const ContactUsPage: React.FC = () => {
                 <FaWhatsapp className="w-6 h-6 mt-1 text-hub-primary shrink-0" />
                 <div className="ml-3">
                   <p className="text-sm font-semibold text-gray-900">
-                    WhatsApp us
+                    WhatsApp Us
                   </p>
                   <p className="text-gray-700 transition-colors hover:text-hub-secondary">
                     <Link href={`https://wa.me/${COMPANY_CONTACT_INFO.whatsappNumber}?text=${waMessage}`} target="_blank" rel="noopener noreferrer">
                       Chat on WhatsApp
+                    </Link>
+                  </p>
+                </div>
+              </div>
+              {/* Phone */}
+              <div className="flex items-start mb-4">
+                <FaPhone className="w-6 h-6 mt-1 text-hub-primary shrink-0" />
+                <div className="ml-3">
+                  <p className="text-sm font-semibold text-gray-900">
+                    Call Us
+                  </p>
+                  <p className="text-gray-700 transition-colors hover:text-hub-secondary">
+                    <Link href={`tel:${COMPANY_CONTACT_INFO.whatsappNumber}`} >
+                      Phone Call
                     </Link>
                   </p>
                 </div>
