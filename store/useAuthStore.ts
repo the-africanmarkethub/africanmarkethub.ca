@@ -6,7 +6,7 @@ interface AuthStore {
   token: string | null;
   user: User | null;
   _hasHydrated: boolean;
-  setAuth: (token: string, user: User) => void;
+  setAuth: (token?: string, user?: User) => void;
   clearAuth: () => void;
   setHasHydrated: (state: boolean) => void;
   updateUser: (user: Partial<User>) => void;

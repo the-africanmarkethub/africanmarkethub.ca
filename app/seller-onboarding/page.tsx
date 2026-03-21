@@ -82,7 +82,7 @@ export default function OnboardingPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex items-center justify-center h-screen">
           Loading...
         </div>
       }

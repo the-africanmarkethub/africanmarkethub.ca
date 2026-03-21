@@ -1,21 +1,31 @@
 "use client";
 
+import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function UnauthorizedPage() {
+  
+  const router = useRouter();
+  const { clearAuth } = useAuthStore();
+  
+  const handleLogout = () => {
+    clearAuth();
+    router.replace("/login");
+  }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-100 px-6">
-      <div className="bg-white shadow-xl rounded-3xl p-10 max-w-md w-full text-center animate-fadeIn">
+    <div className="flex items-center justify-center min-h-screen px-6 bg-linear-to-br from-gray-50 via-white to-gray-100">
+      <div className="w-full max-w-md p-10 text-center bg-white shadow-xl rounded-3xl animate-fadeIn">
         <div className="flex justify-center mb-6">
-          <div className="bg-green-100 p-6 rounded-full">
+          <div className="p-6 bg-green-100 rounded-full">
             <FaShieldAlt className="text-hub-secondary" size={60} />
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Access Denied</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-800">Access Denied</h1>
 
-        <p className="text-gray-600 leading-relaxed mb-8">
+        <p className="mb-8 leading-relaxed text-gray-600">
           You don't have permission to view this page.
           <br />
           Please make sure you're logged in with the correct role.
@@ -30,9 +40,10 @@ export default function UnauthorizedPage() {
             Go Back Home
           </Link>
 
-          <Link href="/login" className="btn btn-gray">
+          <button onClick={handleLogout} 
+           className="btn btn-gray">
             Login with another account
-          </Link>
+          </button>
         </div>
       </div>
     </div>
