@@ -92,9 +92,9 @@ function ProductActionCell({
       - Mobile: Stacked or multi-row (flex-wrap) to prevent layout breaking
       - Desktop: Single horizontal row
     */}
-      <div className="flex flex-wrap md:flex-nowrap items-center gap-2 min-w-fit">
+      <div className="flex flex-wrap items-center gap-2 md:flex-nowrap min-w-fit">
         {/* Status Dropdown - Wider on mobile for touch targets */}
-        <div className="w-full md:w-32 order-1">
+        <div className="order-1 w-full md:w-32">
           <SelectDropdown
             value={status}
             options={statusOptions}
@@ -110,7 +110,7 @@ function ProductActionCell({
         )}
 
         {/* Action Buttons Group */}
-        <div className="flex items-center gap-2 w-full md:w-auto justify-end md:justify-start order-3">
+        <div className="flex items-center justify-end order-3 w-full gap-2 md:w-auto md:justify-start">
           {/* Update Button */}
           <button
             className="flex-1 md:flex-none bg-hub-secondary text-white px-3 py-2 md:p-1.5 rounded-md hover:bg-hub-secondary flex items-center justify-center gap-1 cursor-pointer transition-colors text-sm font-medium"
@@ -140,12 +140,12 @@ function ProductActionCell({
         title="Confirm Deletion"
       >
         <div className="p-1">
-          <p className="mt-2 text-sm text-gray-500 leading-relaxed">
+          <p className="mt-2 text-sm leading-relaxed text-gray-500">
             Are you sure you want to delete{" "}
             <span className="font-semibold text-gray-900">{product.title}</span>
             ? This action cannot be undone and will remove all associated data.
           </p>
-          <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
+          <div className="flex flex-col-reverse justify-end gap-3 mt-6 sm:flex-row">
             <button
               className="w-full sm:w-auto rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
               onClick={() => setIsModalOpen(false)}
@@ -158,9 +158,9 @@ function ProductActionCell({
               disabled={loading}
             >
               {loading ? (
-                <span className="flex items-center gap-2 justify-center">
+                <span className="flex items-center justify-center gap-2">
                   <svg
-                    className="animate-spin h-4 w-4 text-white"
+                    className="w-4 h-4 text-white animate-spin"
                     viewBox="0 0 24 24"
                   >
                     <circle
@@ -224,18 +224,25 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
           const image = row.original.images?.[0];
           const title = row.original.title;
           const category = row.original.category?.name;
+          const slug = row.original.slug;  
+          const url = `https://africanmarkethub.ca/items/${slug}`;
 
           return (
-            <div className="flex items-center space-x-2 min-w-0">
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center min-w-0 space-x-2 transition-opacity hover:opacity-80"
+            >
               <Image
                 src={image || "/placeholder.png"}
                 alt={title}
-                width={40}
-                height={40}
-                className="w-10 h-10 object-cover rounded shrink-0"
+                width={70}
+                height={70}
+                className="object-cover w-10 h-10 rounded shrink-0"
               />
               <div className="flex flex-col min-w-0">
-                <span className="font-medium text-gray-800 truncate block max-w-30 sm:max-w-50">
+                <span className="block font-medium text-blue-600 truncate hover:underline max-w-30 sm:max-w-50">
                   {title}
                 </span>
                 {category && (
@@ -244,7 +251,7 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
                   </span>
                 )}
               </div>
-            </div>
+            </a>
           );
         },
       },
@@ -282,13 +289,13 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
 
           return (
             <div className="flex flex-col text-xs">
-              <span className="text-gray-800 font-semibold">
+              <span className="font-semibold text-gray-800">
                 {formattedSales}
               </span>
               {salesPrice > 0 &&
                 regularPrice > 0 &&
                 salesPrice < regularPrice && (
-                  <span className="text-gray-500 line-through text-xs">
+                  <span className="text-xs text-gray-500 line-through">
                     {formattedRegular}
                   </span>
                 )}
@@ -424,13 +431,13 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
 
   return (
     <div className="space-y-6">
-      <div className="mb-4 mt-8">
+      <div className="mt-8 mb-4">
         <input
           type="text"
           placeholder="Search by item name..."
           value={search}
           onChange={handleSearchChange}
-          className="w-full px-3 py-2 border rounded-md border-hub-secondary text-gray-900 focus:outline-none"
+          className="w-full px-3 py-2 text-gray-900 border rounded-md border-hub-secondary focus:outline-none"
         />
       </div>
 
