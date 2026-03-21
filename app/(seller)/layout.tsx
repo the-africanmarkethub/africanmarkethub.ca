@@ -69,10 +69,10 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
   // Show loader while Hydrating OR while fetching shop data
   if (!_hasHydrated || !token || isValidating) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
+      <div className="flex items-center justify-center h-screen bg-gray-50">
         <div className="flex flex-col items-center gap-4">
           <PulseLoader color="#016134" />
-          <p className="text-sm text-gray-500 font-medium animate-pulse">
+          <p className="text-sm font-medium text-gray-500 animate-pulse">
             Verifying shop status...
           </p>
         </div>
@@ -81,19 +81,19 @@ export default function SellerLayout({ children }: SellerLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden"
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
           onClick={toggleSidebar}
         />
       )}
 
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header toggleSidebar={toggleSidebar} />
-        <main className="flex-1 overflow-y-auto p-3 md:p-8">{children}</main>
+        <main className="flex-1 p-3 overflow-y-auto md:p-8">{children}</main>
       </div>
     </div>
   );
