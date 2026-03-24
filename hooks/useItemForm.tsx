@@ -388,11 +388,22 @@ export function useItemForm(item: any) {
       window.location.reload();
     } catch (e) {
       let message = "An error occurred while saving the item";
+
       if (axios.isAxiosError(e)) {
-        const axiosErr = e as AxiosError<{ message?: string }>;
-        message = axiosErr.response?.data?.message ?? axiosErr.message;
+        const responseData = e.response?.data;
+        if (e.response?.status === 422 && responseData.errors) {
+          const firstErrorField = Object.keys(responseData.errors)[0];
+          message = responseData.errors[firstErrorField][0]; 
+        }
+        else if (responseData?.message) {
+          message = responseData.message;
+        }
+        else {
+          message = e.message;
+        }
       }
-      toast.error(message);
+
+      toast.error(message, { duration: 5000 });  
     } finally {
       setLoading(false);
     }
