@@ -60,7 +60,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
     () =>
       loading
         ? Array.from({ length: 6 }).map((_, idx) => (
-          <div key={idx} className="rounded-xl overflow-hidden">
+          <div key={idx} className="overflow-hidden rounded-xl">
             <Skeleton height={224} />
           </div>
         ))
@@ -68,7 +68,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
           <div
             key={cat.id}
             onClick={() => handleClick(cat.slug)}
-            className="relative rounded-xl overflow-hidden group cursor-pointer border border-green-100"
+            className="relative overflow-hidden border border-green-100 cursor-pointer rounded-xl group"
           >
             <Image
               src={optimizeImage(cat.image, 400)}
@@ -77,10 +77,10 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
               height={400}
               placeholder="blur"
               blurDataURL="/placeholder.png"
-              className="w-full h-56 object-cover group-hover:scale-105 transition transform"
+              className="object-cover w-full h-56 transition transform group-hover:scale-105"
             />
-            <div className="absolute bottom-3 left-3 right-3">
-              <div className="btn btn-primary text-center text-xs md:text-base truncate">
+            <div className="absolute bottom-0 left-0 right-0 p-2">
+              <div className="w-full py-2 text-xs text-center truncate shadow-md btn btn-primary md:text-sm">
                 {cat.name}
               </div>
             </div>
@@ -92,7 +92,6 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
   const renderBanner = useMemo(
     () =>
       loading ? (
-        /* Match the skeleton to the new shape */
         <Skeleton className="rounded-2xl w-full max-w-[621px] aspect-[621/952]" />
       ) : banner ? (
         <div 
@@ -111,7 +110,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
           />
 
           {/* Overlay Content */}
-          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center p-6">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-black/40">
             <p className="text-xl sm:text-2xl font-bold text-white! text-center leading-tight">
               {type === "services"
                 ? "Nearby Service Providers"
@@ -120,7 +119,7 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
 
             <button
               aria-label={type === "services" ? "Book now" : "Shop now"}
-              className="mt-6 bg-green-100 text-hub-secondary px-8 py-3 rounded-full text-sm sm:text-base font-bold flex items-center gap-2 hover:bg-green-200 transition active:scale-95"
+              className="flex items-center gap-2 px-8 py-3 mt-6 text-sm font-bold transition bg-green-100 rounded-full text-hub-secondary sm:text-base hover:bg-green-200 active:scale-95"
             >
               {type === "services" ? (
                 <>
@@ -140,20 +139,20 @@ const CategorySection: FC<CategorySectionProps> = ({ type }) => {
 
   return (
     <section className="py-6">
-      <div className="w-full mx-auto px-3 sm:px-4">
-        <h2 className="md:text-xl text-sm font-bold mb-2">
+      <div className="w-full px-3 mx-auto sm:px-4">
+        <h2 className="mb-2 text-sm font-bold md:text-xl">
           Shop by <span className="capitalize">{type}</span> Categories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {renderBanner}
-          <div className="col-span-1 md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 col-span-1 gap-2 md:col-span-2 md:grid-cols-3">
             {renderCategories}
 
             {!loading && categories.length > 0 && (
-              <div className="flex justify-center col-span-2 md:col-span-3 mt-4">
+              <div className="flex justify-center col-span-2 mt-4 md:col-span-3">
                 <button
                   onClick={() => router.push("/categories?type=" + type)}
-                  className="px-6 py-3 bg-hub-secondary text-white font-semibold rounded-lg shadow-lg hover:bg-hub-primary hover:shadow-xl transition-all flex items-center gap-2 cursor-pointer"
+                  className="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all rounded-lg shadow-lg cursor-pointer bg-hub-secondary hover:bg-hub-primary hover:shadow-xl"
                 >
                   View All <span className="capitalize">{type}</span>
                 </button>

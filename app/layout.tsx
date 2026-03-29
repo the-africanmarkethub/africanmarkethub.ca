@@ -18,6 +18,9 @@ const instrumentSans = Instrument_Sans({
 
 export const metadata: Metadata = {
   title: APP_NAME,
+  verification: {
+    google: "xwZkWOEsQIhgVZpnQeE9-95KYZ_5msOkZRe30ebZalI",
+  },
   manifest: "/site.webmanifest",
   description:
     "Buy authentic African groceries, clothes, and the best African foods online. African Market Hub brings you fresh ingredients, fashion, and essentials from Africa — all in one trusted online marketplace.",
@@ -68,7 +71,7 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <PublicLayoutElements />
-              <main id="main-content" role="main" className="bg-gray-50 flex-1">
+              <main id="main-content" role="main" className="flex-1 bg-gray-50">
                 {children}
               </main>
               <FooterWrapper />
