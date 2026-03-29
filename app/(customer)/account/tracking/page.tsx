@@ -1,45 +1,44 @@
 "use client";
 
 import {
-  Order,
   OrderStatusTracker,
 } from "@/app/track-order/components/OrderStatusTracker";
+import { Order, OrderResponse } from "@/interfaces/orders";
 import { trackOrder } from "@/lib/api/trackOrder";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { FiMapPin } from "react-icons/fi";
 
-interface OrderResponse {
-  status: string;
-  order?: Order;
-  message?: string;
-}
 
 const TrackOrderPage: React.FC = () => {
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
+  const [query, setQuery] = useState("");
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email.");
+    if (!query.trim()) {
+      toast.error("Please enter an email or order ID.");
       return;
     }
-
     setLoading(true);
     setOrder(null);
 
     try {
-      const data: OrderResponse = await trackOrder(email);
-      if (data.status === "success" && data.order) {
-        setOrder(data.order);
-        toast.success("Order found!");
+      const isEmail = query.includes("@");
+      const emailParam = isEmail ? query.trim() : "";
+      const orderIdParam = !isEmail ? query.trim() : "";
+
+      const response: OrderResponse = await trackOrder(emailParam, orderIdParam);
+
+      if (response.status === "success" && response.data) {
+        setOrder(response.data);
+        toast.success("Order details loaded");
       } else {
-        toast.error(data.message || "Customer not found");
+        toast.error(response.message || "Order not found");
       }
-    } catch {
-      toast.error("Customer not found");
+    } catch (error) {
+      toast.error("Unable to fetch order details");
     } finally {
       setLoading(false);
     }
@@ -60,19 +59,18 @@ const TrackOrderPage: React.FC = () => {
 
       <form
         onSubmit={handleSearch}
-        className="w-full mt-5 mb-8 space-y-3 md:space-y-0 md:flex md:items-end md:gap-3"
+        className="w-full mt-6 mb-8 space-y-4 md:space-y-0 md:flex md:items-end md:gap-3"
       >
-        <div className="flex-1 w-full">
-          <label className="block mb-1 text-sm font-medium text-gray-700">
-            Enter your email address
+        <div className="flex-1">
+          <label className="block mb-2 text-sm font-semibold text-gray-700">
+            Email or Order ID
           </label>
-
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            className="input"
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="e.g. name@email.com or #12345"
+            className="w-full input"
             required
           />
         </div>
@@ -80,12 +78,11 @@ const TrackOrderPage: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full btn btn-primary md:w-auto"
+          className="w-1/6 py-3.5! btn btn-primary"
         >
           {loading ? "Searching..." : "Track"}
         </button>
       </form>
-
       {order && <OrderStatusTracker order={order} />}
 
       {!order && !loading && (
