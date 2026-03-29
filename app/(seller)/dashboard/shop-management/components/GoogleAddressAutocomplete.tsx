@@ -21,7 +21,7 @@ type Props = {
   onSelect: (addr: Address) => void;
   placeholder?: string;
   countryRestrictions?: string[];
-  initialValue?: string; // Helpful for editing existing addresses
+  initialValue?: string;  
 };
 
 export default function GoogleAddressAutocomplete({
@@ -60,7 +60,7 @@ export default function GoogleAddressAutocomplete({
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setValue(val);
-    setIsValidated(false); // Reset validation if they start typing again
+    setIsValidated(false);  
 
     if (val.length > 2 && placesLib.current && sessionToken) {
       const { AutocompleteSuggestion } = placesLib.current;
@@ -124,8 +124,7 @@ export default function GoogleAddressAutocomplete({
       if (types.includes("postal_code")) {
         const code = comp.longText ?? "";
         components.zip = code;
-        if (code.replace(/\s/g, "").length < 3) {
-          // Adjusted for global zip variations
+        if (code.replace(/\s/g, "").length < 3) { 
           toast.error("Please ensure the postal code is complete.");
         }
       }
@@ -194,14 +193,14 @@ export default function GoogleAddressAutocomplete({
 
         {/* Validation Checkmark */}
         {isValidated && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 animate-in fade-in zoom-in duration-300">
+          <div className="absolute text-green-500 duration-300 -translate-y-1/2 right-3 top-1/2 animate-in fade-in zoom-in">
             <FaCheckCircle size={18} />
           </div>
         )}
       </div>
 
       {suggestions.length > 0 && (
-        <ul className="absolute z-100 w-full bg-white border border-slate-200 rounded-lg mt-1 max-h-64 overflow-y-auto shadow-xl py-1">
+        <ul className="absolute w-full py-1 mt-1 overflow-y-auto bg-white border rounded-lg shadow-xl z-100 border-slate-200 max-h-64">
           {suggestions.map((s, idx) => {
             const text = s.placePrediction?.text?.text;
             if (!text) return null;
