@@ -2,6 +2,8 @@ import React from "react";
 import { FaCheckCircle, FaBox, FaTruck, FaHome } from "react-icons/fa";
 import { clsx } from "clsx";
 import { Order, ShippingStatus } from "@/interfaces/orders";
+import Link from "next/link";
+import Image from "next/image";
 
 interface OrderStatusTrackerProps {
   order: Order;
@@ -19,7 +21,7 @@ export const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = ({ order })
   const currentStatus = shipping?.status || "pending";
 
   const currentStatusIndex = statusSteps.findIndex((step) => step.id === currentStatus);
-
+  const firstProduct = order.items?.[0]?.product;
   return (
     <div className="space-y-6 duration-500 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex flex-col items-start justify-between gap-2 pb-4 border-b sm:flex-row sm:items-center">
@@ -76,21 +78,32 @@ export const OrderStatusTracker: React.FC<OrderStatusTrackerProps> = ({ order })
       </div>
 
       <div className="flex items-center gap-4 p-4 border border-gray-100 bg-gray-50 rounded-xl">
-        {order.items?.[0]?.product?.images?.[0] && (
-          <img
-            src={order.items[0].product.images[0]}
-            alt="product"
-            className="object-cover w-16 h-16 bg-white rounded-lg shadow-sm"
-          />
-        )}
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-800 line-clamp-1">
-            {order.items?.[0]?.product?.title || "Multiple Items"}
-          </p>
-          <p className="text-xs text-gray-500">
-            {order.items?.length} item{order.items?.length > 1 ? 's' : ''} • {shipping?.status === 'delivered' ? 'Package arrived' : 'In progress'}
-          </p>
-        </div>
+        <Link
+          href={`/items/${firstProduct?.slug}`}
+          className="flex items-center gap-4 p-4 transition-all border border-gray-100 bg-gray-50 rounded-xl hover:bg-white hover:shadow-md group"
+        >
+          {firstProduct?.images?.[0] && (
+            <Image
+              src={firstProduct.images[0]}
+              alt={firstProduct.title}
+              width={64}
+              height={64}
+              className="object-cover w-16 h-16 bg-white rounded-lg shadow-sm"
+            />
+          )}
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-gray-800 transition-colors line-clamp-1">
+                {firstProduct?.title || "View Order Item"}
+              </p> 
+            </div>
+
+            <p className="text-xs text-gray-500">
+              {order.items?.length} item{order.items?.length > 1 ? 's' : ''} • {shipping?.status === 'delivered' ? 'Package arrived' : 'In progress'}
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );

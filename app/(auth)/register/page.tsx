@@ -91,9 +91,9 @@ function RegisterPage() {
     <div className="flex min-h-screen">
       <AuthSideBarBanner />
 
-      <div className="flex items-center justify-center bg-gray-50 p-8 sm:p-12 w-full lg:w-1/2">
+      <div className="flex items-center justify-center w-full p-8 bg-gray-50 sm:p-12 lg:w-1/2">
         <div className="w-full max-w-md">
-          <div className="flex justify-center mb-8 gap-2">
+          <div className="flex justify-center gap-2 mb-8">
             <div
               className={`h-1.5 w-12 rounded-full ${
                 step >= 1 ? "bg-hub-primary" : "bg-gray-200"
@@ -108,11 +108,11 @@ function RegisterPage() {
 
           {/* STEP 1: ROLE SELECTION */}
           {step === 1 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 text-center">
+            <div className="duration-500 animate-in fade-in slide-in-from-right-4">
+              <h1 className="mb-2 text-2xl font-bold text-center text-gray-900 sm:text-3xl">
                 Join our Marketplace
               </h1>
-              <p className="text-gray-500 text-center mb-8">
+              <p className="mb-8 text-center text-gray-500">
                 Choose how you want to participate
               </p>
 
@@ -139,11 +139,11 @@ function RegisterPage() {
                 />
               </div>
 
-              <p className="mt-8 text-center text-sm text-gray-600">
+              <p className="mt-8 text-sm text-center text-gray-600">
                 Already have an account?{" "}
                 <button
                   onClick={() => router.push("/login")}
-                  className="text-hub-primary cursor-pointer font-semibold hover:underline"
+                  className="font-semibold cursor-pointer text-hub-primary hover:underline"
                 >
                   Login here
                 </button>
@@ -153,16 +153,16 @@ function RegisterPage() {
 
           {/* STEP 2: DETAILS FORM */}
           {step === 2 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+            <div className="duration-500 animate-in fade-in slide-in-from-right-4">
               <button
                 onClick={() => setStep(1)}
                 aria-label="back"
-                className="flex items-center text-sm text-gray-500 hover:text-gray-800 mb-4 transition-colors cursor-pointer"
+                className="flex items-center mb-4 text-sm text-gray-500 transition-colors cursor-pointer hover:text-gray-800"
               >
                 <ArrowLeftIcon className="w-4 h-4 mr-1" /> Back to roles
               </button>
 
-              <h1 className="text-2xl font-bold text-gray-900 mb-6">
+              <h1 className="mb-6 text-2xl font-bold text-gray-900">
                 Tell us about yourself
               </h1>
 
@@ -173,12 +173,12 @@ function RegisterPage() {
                     <GoogleSignInButton />
                   </div>
 
-                  <div className="relative my-6 flex items-center">
-                    <div className="grow border-t border-gray-300"></div>
-                    <span className="mx-4 text-xs uppercase text-gray-400 font-medium">
+                  <div className="relative flex items-center my-6">
+                    <div className="border-t border-gray-300 grow"></div>
+                    <span className="mx-4 text-xs font-medium text-gray-400 uppercase">
                       or use email
                     </span>
-                    <div className="grow border-t border-gray-300"></div>
+                    <div className="border-t border-gray-300 grow"></div>
                   </div>
                 </>
               )}
@@ -223,9 +223,9 @@ function RegisterPage() {
                   <label className="text-sm font-medium text-gray-700">
                     Phone Number
                   </label>
-                  <div className="flex  bg-white rounded-lg overflow-hidden border border-gray-300 focus-within:ring-2 focus-within:ring-hub-primary focus-within:border-hub-primary transition-all">
+                  <div className="flex overflow-hidden transition-all bg-white border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-hub-primary focus-within:border-hub-primary">
                     {/* Country Selector Prefix */}
-                    <div className="flex items-center gap-1 bg-gray-50 px-3 border-r border-gray-300">
+                    <div className="flex items-center gap-1 px-3 border-r border-gray-300 bg-gray-50">
                       <span className="text-lg">{selectedCountry.flag}</span>
                       <span className="text-sm font-medium text-gray-600">
                         {selectedCountry.dial_code}
@@ -265,7 +265,7 @@ function RegisterPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1} // Pro tip: prevents tabbing to the eye icon
-                    className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 focus:outline-none"
+                    className="absolute text-gray-400 right-3 top-10 hover:text-gray-600 focus:outline-none"
                   >
                     {showPassword ? (
                       <EyeSlashIcon className="w-5 h-5" />
@@ -278,7 +278,7 @@ function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn btn-primary w-full py-3 mt-4"
+                  className="w-full py-3 mt-4 btn btn-primary"
                 >
                   {loading ? "Creating Account..." : "Complete Registration"}
                 </button>
@@ -314,10 +314,10 @@ function RoleCard({ title, description, icon, active, onClick }: any) {
       </div>
       <div className="flex-1">
         <h3 className="font-bold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-500 leading-tight">{description}</p>
+        <p className="text-sm leading-tight text-gray-500">{description}</p>
       </div>
       {active && (
-        <CheckCircleIcon className="w-6 h-6 text-hub-secondary ml-2" />
+        <CheckCircleIcon className="w-6 h-6 ml-2 text-hub-secondary" />
       )}
     </button>
   );
@@ -332,7 +332,7 @@ export function Input({
 }: any) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1">
+      <label className="block mb-1 text-sm font-semibold text-gray-700">
         {label}
       </label>
       <input

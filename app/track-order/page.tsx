@@ -65,8 +65,8 @@ const TrackOrderPage: React.FC = () => {
                 type="text"  
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="e.g. name@email.com or 12345"
-                className="w-full px-4 py-3 transition-all border border-gray-200 outline-none input bg-gray-50 rounded-xl focus:ring-2 focus:ring-green-500 focus:bg-white"
+                placeholder="e.g. name@email.com or #12345"
+                className="w-full input"
                 required
               />
             </div>
@@ -74,9 +74,9 @@ const TrackOrderPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-8 py-3 font-bold text-white transition-colors bg-green-600 shadow-lg md:w-auto hover:bg-green-700 disabled:bg-gray-400 rounded-xl shadow-green-100"
+              className="w-1/6 py-3.5! btn btn-primary"
             >
-              {loading ? "..." : "Track"}
+              {loading ? "Searching..." : "Track"}
             </button>
           </form>
 

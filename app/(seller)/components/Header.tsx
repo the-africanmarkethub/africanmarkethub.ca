@@ -65,7 +65,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
             Services
           </Link>
           <Link
-            href="/help"
+            href="/contact-us"
             className="flex items-center text-[10px] font-semibold transition-colors md:text-sm text-zinc-700 hover:text-emerald-600 whitespace-nowrap"
           >
             <LuPhoneCall className="w-4 h-4 mr-1 md:mr-1.5 text-zinc-400" />
