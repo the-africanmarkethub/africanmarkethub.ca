@@ -2,36 +2,35 @@ import Address from "./address";
 import { Product } from "./products";
 import { User } from "./user";
 
- 
 export interface OrderItem {
-    id: number;
-    quantity: number;
-    price: string;
-    type: string; // e.g., "checkout"
-    subtotal: string;
-    created_at: string;
-    updated_at: string;
-    user_id: number;
-    order_id: number;
-    product_id: number;
-    product: Product; // Nested product details
+  id: number;
+  quantity: number;
+  price: string;
+  type: string; // e.g., "checkout"
+  subtotal: string;
+  created_at: string;
+  updated_at: string;
+  user_id: number;
+  order_id: number;
+  product_id: number;
+  product: Product; // Nested product details
 }
 
 // --- Shipping Address Interface ---
 export interface ShippingAddress {
-    id: number;
-    customer_id: number;
-    street_address: string;
-    city: string;
-    state: string;
-    zip_code: string;
-    country: string; // e.g., "KE"
-    address_label: string; // e.g., "default"
-    phone: string;
-    created_at: string;
-    updated_at: string;
+  id: number;
+  customer_id: number;
+  street_address: string;
+  city: string;
+  state: string;
+  zip_code: string;
+  country: string; // e.g., "KE"
+  address_label: string; // e.g., "default"
+  phone: string;
+  created_at: string;
+  updated_at: string;
 }
- 
+
 // --- Main Order Interface (The item inside the 'data' array) ---
 export interface Order {
   id: number;
@@ -66,19 +65,18 @@ export interface Order {
 
 // --- Final Response Interface for the List Endpoint ---
 export type OrderListResponse = {
-    status: "success" | "error"; // Added 'error' for robustness
-    message: string; // Added 'message' field
-    total: number;
-    offset: number;
-    limit: number;
-    // The 'data' field is an array of Order objects
-    data: Order[];
+  status: "success" | "error"; // Added 'error' for robustness
+  message: string; // Added 'message' field
+  total: number;
+  offset: number;
+  limit: number;
+  // The 'data' field is an array of Order objects
+  data: Order[];
 };
- 
 
 export type GraphPoint = {
-  day: string;  
-  total: number; 
+  day: string;
+  total: number;
 };
 
 export type OrderStatsType = {
@@ -87,8 +85,6 @@ export type OrderStatsType = {
   total_completed: number;
   total_cancelled: number;
 };
-
- 
 
 export interface CustomerOrdersResponse {
   status: string;
@@ -122,8 +118,8 @@ export interface CustomerOrder {
   customer_id: number;
   address_id: number;
   shipping_service_code: string | null;
-  yet_to_review: boolean
-
+  yet_to_review: boolean;
+  shipping_details?: ShippingDetail[];
   order_items: CustomerOrderItem[];
 }
 
@@ -146,8 +142,36 @@ export interface CustomerOrderProduct {
   id: number;
   title: string;
   slug: string;
-  images: string[]; 
+  images: string[];
   reviews: any[]; // adjust if you define Review[]
   average_rating: number;
   variations: any[]; // adjust if you define Variation[]
+}
+
+export type ShippingStatus =
+  | "pending"
+  | "processing"
+  | "ongoing"
+  | "delivered"
+  | "cancelled";
+ 
+
+export interface ShippingDetail {
+  carrier: string | null;
+  tracking_code: string | null;
+  status: ShippingStatus;
+  label: string | null;
+}
+
+export interface Order {
+  id: number;
+  items: CustomerOrderItem[];
+  shipping_details: ShippingDetail[];
+  updated_at: string;
+}
+
+export interface OrderResponse {
+  status: string;
+  message: string;
+  data?: Order;  
 }

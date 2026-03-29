@@ -1,12 +1,12 @@
 import api from "./axios";
 
 /**
- * Tracks orders associated with a specific email.
+ * Tracks orders using email, order ID, or both.
  */
-export const trackOrder = async (email: string, orderId?: string) => {
+export const trackOrder = async (email?: string, orderId?: string) => {
   const res = await api.post("order/track", {
-    email,
-    order_id: orderId, // This will be sent as undefined if not provided, which is fine
+    email: email || undefined,
+    order_id: orderId || undefined,
   });
   return res.data;
 };

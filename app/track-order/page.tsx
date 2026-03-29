@@ -3,22 +3,20 @@
 import { trackOrder } from "@/lib/api/trackOrder";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { Order, OrderStatusTracker } from "./components/OrderStatusTracker";
-interface OrderResponse {
-  status: string;
-  order?: Order;
-  message?: string;
-}
+import {  OrderStatusTracker } from "./components/OrderStatusTracker";
+import { Order, OrderResponse } from "@/interfaces/orders";
+
+ 
 
 const TrackOrderPage: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [query, setQuery] = useState("");  
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email.");
+    if (!query.trim()) {
+      toast.error("Please enter an email or order ID.");
       return;
     }
 
@@ -26,44 +24,49 @@ const TrackOrderPage: React.FC = () => {
     setOrder(null);
 
     try {
-      const data: OrderResponse = await trackOrder(email);
-      if (data.status === "success" && data.order) {
-        setOrder(data.order);
-        toast.success("Order found!");
+      // Logic to determine if input is email or ID
+      const isEmail = query.includes("@");
+      const emailParam = isEmail ? query.trim() : "";
+      const orderIdParam = !isEmail ? query.trim() : "";
+
+      const response: OrderResponse = await trackOrder(emailParam, orderIdParam);
+
+      if (response.status === "success" && response.data) {
+        setOrder(response.data);
+        toast.success("Order details loaded");
       } else {
-        toast.error(data.message || "Customer not found");
+        toast.error(response.message || "Order not found");
       }
-    } catch {
-      toast.error("Customer not found");
+    } catch (error) {
+      toast.error("Unable to fetch order details");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="bg-white rounded-2xl shadow-sm w-full max-w-lg p-8">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-gray-50">
+      <div className="w-full max-w-lg p-8 bg-white shadow-sm rounded-2xl">
         <div className="mb-8">
           <h2 className="text-xl font-bold text-gray-900">Track Your Order</h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Enter your email to view your latest order status.
+          <p className="mt-1 text-sm text-gray-500">
+            Enter your details to view your shipping progress.
           </p>
+
           <form
             onSubmit={handleSearch}
-            className="w-full mt-5 mb-8 space-y-3 md:space-y-0 md:flex md:items-end md:gap-3"
+            className="w-full mt-6 mb-8 space-y-4 md:space-y-0 md:flex md:items-end md:gap-3"
           >
-            <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Enter your tracking number
+            <div className="flex-1">
+              <label className="block mb-2 text-sm font-semibold text-gray-700">
+                Email or Order ID
               </label>
-
               <input
-                type="email"
-                inputMode="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="TRA1238"
-                className="input"
+                type="text"  
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="e.g. name@email.com or 12345"
+                className="w-full px-4 py-3 transition-all border border-gray-200 outline-none input bg-gray-50 rounded-xl focus:ring-2 focus:ring-green-500 focus:bg-white"
                 required
               />
             </div>
@@ -71,18 +74,18 @@ const TrackOrderPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full py-3.25! md:w-auto"
+              className="w-full px-8 py-3 font-bold text-white transition-colors bg-green-600 shadow-lg md:w-auto hover:bg-green-700 disabled:bg-gray-400 rounded-xl shadow-green-100"
             >
-              {loading ? "Searching..." : "Track"}
+              {loading ? "..." : "Track"}
             </button>
           </form>
 
           {order && <OrderStatusTracker order={order} />}
 
           {!order && !loading && (
-            <div className="text-center text-xs py-10 border-2 border-dashed border-green-200 rounded-lg">
-              <p className="text-gray-500">
-                Your order status will appear here.
+            <div className="py-12 text-center border-2 border-gray-100 border-dashed rounded-2xl">
+              <p className="text-sm text-gray-400">
+                Enter your info above to see tracking details.
               </p>
             </div>
           )}
