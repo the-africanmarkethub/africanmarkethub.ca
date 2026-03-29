@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import GoogleSignInButton from "@/app/components/common/GoogleSignInButton";
@@ -29,15 +29,12 @@ export default function LoginPage() {
 
       const result = await loginUser({ email, password, device_name });
 
-      // 1. Sync State
       useAuthStore.getState().setAuth(result.token, result.user);
 
-      // 2. Set Secure Cookies
       const cookieConfig = "path=/; SameSite=Lax; Secure";
       document.cookie = `token=${result.token}; ${cookieConfig}`;
       document.cookie = `role=${result.user.role}; ${cookieConfig}`;
 
-      // 3. Optimized Redirect Logic
       const { role } = result.user;
       const hasShop = !!result.hasShop;
 
@@ -60,20 +57,20 @@ export default function LoginPage() {
 
       if (error instanceof AxiosError) {
         const responseData = error.response?.data;
- 
+
         if (
           error.response?.status === 403 &&
           responseData?.code === "EMAIL_UNVERIFIED"
         ) {
           toast.error(responseData.message || "Email not verified");
- 
+
           router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
           return;
         }
- 
+
         if (error.response?.status === 422 && responseData?.errors) {
           message = Object.values(responseData.errors).flat().join(" ");
-        } 
+        }
         else if (responseData?.message) {
           message = responseData.message;
         }
@@ -91,11 +88,11 @@ export default function LoginPage() {
       <AuthSideBarBanner />
 
       {/* Right Column: Auth UI */}
-      <div className="flex items-center justify-center bg-gray-50 p-8 w-full lg:w-1/2">
+      <div className="flex items-center justify-center w-full p-8 bg-gray-50 lg:w-1/2">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+          <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-500 mt-2">
+            <p className="mt-2 text-gray-500">
               Please enter your details to sign in
             </p>
           </div>
@@ -110,7 +107,7 @@ export default function LoginPage() {
               <span className="w-full border-t border-gray-300"></span>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-gray-50 px-4 text-gray-500">
+              <span className="px-4 text-gray-500 bg-gray-50">
                 or continue with email
               </span>
             </div>
@@ -131,7 +128,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 inputMode="email"
                 placeholder="mary.j@example.ca"
-                className="input appearance-none"
+                className="appearance-none input"
               />
             </div>
 
@@ -151,14 +148,14 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className="input outline-none transition-all"
+                  className="transition-all outline-none input"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   tabIndex={-1}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
+                  className="absolute p-1 text-gray-400 -translate-y-1/2 right-3 top-1/2 hover:text-gray-600 focus:outline-none"
                 >
                   {showPassword ? (
                     <EyeSlashIcon className="w-5 h-5" />
@@ -168,10 +165,10 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              <div className="text-right mt-2">
+              <div className="mt-2 text-right">
                 <Link
                   href="/forget-password"
-                  className="text-sm font-medium text-hub-primary hover:text-hub-secondary transition-colors"
+                  className="text-sm font-medium transition-colors text-hub-primary hover:text-hub-secondary"
                 >
                   Forgot Password?
                 </Link>
@@ -182,11 +179,11 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn btn-primary w-full h-11 flex items-center justify-center transition-all disabled:opacity-70"
+                className="flex items-center justify-center w-full transition-all btn btn-primary h-11 disabled:opacity-70"
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
-                    <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    <span className="w-4 h-4 border-2 rounded-full border-white/30 border-t-white animate-spin"></span>
                     Logging in...
                   </span>
                 ) : (
@@ -197,7 +194,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => router.push("/register")}
-                className="btn btn-gray w-full h-11 border border-gray-300 bg-white hover:bg-gray-50 transition-colors text-gray-700"
+                className="w-full text-gray-700 transition-colors bg-white border border-gray-300 btn btn-gray h-11 hover:bg-gray-50"
               >
                 Create an account
               </button>
