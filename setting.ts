@@ -1,8 +1,7 @@
 import { FaDhl } from "react-icons/fa6";
 import { SiFedex, SiUps, SiUsps, SiAmazon, SiDeliveroo } from "react-icons/si";
 import { MdLocalShipping } from "react-icons/md";
-import { TbTruckDelivery } from "react-icons/tb"; // Modern delivery icon
-
+import { TbTruckDelivery } from "react-icons/tb";  
 
 export const FILE_LIMITS = {
   logo: { max: 1 * 1024 * 1024, label: "Logo (Max 1MB)" },
@@ -11,26 +10,33 @@ export const FILE_LIMITS = {
 };
 
 export const TYPES: SelectOption[] = [
-  { id: 3, name: "Products", label: "Product Merchant" },
-  { id: 2, name: "Services", label: "Service Provider" },
-  { id: 1, name: "Deliveries", label: "Delivery Partner" },
+  { id: 1, name: "Select Type", label: "Select Type", disabled: true },
+  { id: 2, name: "Deliveries", label: "Delivery Partner" },
+  { id: 3, name: "Services", label: "Service Provider" },
+  { id: 4, name: "Products", label: "Product Merchant" },
 ];
 
 export const LOCALDELIVERYOPTION: SelectOption[] = [
   {
     id: 1,
+    name: "Select Delivery Option",
+    label: "Choose how you want to charge for local deliveries.",
+    disabled: true,
+  },
+  {
+    id: 2,
     name: "Flat Fee",
     label: "I will charge a fixed price for my delivery carrier.",
   },
-  // { id: 2, name: "Free Delivery", label: "I will deliver for free to customers." },
   { id: 3, name: "Not Available", label: "Use platform's standard shipping." },
 ];
 
 export const ID_OPTIONS: Option[] = [
-  { id: 1, name: "Work permit" },
-  { id: 2, name: "Study permit" },
-  { id: 3, name: "Permanent resident" },
-  { id: 4, name: "Passport for citizen" },
+  { id: 1, name: "Select ID Type", disabled: true },
+  { id: 2, name: "Work permit" },
+  { id: 3, name: "Study permit" },
+  { id: 4, name: "Permanent resident" },
+  { id: 5, name: "Passport for citizen" },
 ];
 
 export interface Option extends DefaultOption {}
@@ -41,6 +47,7 @@ export interface SelectOption {
   code?: string;
   flag?: string;
   dial_code?: string;
+  disabled?: boolean;
 }
 import {
   FiUser,
@@ -69,7 +76,7 @@ import {
   LuUser,
   LuShieldCheck,
 } from "react-icons/lu";
-import { HiOutlineTicket, HiOutlineClipboardList } from "react-icons/hi";
+import { HiOutlineTicket } from "react-icons/hi";
 import { DefaultOption } from "./app/components/common/SelectField";
 
 export const APP_NAME = "African Market Hub";
@@ -177,15 +184,15 @@ export const VENDOR_MENU: NavItem[] = [
     children: [
       {
         id: 91,
-        label: "My Profile", 
+        label: "My Profile",
         href: "/dashboard/account-settings",
-        icon: LuUser,  
+        icon: LuUser,
       },
       {
         id: 92,
-        label: "Security",  
+        label: "Security",
         href: "/dashboard/account-settings/security",
-        icon: LuShieldCheck, 
+        icon: LuShieldCheck,
       },
     ],
   },
@@ -313,9 +320,9 @@ export const ALLOWED_COUNTRIES = [
 ];
 
 export interface CountryOption {
-  code: string; // ISO 3166-1 alpha-2
-  dial_code: string; // E.164 dial code
-  flag: string; // Emoji or URL
+  code: string; 
+  dial_code: string; 
+  flag: string;  
   name: string;
 }
 

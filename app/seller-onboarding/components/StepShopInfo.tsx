@@ -105,15 +105,14 @@ export default function StepShopInfo({ onNext }: StepProps) {
     file: File,
     mode: "logo" | "banner" | "document",
   ) => {
-    // FIX: Destructure the result to get valid and error
     const { valid, error } = validateImageFile(
       file,
       mode === "document" ? "document" : mode,
     );
 
     if (!valid) {
-      toast.error(error || "Invalid file"); // Tell the user WHY it failed
-      return; // Stop execution
+      toast.error(error || "Invalid file");
+      return;
     }
 
     setUploadingMode(mode);
@@ -131,21 +130,21 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
 
     // Auto-upload logic for existing shops
-  if (hasExistingShop && mode !== "document") {
-    const uploadPromise =
-      mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
+    if (hasExistingShop && mode !== "document") {
+      const uploadPromise =
+        mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
 
-    toast.promise(uploadPromise, {
-      loading: `Syncing ${mode}...`,
-      success: (data) =>
-        `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
-      error: (err) =>
-        `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
-    });
-  }
+      toast.promise(uploadPromise, {
+        loading: `Syncing ${mode}...`,
+        success: (data) =>
+          `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
+        error: (err) =>
+          `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
+      });
+    }
     setTimeout(() => setUploadingMode(null), 600);
-  }; 
-  
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -163,8 +162,8 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setZip(addrRes.zip_code || "");
           if (addrRes.lat) setLat(Number(addrRes.lat));
           if (addrRes.lng) setLng(Number(addrRes.lng));
-        } 
-        
+        }
+
         if (shopRes?.status === "success" && shopRes.data) {
           const s = shopRes.data;
           setShopData(s);
@@ -209,7 +208,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     let isMounted = true;
 
     const fetchCats = async () => {
-      setCategoriesLoading(true);  
+      setCategoriesLoading(true);
       try {
         const r = await listCategories(
           50,
@@ -238,7 +237,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     fetchCats();
 
     return () => {
-      isMounted = false;  
+      isMounted = false;
     };
   }, [selectedType]);
 
@@ -250,16 +249,39 @@ export default function StepShopInfo({ onNext }: StepProps) {
       </div>
     );
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // 1. Basic Validation
     if (description.length > MAX_DESC_LENGTH) {
       return toast.error("Description is too long.");
     }
-    if (!name || !description || !phoneNumber || !selectedCategory) {
+
+    // Check required text fields
+    if (!name || !description || !phoneNumber) {
       return toast.error("Missing required fields.");
     }
+
+    // Check Dropdown Selections (Placeholders have .disabled = true)
+    if (!selectedType || selectedType.disabled) {
+      return toast.error("Please select a Business Type.");
+    }
+
+    if (!selectedCategory || selectedCategory.disabled) {
+      return toast.error("Please select a Business Category.");
+    }
+
+    // Check Local Delivery only if Type is Products
+    if (selectedType.name === "Products" && (!localDelivery || localDelivery.disabled)) {
+      return toast.error("Please select a Local Delivery option.");
+    }
+
+    // Check ID Type
+    if (!identificationType || identificationType.disabled) {
+      return toast.error("Please select a Legal Identification Type.");
+    }
+
+    // Check Address
     if (!zip || !lat || !lng) {
       return toast.error(
         "Please select a valid address from the dropdown to provide Zip and Coordinates."
@@ -273,17 +295,20 @@ export default function StepShopInfo({ onNext }: StepProps) {
     form.append("phone", phoneNumber);
     form.append("category_id", String(selectedCategory.id));
     form.append("type", selectedType.name.toLowerCase());
-     
-    if (selectedType.name.toLowerCase() === "products") {
-      form.append("local_delivery_setting", localDelivery.name || "");
+
+    if (selectedType.name === "Products") {
+      form.append("local_delivery_setting", localDelivery.name);
     }
 
-    form.append("identification_type", identificationType?.name ?? "student");
-    
+    // Use the actual selected identification name
+    form.append("identification_type", identificationType.name);
+
+    // Files
     if (idDocFile) form.append("identification_document", idDocFile);
     if (logoFile) form.append("logo", logoFile);
     if (bannerFile) form.append("banner", bannerFile);
-    
+
+    // Address Data
     form.append("address", addressLine);
     form.append("city", city);
     form.append("state", stateCode);
@@ -316,7 +341,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="max-w-6xl pb-20 mx-auto">
       <ShopHeaderCard
@@ -435,7 +460,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <section className="">
-          <h3 className="mb-6 font-bold text-slate-800">Legal Verification</h3>
           <SelectField
             label="ID Type"
             value={identificationType || ID_OPTIONS[0]}
