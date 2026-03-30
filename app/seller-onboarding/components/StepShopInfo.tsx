@@ -516,12 +516,16 @@ export default function StepShopInfo({ onNext }: StepProps) {
               required
             />
             <TextInput label="City" value={city} onChange={setCity} disabled />
+            
+            <TextInput label="Postal Code" value={zip} onChange={setZip} disabled />
+            
             <TextInput
               label="Province"
               value={stateCode}
               onChange={setStateCode}
               disabled
             />
+            
             <PhoneInput
               countryFlag={countryCodeToFlag(countryCode)}
               dialCode={dialCode}
@@ -532,6 +536,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <div className="relative">
+          
           <TextareaField
             label="Shop Description"
             value={description}

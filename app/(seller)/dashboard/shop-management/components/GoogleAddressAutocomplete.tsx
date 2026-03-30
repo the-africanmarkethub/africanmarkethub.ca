@@ -147,7 +147,7 @@ export default function GoogleAddressAutocomplete({
       dialCode,
     });
 
-    setIsValidated(true); // Successful validation!
+    setIsValidated(true); 
     setSessionToken(new placesLib.current.AutocompleteSessionToken());
   };
 
@@ -191,7 +191,6 @@ export default function GoogleAddressAutocomplete({
           autoComplete="off"
         />
 
-        {/* Validation Checkmark */}
         {isValidated && (
           <div className="absolute text-green-500 duration-300 -translate-y-1/2 right-3 top-1/2 animate-in fade-in zoom-in">
             <FaCheckCircle size={18} />
