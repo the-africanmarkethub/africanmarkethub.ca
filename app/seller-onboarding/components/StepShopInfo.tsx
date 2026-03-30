@@ -11,6 +11,7 @@ import {
   saveShop,
   updateShopLogo,
   updateShopBanner,
+  updateShopDocument,
 } from "@/lib/api/seller/shop";
 import { StepProps } from "@/interfaces/StepProps";
 import { countryCodeToFlag } from "@/utils/countryFlag";
@@ -32,6 +33,8 @@ import {
 } from "@/setting";
 import { validateImageFile } from "@/utils/validateImageFile";
 import { Shop } from "@/interfaces/shop";
+import imageCompression from 'browser-image-compression';
+
 
 export default function StepShopInfo({ onNext }: StepProps) {
   const MAX_DESC_LENGTH = 500;
@@ -76,31 +79,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const [dialCode, setDialCode] = useState("+1");
   const [googleLoaded, setGoogleLoaded] = useState(false);
 
-  // --- Memory Cleanup ---
-  useEffect(() => {
-    return () => {
-      [logoUrl, bannerUrl, idDocUrl].forEach((url) => {
-        if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
-      });
-    };
-  }, [logoUrl, bannerUrl, idDocUrl]);
-
-  // --- Google Maps Script ---
-  useEffect(() => {
-    if ((window as any).google?.maps?.places) {
-      setGoogleLoaded(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
-    script.async = true;
-    script.onload = () => setGoogleLoaded(true);
-    document.head.appendChild(script);
-    return () => {
-      script.remove();
-    };
-  }, []);
-
   const handleMediaChange = async (
     file: File,
     mode: "logo" | "banner" | "document",
@@ -116,34 +94,138 @@ export default function StepShopInfo({ onNext }: StepProps) {
     }
 
     setUploadingMode(mode);
-    const localPreview = URL.createObjectURL(file);
 
-    if (mode === "logo") {
-      setLogoUrl(localPreview);
-      setLogoFile(file);
-    } else if (mode === "banner") {
-      setBannerUrl(localPreview);
-      setBannerFile(file);
-    } else {
-      setIdDocUrl(localPreview);
-      setIdDocFile(file);
+    try {
+      let processedFile = file;
+
+      if (file.size > 200 * 1024) {
+        const options: any = {
+          maxSizeMB: 0.5,  
+          useWebWorker: true,
+          fileType: "image/webp",
+          initialQuality: 0.85, 
+        };
+
+        if (mode === "logo") {
+          options.maxWidthOrHeight = 600;
+          options.maxSizeMB = 0.15;
+        } else if (mode === "banner") {
+          options.maxWidthOrHeight = 1440;
+          options.maxSizeMB = 0.3;
+        }
+        const loadingToast = toast.loading(`Optimizing ${mode}...`);
+        processedFile = await imageCompression(file, options);
+        toast.dismiss(loadingToast);
+      }
+
+      const localPreview = URL.createObjectURL(processedFile);
+
+      if (mode === "logo") {
+        setLogoUrl(localPreview);
+        setLogoFile(processedFile);
+      } else if (mode === "banner") {
+        setBannerUrl(localPreview);
+        setBannerFile(processedFile);
+      } else {
+        setIdDocUrl(localPreview);
+        setIdDocFile(processedFile);
+      }
+
+      if (hasExistingShop) {
+        let uploadPromise;
+
+        if (mode === "logo") {
+          uploadPromise = updateShopLogo(processedFile);
+        } else if (mode === "banner") {
+          uploadPromise = updateShopBanner(processedFile);
+        } else if (mode === "document") {
+          uploadPromise = updateShopDocument(processedFile);
+        }
+
+        if (uploadPromise) {
+          toast.promise(uploadPromise, {
+            loading: `Updating ${mode}...`,
+            success: `${mode.charAt(0).toUpperCase() + mode.slice(1)} synced!`,
+            error: (err) => {
+              const msg = err.response?.data?.message || "Server Error";
+              return `Failed to sync ${mode}: ${msg}`;
+            },
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Optimization error:", err);
+      toast.error("Failed to process image.");
+    } finally {
+      setUploadingMode(null);
     }
-
-    // Auto-upload logic for existing shops
-    if (hasExistingShop && mode !== "document") {
-      const uploadPromise =
-        mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
-
-      toast.promise(uploadPromise, {
-        loading: `Syncing ${mode}...`,
-        success: (data) =>
-          `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
-        error: (err) =>
-          `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
-      });
-    }
-    setTimeout(() => setUploadingMode(null), 600);
   };
+  useEffect(() => {
+    return () => {
+      [logoUrl, bannerUrl, idDocUrl].forEach((url) => {
+        if (url?.startsWith("blob:")) URL.revokeObjectURL(url);
+      });
+    };
+  }, [logoUrl, bannerUrl, idDocUrl]);
+
+  useEffect(() => {
+    if ((window as any).google?.maps?.places) {
+      setGoogleLoaded(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`;
+    script.async = true;
+    script.onload = () => setGoogleLoaded(true);
+    document.head.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+
+  // const handleMediaChange = async (
+  //   file: File,
+  //   mode: "logo" | "banner" | "document",
+  // ) => {
+  //   const { valid, error } = validateImageFile(
+  //     file,
+  //     mode === "document" ? "document" : mode,
+  //   );
+
+  //   if (!valid) {
+  //     toast.error(error || "Invalid file");
+  //     return;
+  //   }
+
+  //   setUploadingMode(mode);
+  //   const localPreview = URL.createObjectURL(file);
+
+  //   if (mode === "logo") {
+  //     setLogoUrl(localPreview);
+  //     setLogoFile(file);
+  //   } else if (mode === "banner") {
+  //     setBannerUrl(localPreview);
+  //     setBannerFile(file);
+  //   } else {
+  //     setIdDocUrl(localPreview);
+  //     setIdDocFile(file);
+  //   }
+
+  //   // Auto-upload logic for existing shops
+  //   if (hasExistingShop && mode !== "document") {
+  //     const uploadPromise =
+  //       mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
+
+  //     toast.promise(uploadPromise, {
+  //       loading: `Syncing ${mode}...`,
+  //       success: (data) =>
+  //         `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
+  //       error: (err) =>
+  //         `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
+  //     });
+  //   }
+  //   setTimeout(() => setUploadingMode(null), 600);
+  // };
 
   useEffect(() => {
     const loadData = async () => {
@@ -249,20 +331,24 @@ export default function StepShopInfo({ onNext }: StepProps) {
       </div>
     );
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 1. Basic Validation
     if (description.length > MAX_DESC_LENGTH) {
       return toast.error("Description is too long.");
     }
-
-    // Check required text fields
-    if (!name || !description || !phoneNumber) {
-      return toast.error("Missing required fields.");
+    if (!name) {
+      return toast.error("Missing required name.");
+    }
+    if (!description) {
+      return toast.error("Missing required description.");
+    }
+    if (!phoneNumber) {
+      return toast.error("Missing required phone number.");
     }
 
-    // Check Dropdown Selections (Placeholders have .disabled = true)
     if (!selectedType || selectedType.disabled) {
       return toast.error("Please select a Business Type.");
     }
@@ -271,20 +357,30 @@ export default function StepShopInfo({ onNext }: StepProps) {
       return toast.error("Please select a Business Category.");
     }
 
-    // Check Local Delivery only if Type is Products
     if (selectedType.name === "Products" && (!localDelivery || localDelivery.disabled)) {
       return toast.error("Please select a Local Delivery option.");
     }
 
-    // Check ID Type
     if (!identificationType || identificationType.disabled) {
-      return toast.error("Please select a Legal Identification Type.");
+      return toast.error("Please select a means of identification.");
+    }
+    if (!logoFile || !bannerFile) {
+      return toast.error("Please select both logo and banner images.");
     }
 
-    // Check Address
-    if (!zip || !lat || !lng) {
+    if (!zip) {
       return toast.error(
-        "Please select a valid address from the dropdown to provide Zip and Coordinates."
+        "Please provide a valid address to ensure we have the Zip code for your shop location."
+      );
+    }
+    if (!idDocFile) {
+      return toast.error(
+        "Please upload a valid identification document."
+      );
+    }
+    if (!lat || !lng) {
+      return toast.error(
+        "Please select a valid address from the dropdown to provide Coordinates."
       );
     }
 
@@ -300,15 +396,12 @@ export default function StepShopInfo({ onNext }: StepProps) {
       form.append("local_delivery_setting", localDelivery.name);
     }
 
-    // Use the actual selected identification name
     form.append("identification_type", identificationType.name);
 
-    // Files
     if (idDocFile) form.append("identification_document", idDocFile);
     if (logoFile) form.append("logo", logoFile);
     if (bannerFile) form.append("banner", bannerFile);
 
-    // Address Data
     form.append("address", addressLine);
     form.append("city", city);
     form.append("state", stateCode);
@@ -317,7 +410,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
     form.append("lat", String(lat));
     form.append("lng", String(lng));
 
-    // 3. Execution
     setLoading(true);
     try {
       const res = await saveShop(form);
@@ -516,16 +608,16 @@ export default function StepShopInfo({ onNext }: StepProps) {
               required
             />
             <TextInput label="City" value={city} onChange={setCity} disabled />
-            
+
             <TextInput label="Postal Code" value={zip} onChange={setZip} disabled />
-            
+
             <TextInput
               label="Province"
               value={stateCode}
               onChange={setStateCode}
               disabled
             />
-            
+
             <PhoneInput
               countryFlag={countryCodeToFlag(countryCode)}
               dialCode={dialCode}
@@ -536,7 +628,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
         </section>
 
         <div className="relative">
-          
+
           <TextareaField
             label="Shop Description"
             value={description}

@@ -57,6 +57,16 @@ export async function updateShopBanner(file: File) {
 
   return response.data;
 }
+export async function updateShopDocument(file: File) {
+  const formData = new FormData();
+  formData.append("document", file);
+
+  const response = await api.post("/vendor/shop/document/update", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return response.data;
+}
 
 export async function getMyShop() {
   const response = await api.get("/vendor/shop");
