@@ -10,7 +10,6 @@ export const FILE_LIMITS = {
 };
 
 export const TYPES: SelectOption[] = [
-  { id: 1, name: "Select Type", label: "Select Type", disabled: true },
   { id: 2, name: "Deliveries", label: "Delivery Partner" },
   { id: 3, name: "Services", label: "Service Provider" },
   { id: 4, name: "Products", label: "Product Merchant" },

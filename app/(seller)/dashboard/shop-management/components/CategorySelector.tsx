@@ -16,7 +16,7 @@ interface Props {
   selectedCategory?: Option | null;
   onCategoryChange: (o: Option) => void;
   categoriesError?: string;
-  isTypeDisabled?: boolean; // 1. Add this prop
+  isTypeDisabled?: boolean;  
 }
 
 export default function CategorySelector({
@@ -28,20 +28,18 @@ export default function CategorySelector({
   selectedCategory,
   onCategoryChange,
   categoriesError,
-  isTypeDisabled, // 2. Destructure it
+  isTypeDisabled, 
 }: Props) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-900">
-      {/* Type Selector */}
+    <div className="grid grid-cols-1 gap-3 text-gray-900 sm:grid-cols-2">
       <div>
         <SelectField
           label="Niche Type"
           value={selectedType}
           onChange={onTypeChange}
           options={types}
-          disabled={isTypeDisabled} // 3. Pass it to your SelectField
+          disabled={isTypeDisabled} 
         />
-        {/* Optional: Add a small hint */}
         {isTypeDisabled && (
           <p className="text-[10px] text-gray-400 mt-1">
             Business type cannot be changed.
@@ -58,7 +56,7 @@ export default function CategorySelector({
         ) : (
           <SelectField
             label="Category"
-            value={selectedCategory ?? categories[0]} // fallback to first category if null
+            value={selectedCategory ?? categories[0]} 
             onChange={onCategoryChange}
             options={categories}
             
