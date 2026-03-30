@@ -4,9 +4,9 @@ import { MdLocalShipping } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";  
 
 export const FILE_LIMITS = {
-  logo: { max: 1 * 1024 * 1024, label: "Logo (Max 1MB)" },
-  banner: { max: 2 * 1024 * 1024, label: "Banner (Max 2MB)" },
-  document: { max: 3 * 1024 * 1024, label: "Document (Max 3MB)" },
+  logo: { max: 4 * 1024 * 1024, label: "Logo (Max 4MB)" },
+  banner: { max: 10 * 1024 * 1024, label: "Banner (Max 10MB)" },
+  document: { max: 12 * 1024 * 1024, label: "Document (Max 12MB)" },
 };
 
 export const TYPES: SelectOption[] = [
