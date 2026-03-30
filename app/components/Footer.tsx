@@ -63,7 +63,7 @@ export default function Footer() {
           {/* Facebook */}
           <Link
             href="https://www.facebook.com/theafricanmarkethub"
-            target="_blank"
+
             rel="noopener noreferrer"
             className="hover:text-blue-600 transition duration-150 cursor-pointer text-white"
             aria-label="Facebook link"
@@ -74,7 +74,7 @@ export default function Footer() {
           {/* Instagram */}
           <Link
             href="https://www.instagram.com/africanmarkethub"
-            target="_blank"
+
             rel="noopener"
             className="hover:text-pink-600 transition duration-150 cursor-pointer text-white"
             aria-label="Instagram link"
@@ -85,7 +85,7 @@ export default function Footer() {
           {/* X (Twitter) */}
           <Link
             href="https://www.x.com/africanmkthub"
-            target="_blank"
+
             rel="noopener"
             className="hover:text-black transition duration-150 cursor-pointer text-white"
             aria-label="Twitter link"
@@ -96,7 +96,7 @@ export default function Footer() {
           {/* TikTok */}
           <Link
             href="https://www.tiktok.com/@africanmarkethub"
-            target="_blank"
+
             rel="noopener noreferrer"
             className="hover:text-black transition duration-150 cursor-pointer text-white"
             aria-label="Tiktok link"

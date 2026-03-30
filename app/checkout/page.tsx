@@ -209,30 +209,30 @@ export default function CheckoutPage() {
     };
   }, []);
   return (
-    <div className="bg-gray-50 py-8 min-h-screen">
-      <div className="px-4 lg:px-8 flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="flex flex-col gap-8 px-4 mx-auto lg:px-8 lg:flex-row max-w-7xl">
         {cart && cart.length > 0 ? (
           <>
             <div className="flex-1">
-              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+              <h2 className="mb-6 text-xl font-semibold text-gray-800">
                 Shipping Information
               </h2>
               <form
-                className="grid grid-cols-1 bg-white p-6 rounded-lg shadow-sm md:grid-cols-2 gap-4"
+                className="grid grid-cols-1 gap-4 p-6 bg-white rounded-lg shadow-sm md:grid-cols-2"
                 onSubmit={handleSubmit}
               >
-                <div className="md:col-span-2 border-b border-gray-100 pb-4 mb-2">
+                <div className="pb-4 mb-2 border-b border-gray-100 md:col-span-2">
                   <button
                     type="button"
                     onClick={() => setShowPersonalDetails(!showPersonalDetails)}
-                    className="flex items-center justify-between w-full text-left group cursor-pointer"
+                    className="flex items-center justify-between w-full text-left cursor-pointer group"
                   >
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                      <span className="text-sm font-bold tracking-wider text-gray-500 uppercase">
                         Personal Details
                       </span>
                       {!showPersonalDetails && (
-                        <span className="text-gray-400 text-xs mt-1">
+                        <span className="mt-1 text-xs text-gray-400">
                           {firstname} {lastname} • {email}
                         </span>
                       )}
@@ -277,8 +277,8 @@ export default function CheckoutPage() {
                 )}
                 {/* Identity Fields */}
 
-                <div className="md:col-span-2 pt-2">
-                  <span className="text-sm font-bold text-gray-500 uppercase tracking-wider">
+                <div className="pt-2 md:col-span-2">
+                  <span className="text-sm font-bold tracking-wider text-gray-500 uppercase">
                     Delivery Address
                   </span>
                 </div>
@@ -333,7 +333,7 @@ export default function CheckoutPage() {
                     Phone Number
                   </label>
                   <div className="flex items-stretch h-12">
-                    <div className="flex items-center justify-center px-3 border border-gray-300 border-r-0 rounded-l-md bg-gray-50 text-gray-700 text-sm min-w-20">
+                    <div className="flex items-center justify-center px-3 text-sm text-gray-700 border border-r-0 border-gray-300 rounded-l-md bg-gray-50 min-w-20">
                       <span className="mr-2">
                         {countryCodeToFlag(address.country)}
                       </span>
@@ -343,12 +343,13 @@ export default function CheckoutPage() {
                     </div>
                     <input
                       type="tel"
-                      className="input rounded-l-none flex-1 border border-gray-300 px-3 outline-none focus:ring-1 focus:ring-hub-primary"
+                      className="flex-1 px-3 border border-gray-300 rounded-l-none outline-none input focus:ring-1 focus:ring-hub-primary"
                       value={phone}
                       onChange={(e) =>
                         setPhone(e.target.value.replace(/\D/g, ""))
                       }
                       placeholder="712 345 678"
+                      maxLength={10}
                       required
                     />
                   </div>
@@ -389,21 +390,21 @@ export default function CheckoutPage() {
                   type="text"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
-                  className="input w-full border border-gray-300 p-2 rounded"
+                  className="w-full p-2 border border-gray-300 rounded input"
                   placeholder="Enter coupon code"
                 />
-                {error && <p className="text-red-500 text-sm">{error}</p>}
+                {error && <p className="text-sm text-red-500">{error}</p>}
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowCouponModal(false)}
-                    className="btn btn-gray w-full"
+                    className="w-full btn btn-gray"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleApplyCoupon}
                     disabled={loading || !couponCode}
-                    className="btn btn-primary text-white w-full "
+                    className="w-full text-white btn btn-primary "
                   >
                     {loading ? "Checking..." : "Apply"}
                   </button>
@@ -412,11 +413,11 @@ export default function CheckoutPage() {
             </Modal>
           </>
         ) : (
-          <div className="w-full text-center py-20 bg-white rounded-lg shadow-sm">
+          <div className="w-full py-20 text-center bg-white rounded-lg shadow-sm">
             <h2 className="text-2xl font-semibold text-gray-700">
               Your cart is empty
             </h2>
-            <p className="mt-2 text-gray-500 text-lg">
+            <p className="mt-2 text-lg text-gray-500">
               Add products to your cart to proceed with checkout.
             </p>
           </div>

@@ -224,13 +224,13 @@ const ItemsTable: React.FC<ProductTableProps> = ({ limit, offset, status }) => {
           const image = row.original.images?.[0];
           const title = row.original.title;
           const category = row.original.category?.name;
-          const slug = row.original.slug;  
+          const slug = row.original.slug;
           const url = `https://africanmarkethub.ca/items/${slug}`;
 
           return (
             <a
               href={url}
-              target="_blank"
+
               rel="noopener noreferrer"
               className="flex items-center min-w-0 space-x-2 transition-opacity hover:opacity-80"
             >

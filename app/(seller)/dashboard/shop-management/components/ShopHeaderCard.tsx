@@ -108,7 +108,7 @@ export default function ShopHeaderCard({
           href={`https://africanmarkethub.ca/shops/${shop?.slug}`}
           className="flex items-start gap-3"
           title="View your store"
-          target="_blank"
+
         >
           <div className="rounded-md bg-green-50 p-2 h-10 w-10 flex items-center justify-center border border-green-100 shrink-0">
             {shop?.logo ? (

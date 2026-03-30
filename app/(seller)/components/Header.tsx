@@ -46,11 +46,11 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
       <div className="flex-1 hidden md:block"></div>
 
-     <nav className="flex items-center flex-1 overflow-x-auto no-scrollbar scroll-smooth">
+      <nav className="flex items-center flex-1 overflow-x-auto no-scrollbar scroll-smooth">
         <div className="flex items-center px-2 space-x-4 md:space-x-6">
           <Link
             href="/items?type=products"
-            target="_blank"
+
             className="flex items-center text-[10px] font-semibold transition-colors md:text-sm text-zinc-700 hover:text-emerald-600 whitespace-nowrap"
           >
             <LuPackage className="w-4 h-4 mr-1 md:mr-1.5 text-zinc-400" />
@@ -58,7 +58,7 @@ export function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
           </Link>
           <Link
             href="/items?type=services"
-            target="_blank"
+
             className="flex items-center text-[10px] font-semibold transition-colors md:text-sm text-zinc-700 hover:text-emerald-600 whitespace-nowrap"
           >
             <LuBriefcase className="w-4 h-4 mr-1 md:mr-1.5 text-zinc-400" />

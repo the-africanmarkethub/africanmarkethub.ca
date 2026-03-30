@@ -42,7 +42,7 @@ export default function MaintenancePage() {
                                 Need Urgently?
                             </p>
                             <p className="text-gray-700 transition-colors hover:text-hub-secondary">
-                                <Link href={`https://wa.me/${COMPANY_CONTACT_INFO.whatsappNumber}?text=${waMessage}`} target="_blank" rel="noopener noreferrer">
+                                <Link href={`https://wa.me/${COMPANY_CONTACT_INFO.whatsappNumber}?text=${waMessage}`} rel="noopener noreferrer">
                                     Chat on WhatsApp
                                 </Link>
                             </p>

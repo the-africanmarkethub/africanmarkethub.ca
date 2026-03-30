@@ -196,8 +196,8 @@ export default function ItemDetail({
                         key={variant.id}
                         onClick={() => setSelectedVariation(variant)}
                         className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-all border cursor-pointer ${isSelected
-                            ? "border-hub-primary bg-hub-primary/10 text-hub-primary ring-2 ring-hub-primary/20"
-                            : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-400"
+                          ? "border-hub-primary bg-hub-primary/10 text-hub-primary ring-2 ring-hub-primary/20"
+                          : "border-gray-200 bg-gray-50 text-gray-800 hover:border-gray-400"
                           }`}
                       >
                         {variant.color?.name && (
@@ -259,7 +259,7 @@ export default function ItemDetail({
               {/* Facebook */}
               <Link
                 href={facebookShareUrl}
-                target="_blank"
+
                 rel="noopener noreferrer"
                 aria-label="Share on Facebook"
                 className="p-2 rounded-full hover:bg-blue-50 transition"
@@ -270,7 +270,7 @@ export default function ItemDetail({
               {/* WhatsApp */}
               <Link
                 href={whatsappShareUrl}
-                target="_blank"
+
                 rel="noopener noreferrer"
                 aria-label="Share on WhatsApp"
                 className="p-2 rounded-full hover:bg-green-50 transition"
