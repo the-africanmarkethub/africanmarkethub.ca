@@ -182,51 +182,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
       script.remove();
     };
   }, []);
-
-  // const handleMediaChange = async (
-  //   file: File,
-  //   mode: "logo" | "banner" | "document",
-  // ) => {
-  //   const { valid, error } = validateImageFile(
-  //     file,
-  //     mode === "document" ? "document" : mode,
-  //   );
-
-  //   if (!valid) {
-  //     toast.error(error || "Invalid file");
-  //     return;
-  //   }
-
-  //   setUploadingMode(mode);
-  //   const localPreview = URL.createObjectURL(file);
-
-  //   if (mode === "logo") {
-  //     setLogoUrl(localPreview);
-  //     setLogoFile(file);
-  //   } else if (mode === "banner") {
-  //     setBannerUrl(localPreview);
-  //     setBannerFile(file);
-  //   } else {
-  //     setIdDocUrl(localPreview);
-  //     setIdDocFile(file);
-  //   }
-
-  //   // Auto-upload logic for existing shops
-  //   if (hasExistingShop && mode !== "document") {
-  //     const uploadPromise =
-  //       mode === "logo" ? updateShopLogo(file) : updateShopBanner(file);
-
-  //     toast.promise(uploadPromise, {
-  //       loading: `Syncing ${mode}...`,
-  //       success: (data) =>
-  //         `${mode.charAt(0).toUpperCase() + mode.slice(1)} updated!`,
-  //       error: (err) =>
-  //         `Failed to upload ${mode}: ${err.response?.data?.message || "Server Error"}`,
-  //     });
-  //   }
-  //   setTimeout(() => setUploadingMode(null), 600);
-  // };
-
+ 
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -420,11 +376,26 @@ export default function StepShopInfo({ onNext }: StepProps) {
     } catch (err: any) {
       const errorData = err.response?.data;
 
-      if (errorData?.errors) {
-        const firstErrorKey = Object.keys(errorData.errors)[0];
-        const firstErrorMessage = errorData.errors[firstErrorKey][0];
-        toast.error(firstErrorMessage);
-      } else if (errorData?.message) {
+      // 1. Check if the error object itself contains the validation keys
+      // (Since we know identification_document is a key in the response)
+      if (errorData) {
+        const validationErrors = errorData.errors || errorData;
+        const errorKeys = Object.keys(validationErrors);
+
+        if (errorKeys.length > 0) {
+          // Get the first error message from the first key found
+          const firstError = validationErrors[errorKeys[0]];
+          const message = Array.isArray(firstError) ? firstError[0] : firstError;
+
+          // Safety check: only toast if it's actually a string message
+          if (typeof message === 'string') {
+            return toast.error(message);
+          }
+        }
+      }
+
+      // 2. Fallback to general message or generic error
+      if (errorData?.message) {
         toast.error(errorData.message);
       } else {
         toast.error("Something went wrong. Please check your inputs.");
