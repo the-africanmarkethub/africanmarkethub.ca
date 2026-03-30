@@ -320,7 +320,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
     if (!identificationType || identificationType.disabled) {
       return toast.error("Please select a means of identification.");
     }
-    if (!logoFile || !bannerFile) {
+    if ((!logoFile && !logoUrl) || (!bannerFile && !bannerUrl)) {
       return toast.error("Please select both logo and banner images.");
     }
 
@@ -329,11 +329,13 @@ export default function StepShopInfo({ onNext }: StepProps) {
         "Please provide a valid address to ensure we have the Zip code for your shop location."
       );
     }
-    if (!idDocFile) {
+
+    if (!idDocFile && !idDocUrl) {
       return toast.error(
         "Please upload a valid identification document."
       );
     }
+
     if (!lat || !lng) {
       return toast.error(
         "Please select a valid address from the dropdown to provide Coordinates."
