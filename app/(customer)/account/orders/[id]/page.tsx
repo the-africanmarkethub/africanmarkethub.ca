@@ -35,14 +35,14 @@ function CustomerSummary({
   if (!customer || !address) return null;
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 text-sm text-gray-700">
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="flex flex-col gap-2  md:pr-6">
-          <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-2">
+    <div className="p-6 text-sm text-gray-700 bg-white border border-gray-200 shadow-lg rounded-xl">
+      <div className="flex flex-col gap-6 md:flex-row">
+        <div className="flex flex-col gap-2 md:pr-6">
+          <p className="mb-2 text-xs font-medium tracking-wider text-gray-500 uppercase">
             Delivery Shipping Address
           </p>
-          <div className="bg-gray-50 p-3 rounded-lg">
-            <p className="text-gray-700 font-medium">
+          <div className="p-3 rounded-lg bg-gray-50">
+            <p className="font-medium text-gray-700">
               {customer.name} {customer.last_name}
             </p>
             <p className="text-gray-600">
@@ -56,7 +56,7 @@ function CustomerSummary({
                 .filter(Boolean)
                 .join(", ")}
             </p>
-            <p className="text-gray-600 mt-1">
+            <p className="mt-1 text-gray-600">
               <span className="font-medium">Phone:</span>{" "}
               {address.phone ?? "N/A"}
             </p>
@@ -69,49 +69,49 @@ function CustomerSummary({
 
 function OrderItemsTable({ order }: { order: Order }) {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+    <div className="p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+      <h3 className="mb-4 text-lg font-semibold text-gray-800">
         Order Items ({order.order_items.length})
       </h3>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
+        <table className="min-w-full text-sm divide-y divide-gray-200">
           <thead>
-            <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <th className="py-3 px-2">Product</th>
-              <th className="py-3 px-2">SKU</th>
-              <th className="py-3 px-2 text-right">Unit Price</th>
-              <th className="py-3 px-2 text-right">Qty</th>
-              <th className="py-3 px-2 text-right">Subtotal</th>
+            <tr className="text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+              <th className="px-2 py-3">Product</th>
+              <th className="px-2 py-3">SKU</th>
+              <th className="px-2 py-3 text-right">Unit Price</th>
+              <th className="px-2 py-3 text-right">Qty</th>
+              <th className="px-2 py-3 text-right">Subtotal</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {order.order_items.map((item) => (
               <tr key={item.id}>
-                <td className="py-4 px-2">
+                <td className="px-2 py-4">
                   <Link
                     href={`/items/${item.product.slug}`}
-                    className="flex items-center hover:bg-gray-50 -mx-2 px-2 rounded-lg transition duration-150"
+                    className="flex items-center px-2 -mx-2 transition duration-150 rounded-lg hover:bg-gray-50"
                   >
                     <Image
                       src={item.product.images[0] || "/placeholder.png"}
                       alt={item.product.title}
                       width={40}
                       height={40}
-                      className="w-10 h-10 object-cover rounded mr-3"
+                      className="object-cover w-10 h-10 mr-3 rounded"
                     />
-                    <span className="font-medium truncate text-gray-700">
+                    <span className="font-medium text-gray-700 truncate">
                       {item.product.title}
                     </span>
                   </Link>
                 </td>
-                <td className="py-4 px-2 text-gray-500 truncate">
+                <td className="px-2 py-4 text-gray-500 truncate">
                   {item.product.sku}
                 </td>
-                <td className="py-4 px-2 text-right">
+                <td className="px-2 py-4 text-right">
                   {formatAmount(parseFloat(item.price))}
                 </td>
-                <td className="py-4 px-2 text-right">{item.quantity}</td>
-                <td className="py-4 px-2 text-right font-semibold">
+                <td className="px-2 py-4 text-right">{item.quantity}</td>
+                <td className="px-2 py-4 font-semibold text-right">
                   {formatAmount(parseFloat(item.subtotal))}
                 </td>
               </tr>
@@ -137,7 +137,7 @@ function OrderItemsTable({ order }: { order: Order }) {
             <span>Shipping Fee ({order.shipping_method}):</span>
             <span>{formatAmount(parseFloat(order.shipping_fee))}</span>
           </div>
-          <div className="flex justify-between text-lg font-bold border-t pt-2 border-gray-300 text-red-700">
+          <div className="flex justify-between pt-2 text-lg font-bold text-red-700 border-t border-gray-300">
             <span>Order Total:</span>
             <span>{formatAmount(parseFloat(order.total))}</span>
           </div>
@@ -192,21 +192,28 @@ export default function OrderDetail() {
     router.push('/account/tracking');
   };
   return (
-    <div className="p-0 text-gray-600 space-y-4">
+    <div className="p-0 space-y-4 text-gray-600">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+      <div className="flex flex-col gap-4 p-4 bg-white border border-gray-200 shadow-sm md:flex-row md:items-center md:justify-between rounded-xl">
         {/* Left: title */}
-        <h1 className="text-lg md:text-xl font-semibold text-gray-800">
+        <h1 className="text-lg font-semibold text-gray-800 md:text-xl">
           Order Details - #{orderMeta.id}
         </h1>
 
         {/* Right: buttons — stays on one line on md+ */}
-        <div className="flex items-center flex-nowrap space-x-3">
+        <div className="flex items-center space-x-3 flex-nowrap">
 
           {orderMeta.shipping_status === "ongoing" && (
             <> 
               <button onClick={handleTrackClick} className="btn btn-primary min-w-22.5 text-xs!">
                 Track Order
+              </button>
+            </>
+          )}
+          {orderMeta.shipping_status === "delivered" && (
+            <> 
+              <button onClick={handleTrackClick} className="btn btn-primary min-w-22.5 text-xs!">
+                Order Completed
               </button>
             </>
           )}
@@ -216,38 +223,38 @@ export default function OrderDetail() {
       <CustomerSummary customer={customer} address={address} />
       <OrderItemsTable order={orderDetail} />
 
-      <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">
+      <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-xl">
+        <h3 className="pb-2 mb-4 text-xl font-semibold text-gray-800 border-b border-gray-200">
           📦 Shipping & Payment Details
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+        <div className="grid grid-cols-1 gap-8 text-sm md:grid-cols-2">
           {/* 1. Shipping Details Group */}
-          <div className="space-y-3 pr-4 border-r md:border-r border-gray-200">
-            <h4 className="font-bold text-base text-gray-900 mb-2">
+          <div className="pr-4 space-y-3 border-r border-gray-200 md:border-r">
+            <h4 className="mb-2 text-base font-bold text-gray-900">
               Shipping Info
             </h4>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">
                 Shipping Method:
               </p>
               {/* Assuming shipping_method is available on orderMeta */}
-              <p className="text-gray-800 font-semibold w-1/2 text-right">
+              <p className="w-1/2 font-semibold text-right text-gray-800">
                 {orderMeta.shipping_method ?? "N/A"}
               </p>
             </div>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">
                 Tracking Detail:
               </p>
-              <p className="text-gray-800 w-1/2 text-right">
+              <p className="w-1/2 text-right text-gray-800">
                 {orderMeta.tracking_url ? (
                   <a
                     href={orderMeta.tracking_url}
                     rel="noopener noreferrer"
-                    className="text-red-600 underline truncate block max-w-full"
+                    className="block max-w-full text-red-600 underline truncate"
                     title={orderMeta.tracking_url}
                   >
                     {orderMeta.tracking_url}
@@ -258,11 +265,11 @@ export default function OrderDetail() {
               </p>
             </div>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">
                 Estimated Delivery:
               </p>
-              <p className="text-gray-800 w-1/2 text-right">
+              <p className="w-1/2 text-right text-gray-800">
                 {orderMeta.delivery_date
                   ? formatHumanReadableDate(orderMeta.delivery_date)
                   : "N/A"}
@@ -271,20 +278,20 @@ export default function OrderDetail() {
           </div>
 
           {/* 2. Payment & Settlement Group */}
-          <div className="space-y-3 pl-4">
-            <h4 className="font-bold text-base text-gray-900 mb-2">
+          <div className="pl-4 space-y-3">
+            <h4 className="mb-2 text-base font-bold text-gray-900">
               Payment Info
             </h4>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">Payment Method:</p>
-              <p className="text-gray-800 w-1/2 text-right">
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">Payment Method:</p>
+              <p className="w-1/2 text-right text-gray-800">
                 {orderMeta.payment_method.toUpperCase()}
               </p>
             </div>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">Payment Status:</p>
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">Payment Status:</p>
               {/* Using the payment_status from the Order object for accuracy */}
               <p
                 className={`font-semibold w-1/2 text-right ${orderMeta.payment_status === "completed"
@@ -296,8 +303,8 @@ export default function OrderDetail() {
               </p>
             </div>
 
-            <div className="flex justify-between items-start">
-              <p className="font-medium text-gray-600 w-1/2">Shipping Date:</p>
+            <div className="flex items-start justify-between">
+              <p className="w-1/2 font-medium text-gray-600">Shipping Date:</p>
               <p className={`font-semibold w-1/2 text-right`}>
                 {formatHumanReadableDate(orderMeta?.shipping_date || "")}
               </p>
