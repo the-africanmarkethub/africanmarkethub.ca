@@ -9,6 +9,7 @@ import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
 import "react-loading-skeleton/dist/skeleton.css";
 import { APP_NAME } from "@/setting";
+        import Widget from "./components/Widget";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -78,7 +79,7 @@ export default function RootLayout({
             </WishlistProvider>
           </CartProvider>
         </Providers>
-
+        <Widget />;
         <Toaster />
       </body>
     </html>
