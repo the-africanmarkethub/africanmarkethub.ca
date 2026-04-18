@@ -79,7 +79,7 @@ export default function RootLayout({
             </WishlistProvider>
           </CartProvider>
         </Providers>
-        <Widget />;
+        <Widget />
         <Toaster />
       </body>
     </html>
