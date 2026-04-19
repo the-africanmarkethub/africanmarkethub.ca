@@ -6,14 +6,17 @@ export default function Widget() {
       src="https://core.falconmail.online/widget"
       style={{
         border: "none",
-        width: "100%",
-        height: "100vh",
+        width: "360px",
+        maxWidth: "100vw",
+        height: "90vh",
         position: "fixed",
-        bottom: 0,
-        right: 0,
+        bottom: "20px",
+        right: "20px",
         zIndex: 9999,
+        borderRadius: "20px",
+        overflow: "hidden",
       }}
-      allowTransparency={true} // In JSX, this is camelCase
+      allowTransparency={true}
       title="FalconMail Widget"
     />
   );
