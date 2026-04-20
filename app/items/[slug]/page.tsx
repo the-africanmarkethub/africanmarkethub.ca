@@ -142,7 +142,9 @@ export default async function ItemDetailPage({ params }: PageParams) {
             name: rev.user?.name || "Verified Buyer",
           },
           reviewBody: rev.comment || "Great product!",
-          datePublished: rev.created_at, // Ensure this is ISO format YYYY-MM-DD
+          datePublished: rev.created_at
+            ? rev.created_at.split("T")[0]
+            : new Date().toISOString().split("T")[0],  
         })),
       }),
     };
