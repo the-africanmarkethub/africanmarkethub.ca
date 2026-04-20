@@ -33,12 +33,15 @@ export async function generateMetadata({
       description: description,
       keywords: seoKeywords,
       alternates: {
-        canonical: `https://ayokah.com/items/${slug}`,
+        canonical: `https://africanmarkethub.ca/items/${slug}`,
       },
       openGraph: {
         title: product.title,
         description: product.meta_description || description,
         type: "website",
+        locale: "en_CA",
+        siteName: "African Market Hub",
+        url: `https://africanmarkethub.ca/items/${slug}`, 
         images: product.images?.map((img: string) => ({
           url: img,
           width: 1200,
@@ -92,19 +95,29 @@ export default async function ItemDetailPage({ params }: PageParams) {
       offers: {
         "@type": "Offer",
         url: `https://africanmarkethub.ca/items/${product.slug}`,
-        priceCurrency: "GBP", // Use your actual currency
+        priceCurrency: "CAD",
         price: product.sales_price,
         itemCondition: "https://schema.org/NewCondition",
         availability:
           product.quantity > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
+        priceValidUntil: "2027-12-31", 
+        shippingDetails: {
+          "@type": "OfferShippingDetails",
+          shippingDestination: {
+            "@type": "DefinedRegion",
+            addressCountry: "CA",
+          },
+        },
       },
       ...(star_rating.total > 0 && {
         aggregateRating: {
           "@type": "AggregateRating",
           ratingValue: product.average_rating || 0,
           reviewCount: star_rating.total,
+          bestRating: "5",
+          worstRating: "1",
         },
       }),
     };

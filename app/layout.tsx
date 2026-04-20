@@ -54,7 +54,7 @@ export const metadata: Metadata = {
         alt: APP_NAME,
       },
     ],
-    locale: "en_US",
+    locale: "en_CA",
     type: "website",
   },
 
