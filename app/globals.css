@@ -1,5 +1,45 @@
+/* app/globals.css */
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    --sb-track: #f1f5f9;
+    /* gray-100 */
+    --sb-thumb: #d1d5db;
+    /* gray-300 */
+    --sb-size: 6px;
+  }
+}
+
+/* Define the utility so Tailwind recognizes it in your className */
+@utility scrollbar-slim {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb) var(--sb-track);
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: var(--sb-size);
+    height: var(--sb-size);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--sb-track);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb);
+    border-radius: 10px;
+    border: 1px solid var(--sb-track);
+    /* creates a little space around it */
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+    /* gray-400 on hover */
+  }
+}
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

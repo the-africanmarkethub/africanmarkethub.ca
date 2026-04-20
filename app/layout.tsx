@@ -1,4 +1,5 @@
 import "./globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import { Instrument_Sans } from "next/font/google";
 import type { Metadata } from "next";
 import Providers from "./providers";
@@ -7,7 +8,6 @@ import { Toaster } from "react-hot-toast";
 import PublicLayoutElements from "./PublicLayoutElements";
 import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
-import "react-loading-skeleton/dist/skeleton.css";
 import { APP_NAME } from "@/setting";
 // import Widget from "./components/Widget";
 
@@ -15,6 +15,7 @@ const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-instrument-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -22,9 +23,13 @@ export const metadata: Metadata = {
   verification: {
     google: "xwZkWOEsQIhgVZpnQeE9-95KYZ_5msOkZRe30ebZalI",
   },
+  alternates: {
+    canonical: "https://africanmarkethub.ca",
+  },
   manifest: "/site.webmanifest",
   description:
     "Buy authentic African groceries, clothes, and the best African foods online. African Market Hub brings you fresh ingredients, fashion, and essentials from Africa — all in one trusted online marketplace.",
+
   keywords: [
     "African groceries",
     "African clothes",
@@ -34,6 +39,7 @@ export const metadata: Metadata = {
     "African fashion",
     "African marketplace",
   ],
+
   openGraph: {
     title: APP_NAME,
     description:
@@ -51,6 +57,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+
   twitter: {
     card: "summary_large_image",
     title: APP_NAME,
@@ -67,12 +74,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${instrumentSans.variable}`}>
-      <body className={`antialiased bg-gray-50 h-full flex flex-col`}>
+      <body
+        className={`antialiased bg-gray-50 h-full flex flex-col scrollbar-slim`}
+      >
         <Providers>
           <CartProvider>
             <WishlistProvider>
               <PublicLayoutElements />
-              <main id="main-content" role="main" className="flex-1 bg-gray-50">
+              <main
+                id="main-content"
+                role="main"
+                className="flex-1 bg-gray-50 "
+              >
                 {children}
               </main>
               <FooterWrapper />

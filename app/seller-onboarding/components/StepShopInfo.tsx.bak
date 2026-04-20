@@ -60,6 +60,9 @@ const shopFormSchema = z.object({
   selectedCategoryId: z.string().min(1, "Business category is required"),
   localDeliveryId: z.string().optional(),
   identificationTypeId: z.string().min(1, "Identification type is required"),
+  logoFile: z.instanceof(File).optional().nullable(),
+  bannerFile: z.instanceof(File).optional().nullable(),
+  idDocFile: z.instanceof(File).optional().nullable(),
 });
 
 type ShopFormData = z.infer<typeof shopFormSchema>;
@@ -68,10 +71,12 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const MAX_DESC_LENGTH = 500;
 
   const {
+    register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
     setValue,
+    reset,
   } = useForm<ShopFormData>({
     resolver: zodResolver(shopFormSchema),
     mode: "onChange",
@@ -90,6 +95,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
       selectedCategoryId: "",
       localDeliveryId: LOCALDELIVERYOPTION[2].name,
       identificationTypeId: ID_OPTIONS[0].name,
+      logoFile: null,
+      bannerFile: null,
+      idDocFile: null,
     },
   });
 
@@ -99,11 +107,8 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
   // Media preview states
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerUrl, setBannerUrl] = useState<string | null>(null);
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [idDocUrl, setIdDocUrl] = useState<string | null>(null);
-  const [idDocFile, setIdDocFile] = useState<File | null>(null);
 
   const [categories, setCategories] = useState<any[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -115,17 +120,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   const selectedType = TYPES.find((t) => t.name === selectedTypeId) || TYPES[0];
   const selectedCategoryId = watch("selectedCategoryId");
   const selectedCategory =
-    categories.find((c) => String(c.id) === selectedCategoryId) || null;
-  const countryCode = watch("countryCode");
-  const phoneNumber = watch("phoneNumber");
-  const addressLine = watch("addressLine");
-  const name = watch("name");
-  const description = watch("description");
-  const city = watch("city");
-  const stateCode = watch("stateCode");
-  const zip = watch("zip");
-  const lat = watch("lat");
-  const lng = watch("lng");
+    categories.find((c) => c.id === selectedCategoryId) || null;
 
   const handleMediaChange = async (
     file: File,
@@ -170,13 +165,13 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
       if (mode === "logo") {
         setLogoUrl(localPreview);
-        setLogoFile(processedFile);
+        setValue("logoFile", processedFile);
       } else if (mode === "banner") {
         setBannerUrl(localPreview);
-        setBannerFile(processedFile);
+        setValue("bannerFile", processedFile);
       } else {
         setIdDocUrl(localPreview);
-        setIdDocFile(processedFile);
+        setValue("idDocFile", processedFile);
       }
 
       if (hasExistingShop) {
@@ -208,7 +203,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
       setUploadingMode(null);
     }
   };
-
   useEffect(() => {
     return () => {
       [logoUrl, bannerUrl, idDocUrl].forEach((url) => {
@@ -262,6 +256,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
           setIdDocUrl(s.identification_document);
 
           if (s.identification_type) {
+            const matchedId = ID_OPTIONS.find(
+              (option) => option.name === s.identification_type,
+            );
             setValue("identificationTypeId", s.identification_type);
           }
 
@@ -332,17 +329,6 @@ export default function StepShopInfo({ onNext }: StepProps) {
     );
 
   const onSubmit = async (data: ShopFormData) => {
-    // Validate media files
-    if (!logoFile && !logoUrl) {
-      return toast.error("Please upload a logo.");
-    }
-    if (!bannerFile && !bannerUrl) {
-      return toast.error("Please upload a banner.");
-    }
-    if (!idDocFile && !idDocUrl) {
-      return toast.error("Please upload an identification document.");
-    }
-
     // Prepare FormData
     const form = new FormData();
     form.append("name", data.name);
@@ -359,9 +345,9 @@ export default function StepShopInfo({ onNext }: StepProps) {
 
     form.append("identification_type", data.identificationTypeId);
 
-    if (idDocFile) form.append("identification_document", idDocFile);
-    if (logoFile) form.append("logo", logoFile);
-    if (bannerFile) form.append("banner", bannerFile);
+    if (data.idDocFile) form.append("identification_document", data.idDocFile);
+    if (data.logoFile) form.append("logo", data.logoFile);
+    if (data.bannerFile) form.append("banner", data.bannerFile);
 
     form.append("address", data.addressLine);
     form.append("city", data.city);
@@ -407,7 +393,7 @@ export default function StepShopInfo({ onNext }: StepProps) {
   return (
     <div className="max-w-6xl pb-20 mx-auto">
       <ShopHeaderCard
-        shop={undefined}
+        shop={shopData}
         subtitle={`Managing ${selectedType.name} Profile`}
       />
 
@@ -491,46 +477,31 @@ export default function StepShopInfo({ onNext }: StepProps) {
           </div>
         </div>
       </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <section className="">
           <div className="grid grid-cols-1 gap-6 mb-4 md:grid-cols-2">
-            <div>
-              <TextInput
-                label="Business Name"
-                placeholder="Enter business name"
-                required
-                value={name}
-                onChange={(val) => setValue("name", val)}
-              />
-              {errors.name && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+            <TextInput
+              label="Business Name"
+              value={name}
+              onChange={setName}
+              required
+            />
             <CategorySelector
               categoriesLoading={categoriesLoading}
               types={TYPES}
               selectedType={selectedType}
-              onTypeChange={(type) => setValue("selectedTypeId", type.name)}
+              onTypeChange={setSelectedType}
               categories={categories}
               selectedCategory={selectedCategory}
-              onCategoryChange={(cat) =>
-                setValue("selectedCategoryId", String(cat.id))
-              }
+              onCategoryChange={setSelectedCategory}
               isTypeDisabled={hasExistingShop}
             />
           </div>
           {selectedType.name === "Products" && (
             <SelectField
               label="Local Delivery"
-              value={
-                LOCALDELIVERYOPTION.find(
-                  (opt) => opt.name === watch("localDeliveryId"),
-                ) || LOCALDELIVERYOPTION[2]
-              }
-              onChange={(val) => setValue("localDeliveryId", val.name)}
+              value={localDelivery}
+              onChange={(val) => setLocalDelivery(val as SelectOption)}
               options={LOCALDELIVERYOPTION}
             />
           )}
@@ -539,12 +510,8 @@ export default function StepShopInfo({ onNext }: StepProps) {
         <section className="">
           <SelectField
             label="ID Type"
-            value={
-              ID_OPTIONS.find(
-                (opt) => opt.name === watch("identificationTypeId"),
-              ) || ID_OPTIONS[0]
-            }
-            onChange={(val) => setValue("identificationTypeId", val.name)}
+            value={identificationType || ID_OPTIONS[0]}
+            onChange={(val) => setIdentificationType(val as any)}
             options={ID_OPTIONS}
           />
           <div className="mt-4">
@@ -577,79 +544,46 @@ export default function StepShopInfo({ onNext }: StepProps) {
           {googleLoaded && (
             <GoogleAddressAutocomplete
               onSelect={(addr) => {
-                setValue("addressLine", addr.street_address);
-                setValue("city", addr.city);
-                setValue("stateCode", addr.state);
-                setValue("zip", addr.zip_code);
-                setValue("countryCode", addr.country);
-                setValue("lat", addr.lat || 0);
-                setValue("lng", addr.lng || 0);
+                setAddressLine(addr.street_address);
+                setCity(addr.city);
+                setStateCode(addr.state);
+                setZip(addr.zip_code);
+                setCountryCode(addr.country);
+                setLat(addr.lat);
+                setLng(addr.lng);
                 setDialCode(addr.dialCode ?? "+1");
               }}
             />
           )}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <TextInput
-                label="Street Address"
-                placeholder="street / building no"
-                required
-                value={addressLine}
-                onChange={(val) => setValue("addressLine", val)}
-              />
-              {errors.addressLine && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.addressLine.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <TextInput
-                label="City"
-                disabled
-                value={city}
-                onChange={(val) => setValue("city", val)}
-              />
-              {errors.city && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.city.message}
-                </p>
-              )}
-            </div>
+            <TextInput
+              label="Street Address"
+              value={addressLine}
+              onChange={setAddressLine}
+              placeholder="street / building no"
+              required
+            />
+            <TextInput label="City" value={city} onChange={setCity} disabled />
 
-            <div>
-              <TextInput
-                label="Postal Code"
-                disabled
-                value={zip}
-                onChange={(val) => setValue("zip", val)}
-              />
-              {errors.zip && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.zip.message}
-                </p>
-              )}
-            </div>
+            <TextInput
+              label="Postal Code"
+              value={zip}
+              onChange={setZip}
+              disabled
+            />
 
-            <div>
-              <TextInput
-                label="Province"
-                disabled
-                value={stateCode}
-                onChange={(val) => setValue("stateCode", val)}
-              />
-              {errors.stateCode && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.stateCode.message}
-                </p>
-              )}
-            </div>
+            <TextInput
+              label="Province"
+              value={stateCode}
+              onChange={setStateCode}
+              disabled
+            />
 
             <PhoneInput
               countryFlag={countryCodeToFlag(countryCode)}
               dialCode={dialCode}
               value={phoneNumber}
-              onChange={(val) => setValue("phoneNumber", val)}
+              onChange={setPhoneNumber}
             />
           </div>
         </section>
@@ -657,27 +591,18 @@ export default function StepShopInfo({ onNext }: StepProps) {
         <div className="relative">
           <TextareaField
             label="Shop Description"
-            rows={4}
             value={description}
-            onChange={(val) => setValue("description", val)}
+            onChange={setDescription}
+            rows={4}
           />
-          {errors.description && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.description.message}
-            </p>
-          )}
         </div>
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={loading}
           className="w-full py-4 font-bold btn btn-primary rounded-xl"
         >
-          {isSubmitting ? (
-            <BeatLoader size={8} color="white" />
-          ) : (
-            "Save Changes"
-          )}
+          {loading ? <BeatLoader size={8} color="white" /> : "Save Changes"}
         </button>
       </form>
     </div>

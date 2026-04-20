@@ -1,7 +1,6 @@
 import api from "../axios";
  
 export async function saveShop(formData: FormData) {
-  // If we are updating, Laravel often requires _method: PUT for multipart/form-data
   if (!formData.has("_method")) {
     formData.append("_method", "POST");
   }
