@@ -10,6 +10,7 @@ import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { APP_NAME } from "@/setting";
 // import Widget from "./components/Widget";
+import { Analytics } from "@vercel/analytics/next";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -93,6 +94,7 @@ export default function RootLayout({
           </CartProvider>
         </Providers>
         {/* <Widget /> */}
+        <Analytics />
         <Toaster />
       </body>
     </html>
