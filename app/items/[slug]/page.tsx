@@ -102,7 +102,16 @@ export default async function ItemDetailPage({ params }: PageParams) {
           product.quantity > 0
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
-        priceValidUntil: "2027-12-31", 
+        hasMerchantReturnPolicy: {
+          "@type": "MerchantReturnPolicy",
+          applicableCountry: "CA",
+          returnPolicyCategory:
+            "https://schema.org/MerchantReturnFiniteReturnPeriod",
+          merchantReturnDays: 7, 
+          returnMethod: "https://schema.org/ReturnByMail",
+          returnFees: "https://schema.org/FreeReturn", 
+        },
+        priceValidUntil: "2027-12-31",
         shippingDetails: {
           "@type": "OfferShippingDetails",
           shippingDestination: {
