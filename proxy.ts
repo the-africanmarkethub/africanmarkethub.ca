@@ -4,72 +4,59 @@ export default async function proxy(req: Request) {
   const url = new URL(req.url);
   const pathname = url.pathname;
 
-  const isInMaintenanceMode = process.env.MAINTENANCE_MODE === "true";
-
-  if (isInMaintenanceMode) {
-    const isMaintenancePage = pathname.startsWith("/maintenance");
-    const isPublicAsset =
-      pathname.startsWith("/_next") || pathname.includes("/api/health");
-
-    if (!isMaintenancePage && !isPublicAsset) {
+  if (process.env.MAINTENANCE_MODE === "true") {
+    const isPublic =
+      pathname.startsWith("/_next") ||
+      pathname.startsWith("/maintenance") ||
+      pathname.includes("/api/health");
+    if (!isPublic) {
       url.pathname = "/maintenance";
-      return NextResponse.rewrite(url, {
-        status: 503,
-        statusText: "Service Unavailable",
-      });
+      return NextResponse.rewrite(url);
     }
   }
 
-  // ----- READ COOKIES -----
+  // 2. Extract Data from Cookies
   const cookieHeader = req.headers.get("cookie") || "";
   const token = extractCookie(cookieHeader, "token");
   const role = extractCookie(cookieHeader, "role");
 
-  const isCustomerRoute = pathname.startsWith("/account");
+  // Route Definitions
+  const isAuthRoute = pathname.match(
+    /^\/(login|register|forgot-password|reset-password)/,
+  );
   const isVendorRoute = pathname.startsWith("/dashboard");
-  // Add the new onboarding route check
   const isOnboardingRoute = pathname.startsWith("/seller-onboarding");
+  const isCustomerRoute = pathname.startsWith("/account");
 
-  const isAuthRoute =
-    pathname.startsWith("/login") || pathname.startsWith("/register");
-
-  // 1. Prevent authenticated users from accessing /login or /register
+  // 3. Logic: Authenticated User Redirects
   if (isAuthRoute && token) {
-    const redirectPath = role === "vendor" ? "/dashboard" : "/account";
-    return Response.redirect(`${url.origin}${redirectPath}`, 302);
+    const home = role === "vendor" ? "/dashboard" : "/account";
+    return NextResponse.redirect(new URL(home, url.origin));
   }
 
-  // 2. Customer protected routes
-  if (isCustomerRoute) {
-    if (!token) {
-      const redirectUrl = new URL("/login", url.origin);
-      redirectUrl.searchParams.set("redirect", pathname);
-      return Response.redirect(redirectUrl.toString(), 302);
-    }
-    if (role !== "customer") {
-      return Response.redirect(`${url.origin}/unauthorized`, 302);
-    }
-  }
-
-  // 3. Vendor protected routes & Onboarding
-  // Logic: Must have a token. If it's the dashboard, must be a vendor.
+  // 4. Logic: Vendor/Onboarding Protection
   if (isVendorRoute || isOnboardingRoute) {
     if (!token) {
-      const redirectUrl = new URL("/login", url.origin);
-      redirectUrl.searchParams.set("redirect", pathname);
-      return Response.redirect(redirectUrl.toString(), 302);
+      const loginUrl = new URL("/login", url.origin);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
 
-    if (isCustomerRoute && role !== "customer") {
-      return Response.redirect(`${url.origin}/unauthorized`, 302);
-    }
-
+    // Only vendors allowed in dashboard
     if (isVendorRoute && role !== "vendor") {
-      return Response.redirect(`${url.origin}/unauthorized`, 302);
+      return NextResponse.redirect(new URL("/unauthorized", url.origin));
     }
   }
 
-  return;
+  // 5. Logic: Customer Protection
+  if (isCustomerRoute) {
+    if (!token || role !== "customer") {
+      const target = !token ? "/login" : "/unauthorized";
+      return NextResponse.redirect(new URL(target, url.origin));
+    }
+  }
+
+  return NextResponse.next();
 }
 
 // ----- Cookie Reader -----
@@ -88,6 +75,6 @@ export const config = {
     "/confirm-reset-code",
     "/account/:path*",
     "/dashboard/:path*",
-    "/seller-onboarding/:path*",  
+    "/seller-onboarding/:path*",
   ],
 };

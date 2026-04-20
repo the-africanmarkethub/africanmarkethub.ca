@@ -8,92 +8,120 @@ import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
 import { getMyShop, retryOnboardingStatus } from "@/lib/api/seller/shop";
 
-interface SellerLayoutProps {
-  children: React.ReactNode;
-}
+// Define strict states for the layout
+type LayoutStatus =
+  | "hydrating"
+  | "unauthenticated"
+  | "validating"
+  | "authorized";
 
-export default function SellerLayout({ children }: SellerLayoutProps) {
+export default function SellerLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { token, _hasHydrated } = useAuthStore();
   const router = useRouter();
 
+  const [status, setStatus] = useState<LayoutStatus>("hydrating");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isValidating, setIsValidating] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
-    const validateShopStatus = async () => {
-      if (!_hasHydrated) return;
+    // 1. Wait for Store
+    if (!_hasHydrated) return;
 
-      if (!token) {
-        router.replace("/login");
-        return;
-      }
+    // 2. Auth Check
+    if (!token) {
+      setStatus("unauthenticated");
+      router.replace("/login"); // replace is better for auth redirects to clean history
+      return;
+    }
 
+    // 3. Start Validation
+    setStatus("validating");
+
+    const validateShop = async () => {
       try {
-        // 2. Fetch Shop Details from Backend
         const response = await getMyShop();
         const shop = response.data;
-        const link = response.stripe_onboarding_url;
 
+        // Sequence of business logic redirects
         if (!shop.subscription_id) {
           router.replace("/subscription");
           return;
         }
 
-        // 4. Logic: Check Stripe Connection
         if (!shop.stripe_connect_id) {
-          window.location.href = link;
-          return;
-        }
-        // 4b. Logic: check Stripe Onboarding complete is true
-        if (!shop.stripe_onboarding_completed) {
-          const response = await retryOnboardingStatus();
-          window.location.href = response.onboarding_url;
+          window.location.href = response.stripe_onboarding_url;
           return;
         }
 
-        // 5. If everything is fine, stop the loader
-        setIsValidating(false);
-      } catch (error) {
-        console.error("Shop validation failed:", error);
-        router.replace("/seller-onboarding");
-      } finally {
-        setIsValidating(false);
+        if (!shop.stripe_onboarding_completed) {
+          const retry = await retryOnboardingStatus();
+          window.location.href = retry.onboarding_url;
+          return;
+        }
+
+        // Final Success State
+        setStatus("authorized");
+      } catch (error: any) {
+        console.error("Seller validation error:", error);
+        if (error.response?.status === 401) {
+          router.replace("/login");
+        } else {
+          router.replace("/seller-onboarding");
+        }
       }
     };
 
-    validateShopStatus();
-  }, [token, _hasHydrated, router]);
+    validateShop();
+  }, [_hasHydrated, token, router]);
 
-  // Show loader while Hydrating OR while fetching shop data
-  if (!_hasHydrated || !token || isValidating) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
-        <div className="flex flex-col items-center gap-4">
-          <PulseLoader color="#016134" />
-          <p className="text-sm font-medium text-gray-500 animate-pulse">
-            Verifying shop status...
-          </p>
+  // --- RENDER PATTERN (Production Grade Switch) ---
+
+  switch (status) {
+    case "hydrating":
+      return <FullScreenLoader message="Initializing African Market Hub..." />;
+
+    case "unauthenticated":
+      return (
+        <FullScreenLoader message="Security check: Redirecting to login..." />
+      );
+
+    case "validating":
+      return <FullScreenLoader message="Verifying your shop status..." />;
+
+    case "authorized":
+      return (
+        <div className="flex h-screen overflow-hidden bg-gray-50">
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          {isSidebarOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+              onClick={toggleSidebar}
+            />
+          )}
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <Header toggleSidebar={toggleSidebar} />
+            <main className="flex-1 p-3 overflow-y-auto md:p-8">
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
-    );
+      );
   }
+}
 
+function FullScreenLoader({ message }: { message: string }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
-          onClick={toggleSidebar}
-        />
-      )}
-
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Header toggleSidebar={toggleSidebar} />
-        <main className="flex-1 p-3 overflow-y-auto md:p-8">{children}</main>
+    <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex flex-col items-center gap-4 text-center px-4">
+        <PulseLoader color="#016134" size={12} />
+        <p className="text-sm font-medium text-gray-500 animate-pulse tracking-wide">
+          {message}
+        </p>
       </div>
     </div>
   );
