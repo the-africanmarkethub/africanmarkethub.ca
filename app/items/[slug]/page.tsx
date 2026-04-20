@@ -107,9 +107,9 @@ export default async function ItemDetailPage({ params }: PageParams) {
           applicableCountry: "CA",
           returnPolicyCategory:
             "https://schema.org/MerchantReturnFiniteReturnPeriod",
-          merchantReturnDays: 7, 
+          merchantReturnDays: 7,
           returnMethod: "https://schema.org/ReturnByMail",
-          returnFees: "https://schema.org/FreeReturn", 
+          returnFees: "https://schema.org/FreeReturn",
         },
         priceValidUntil: "2027-12-31",
         shippingDetails: {
@@ -128,6 +128,22 @@ export default async function ItemDetailPage({ params }: PageParams) {
           bestRating: "5",
           worstRating: "1",
         },
+      }),
+      ...(reviews.length > 0 && {
+        review: reviews.map((rev: any) => ({
+          "@type": "Review",
+          reviewRating: {
+            "@type": "Rating",
+            ratingValue: rev.rating, // e.g., 5
+            bestRating: "5",
+          },
+          author: {
+            "@type": "Person",
+            name: rev.user?.name || "Verified Buyer",
+          },
+          reviewBody: rev.comment || "Great product!",
+          datePublished: rev.created_at, // Ensure this is ISO format YYYY-MM-DD
+        })),
       }),
     };
 
