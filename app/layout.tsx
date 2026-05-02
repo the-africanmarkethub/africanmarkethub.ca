@@ -9,7 +9,7 @@ import PublicLayoutElements from "./PublicLayoutElements";
 import FooterWrapper from "./FooterWrapper";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { APP_NAME } from "@/setting";
-// import Widget from "./components/Widget";
+import Widget from "./components/Widget";
 import { Analytics } from "@vercel/analytics/next";
 
 const instrumentSans = Instrument_Sans({
@@ -93,7 +93,7 @@ export default function RootLayout({
             </WishlistProvider>
           </CartProvider>
         </Providers>
-        {/* <Widget /> */}
+        <Widget />
         <Analytics />
         <Toaster />
       </body>
